@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "laravel-lms": {
+            "command": "node",
+            "args": [
+                "E:\\PROJEK  LARAVEL\\lms\\mcp-server\\index.js"
+            ]
+        }
+    }
+}

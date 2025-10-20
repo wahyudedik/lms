@@ -1,61 +1,102 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Berikut adalah **daftar fitur inti yang wajib ada** agar sistem tetap fungsional namun tetap ringan 👇
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 🎓 **1. Manajemen Pengguna**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> Fondasi dari setiap sistem LMS/CBT
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* ✅ **Login & Registrasi** (Admin, Guru, Siswa)
+* ✅ **Akses berbasis peran (Role-based Access):**
+  * **Admin:** mengelola seluruh sistem
+  * **Guru:** membuat kelas, mengunggah materi, membuat soal
+  * **Siswa:** mengikuti kelas, mengerjakan ujian
+* ✅ **Profil pengguna** (nama, email, password, foto)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🏫 **2. Manajemen Kelas & Kursus**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+> Komponen utama dari LMS
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* ✅ Membuat, mengedit, dan menghapus **kelas atau mata pelajaran**
+* ✅ Mendaftarkan siswa ke kelas (manual atau menggunakan kode kelas)
+* ✅ Menampilkan daftar materi dan ujian di setiap kelas
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 📚 **3. Materi Pembelajaran**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+> Memfasilitasi guru dalam berbagi bahan ajar
 
-### Premium Partners
+* ✅ Upload file (PDF, PPT, video, link YouTube)
+* ✅ Deskripsi materi
+* ✅ Fitur komentar/diskusi opsional (untuk interaksi)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🧩 **4. Ujian / CBT (Computer Based Test)**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> Fitur utama jika fokus pada ujian
 
-## Code of Conduct
+* ✅ Soal pilihan ganda (MCQ)
+* ✅ Soal esai (opsional)
+* ✅ Pengacakan urutan soal & opsi jawaban
+* ✅ Timer ujian
+* ✅ Penilaian otomatis (untuk pilihan ganda)
+* ✅ Review hasil ujian
+* ✅ Fitur anti-cheat ringan:
+  * Mode layar penuh (fullscreen)
+  * Peringatan jika keluar tab (opsional)
+  * Penguncian waktu (lock timer)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🧾 **5. Nilai & Laporan**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> Untuk guru dan siswa
 
-## License
+* ✅ Rekap nilai otomatis
+* ✅ Ekspor nilai ke Excel/PDF
+* ✅ Laporan hasil ujian per siswa/per kelas
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 💬 **6. Notifikasi / Informasi**
+
+> Agar siswa selalu mengetahui perkembangan terbaru
+
+* ✅ Notifikasi (materi baru, ujian dimulai, hasil keluar)
+* ✅ Dashboard sederhana dengan ringkasan informasi
+
+---
+
+## ⚙️ **7. Pengaturan & Admin Panel**
+
+> Agar admin dapat mengontrol sistem
+
+* ✅ Manajemen pengguna, kelas, dan ujian
+* ✅ Backup database/ekspor manual
+* ✅ Pengaturan sekolah (nama sekolah, logo, tema warna)
+
+---
+
+## 💻 **8. UI/UX Sederhana & Mobile Friendly**
+
+> Karena Moodle sering dianggap rumit
+
+* ✅ Tampilan ringan seperti Google Classroom
+* ✅ Navigasi jelas (Dashboard → Kelas → Materi/Ujian)
+* ✅ Mendukung perangkat mobile (PWA jika memungkinkan)
+
+---
+
+## 🚀 **Fitur Opsional yang Menarik**
+
+> Untuk menambah keunggulan dibanding platform CBT lain:
+
+* 🔒 Login via token ujian (langsung masuk ke ujian tanpa akun)
+* 📈 Statistik belajar siswa
+* 🧠 Bank soal reusable (guru dapat menyimpan & menggunakan ulang soal)
+* 🎖️ Sertifikat otomatis setelah ujian/lulus kursus
+* 🌐 Mode offline (untuk CBT lokal di laboratorium)
