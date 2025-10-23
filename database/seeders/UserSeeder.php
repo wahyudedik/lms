@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Administrator',
             'email' => 'admin@lms.com',
-            'password' => Hash::make('admin123'), 
+            'password' => Hash::make('admin123'),
             'role' => 'admin',
             'phone' => '081234567890',
             'birth_date' => '1990-01-01',
@@ -54,6 +54,49 @@ class UserSeeder extends Seeder
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
+
+        // Create additional gurus
+        User::create([
+            'name' => 'Guru Matematika',
+            'email' => 'guru2@lms.com',
+            'password' => Hash::make('password'),
+            'role' => 'guru',
+            'phone' => '081234567893',
+            'birth_date' => '1985-03-10',
+            'gender' => 'laki-laki',
+            'address' => 'Jl. Guru No. 4, Jakarta',
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+
+        User::create([
+            'name' => 'Guru Bahasa',
+            'email' => 'guru3@lms.com',
+            'password' => Hash::make('password'),
+            'role' => 'guru',
+            'phone' => '081234567894',
+            'birth_date' => '1987-07-25',
+            'gender' => 'perempuan',
+            'address' => 'Jl. Guru No. 5, Jakarta',
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+
+        // Create additional students
+        for ($i = 2; $i <= 10; $i++) {
+            User::create([
+                'name' => 'Siswa ' . $i,
+                'email' => 'siswa' . $i . '@lms.com',
+                'password' => Hash::make('password'),
+                'role' => 'siswa',
+                'phone' => '08123456789' . $i,
+                'birth_date' => '200' . ($i % 5) . '-0' . ($i % 9 + 1) . '-' . (10 + $i),
+                'gender' => ($i % 2 == 0) ? 'perempuan' : 'laki-laki',
+                'address' => 'Jl. Siswa No. ' . ($i + 2) . ', Jakarta',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]);
+        }
 
         // Display credentials
         echo "\n";

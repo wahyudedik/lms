@@ -140,8 +140,9 @@ class ForumController extends Controller
         }
 
         $categories = ForumCategory::active()->ordered()->get();
+        $selectedCategory = $thread->category;
 
-        return view('forum.edit-thread', compact('thread', 'categories'));
+        return view('forum.create-thread', compact('thread', 'categories', 'selectedCategory'));
     }
 
     /**
@@ -224,10 +225,8 @@ class ForumController extends Controller
     /**
      * Update a reply.
      */
-    public function updateReply(Request $request, $replyId)
+    public function updateReply(Request $request, ForumReply $reply)
     {
-        $reply = ForumReply::findOrFail($replyId);
-
         // Check permission
         if ($reply->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
             abort(403, 'Unauthorized');
@@ -245,18 +244,30 @@ class ForumController extends Controller
     /**
      * Delete a reply.
      */
-    public function destroyReply($replyId)
+    public function destroyReply(ForumReply $reply)
     {
-        $reply = ForumReply::findOrFail($replyId);
-
         // Check permission
         if ($reply->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
             abort(403, 'Unauthorized');
         }
 
+        // Get thread info before deleting
+        $thread = $reply->thread;
+        $category = $thread->category;
+
         $reply->delete();
 
-        return back()->with('success', 'Reply deleted successfully!');
+        // If AJAX request, return JSON
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Reply deleted successfully!'
+            ]);
+        }
+
+        // Otherwise redirect
+        return redirect()->route('forum.thread', [$category->slug, $thread->slug])
+            ->with('success', 'Reply deleted successfully!');
     }
 
     /**

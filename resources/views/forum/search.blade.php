@@ -30,6 +30,10 @@
                             class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded">
                             <i class="fas fa-search mr-2"></i>Search
                         </button>
+                        <a href="{{ route('forum.index') }}"
+                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded flex items-center">
+                            <i class="fas fa-times mr-2"></i>Reset
+                        </a>
                     </form>
                 </div>
             </div>
@@ -93,4 +97,3 @@
         </div>
     </div>
 </x-app-layout>
-

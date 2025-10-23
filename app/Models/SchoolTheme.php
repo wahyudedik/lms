@@ -221,4 +221,12 @@ nav {
     {
         return $query->where('is_active', true);
     }
+
+    /**
+     * Alias for toFullCss() for backward compatibility
+     */
+    public function generateCSS(): string
+    {
+        return $this->toFullCss();
+    }
 }

@@ -108,13 +108,18 @@
                                                     class="text-purple-600 hover:text-purple-900 mr-3" title="Theme">
                                                     <i class="fas fa-palette"></i>
                                                 </a>
+                                                <a href="{{ route('admin.landing-page.edit', $school) }}"
+                                                    class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                                    title="Landing Page">
+                                                    <i class="fas fa-paint-brush"></i>
+                                                </a>
                                                 <a href="{{ route('admin.schools.edit', $school) }}"
                                                     class="text-yellow-600 hover:text-yellow-900 mr-3" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <form action="{{ route('admin.schools.destroy', $school) }}"
                                                     method="POST" class="inline"
-                                                    onsubmit="return confirm('Are you sure? All users will be unassigned!')">
+                                                    onsubmit="return confirmDelete('All users in this school will be unassigned from {{ $school->name }}. This action cannot be undone!')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900"

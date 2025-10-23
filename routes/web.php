@@ -110,6 +110,20 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
         Route::get('/statistics/dashboard', [App\Http\Controllers\Admin\QuestionBankController::class, 'statistics'])->name('statistics');
         Route::post('/get-random', [App\Http\Controllers\Admin\QuestionBankController::class, 'getRandom'])->name('get-random');
 
+        // Import & Export
+        Route::get('/export', [App\Http\Controllers\Admin\QuestionBankController::class, 'export'])->name('export');
+        Route::post('/import', [App\Http\Controllers\Admin\QuestionBankController::class, 'import'])->name('import');
+        Route::post('/validate-import', [App\Http\Controllers\Admin\QuestionBankController::class, 'validateImport'])->name('validate-import');
+        Route::get('/download-template', [App\Http\Controllers\Admin\QuestionBankController::class, 'downloadTemplate'])->name('download-template');
+
+        // Import History
+        Route::get('/import-history', [App\Http\Controllers\Admin\QuestionBankController::class, 'importHistory'])->name('import-history');
+        Route::get('/import-history/{importHistory}', [App\Http\Controllers\Admin\QuestionBankController::class, 'importHistoryShow'])->name('import-history.show');
+        Route::delete('/import-history/{importHistory}', [App\Http\Controllers\Admin\QuestionBankController::class, 'importHistoryDelete'])->name('import-history.delete');
+
+        // Category Export
+        Route::get('/category/{category}/export', [App\Http\Controllers\Admin\QuestionBankController::class, 'exportByCategory'])->name('category.export');
+
         // Import modal
         Route::get('/get-for-import', [App\Http\Controllers\Admin\QuestionBankController::class, 'getForImport'])->name('get-for-import');
     });
@@ -132,6 +146,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::post('schools/{school}/theme/reset', [App\Http\Controllers\Admin\ThemeController::class, 'reset'])->name('schools.theme.reset');
     Route::get('schools/{school}/theme/export', [App\Http\Controllers\Admin\ThemeController::class, 'export'])->name('schools.theme.export');
     Route::post('schools/{school}/theme/import', [App\Http\Controllers\Admin\ThemeController::class, 'import'])->name('schools.theme.import');
+
+    // Landing Page Management
+    Route::get('schools/{school}/landing-page', [App\Http\Controllers\Admin\LandingPageController::class, 'edit'])->name('landing-page.edit');
+    Route::put('schools/{school}/landing-page', [App\Http\Controllers\Admin\LandingPageController::class, 'update'])->name('landing-page.update');
+    Route::get('schools/{school}/landing-page/preview', [App\Http\Controllers\Admin\LandingPageController::class, 'preview'])->name('landing-page.preview');
 });
 
 // Guru Dashboard & Course Management

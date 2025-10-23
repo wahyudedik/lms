@@ -16,9 +16,9 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <!-- Forum (All Users) -->
-                    <x-nav-link :href="route('forum.index')" :active="request()->routeIs('forum.*')">
-                        <i class="fas fa-comments mr-1"></i>{{ __('Forum') }}
+                    {{-- allusers --}}
+                    <x-nav-link :href="route('forum.index')" :active="request()->routeIs('forum.index')">
+                        {{ __('Forum') }}
                     </x-nav-link>
 
                     @if (auth()->user()->isAdmin())
@@ -33,19 +33,13 @@
                             {{ __('Exams') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.question-bank.index')" :active="request()->routeIs('admin.question-bank.*')">
-                            <i class="fas fa-database mr-1"></i>{{ __('Q-Bank') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.analytics.index')" :active="request()->routeIs('admin.analytics.*')">
-                            <i class="fas fa-chart-line mr-1"></i>{{ __('Analytics') }}
+                            {{ __('Q-Bank') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.forum-categories.index')" :active="request()->routeIs('admin.forum-categories.*')">
-                            <i class="fas fa-folder mr-1"></i>{{ __('Forum') }}
+                            {{ __('Forum Categories') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.schools.index')" :active="request()->routeIs('admin.schools.*') || request()->routeIs('admin.theme.*')">
-                            <i class="fas fa-school mr-1"></i>{{ __('Schools') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
-                            {{ __('Settings') }}
+                        <x-nav-link :href="route('admin.analytics.index')" :active="request()->routeIs('admin.analytics.*')">
+                            {{ __('Analytics') }}
                         </x-nav-link>
                     @elseif(auth()->user()->isGuru())
                         <!-- Guru Navigation -->
@@ -117,8 +111,18 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            <i class="fas fa-user mr-2"></i>{{ __('Profile') }}
                         </x-dropdown-link>
+
+                        @if (auth()->user()->isAdmin())
+                            <x-dropdown-link :href="route('admin.schools.index')">
+                                <i class="fas fa-school mr-2"></i>{{ __('Schools') }}
+                            </x-dropdown-link>
+
+                            <x-dropdown-link :href="route('admin.settings.index')">
+                                <i class="fas fa-cog mr-2"></i>{{ __('Settings') }}
+                            </x-dropdown-link>
+                        @endif
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -127,7 +131,7 @@
                             <x-dropdown-link :href="route('logout')"
                                 onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                <i class="fas fa-sign-out-alt mr-2"></i>{{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -167,9 +171,6 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.exams.index')" :active="request()->routeIs('admin.exams.*')">
                     {{ __('Exam Management') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
-                    {{ __('Settings') }}
                 </x-responsive-nav-link>
             @elseif(auth()->user()->isGuru())
                 <!-- Guru Mobile Navigation -->
@@ -218,8 +219,18 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    <i class="fas fa-user mr-2"></i>{{ __('Profile') }}
                 </x-responsive-nav-link>
+
+                @if (auth()->user()->isAdmin())
+                    <x-responsive-nav-link :href="route('admin.schools.index')">
+                        <i class="fas fa-school mr-2"></i>{{ __('Schools') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('admin.settings.index')">
+                        <i class="fas fa-cog mr-2"></i>{{ __('Settings') }}
+                    </x-responsive-nav-link>
+                @endif
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
@@ -228,7 +239,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        <i class="fas fa-sign-out-alt mr-2"></i>{{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

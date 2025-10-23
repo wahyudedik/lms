@@ -22,8 +22,9 @@
 
             <!-- Export Buttons -->
             <div class="flex gap-2 justify-end">
-                <button onclick="exportDashboardPDF('admin-analytics-{{ date(\'Y-m-d\') }}.pdf', 'Admin Analytics Dashboard')" 
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-lg">
+                <button
+                    onclick="exportDashboardPDF('admin-analytics-{{ date('Y-m-d') }}.pdf', 'Admin Analytics Dashboard')"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-lg">
                     <i class="fas fa-file-export mr-2"></i>Export Dashboard PDF
                 </button>
             </div>
@@ -138,12 +139,12 @@
     @push('scripts')
         <!-- Chart.js -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-        
+
         <!-- Chart Export Dependencies -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
         <script src="{{ asset('js/chart-export.js') }}"></script>
-        
+
         <script>
             let charts = {};
 
@@ -295,7 +296,7 @@
             // Initialize on page load
             document.addEventListener('DOMContentLoaded', async function() {
                 await initializeCharts();
-                
+
                 // Register all charts for export
                 window.chartExporter.registerChart('registration', charts.registration);
                 window.chartExporter.registerChart('courseEnrollment', charts.courseEnrollment);

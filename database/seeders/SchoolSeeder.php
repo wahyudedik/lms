@@ -21,6 +21,71 @@ class SchoolSeeder extends Seeder
             'phone' => '+62 21 1234 5678',
             'address' => 'Jl. Pendidikan No. 123, Jakarta, Indonesia',
             'is_active' => true,
+
+            // Landing Page Settings
+            'show_landing_page' => true,
+            'hero_title' => 'Welcome to Main School LMS',
+            'hero_subtitle' => 'Empowering Education Through Technology',
+            'hero_description' => 'Join thousands of students and teachers in our innovative learning management system designed for success.',
+            'hero_cta_text' => 'Get Started',
+            'hero_cta_link' => '/register',
+
+            'about_title' => 'About Our School',
+            'about_content' => "Main School LMS is a leading educational institution committed to providing quality education through modern technology. We believe in empowering students with the tools and knowledge they need to succeed in today's digital world.\n\nOur experienced teachers and state-of-the-art platform ensure that every student receives personalized attention and engaging learning experiences.",
+
+            'features' => json_encode([
+                [
+                    'icon' => 'fa-graduation-cap',
+                    'title' => 'Quality Education',
+                    'description' => 'High-quality courses designed by experienced educators'
+                ],
+                [
+                    'icon' => 'fa-users',
+                    'title' => 'Interactive Learning',
+                    'description' => 'Engage with peers and teachers in real-time discussions'
+                ],
+                [
+                    'icon' => 'fa-certificate',
+                    'title' => 'Certified Courses',
+                    'description' => 'Get certified upon successful course completion'
+                ],
+                [
+                    'icon' => 'fa-clock',
+                    'title' => '24/7 Access',
+                    'description' => 'Learn at your own pace, anytime, anywhere'
+                ],
+                [
+                    'icon' => 'fa-mobile-alt',
+                    'title' => 'Mobile Friendly',
+                    'description' => 'Access courses on any device seamlessly'
+                ],
+                [
+                    'icon' => 'fa-headset',
+                    'title' => 'Support Team',
+                    'description' => 'Dedicated support team ready to help you'
+                ]
+            ]),
+
+            'statistics' => json_encode([
+                ['label' => 'Active Students', 'value' => '1,200+'],
+                ['label' => 'Courses Available', 'value' => '50+'],
+                ['label' => 'Expert Teachers', 'value' => '35+'],
+                ['label' => 'Success Rate', 'value' => '96%']
+            ]),
+
+            'contact_email' => 'admin@mainschool.edu',
+            'contact_phone' => '+62 21 1234 5678',
+            'contact_whatsapp' => '+62 812 3456 7890',
+            'contact_address' => 'Jl. Pendidikan No. 123, Jakarta, Indonesia',
+
+            'social_facebook' => 'https://facebook.com/mainschoolms',
+            'social_instagram' => 'https://instagram.com/mainschoolms',
+            'social_twitter' => 'https://twitter.com/mainschoolms',
+            'social_youtube' => 'https://youtube.com/@mainschoolms',
+
+            'meta_title' => 'Main School LMS - Quality Education For Everyone',
+            'meta_description' => 'Join Main School LMS for quality online education. Expert teachers, interactive courses, and flexible learning designed for your success.',
+            'meta_keywords' => 'online learning, education, LMS, courses, elearning, main school',
         ]);
 
         // Create default theme (blue)

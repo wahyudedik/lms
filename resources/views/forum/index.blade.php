@@ -24,12 +24,18 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
                     <form action="{{ route('forum.search') }}" method="GET" class="flex gap-3">
-                        <input type="text" name="q" placeholder="Search forum..."
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search forum..."
                             class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <button type="submit"
                             class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded">
                             <i class="fas fa-search mr-2"></i>Search
                         </button>
+                        @if (request('q'))
+                            <a href="{{ route('forum.index') }}"
+                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded flex items-center">
+                                <i class="fas fa-times mr-2"></i>Reset
+                            </a>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -159,4 +165,3 @@
         </div>
     </div>
 </x-app-layout>
-

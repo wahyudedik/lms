@@ -159,6 +159,55 @@
 
     @push('scripts')
         <script>
+            // Handle delete confirmation for replies v3.0 (AJAX)
+            function deleteReply(replyId, deleteUrl) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#EF4444',
+                    cancelButtonColor: '#3B82F6',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Use AJAX with DELETE method
+                        fetch(deleteUrl, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                }
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    // Success - reload page
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deleted!',
+                                        text: 'Reply has been deleted.',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    throw new Error('Delete failed');
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Failed to delete reply. Please try again.'
+                                });
+                            });
+                    }
+                });
+            }
+
             function toggleLike(type, id) {
                 fetch('{{ route('forum.like') }}', {
                         method: 'POST',
@@ -204,4 +253,3 @@
         </script>
     @endpush
 </x-app-layout>
-

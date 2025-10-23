@@ -331,7 +331,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div class="flex gap-2">
                                 <form action="{{ route('admin.schools.theme.reset', $school) }}" method="POST"
-                                    onsubmit="return confirm('Reset to default theme?')">
+                                    onsubmit="return confirmDelete('This will reset all theme settings to default. Are you sure?')">
                                     @csrf
                                     <button type="submit"
                                         class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">

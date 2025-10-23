@@ -5,8 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\QuestionBank;
 use App\Models\QuestionBankCategory;
+use App\Models\QuestionBankImportHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\QuestionBankExport;
+use App\Exports\QuestionBankPdfExport;
+use App\Exports\QuestionBankJsonExport;
+use App\Imports\QuestionBankImport;
+use App\Jobs\ProcessQuestionBankImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class QuestionBankController extends Controller
 {
@@ -398,5 +406,219 @@ class QuestionBankController extends Controller
             'questions' => $questions,
             'count' => $questions->count(),
         ]);
+    }
+
+    /**
+     * Export question bank (supports multiple formats)
+     */
+    public function export(Request $request)
+    {
+        $filters = $request->only(['category_id', 'type', 'difficulty', 'is_verified', 'is_active']);
+        $format = $request->get('format', 'excel'); // excel, pdf, json
+
+        $timestamp = date('Y-m-d-His');
+        $filename = 'question-bank-' . $timestamp;
+
+        switch ($format) {
+            case 'pdf':
+                return (new QuestionBankPdfExport($filters))->download($filename . '.pdf');
+
+            case 'json':
+                $data = (new QuestionBankJsonExport($filters))->export();
+                return response()->json($data)
+                    ->header('Content-Disposition', 'attachment; filename="' . $filename . '.json"');
+
+            case 'excel':
+            default:
+                return Excel::download(new QuestionBankExport($filters), $filename . '.xlsx');
+        }
+    }
+
+    /**
+     * Import questions from Excel (with optional queuing)
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240', // 10MB max
+            'use_queue' => 'nullable|boolean',
+        ]);
+
+        $file = $request->file('file');
+        $useQueue = $request->boolean('use_queue');
+
+        // Create import history record
+        $importHistory = QuestionBankImportHistory::create([
+            'user_id' => Auth::id(),
+            'filename' => $file->getClientOriginalName(),
+            'file_size' => $file->getSize(),
+            'status' => 'pending',
+        ]);
+
+        if ($useQueue) {
+            // Store file temporarily
+            $path = $file->store('temp-imports');
+            $importHistory->update(['file_path' => $path]);
+
+            // Dispatch to queue
+            ProcessQuestionBankImport::dispatch($importHistory, $path);
+
+            return redirect()->back()->with('success', 'Import queued successfully! Check import history for progress.');
+        } else {
+            // Process immediately
+            try {
+                $importHistory->markAsProcessing();
+
+                $import = new QuestionBankImport();
+                Excel::import($import, $file);
+
+                $stats = $import->getStats();
+                $importHistory->markAsCompleted($stats);
+
+                if ($stats['imported'] > 0) {
+                    $message = "{$stats['imported']} questions imported successfully.";
+
+                    if ($stats['skipped'] > 0) {
+                        $message .= " {$stats['skipped']} questions were skipped.";
+                    }
+
+                    return redirect()->back()->with('success', $message);
+                } else {
+                    return redirect()->back()->with('error', 'No questions were imported. ' . implode(' ', $stats['errors']));
+                }
+            } catch (\Exception $e) {
+                $importHistory->markAsFailed($e->getMessage());
+                return redirect()->back()->with('error', 'Import failed: ' . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Download import template
+     */
+    public function downloadTemplate()
+    {
+        $headers = [
+            ['type', 'difficulty', 'question_text', 'category', 'options_json', 'correct_answer_json', 'default_points', 'explanation', 'tags', 'image_url', 'is_active', 'is_verified'],
+            ['mcq_single', 'easy', 'What is 2+2?', 'Mathematics', '["1","2","3","4"]', '["4"]', '1', 'Simple addition', 'math, basic', '', 'yes', 'yes'],
+            ['mcq_multiple', 'medium', 'Select prime numbers', 'Mathematics', '["1","2","3","4","5"]', '["2","3","5"]', '2', 'Prime numbers are divisible by 1 and themselves', 'math, prime', '', 'yes', 'no'],
+            ['essay', 'hard', 'Explain photosynthesis', 'Biology', '', '', '5', 'Process by which plants make food', 'biology, science', '', 'yes', 'yes'],
+        ];
+
+        $filename = 'question-bank-import-template.csv';
+        $handle = fopen('php://temp', 'r+');
+
+        foreach ($headers as $row) {
+            fputcsv($handle, $row);
+        }
+
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    /**
+     * Validate import file before actual import
+     */
+    public function validateImport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            $import = new QuestionBankImport();
+            Excel::import($import, $request->file('file'));
+
+            $stats = $import->getStats();
+
+            return response()->json([
+                'success' => true,
+                'validation' => [
+                    'total_rows' => $stats['imported'] + $stats['skipped'],
+                    'valid_rows' => $stats['imported'],
+                    'invalid_rows' => $stats['skipped'],
+                    'errors' => $stats['errors'],
+                ],
+                'message' => 'Validation completed successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * View import history
+     */
+    public function importHistory(Request $request)
+    {
+        $imports = QuestionBankImportHistory::with('user')
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.question-bank.import-history', compact('imports'));
+    }
+
+    /**
+     * Show import history details
+     */
+    public function importHistoryShow(QuestionBankImportHistory $importHistory)
+    {
+        $importHistory->load('user');
+
+        return view('admin.question-bank.import-history-show', compact('importHistory'));
+    }
+
+    /**
+     * Delete import history record
+     */
+    public function importHistoryDelete(QuestionBankImportHistory $importHistory)
+    {
+        // Delete associated file if exists
+        if ($importHistory->file_path && Storage::exists($importHistory->file_path)) {
+            Storage::delete($importHistory->file_path);
+        }
+
+        $importHistory->delete();
+
+        return redirect()->back()->with('success', 'Import history deleted successfully.');
+    }
+
+    /**
+     * Export by specific category
+     */
+    public function exportByCategory(Request $request, QuestionBankCategory $category)
+    {
+        $format = $request->get('format', 'excel');
+        $filters = ['category_id' => $category->id];
+
+        $timestamp = date('Y-m-d-His');
+        $categorySlug = \Str::slug($category->name);
+        $filename = "question-bank-{$categorySlug}-{$timestamp}";
+
+        switch ($format) {
+            case 'pdf':
+                return (new QuestionBankPdfExport($filters))->download($filename . '.pdf');
+
+            case 'json':
+                $data = (new QuestionBankJsonExport($filters))->export();
+                return response()->json($data)
+                    ->header('Content-Disposition', 'attachment; filename="' . $filename . '.json"');
+
+            case 'excel':
+            default:
+                return Excel::download(new QuestionBankExport($filters), $filename . '.xlsx');
+        }
     }
 }

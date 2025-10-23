@@ -48,14 +48,11 @@
                     @endif
 
                     @if ($reply->user_id === auth()->id() || auth()->user()->isAdmin())
-                        <form action="{{ route('forum.reply.destroy', $reply->id) }}" method="POST" class="inline"
-                            onsubmit="return confirmDelete()">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-sm text-gray-600 hover:text-red-600">
-                                <i class="fas fa-trash mr-1"></i>Delete
-                            </button>
-                        </form>
+                        <button type="button"
+                            onclick="deleteReply({{ $reply->id }}, '{{ route('forum.reply.destroy', $reply->id) }}')"
+                            class="text-sm text-gray-600 hover:text-red-600">
+                            <i class="fas fa-trash mr-1"></i>Delete
+                        </button>
                     @endif
                 </div>
             </div>
@@ -75,4 +72,3 @@
         @endif
     </div>
 </div>
-

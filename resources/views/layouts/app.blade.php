@@ -105,17 +105,38 @@
             });
         @endif
 
-        // Enhanced confirm dialogs - MUST return false to prevent immediate form submission
+        // Enhanced confirm dialogs - Returns a Promise for programmatic use
         function confirmDelete(message = 'Are you sure you want to delete this item?') {
-            // This function will be called by onsubmit, we need to prevent default submission
-            // and handle it manually after confirmation
-            return false; // Always prevent default submission
+            return Swal.fire({
+                title: 'Are you sure?',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            });
         }
 
-        // Handle all delete confirmations globally
+        // Handle all delete confirmations globally for forms with onsubmit
         document.addEventListener('DOMContentLoaded', function() {
-            // Find all forms with confirmDelete in onsubmit
+            // Remove onsubmit attribute from all forms that use confirmDelete
+            // and handle via event listener instead
             document.querySelectorAll('form[onsubmit*="confirmDelete"]').forEach(form => {
+                // Extract message from onsubmit attribute before removing it
+                const onsubmitAttr = form.getAttribute('onsubmit');
+                const messageMatch = onsubmitAttr.match(/confirmDelete\(['"](.+?)['"]\)/);
+                const message = messageMatch ? messageMatch[1] :
+                    'Are you sure you want to delete this item?';
+
+                // Store message in data attribute
+                form.dataset.confirmMessage = message;
+
+                // Remove onsubmit to prevent conflicts
+                form.removeAttribute('onsubmit');
+
+                // Add event listener
                 form.addEventListener('submit', async function(e) {
                     // Check if this is a confirmed submission
                     if (form.dataset.confirmed === 'true') {
@@ -127,16 +148,11 @@
                     e.preventDefault(); // Prevent default submission
                     e.stopPropagation();
 
-                    // Extract message from onsubmit attribute
-                    const onsubmitAttr = form.getAttribute('onsubmit');
-                    const messageMatch = onsubmitAttr.match(/confirmDelete\(['"](.+?)['"]\)/);
-                    const message = messageMatch ? messageMatch[1] :
-                        'Are you sure you want to delete this item?';
-
-                    // Show SweetAlert
+                    // Show SweetAlert with stored message
                     const result = await Swal.fire({
                         title: 'Are you sure?',
-                        text: message,
+                        text: form.dataset.confirmMessage ||
+                            'Are you sure you want to delete this item?',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',

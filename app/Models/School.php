@@ -20,10 +20,36 @@ class School extends Model
         'favicon',
         'domain',
         'is_active',
+        // Landing Page Fields
+        'show_landing_page',
+        'hero_title',
+        'hero_subtitle',
+        'hero_description',
+        'hero_image',
+        'hero_cta_text',
+        'hero_cta_link',
+        'about_title',
+        'about_content',
+        'about_image',
+        'features',
+        'statistics',
+        'contact_address',
+        'contact_phone',
+        'contact_email',
+        'contact_whatsapp',
+        'social_facebook',
+        'social_instagram',
+        'social_twitter',
+        'social_youtube',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'show_landing_page' => 'boolean',
+        // Removed 'features' and 'statistics' from casts - using custom accessors instead
     ];
 
     /**
@@ -128,5 +154,96 @@ class School extends Model
     public function students()
     {
         return $this->users()->where('role', 'siswa');
+    }
+
+    /**
+     * Get hero image URL
+     */
+    public function getHeroImageUrlAttribute()
+    {
+        if ($this->hero_image) {
+            return asset('storage/' . $this->hero_image);
+        }
+        return asset('images/default-hero.jpg');
+    }
+
+    /**
+     * Get about image URL
+     */
+    public function getAboutImageUrlAttribute()
+    {
+        if ($this->about_image) {
+            return asset('storage/' . $this->about_image);
+        }
+        return null;
+    }
+
+    /**
+     * Get features attribute - decode JSON and return array
+     */
+    public function getFeaturesAttribute($value)
+    {
+        // Decode JSON string to array
+        $features = !empty($value) ? json_decode($value, true) : [];
+
+        // Return default features if empty or invalid JSON
+        if (empty($features) || !is_array($features)) {
+            return [
+                [
+                    'icon' => 'fa-graduation-cap',
+                    'title' => 'Quality Education',
+                    'description' => 'High-quality learning materials and experienced instructors'
+                ],
+                [
+                    'icon' => 'fa-users',
+                    'title' => 'Interactive Learning',
+                    'description' => 'Engage with peers and teachers in real-time'
+                ],
+                [
+                    'icon' => 'fa-certificate',
+                    'title' => 'Certification',
+                    'description' => 'Get certified upon course completion'
+                ]
+            ];
+        }
+
+        return $features;
+    }
+
+    /**
+     * Get statistics attribute - decode JSON and return array
+     */
+    public function getStatisticsAttribute($value)
+    {
+        // Decode JSON string to array
+        $statistics = !empty($value) ? json_decode($value, true) : [];
+
+        // Return default statistics if empty or invalid JSON
+        if (empty($statistics) || !is_array($statistics)) {
+            return [
+                ['label' => 'Active Students', 'value' => '1000+'],
+                ['label' => 'Courses', 'value' => '50+'],
+                ['label' => 'Teachers', 'value' => '30+'],
+                ['label' => 'Success Rate', 'value' => '95%']
+            ];
+        }
+
+        return $statistics;
+    }
+
+    /**
+     * Set features attribute - encode array to JSON
+     */
+    public function setFeaturesAttribute($value)
+    {
+        $this->attributes['features'] = is_array($value) ? json_encode($value) : $value;
+    }
+
+    /**
+     * Set statistics attribute - encode array to JSON
+     */
+    public function setStatisticsAttribute($value)
+    {
+        $this->attributes['statistics'] = is_array($value) ? json_encode($value) : $value;
     }
 }

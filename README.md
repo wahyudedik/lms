@@ -1,3 +1,22 @@
+## 🏗️ **Arsitektur Sistem**
+
+### **Hubungan Course → Exam → Question Bank:**
+
+```
+COURSE (Kelas)
+    ↓
+EXAM (Ujian)
+    ↓
+QUESTIONS ← dapat diambil dari QUESTION BANK
+```
+
+**Question Bank 100% kompatibel dengan Exam!** Support semua tipe soal:
+- ✅ mcq_single, mcq_multiple, matching, essay
+
+📄 **Detail lengkap:** `SYSTEM-ARCHITECTURE-EXPLANATION.md`
+
+---
+
 Berikut adalah **daftar fitur inti yang wajib ada** agar sistem tetap fungsional namun tetap ringan 👇
 
 ---
@@ -245,7 +264,7 @@ Complete production-ready deployment guide available in **`DEPLOYMENT-UBUNTU-VPS
   - ✅ Complete database schema & migrations
   - ✅ Full-featured models (700+ lines)
   - ✅ Complete CRUD controller (400+ lines)
-  - ✅ All routes registered (13 routes)
+  - ✅ All routes registered (16 routes)
   - ✅ Hierarchical categories  
   - ✅ Difficulty levels & tags
   - ✅ Usage statistics tracking
@@ -257,6 +276,22 @@ Complete production-ready deployment guide available in **`DEPLOYMENT-UBUNTU-VPS
   - ✅ **Beautiful statistics dashboard**
   - ✅ **Category management**
   - ✅ **Verification system**
+  - ✅ **Import/Export Questions** (Excel/CSV/PDF/JSON) 🆕✨
+    - **Multiple export formats:**
+      - Excel (.xlsx) - Full data with styling
+      - PDF - Professional printable documents  
+      - JSON - API-ready structured data
+    - **Batch export by category** - Export specific subjects only
+    - **Import validation preview** - See errors before importing
+    - **Queue support** - Background processing for large files
+    - **Import history tracking** - Complete audit trail with statistics
+    - Export with filters (category, type, difficulty)
+    - Import with auto-validation
+    - Download import template
+    - Auto-create categories on import
+    - Detailed import statistics
+  - 📄 See `ADVANCED-IMPORT-EXPORT-FEATURES.md` for complete guide
+  - 📄 See `QUESTION-BANK-IMPORT-EXPORT.md` for basic import/export
   - ✅ **✨ Import Modal (Select & Import from Bank)**
   - 📄 See `QUESTION-BANK-COMPLETE.md` for full overview
   - 📄 See `IMPORT-MODAL-COMPLETE.md` for import feature
@@ -299,6 +334,32 @@ Complete production-ready deployment guide available in **`DEPLOYMENT-UBUNTU-VPS
   - ✅ Live preview support
   - ✅ Sample data seeder (3 schools)
   - 📄 See `THEME-SYSTEM-IMPLEMENTATION.md` for full details
+
+* ✅ **Dynamic Landing Pages** - Custom landing page per school! (✨ 100% Complete!)
+  - ✅ Complete database schema (25+ new fields)
+  - ✅ School model updated with landing page methods
+  - ✅ LandingPageController (300+ lines)
+  - ✅ 3 new routes (edit, update, preview)
+  - ✅ **Tabbed editor view (650+ lines)**
+  - ✅ **Dynamic welcome.blade.php (400+ lines)**
+  - ✅ **7 customizable sections:**
+    - ✅ Hero section (title, subtitle, description, image, CTA)
+    - ✅ Statistics counter (4 customizable stats)
+    - ✅ Features grid (6 features with FA icons)
+    - ✅ About section (text + optional image)
+    - ✅ Contact information (email, phone, WhatsApp, address)
+    - ✅ Social media links (FB, IG, Twitter, YouTube)
+    - ✅ SEO meta tags (title, description, keywords)
+  - ✅ Image upload support (hero & about images)
+  - ✅ Dynamic features/statistics management
+  - ✅ Live preview functionality
+  - ✅ Enable/disable toggle per school
+  - ✅ Fallback to Laravel welcome page
+  - ✅ Mobile responsive design
+  - ✅ Theme integration (auto-applies school colors)
+  - ✅ Sample landing page data in seeder
+  - ✅ Edit button in schools index
+  - 📄 See `LANDING-PAGE-FEATURE.md` for full details
 
 ## 💡 **Future Enhancements** (Optional)
 
