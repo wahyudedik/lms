@@ -25,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
+        'school_id',
         'phone',
         'birth_date',
         'gender',
@@ -149,6 +150,72 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get courses taught by this user (for Guru)
+     */
+    public function teachingCourses()
+    {
+        return $this->hasMany(\App\Models\Course::class, 'instructor_id');
+    }
+
+    /**
+     * Get exams created by this user (for Guru)
+     */
+    public function createdExams()
+    {
+        return $this->hasMany(\App\Models\Exam::class, 'created_by');
+    }
+
+    /**
+     * Get enrollments for this user (for Siswa)
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(\App\Models\Enrollment::class);
+    }
+
+    /**
+     * Get exam attempts by this user (for Siswa)
+     */
+    public function examAttempts()
+    {
+        return $this->hasMany(\App\Models\ExamAttempt::class);
+    }
+
+    /**
+     * Get courses enrolled by this user (for Siswa)
+     */
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(\App\Models\Course::class, 'enrollments')
+            ->withPivot(['status', 'progress', 'enrolled_at', 'completed_at'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if user is enrolled in a specific course
+     */
+    public function isEnrolledIn($courseId): bool
+    {
+        return $this->enrollments()->where('course_id', $courseId)->exists();
+    }
+
+    /**
+     * Enroll user in a course
+     */
+    public function enrollInCourse($courseId)
+    {
+        if ($this->isEnrolledIn($courseId)) {
+            return false;
+        }
+
+        return $this->enrollments()->create([
+            'course_id' => $courseId,
+            'status' => 'active',
+            'enrolled_at' => now(),
+        ]);
+    }
+
+    /**
      * Send the email verification notification.
      */
     public function sendEmailVerificationNotification()
@@ -162,5 +229,45 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new CustomResetPassword($token));
+    }
+
+    /**
+     * Get all forum threads created by this user.
+     */
+    public function forumThreads()
+    {
+        return $this->hasMany(\App\Models\ForumThread::class, 'user_id');
+    }
+
+    /**
+     * Get all forum replies created by this user.
+     */
+    public function forumReplies()
+    {
+        return $this->hasMany(\App\Models\ForumReply::class, 'user_id');
+    }
+
+    /**
+     * Get all forum likes by this user.
+     */
+    public function forumLikes()
+    {
+        return $this->hasMany(\App\Models\ForumLike::class, 'user_id');
+    }
+
+    /**
+     * Get forum posts count (threads + replies).
+     */
+    public function getForumPostsCountAttribute(): int
+    {
+        return $this->forumThreads()->count() + $this->forumReplies()->count();
+    }
+
+    /**
+     * Get the school that the user belongs to.
+     */
+    public function school()
+    {
+        return $this->belongsTo(School::class);
     }
 }

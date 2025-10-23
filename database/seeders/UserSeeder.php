@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Administrator',
             'email' => 'admin@lms.com',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('admin123'), 
             'role' => 'admin',
             'phone' => '081234567890',
             'birth_date' => '1990-01-01',

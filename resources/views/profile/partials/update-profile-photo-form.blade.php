@@ -147,15 +147,27 @@
 
         // Delete photo
         if (deleteBtn) {
-            deleteBtn.addEventListener('click', function() {
-                if (confirm('Are you sure you want to delete your profile photo?')) {
+            deleteBtn.addEventListener('click', async function() {
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Do you want to delete your profile photo?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                });
+
+                if (result.isConfirmed) {
                     deleteBtn.disabled = true;
                     deleteBtn.textContent = 'Deleting...';
 
                     fetch('{{ route('profile.photo.delete') }}', {
                             method: 'DELETE',
                             headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]')
                                     .getAttribute('content'),
                                 'Content-Type': 'application/json',
                             }
@@ -164,7 +176,8 @@
                         .then(data => {
                             if (data.success) {
                                 showSuccess(data.message);
-                                currentPhoto.src = '{{ auth()->user()->profile_photo_url }}?t=' +
+                                currentPhoto.src =
+                                    '{{ auth()->user()->profile_photo_url }}?t=' +
                                     new Date().getTime();
                                 deleteBtn.style.display = 'none';
                             } else {

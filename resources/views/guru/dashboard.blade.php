@@ -1,155 +1,219 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard Guru') }}
+            <i class="fas fa-chalkboard-teacher mr-2"></i>{{ __('Dashboard Guru') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Selamat datang, {{ auth()->user()->name }}!
-                        </h3>
-                        <p class="text-gray-600">Anda login sebagai <span
-                                class="font-semibold text-green-600">{{ auth()->user()->role_display }}</span></p>
-                    </div>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-                    <!-- Guru Stats Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                            <div class="flex items-center">
-                                <div class="p-2 bg-blue-100 rounded-lg">
-                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-600">My Courses</p>
-                                    <p class="text-2xl font-semibold text-gray-900">0</p>
-                                </div>
-                            </div>
+            <!-- Welcome Message -->
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
+                <h3 class="text-2xl font-bold mb-2">Selamat datang, {{ auth()->user()->name }}! 👨‍🏫</h3>
+                <p class="text-green-100">Anda login sebagai <span
+                        class="font-semibold">{{ auth()->user()->role_display }}</span></p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm">My Courses</p>
+                            <p class="text-3xl font-bold mt-2">{{ number_format($stats['total_courses']) }}</p>
+                            <p class="text-green-100 text-xs mt-1">
+                                <i class="fas fa-book mr-1"></i>Teaching
+                            </p>
                         </div>
-
-                        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
-                            <div class="flex items-center">
-                                <div class="p-2 bg-green-100 rounded-lg">
-                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-600">Total Students</p>
-                                    <p class="text-2xl font-semibold text-gray-900">0</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
-                            <div class="flex items-center">
-                                <div class="p-2 bg-yellow-100 rounded-lg">
-                                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-600">Assignments</p>
-                                    <p class="text-2xl font-semibold text-gray-900">0</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-purple-50 p-6 rounded-lg border border-purple-200">
-                            <div class="flex items-center">
-                                <div class="p-2 bg-purple-100 rounded-lg">
-                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-600">Pending Reviews</p>
-                                    <p class="text-2xl font-semibold text-gray-900">0</p>
-                                </div>
-                            </div>
+                        <div class="bg-white bg-opacity-20 rounded-full p-3">
+                            <i class="fas fa-book text-2xl"></i>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Recent Activities -->
-                    <div class="bg-gray-50 p-6 rounded-lg mb-6">
-                        <h4 class="text-lg font-medium text-gray-900 mb-4">Recent Activities</h4>
-                        <div class="space-y-3">
-                            <div class="flex items-center p-3 bg-white rounded-lg border border-gray-200">
-                                <div class="p-2 bg-blue-100 rounded-full">
-                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm text-gray-900">No recent activities</p>
-                                    <p class="text-xs text-gray-500">Start by creating your first course</p>
-                                </div>
-                            </div>
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm">Total Students</p>
+                            <p class="text-3xl font-bold mt-2">{{ number_format($stats['total_students']) }}</p>
+                            <p class="text-blue-100 text-xs mt-1">
+                                <i class="fas fa-user-graduate mr-1"></i>Enrolled
+                            </p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-full p-3">
+                            <i class="fas fa-users text-2xl"></i>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Quick Actions -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <a href="#"
-                                class="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                    <span class="text-gray-700">Create Course</span>
-                                </div>
-                            </a>
-                            <a href="#"
-                                class="bg-white p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:shadow-md transition-all">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                        </path>
-                                    </svg>
-                                    <span class="text-gray-700">Create Assignment</span>
-                                </div>
-                            </a>
-                            <a href="#"
-                                class="bg-white p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                                        </path>
-                                    </svg>
-                                    <span class="text-gray-700">View Students</span>
-                                </div>
-                            </a>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm">Total Exams</p>
+                            <p class="text-3xl font-bold mt-2">{{ number_format($stats['total_exams']) }}</p>
+                            <p class="text-purple-100 text-xs mt-1">
+                                <i class="fas fa-clipboard-list mr-1"></i>Created
+                            </p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-full p-3">
+                            <i class="fas fa-clipboard-list text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-orange-100 text-sm">Pending Reviews</p>
+                            <p class="text-3xl font-bold mt-2">{{ number_format($stats['pending_essays']) }}</p>
+                            <p class="text-orange-100 text-xs mt-1">
+                                <i class="fas fa-pen mr-1"></i>Essays
+                            </p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-full p-3">
+                            <i class="fas fa-tasks text-2xl"></i>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h4 class="text-lg font-semibold text-gray-900 mb-4"><i
+                        class="fas fa-bolt text-yellow-500 mr-2"></i>Quick
+                    Actions</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <a href="{{ route('guru.courses.create') }}"
+                        class="flex items-center p-4 bg-green-50 rounded-lg border-2 border-green-200 hover:border-green-400 hover:shadow-md transition-all">
+                        <div class="bg-green-500 rounded-full p-3 text-white mr-3">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <span class="text-gray-700 font-medium">Create Course</span>
+                    </a>
+                    <a href="{{ route('guru.exams.index') }}"
+                        class="flex items-center p-4 bg-purple-50 rounded-lg border-2 border-purple-200 hover:border-purple-400 hover:shadow-md transition-all">
+                        <div class="bg-purple-500 rounded-full p-3 text-white mr-3">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <span class="text-gray-700 font-medium">My Exams</span>
+                    </a>
+                    <a href="{{ route('guru.analytics.index') }}"
+                        class="flex items-center p-4 bg-blue-50 rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all">
+                        <div class="bg-blue-500 rounded-full p-3 text-white mr-3">
+                            <i class="fas fa-chart-area"></i>
+                        </div>
+                        <span class="text-gray-700 font-medium">Analytics</span>
+                    </a>
+                    <a href="{{ route('guru.reports.index') }}"
+                        class="flex items-center p-4 bg-orange-50 rounded-lg border-2 border-orange-200 hover:border-orange-400 hover:shadow-md transition-all">
+                        <div class="bg-orange-500 rounded-full p-3 text-white mr-3">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <span class="text-gray-700 font-medium">Reports</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- My Courses -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-semibold text-gray-900"><i
+                                class="fas fa-book-open text-green-500 mr-2"></i>My Courses</h4>
+                        <a href="{{ route('guru.courses.index') }}"
+                            class="text-sm text-blue-600 hover:text-blue-800">View
+                            all →</a>
+                    </div>
+                    @forelse($recentCourses as $course)
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
+                            <div class="bg-green-100 rounded-full p-2 text-green-600 mr-3">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">{{ $course->title }}</p>
+                                <p class="text-xs text-gray-500">{{ $course->enrollments->count() }} students enrolled
+                                </p>
+                            </div>
+                            <span
+                                class="px-2 py-1 text-xs font-semibold rounded-full {{ $course->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                {{ ucfirst($course->status) }}
+                            </span>
+                        </div>
+                    @empty
+                        <div class="text-center py-8">
+                            <i class="fas fa-book text-gray-400 text-4xl mb-3"></i>
+                            <p class="text-gray-500 mb-3">No courses yet</p>
+                            <a href="{{ route('guru.courses.create') }}"
+                                class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                <i class="fas fa-plus mr-2"></i>Create Course
+                            </a>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Upcoming Exams -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-semibold text-gray-900"><i
+                                class="fas fa-calendar-alt text-purple-500 mr-2"></i>Upcoming Exams</h4>
+                        <a href="{{ route('guru.exams.index') }}"
+                            class="text-sm text-blue-600 hover:text-blue-800">View
+                            all →</a>
+                    </div>
+                    @forelse($upcomingExams as $exam)
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
+                            <div class="bg-purple-100 rounded-full p-2 text-purple-600 mr-3">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">{{ $exam->title }}</p>
+                                <p class="text-xs text-gray-500">{{ $exam->course->title }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500">
+                                    {{ $exam->start_time ? $exam->start_time->format('d M') : 'No date' }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-center text-gray-500 py-4">No upcoming exams</p>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-lg font-semibold text-gray-900"><i
+                            class="fas fa-history text-blue-500 mr-2"></i>Recent Exam Submissions</h4>
+                </div>
+                @forelse($recentAttempts as $attempt)
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
+                        <img class="h-10 w-10 rounded-full object-cover mr-3"
+                            src="{{ $attempt->user->profile_photo_url }}" alt="{{ $attempt->user->name }}">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">{{ $attempt->user->name }}</p>
+                            <p class="text-xs text-gray-500">{{ $attempt->exam->title }}</p>
+                        </div>
+                        <div class="text-right mr-4">
+                            <p class="text-sm font-bold {{ $attempt->passed ? 'text-green-600' : 'text-red-600' }}">
+                                {{ number_format($attempt->score, 1) }}%</p>
+                            <p class="text-xs text-gray-500">{{ $attempt->submitted_at->diffForHumans() }}</p>
+                        </div>
+                        <a href="{{ route('guru.exams.show', $attempt->exam) }}"
+                            class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                @empty
+                    <div class="text-center py-8">
+                        <i class="fas fa-clipboard text-gray-400 text-4xl mb-3"></i>
+                        <p class="text-gray-500">No recent submissions</p>
+                    </div>
+                @endforelse
+            </div>
+
         </div>
     </div>
 </x-app-layout>

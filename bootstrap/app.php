@@ -15,6 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
             'roles' => \App\Http\Middleware\CheckMultipleRoles::class,
         ]);
+
+        // Track user activity
+        $middleware->append(\App\Http\Middleware\TrackUserActivity::class);
+
+        // Load school theme
+        $middleware->append(\App\Http\Middleware\LoadSchoolTheme::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

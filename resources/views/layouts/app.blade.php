@@ -8,9 +8,29 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Complete Learning Management System with CBT, Materials, and Reports">
+    <meta name="theme-color" content="#6D28D9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LMS">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.png">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -69,19 +89,70 @@
             });
         @endif
 
-        // Enhanced confirm dialogs
-        function confirmDelete(message = 'Are you sure you want to delete this item?') {
-            return Swal.fire({
-                title: 'Are you sure?',
-                text: message,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
+        // Show info messages
+        @if (session('info'))
+            Toast.fire({
+                icon: 'info',
+                title: '{{ session('info') }}'
             });
+        @endif
+
+        // Show warning messages
+        @if (session('warning'))
+            Toast.fire({
+                icon: 'warning',
+                title: '{{ session('warning') }}'
+            });
+        @endif
+
+        // Enhanced confirm dialogs - MUST return false to prevent immediate form submission
+        function confirmDelete(message = 'Are you sure you want to delete this item?') {
+            // This function will be called by onsubmit, we need to prevent default submission
+            // and handle it manually after confirmation
+            return false; // Always prevent default submission
         }
+
+        // Handle all delete confirmations globally
+        document.addEventListener('DOMContentLoaded', function() {
+            // Find all forms with confirmDelete in onsubmit
+            document.querySelectorAll('form[onsubmit*="confirmDelete"]').forEach(form => {
+                form.addEventListener('submit', async function(e) {
+                    // Check if this is a confirmed submission
+                    if (form.dataset.confirmed === 'true') {
+                        // Allow submission
+                        delete form.dataset.confirmed;
+                        return true;
+                    }
+
+                    e.preventDefault(); // Prevent default submission
+                    e.stopPropagation();
+
+                    // Extract message from onsubmit attribute
+                    const onsubmitAttr = form.getAttribute('onsubmit');
+                    const messageMatch = onsubmitAttr.match(/confirmDelete\(['"](.+?)['"]\)/);
+                    const message = messageMatch ? messageMatch[1] :
+                        'Are you sure you want to delete this item?';
+
+                    // Show SweetAlert
+                    const result = await Swal.fire({
+                        title: 'Are you sure?',
+                        text: message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    });
+
+                    // If confirmed, mark as confirmed and submit
+                    if (result.isConfirmed) {
+                        form.dataset.confirmed = 'true';
+                        form.submit();
+                    }
+                });
+            });
+        });
 
         // Enhanced toggle status confirmation
         function confirmToggleStatus(isActive, userName) {
@@ -100,6 +171,38 @@
     </script>
 
     @stack('scripts')
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful:', registration.scope);
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed:', err);
+                    });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Show install button (optional - can be added to UI later)
+            console.log('PWA install prompt available');
+        });
+
+        // Track PWA installation
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA installed successfully');
+            deferredPrompt = null;
+        });
+    </script>
 </body>
 
 </html>

@@ -16,45 +16,81 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    <!-- Forum (All Users) -->
+                    <x-nav-link :href="route('forum.index')" :active="request()->routeIs('forum.*')">
+                        <i class="fas fa-comments mr-1"></i>{{ __('Forum') }}
+                    </x-nav-link>
+
                     @if (auth()->user()->isAdmin())
                         <!-- Admin Navigation -->
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                            {{ __('User Management') }}
+                            {{ __('Users') }}
                         </x-nav-link>
-                        <x-nav-link href="#" :active="false">
-                            {{ __('Course Management') }}
+                        <x-nav-link :href="route('admin.courses.index')" :active="request()->routeIs('admin.courses.*')">
+                            {{ __('Courses') }}
                         </x-nav-link>
-                        <x-nav-link href="#" :active="false">
-                            {{ __('Reports') }}
+                        <x-nav-link :href="route('admin.exams.index')" :active="request()->routeIs('admin.exams.*') || request()->routeIs('admin.questions.*')">
+                            {{ __('Exams') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.question-bank.index')" :active="request()->routeIs('admin.question-bank.*')">
+                            <i class="fas fa-database mr-1"></i>{{ __('Q-Bank') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.analytics.index')" :active="request()->routeIs('admin.analytics.*')">
+                            <i class="fas fa-chart-line mr-1"></i>{{ __('Analytics') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.forum-categories.index')" :active="request()->routeIs('admin.forum-categories.*')">
+                            <i class="fas fa-folder mr-1"></i>{{ __('Forum') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.schools.index')" :active="request()->routeIs('admin.schools.*') || request()->routeIs('admin.theme.*')">
+                            <i class="fas fa-school mr-1"></i>{{ __('Schools') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
+                            {{ __('Settings') }}
                         </x-nav-link>
                     @elseif(auth()->user()->isGuru())
                         <!-- Guru Navigation -->
-                        <x-nav-link href="#" :active="false">
+                        <x-nav-link :href="route('guru.courses.index')" :active="request()->routeIs('guru.courses.*')">
                             {{ __('My Courses') }}
                         </x-nav-link>
-                        <x-nav-link href="#" :active="false">
-                            {{ __('Assignments') }}
+                        <x-nav-link :href="route('guru.exams.index')" :active="request()->routeIs('guru.exams.*') || request()->routeIs('guru.questions.*')">
+                            {{ __('My Exams') }}
                         </x-nav-link>
-                        <x-nav-link href="#" :active="false">
-                            {{ __('Students') }}
+                        <x-nav-link :href="route('guru.analytics.index')" :active="request()->routeIs('guru.analytics.*')">
+                            <i class="fas fa-chart-area mr-1"></i>{{ __('Analytics') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('guru.reports.index')" :active="request()->routeIs('guru.reports.*')">
+                            {{ __('Reports') }}
                         </x-nav-link>
                     @elseif(auth()->user()->isSiswa())
                         <!-- Siswa Navigation -->
-                        <x-nav-link href="#" :active="false">
+                        <x-nav-link :href="route('siswa.courses.index')" :active="request()->routeIs('siswa.courses.index')">
+                            {{ __('Browse Courses') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('siswa.courses.my-courses')" :active="request()->routeIs('siswa.courses.my-courses')">
                             {{ __('My Courses') }}
                         </x-nav-link>
-                        <x-nav-link href="#" :active="false">
-                            {{ __('Assignments') }}
+                        <x-nav-link :href="route('siswa.exams.index')" :active="request()->routeIs('siswa.exams.*') &&
+                            !request()->routeIs('siswa.exams.my-attempts')">
+                            {{ __('Exams') }}
                         </x-nav-link>
-                        <x-nav-link href="#" :active="false">
-                            {{ __('Grades') }}
+                        <x-nav-link :href="route('siswa.analytics.index')" :active="request()->routeIs('siswa.analytics.*')">
+                            <i class="fas fa-poll mr-1"></i>{{ __('Analytics') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('siswa.exams.my-attempts')" :active="request()->routeIs('siswa.exams.my-attempts')">
+                            {{ __('My Results') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('siswa.reports.my-transcript')" :active="request()->routeIs('siswa.reports.*')">
+                            {{ __('My Transcript') }}
                         </x-nav-link>
                     @endif
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-2">
+                <!-- Notification Bell -->
+                <x-notification-bell />
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
@@ -126,33 +162,42 @@
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                     {{ __('User Management') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link href="#" :active="false">
+                <x-responsive-nav-link :href="route('admin.courses.index')" :active="request()->routeIs('admin.courses.*')">
                     {{ __('Course Management') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link href="#" :active="false">
-                    {{ __('Reports') }}
+                <x-responsive-nav-link :href="route('admin.exams.index')" :active="request()->routeIs('admin.exams.*')">
+                    {{ __('Exam Management') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
+                    {{ __('Settings') }}
                 </x-responsive-nav-link>
             @elseif(auth()->user()->isGuru())
                 <!-- Guru Mobile Navigation -->
-                <x-responsive-nav-link href="#" :active="false">
+                <x-responsive-nav-link :href="route('guru.courses.index')" :active="request()->routeIs('guru.courses.*')">
                     {{ __('My Courses') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link href="#" :active="false">
-                    {{ __('Assignments') }}
+                <x-responsive-nav-link :href="route('guru.exams.index')" :active="request()->routeIs('guru.exams.*') || request()->routeIs('guru.questions.*')">
+                    {{ __('My Exams') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link href="#" :active="false">
-                    {{ __('Students') }}
+                <x-responsive-nav-link :href="route('guru.reports.index')" :active="request()->routeIs('guru.reports.*')">
+                    {{ __('Reports') }}
                 </x-responsive-nav-link>
             @elseif(auth()->user()->isSiswa())
                 <!-- Siswa Mobile Navigation -->
-                <x-responsive-nav-link href="#" :active="false">
+                <x-responsive-nav-link :href="route('siswa.courses.index')" :active="request()->routeIs('siswa.courses.index')">
+                    {{ __('Browse Courses') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('siswa.courses.my-courses')" :active="request()->routeIs('siswa.courses.my-courses')">
                     {{ __('My Courses') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link href="#" :active="false">
-                    {{ __('Assignments') }}
+                <x-responsive-nav-link :href="route('siswa.exams.index')" :active="request()->routeIs('siswa.exams.*') && !request()->routeIs('siswa.exams.my-attempts')">
+                    {{ __('Exams') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link href="#" :active="false">
-                    {{ __('Grades') }}
+                <x-responsive-nav-link :href="route('siswa.exams.my-attempts')" :active="request()->routeIs('siswa.exams.my-attempts')">
+                    {{ __('My Results') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('siswa.reports.my-transcript')" :active="request()->routeIs('siswa.reports.*')">
+                    {{ __('My Transcript') }}
                 </x-responsive-nav-link>
             @endif
         </div>
