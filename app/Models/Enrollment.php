@@ -62,6 +62,22 @@ class Enrollment extends Model
     }
 
     /**
+     * Get the certificate for this enrollment
+     */
+    public function certificate()
+    {
+        return $this->hasOne(Certificate::class);
+    }
+
+    /**
+     * Check if enrollment has certificate
+     */
+    public function hasCertificate(): bool
+    {
+        return $this->certificate()->exists();
+    }
+
+    /**
      * Check if enrollment is active
      */
     public function isActive(): bool

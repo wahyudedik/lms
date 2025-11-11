@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('exam_attempts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('exam_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Siswa
+            // ✅ FIX BUG #1: Make user_id nullable to support guest exam attempts
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade'); // Siswa (nullable for guest access)
 
             // Waktu
             $table->timestamp('started_at')->nullable();

@@ -77,6 +77,8 @@ class ExamController extends Controller
             'require_guest_name' => 'boolean',
             'require_guest_email' => 'boolean',
             'max_token_uses' => 'nullable|integer|min:1',
+            'offline_enabled' => 'boolean',
+            'offline_cache_duration' => 'nullable|integer|min:1|max:168',
         ]);
 
         $validated['created_by'] = auth()->id();
@@ -139,6 +141,8 @@ class ExamController extends Controller
             'detect_tab_switch' => 'boolean',
             'max_tab_switches' => 'required_if:detect_tab_switch,true|integer|min:1',
             'is_published' => 'boolean',
+            'offline_enabled' => 'boolean',
+            'offline_cache_duration' => 'nullable|integer|min:1|max:168',
         ]);
 
         if ($request->has('is_published') && $request->is_published && !$exam->is_published) {

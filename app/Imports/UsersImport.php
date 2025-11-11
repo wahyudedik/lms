@@ -4,7 +4,6 @@ namespace App\Imports;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -27,8 +26,8 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
      */
     public function model(array $row)
     {
-        // Default password untuk semua user baru: LMS2024@Pass
-        $defaultPassword = 'LMS2024@Pass';
+        // Default password dari config
+        $defaultPassword = config('app.default_user_password');
 
         return new User([
             'name' => $row['name'],

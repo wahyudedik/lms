@@ -175,13 +175,31 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                showSuccess(data.message);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Photo Deleted!',
+                                    text: data.message,
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true
+                                });
                                 currentPhoto.src =
                                     '{{ auth()->user()->profile_photo_url }}?t=' +
                                     new Date().getTime();
                                 deleteBtn.style.display = 'none';
                             } else {
-                                showError(data.message || 'Delete failed.');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: data.message || 'Delete failed.',
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 4000,
+                                    timerProgressBar: true
+                                });
                             }
                         })
                         .catch(error => {
@@ -210,17 +228,31 @@
         }
 
         function showSuccess(message) {
-            messageContainer.classList.remove('hidden');
-            successMessage.classList.remove('hidden');
-            errorMessage.classList.add('hidden');
-            successText.textContent = message;
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: message,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            messageContainer.classList.add('hidden');
         }
 
         function showError(message) {
-            messageContainer.classList.remove('hidden');
-            errorMessage.classList.remove('hidden');
-            successMessage.classList.add('hidden');
-            errorText.textContent = message;
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: message,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+            });
+            messageContainer.classList.add('hidden');
         }
     });
 </script>

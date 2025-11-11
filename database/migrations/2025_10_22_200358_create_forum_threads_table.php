@@ -32,7 +32,11 @@ return new class extends Migration
             $table->index('is_pinned');
             $table->index('is_locked');
             $table->index('last_activity_at');
-            $table->fullText(['title', 'content']);
+            
+            // Fulltext index only for MySQL/MariaDB (not supported in SQLite)
+            if (config('database.default') !== 'sqlite') {
+                $table->fullText(['title', 'content']);
+            }
         });
     }
 

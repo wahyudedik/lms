@@ -193,20 +193,32 @@ class GuestExamController extends Controller
             return response()->json(['success' => false, 'message' => 'Invalid attempt'], 400);
         }
 
+        // Validate question belongs to this exam
         $request->validate([
-            'question_id' => 'required|exists:questions,id',
+            'question_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('questions', 'id')->where('exam_id', $attempt->exam_id),
+            ],
             'answer' => 'nullable',
         ]);
 
+        // Check if time is up (server-side validation)
+        if ($attempt->hasTimeExpired()) {
+            $attempt->autoSubmit();
+            return response()->json([
+                'success' => false,
+                'message' => 'Waktu ujian telah habis!',
+                'timeUp' => true,
+            ], 400);
+        }
+
         $answer = Answer::updateOrCreate(
             [
-                'exam_attempt_id' => $attempt->id,
+                'attempt_id' => $attempt->id, // ✅ Fixed: Changed from exam_attempt_id to attempt_id
                 'question_id' => $request->question_id,
             ],
             [
                 'answer' => $request->answer,
-                'answer_text' => is_array($request->answer) ? null : $request->answer,
-                'answer_data' => is_array($request->answer) ? $request->answer : null,
             ]
         );
 
@@ -236,12 +248,9 @@ class GuestExamController extends Controller
                 ->with('info', 'Ujian sudah selesai!');
         }
 
-        // Calculate score
-        $attempt->calculateScore();
-        $attempt->submitted_at = now();
-        $attempt->time_spent = now()->diffInSeconds($attempt->started_at);
-        $attempt->status = 'completed';
-        $attempt->save();
+        // Use submit() method which handles status correctly
+        // ✅ Fixed: Changed from status 'completed' to use submit() method
+        $attempt->submit();
 
         return redirect()->route('guest.exams.review', $attempt->id)
             ->with('success', 'Ujian berhasil diselesaikan!');

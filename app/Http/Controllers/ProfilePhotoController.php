@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-// use Intervention\Image\Facades\Image;
 
 class ProfilePhotoController extends Controller
 {
@@ -30,9 +29,6 @@ class ProfilePhotoController extends Controller
 
         // Store the file
         $path = $request->file('profile_photo')->storeAs('profile-photos', $filename, 'public');
-
-        // Create thumbnail (optional) - disabled for now
-        // $this->createThumbnail($path, $filename);
 
         // Update user profile photo
         $user->update(['profile_photo' => $filename]);
@@ -62,15 +58,5 @@ class ProfilePhotoController extends Controller
             'success' => false,
             'message' => 'No profile photo to delete'
         ], 400);
-    }
-
-    /**
-     * Create thumbnail for profile photo (disabled for now)
-     */
-    private function createThumbnail($path, $filename)
-    {
-        // Thumbnail creation disabled - requires Intervention Image package
-        // To enable: composer require intervention/image
-        return;
     }
 }

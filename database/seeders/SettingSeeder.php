@@ -36,6 +36,24 @@ class SettingSeeder extends Seeder
             // Notification Settings
             ['key' => 'notification_enabled', 'value' => '1', 'type' => 'boolean', 'group' => 'notification'],
             ['key' => 'email_notifications', 'value' => '0', 'type' => 'boolean', 'group' => 'notification'],
+
+            // Certificate Settings
+            ['key' => 'certificate_template', 'value' => 'default', 'type' => 'text', 'group' => 'certificate'],
+            ['key' => 'certificate_institution_name', 'value' => 'Sekolah Digital', 'type' => 'text', 'group' => 'certificate'],
+            ['key' => 'certificate_director_name', 'value' => 'Dr. John Smith', 'type' => 'text', 'group' => 'certificate'],
+            ['key' => 'certificate_primary_color', 'value' => '#3b82f6', 'type' => 'color', 'group' => 'certificate'],
+            ['key' => 'certificate_secondary_color', 'value' => '#8b5cf6', 'type' => 'color', 'group' => 'certificate'],
+            ['key' => 'certificate_accent_color', 'value' => '#ec4899', 'type' => 'color', 'group' => 'certificate'],
+
+            // AI Settings
+            ['key' => 'ai_enabled', 'value' => '0', 'type' => 'boolean', 'group' => 'ai'],
+            ['key' => 'ai_openai_api_key', 'value' => null, 'type' => 'text', 'group' => 'ai'],
+            ['key' => 'ai_model', 'value' => 'gpt-3.5-turbo', 'type' => 'text', 'group' => 'ai'],
+            ['key' => 'ai_max_tokens', 'value' => '1000', 'type' => 'integer', 'group' => 'ai'],
+            ['key' => 'ai_temperature', 'value' => '0.7', 'type' => 'float', 'group' => 'ai'],
+            ['key' => 'ai_system_prompt', 'value' => '', 'type' => 'textarea', 'group' => 'ai'],
+            ['key' => 'ai_rate_limit', 'value' => '20', 'type' => 'integer', 'group' => 'ai'],
+            ['key' => 'ai_show_widget', 'value' => '1', 'type' => 'boolean', 'group' => 'ai'],
         ];
 
         foreach ($settings as $setting) {

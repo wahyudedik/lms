@@ -72,6 +72,11 @@ class ExamAttempt extends Model
      */
     public function start(): void
     {
+        // ✅ FIX: Add null check for exam relationship
+        if (!$this->exam) {
+            throw new \Exception('Exam not found for this attempt.');
+        }
+
         $this->started_at = now();
         $this->status = 'in_progress';
         $this->ip_address = request()->ip();
@@ -88,18 +93,31 @@ class ExamAttempt extends Model
 
     /**
      * Submit the exam attempt
+     * ✅ FIX BUG #7 & #8: Use atomic update to prevent race condition and double submission
      */
     public function submit(): void
     {
-        $this->submitted_at = now();
-        $this->status = 'submitted';
+        // Use atomic update to prevent double submission
+        $updated = static::where('id', $this->id)
+            ->where('status', 'in_progress')
+            ->update([
+                'submitted_at' => now(),
+                'status' => 'submitted',
+            ]);
 
-        // Calculate time spent in seconds
-        if ($this->started_at) {
-            $this->time_spent = $this->started_at->diffInSeconds($this->submitted_at);
+        if (!$updated) {
+            // Already submitted or not in progress
+            return;
         }
 
-        $this->save();
+        // Reload to get updated data
+        $this->refresh();
+
+        // Calculate time spent in seconds
+        if ($this->started_at && $this->submitted_at) {
+            $this->time_spent = $this->started_at->diffInSeconds($this->submitted_at);
+            $this->save();
+        }
 
         // Auto-grade if possible
         $this->autoGrade();
@@ -110,12 +128,22 @@ class ExamAttempt extends Model
      */
     public function autoGrade(): void
     {
+        // ✅ FIX: Add null check for exam relationship
+        if (!$this->exam) {
+            throw new \Exception('Exam not found for this attempt.');
+        }
+
         $totalPointsEarned = 0;
         $totalPointsPossible = 0;
         $hasManualEssay = false;
 
         foreach ($this->answers as $answer) {
+            // ✅ FIX: Add null check for question relationship
             $question = $answer->question;
+            if (!$question) {
+                continue; // Skip if question not found
+            }
+
             $totalPointsPossible += $question->points;
 
             // Handle Essay questions
@@ -154,10 +182,14 @@ class ExamAttempt extends Model
         $this->total_points_earned = $totalPointsEarned;
         $this->total_points_possible = $totalPointsPossible;
 
-        // Calculate score percentage
+        // ✅ FIX: Add division by zero check
         if ($totalPointsPossible > 0) {
             $this->score = ($totalPointsEarned / $totalPointsPossible) * 100;
             $this->passed = $this->score >= $this->exam->pass_score;
+        } else {
+            // No questions or all questions have 0 points
+            $this->score = 0;
+            $this->passed = false;
         }
 
         // If there are no manual essay questions, mark as graded
@@ -192,9 +224,19 @@ class ExamAttempt extends Model
 
     /**
      * Record tab switch violation
+     * ✅ FIX BUG #7: Prevent race condition with atomic operations
      */
     public function recordTabSwitch(): void
     {
+        // Refresh to get latest status before checking
+        $this->refresh();
+
+        // Check if attempt is still in progress
+        if ($this->status !== 'in_progress') {
+            return;
+        }
+
+        // Increment tab switches atomically
         $this->increment('tab_switches');
 
         $violations = $this->violations ?? [];
@@ -206,13 +248,16 @@ class ExamAttempt extends Model
         $this->violations = $violations;
         $this->save();
 
-        // Auto-submit if max tab switches exceeded
+        // Refresh to get updated tab_switches count
+        $this->refresh();
+
+        // Auto-submit if max tab switches exceeded (use atomic submit)
         if (
             $this->exam->detect_tab_switch
             && $this->tab_switches >= $this->exam->max_tab_switches
             && $this->status === 'in_progress'
         ) {
-            $this->submit();
+            $this->submit(); // Submit uses atomic update, so it's safe
         }
     }
 
@@ -238,6 +283,11 @@ class ExamAttempt extends Model
      */
     public function getOrderedQuestions()
     {
+        // ✅ FIX: Add null check for exam relationship
+        if (!$this->exam) {
+            return collect([]);
+        }
+
         if ($this->shuffled_question_ids) {
             $questionIds = $this->shuffled_question_ids;
             $questions = $this->exam->questions()->whereIn('id', $questionIds)->get();
@@ -256,7 +306,8 @@ class ExamAttempt extends Model
      */
     public function getTimeRemaining(): int
     {
-        if (!$this->started_at || $this->status !== 'in_progress') {
+        // ✅ FIX: Add null checks
+        if (!$this->started_at || $this->status !== 'in_progress' || !$this->exam) {
             return 0;
         }
 
@@ -272,6 +323,53 @@ class ExamAttempt extends Model
     public function isTimeUp(): bool
     {
         return $this->getTimeRemaining() === 0;
+    }
+
+    /**
+     * Check if time has expired (alias for hasTimeExpired - used by GuestExamController)
+     */
+    public function hasTimeExpired(): bool
+    {
+        // ✅ FIX: Add null checks
+        if (!$this->started_at || $this->status !== 'in_progress' || !$this->exam) {
+            return false;
+        }
+
+        $durationInSeconds = $this->exam->duration_minutes * 60;
+        $elapsedSeconds = $this->started_at->diffInSeconds(now());
+
+        return $elapsedSeconds >= $durationInSeconds;
+    }
+
+    /**
+     * Auto-submit the exam attempt (used by GuestExamController)
+     * ✅ Uses atomic submit() method to prevent race conditions
+     */
+    public function autoSubmit(): void
+    {
+        $this->submit(); // Use existing submit() method which has atomic update
+    }
+
+    /**
+     * Calculate score for the attempt (used by GuestExamController)
+     * This is an alias for autoGrade() to maintain consistency
+     */
+    public function calculateScore(): void
+    {
+        // This should call autoGrade() which already exists
+        if ($this->status === 'in_progress') {
+            $this->submitted_at = now();
+            $this->status = 'submitted';
+            
+            // Calculate time spent in seconds
+            if ($this->started_at) {
+                $this->time_spent = $this->started_at->diffInSeconds($this->submitted_at);
+            }
+            
+            $this->save();
+        }
+        
+        $this->autoGrade();
     }
 
     /**

@@ -69,6 +69,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default User Password
+    |--------------------------------------------------------------------------
+    |
+    | Default password for imported users. Users should change this on first login.
+    | Set in .env file: DEFAULT_USER_PASSWORD=your_password
+    |
+    */
+
+    'default_user_password' => env('DEFAULT_USER_PASSWORD', 'LMS2024@Pass'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |

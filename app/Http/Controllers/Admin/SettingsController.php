@@ -100,44 +100,61 @@ class SettingsController extends Controller
 
             $filepath = $storagePath . '/' . $filename;
 
-            // Get database configuration
-            $dbName = env('DB_DATABASE');
-            $dbUser = env('DB_USERNAME');
-            $dbPassword = env('DB_PASSWORD');
-            $dbHost = env('DB_HOST', '127.0.0.1');
-            $dbPort = env('DB_PORT', '3306');
+            // Get database configuration from config (not env)
+            $dbName = config('database.connections.mysql.database');
+            $dbUser = config('database.connections.mysql.username');
+            $dbPassword = config('database.connections.mysql.password');
+            $dbHost = config('database.connections.mysql.host', '127.0.0.1');
+            $dbPort = config('database.connections.mysql.port', '3306');
 
             // Use mysqldump command
+            // Try to find mysqldump in common paths
+            $mysqldumpPath = $this->findMysqldumpPath();
+            
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                // Windows
+                // Windows - escape path and password
+                $escapedPassword = escapeshellarg($dbPassword);
                 $command = sprintf(
-                    '"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump.exe" --user=%s --password=%s --host=%s --port=%s %s > %s',
-                    $dbUser,
-                    $dbPassword,
-                    $dbHost,
-                    $dbPort,
-                    $dbName,
-                    $filepath
+                    '%s --user=%s --password=%s --host=%s --port=%s %s > %s',
+                    escapeshellarg($mysqldumpPath),
+                    escapeshellarg($dbUser),
+                    $escapedPassword,
+                    escapeshellarg($dbHost),
+                    escapeshellarg($dbPort),
+                    escapeshellarg($dbName),
+                    escapeshellarg($filepath)
                 );
             } else {
-                // Linux/Mac
+                // Linux/Mac - use environment variable for password (more secure)
                 $command = sprintf(
-                    'mysqldump --user=%s --password=%s --host=%s --port=%s %s > %s',
-                    $dbUser,
-                    $dbPassword,
-                    $dbHost,
-                    $dbPort,
-                    $dbName,
-                    $filepath
+                    'MYSQL_PWD=%s %s --user=%s --host=%s --port=%s %s > %s 2>&1',
+                    escapeshellarg($dbPassword),
+                    escapeshellarg($mysqldumpPath),
+                    escapeshellarg($dbUser),
+                    escapeshellarg($dbHost),
+                    escapeshellarg($dbPort),
+                    escapeshellarg($dbName),
+                    escapeshellarg($filepath)
                 );
             }
 
-            // Execute command
-            exec($command, $output, $returnVar);
+            // Execute command securely
+            $output = [];
+            $returnVar = 0;
+            exec($command . ' 2>&1', $output, $returnVar);
 
-            if ($returnVar !== 0) {
+            if ($returnVar !== 0 || !file_exists($filepath) || filesize($filepath) === 0) {
                 // Fallback: Use Laravel's DB export
                 $this->fallbackBackup($filepath);
+                
+                // Log error if backup failed
+                if (!file_exists($filepath) || filesize($filepath) === 0) {
+                    \Log::error('Database backup failed', [
+                        'command' => $command,
+                        'output' => $output,
+                        'return_var' => $returnVar,
+                    ]);
+                }
             }
 
             return redirect()->back()->with('success', "Backup berhasil dibuat: {$filename}");
@@ -239,5 +256,48 @@ class SettingsController extends Controller
         $bytes /= (1 << (10 * $pow));
 
         return round($bytes, $precision) . ' ' . $units[$pow];
+    }
+
+    /**
+     * Find mysqldump executable path
+     */
+    private function findMysqldumpPath(): string
+    {
+        // Common paths for mysqldump
+        $commonPaths = [
+            // Windows
+            'C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump.exe',
+            'C:\\Program Files\\MySQL\\MySQL Server 8.1\\bin\\mysqldump.exe',
+            'C:\\Program Files\\MySQL\\MySQL Server 8.2\\bin\\mysqldump.exe',
+            'C:\\xampp\\mysql\\bin\\mysqldump.exe',
+            'C:\\wamp\\bin\\mysql\\mysql8.0.27\\bin\\mysqldump.exe',
+            // Linux/Mac
+            '/usr/bin/mysqldump',
+            '/usr/local/bin/mysqldump',
+            '/opt/mysql/bin/mysqldump',
+            '/Applications/XAMPP/xamppfiles/bin/mysqldump', // Mac XAMPP
+        ];
+
+        // Check if mysqldump is in PATH
+        $whichCommand = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'where' : 'which';
+        $path = @shell_exec(escapeshellcmd($whichCommand) . ' mysqldump 2>&1');
+        
+        if ($path && file_exists(trim($path))) {
+            $trimmedPath = trim($path);
+            // Security: Only allow paths that exist and are executable
+            if (is_executable($trimmedPath)) {
+                return $trimmedPath;
+            }
+        }
+
+        // Check common paths
+        foreach ($commonPaths as $path) {
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        // Fallback to just 'mysqldump' (assume it's in PATH)
+        return 'mysqldump';
     }
 }

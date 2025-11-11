@@ -193,11 +193,30 @@
                                     }).then(() => {
                                         window.location.reload();
                                     });
+                                } else if (response.status === 404) {
+                                    // Reply not found
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'Already Deleted',
+                                        text: 'This reply has already been deleted or does not exist.',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else if (response.status === 403) {
+                                    // Unauthorized
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Unauthorized',
+                                        text: 'You do not have permission to delete this reply.'
+                                    });
                                 } else {
                                     throw new Error('Delete failed');
                                 }
                             })
                             .catch(error => {
+                                console.error('Delete error:', error);
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error!',

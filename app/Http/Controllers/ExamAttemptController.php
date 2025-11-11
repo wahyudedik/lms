@@ -6,6 +6,8 @@ use App\Models\Answer;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ExamAttemptController extends Controller
 {
@@ -34,42 +36,46 @@ class ExamAttemptController extends Controller
             return back()->with('error', 'You have reached the maximum number of attempts for this exam.');
         }
 
-        // Check if there's already an in-progress attempt
-        $inProgressAttempt = ExamAttempt::where('exam_id', $exam->id)
-            ->where('user_id', auth()->id())
-            ->where('status', 'in_progress')
-            ->first();
+        // ✅ FIX BUG #2 & #4: Use transaction with lock to prevent race condition
+        return DB::transaction(function () use ($exam) {
+            // Lock the rows to prevent race condition
+            $inProgressAttempt = ExamAttempt::where('exam_id', $exam->id)
+                ->where('user_id', auth()->id())
+                ->where('status', 'in_progress')
+                ->lockForUpdate()
+                ->first();
 
-        if ($inProgressAttempt) {
-            return redirect()->route('siswa.exams.take', $inProgressAttempt);
-        }
-
-        // Create new attempt
-        $attempt = ExamAttempt::create([
-            'exam_id' => $exam->id,
-            'user_id' => auth()->id(),
-        ]);
-
-        $attempt->start();
-
-        // Create placeholder answers for all questions
-        $questions = $exam->questions;
-        foreach ($questions as $question) {
-            $answerData = [
-                'attempt_id' => $attempt->id,
-                'question_id' => $question->id,
-                'answer' => null,
-            ];
-
-            // Store shuffled options if exam has shuffle_options enabled
-            if ($exam->shuffle_options && ($question->type === 'mcq_single' || $question->type === 'mcq_multiple')) {
-                $answerData['shuffled_options'] = $question->getShuffledOptions();
+            if ($inProgressAttempt) {
+                return redirect()->route('siswa.exams.take', $inProgressAttempt);
             }
 
-            Answer::create($answerData);
-        }
+            // Create new attempt
+            $attempt = ExamAttempt::create([
+                'exam_id' => $exam->id,
+                'user_id' => auth()->id(),
+            ]);
 
-        return redirect()->route('siswa.exams.take', $attempt);
+            $attempt->start();
+
+            // Create placeholder answers for all questions (all or nothing)
+            $questions = $exam->questions;
+            foreach ($questions as $question) {
+                $answerData = [
+                    'attempt_id' => $attempt->id,
+                    'question_id' => $question->id,
+                    'answer' => null,
+                ];
+
+                // Store shuffled options if exam has shuffle_options enabled
+                if ($exam->shuffle_options && ($question->type === 'mcq_single' || $question->type === 'mcq_multiple')) {
+                    $answerData['shuffled_options'] = $question->getShuffledOptions();
+                }
+
+                Answer::create($answerData);
+            }
+
+            return redirect()->route('siswa.exams.take', $attempt);
+        });
     }
 
     /**
@@ -117,14 +123,36 @@ class ExamAttemptController extends Controller
             return response()->json(['success' => false, 'message' => 'Exam already submitted'], 400);
         }
 
-        // Check if time is up
+        // ✅ FIX BUG #5: Server-side time validation (cannot be bypassed)
         if ($attempt->isTimeUp()) {
-            $attempt->submit();
-            return response()->json(['success' => false, 'message' => 'Time is up!'], 400);
+            // Force submit if time is up
+            if ($attempt->status === 'in_progress') {
+                $attempt->submit();
+            }
+            return response()->json([
+                'success' => false,
+                'message' => 'Time is up! Exam has been automatically submitted.',
+                'timeUp' => true,
+            ], 400);
         }
 
+        // Additional: Validate time hasn't exceeded (safety check)
+        $timeRemaining = $attempt->getTimeRemaining();
+        if ($timeRemaining <= 0) {
+            $attempt->submit();
+            return response()->json([
+                'success' => false,
+                'message' => 'Time limit exceeded.',
+                'timeUp' => true,
+            ], 400);
+        }
+
+        // ✅ FIX BUG #3: Validate question belongs to this exam
         $validated = $request->validate([
-            'question_id' => 'required|exists:questions,id',
+            'question_id' => [
+                'required',
+                Rule::exists('questions', 'id')->where('exam_id', $attempt->exam_id),
+            ],
             'answer' => 'nullable',
         ]);
 
@@ -147,12 +175,30 @@ class ExamAttemptController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // Check if attempt is still in progress
-        if ($attempt->status !== 'in_progress') {
-            return redirect()->route('siswa.exams.review-attempt', $attempt);
+        // ✅ FIX BUG #8: Atomic update to prevent double submission
+        $updated = ExamAttempt::where('id', $attempt->id)
+            ->where('status', 'in_progress')
+            ->update([
+                'submitted_at' => now(),
+                'status' => 'submitted',
+            ]);
+
+        if (!$updated) {
+            // Already submitted or not in progress
+            return redirect()->route('siswa.exams.review-attempt', $attempt)
+                ->with('info', 'Exam has already been submitted.');
         }
 
-        $attempt->submit();
+        // Reload and auto-grade
+        $attempt->refresh();
+        
+        // Calculate time spent
+        if ($attempt->started_at) {
+            $attempt->time_spent = $attempt->started_at->diffInSeconds($attempt->submitted_at);
+            $attempt->save();
+        }
+        
+        $attempt->autoGrade();
 
         return redirect()
             ->route('siswa.exams.review-attempt', $attempt)

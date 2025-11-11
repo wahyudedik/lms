@@ -25,7 +25,18 @@ Route::prefix('exam')->name('guest.exams.')->group(function () {
 // Default dashboard (fallback)
 Route::get('/dashboard', function () {
     $user = auth()->user();
-    return redirect()->route($user->dashboard_route);
+    
+    // ✅ FIX BUG #13: Add safety check for dashboard route
+    try {
+        $dashboardRoute = $user->dashboard_route;
+        if (!$dashboardRoute) {
+            throw new \Exception('Dashboard route not configured');
+        }
+        return redirect()->route($dashboardRoute);
+    } catch (\Exception $e) {
+        // Fallback to login if dashboard route is not available
+        return redirect()->route('login')->with('error', 'Dashboard tidak tersedia. Silakan hubungi administrator.');
+    }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Admin Dashboard
@@ -77,6 +88,23 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     // Settings & Backup (admin only)
     Route::get('settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
+
+    // Certificate Settings
+    Route::get('certificate-settings', [App\Http\Controllers\Admin\CertificateSettingsController::class, 'index'])->name('certificate-settings.index');
+    Route::post('certificate-settings', [App\Http\Controllers\Admin\CertificateSettingsController::class, 'update'])->name('certificate-settings.update');
+    Route::post('certificate-settings/reset', [App\Http\Controllers\Admin\CertificateSettingsController::class, 'reset'])->name('certificate-settings.reset');
+    Route::get('certificate-settings/preview', [App\Http\Controllers\Admin\CertificateSettingsController::class, 'preview'])->name('certificate-settings.preview');
+
+    // Documentation
+    Route::get('documentation', [App\Http\Controllers\Admin\DocumentationController::class, 'index'])->name('documentation.index');
+    Route::get('documentation/{slug}', [App\Http\Controllers\Admin\DocumentationController::class, 'show'])->name('documentation.show');
+
+    // AI Settings
+    Route::get('ai-settings', [App\Http\Controllers\Admin\AiSettingsController::class, 'index'])->name('ai-settings.index');
+    Route::post('ai-settings', [App\Http\Controllers\Admin\AiSettingsController::class, 'update'])->name('ai-settings.update');
+    Route::post('ai-settings/reset', [App\Http\Controllers\Admin\AiSettingsController::class, 'reset'])->name('ai-settings.reset');
+    Route::post('ai-settings/test', [App\Http\Controllers\Admin\AiSettingsController::class, 'testConnection'])->name('ai-settings.test');
+    Route::get('ai-settings/statistics', [App\Http\Controllers\Admin\AiSettingsController::class, 'statistics'])->name('ai-settings.statistics');
 
     // Database Backup
     Route::get('settings/backup', [App\Http\Controllers\Admin\SettingsController::class, 'backup'])->name('settings.backup');
@@ -298,3 +326,6 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/certificates.php';
+require __DIR__ . '/offline.php';
+require __DIR__ . '/ai.php';

@@ -209,6 +209,45 @@
                             </div>
                         </div>
 
+                        <!-- Offline Mode Settings -->
+                        <div class="mb-8 p-6 bg-indigo-50 rounded-lg border border-indigo-200">
+                            <h3 class="text-lg font-semibold mb-4 text-indigo-900">
+                                <i class="fas fa-wifi-slash mr-2"></i>Offline Mode (CBT Lab)
+                            </h3>
+
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <input type="checkbox" name="offline_enabled" value="1"
+                                        id="offline_enabled"
+                                        {{ old('offline_enabled', $exam->offline_enabled) ? 'checked' : '' }}
+                                        class="mt-1 rounded border-gray-300 text-indigo-600 shadow-sm">
+                                    <div class="ml-3">
+                                        <label for="offline_enabled" class="text-sm font-medium text-gray-700">
+                                            Enable Offline Mode
+                                        </label>
+                                        <p class="text-sm text-gray-500 mt-1">
+                                            Allow students to download and take this exam offline in computer labs
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div id="offline_settings"
+                                    class="{{ old('offline_enabled', $exam->offline_enabled) ? '' : 'hidden' }}">
+                                    <label for="offline_cache_duration"
+                                        class="block text-sm font-medium text-gray-700 mb-2">
+                                        Cache Duration (hours)
+                                    </label>
+                                    <input type="number" name="offline_cache_duration" id="offline_cache_duration"
+                                        value="{{ old('offline_cache_duration', $exam->offline_cache_duration ?? 24) }}"
+                                        min="1" max="168"
+                                        class="w-full md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        How long the exam will be available offline (1-168 hours, default: 24)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Publish Settings -->
                         <div class="mb-8">
                             <div class="flex items-center">
@@ -242,6 +281,11 @@
         <script>
             document.getElementById('detect_tab_switch').addEventListener('change', function() {
                 const settings = document.getElementById('tab_switch_settings');
+                settings.classList.toggle('hidden', !this.checked);
+            });
+
+            document.getElementById('offline_enabled').addEventListener('change', function() {
+                const settings = document.getElementById('offline_settings');
                 settings.classList.toggle('hidden', !this.checked);
             });
         </script>
