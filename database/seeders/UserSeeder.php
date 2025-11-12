@@ -105,14 +105,14 @@ class UserSeeder extends Seeder
         echo "╠════════════════════════════════════════════════╣\n";
         echo "║ ADMIN:                                         ║\n";
         echo "║   Email    : admin@lms.com                     ║\n";
-        echo "║   Password : admin123                          ║\n";
+        echo "║   Password : password                          ║\n";
         echo "╠════════════════════════════════════════════════╣\n";
         echo "║ GURU (Sample):                                 ║\n";
-        echo "║   Email    : guru@lms.com                      ║\n";
+        echo "║   Email    : guru@lms.com                       ║\n";
         echo "║   Password : password                          ║\n";
         echo "╠════════════════════════════════════════════════╣\n";
         echo "║ SISWA (Sample):                                ║\n";
-        echo "║   Email    : siswa@lms.com                     ║\n";
+        echo "║   Email    : siswa@lms.com                      ║\n";
         echo "║   Password : password                          ║\n";
         echo "╚════════════════════════════════════════════════╝\n";
         echo "\n";

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Constants\AuthorizationMessages;
 use App\Models\Exam;
 use Illuminate\Http\Request;
 
@@ -57,6 +58,8 @@ class ExamController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Exam::class);
+
         $validated = $request->validate([
             'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
@@ -79,9 +82,7 @@ class ExamController extends Controller
 
         // Check if course belongs to this guru
         $course = \App\Models\Course::findOrFail($validated['course_id']);
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('update', $course);
 
         $validated['created_by'] = auth()->id();
 
@@ -101,10 +102,8 @@ class ExamController extends Controller
      */
     public function show(Exam $exam)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('view', $exam);
 
         $exam->load(['course', 'creator', 'questions', 'attempts.user']);
 
@@ -116,10 +115,8 @@ class ExamController extends Controller
      */
     public function edit(Exam $exam)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $exam);
 
         $courses = auth()->user()->teachingCourses;
         return view('guru.exams.edit', compact('exam', 'courses'));
@@ -130,10 +127,8 @@ class ExamController extends Controller
      */
     public function update(Request $request, Exam $exam)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $exam);
 
         $validated = $request->validate([
             'course_id' => 'required|exists:courses,id',
@@ -155,11 +150,9 @@ class ExamController extends Controller
             'is_published' => 'boolean',
         ]);
 
-        // Check if new course belongs to this guru
+        // Check if new course belongs to this guru using policy
         $course = \App\Models\Course::findOrFail($validated['course_id']);
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('update', $course);
 
         if ($request->has('is_published') && $request->is_published && !$exam->is_published) {
             $validated['published_at'] = now();
@@ -179,10 +172,8 @@ class ExamController extends Controller
      */
     public function destroy(Exam $exam)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('delete', $exam);
 
         $exam->delete();
 
@@ -196,10 +187,8 @@ class ExamController extends Controller
      */
     public function toggleStatus(Exam $exam)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $exam);
 
         $exam->update([
             'is_published' => !$exam->is_published,
@@ -216,10 +205,9 @@ class ExamController extends Controller
      */
     public function duplicate(Exam $exam)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy - need to view original and create new
+        $this->authorize('view', $exam);
+        $this->authorize('create', Exam::class);
 
         $newExam = $exam->replicate();
         $newExam->title = $exam->title . ' (Copy)';
@@ -245,10 +233,8 @@ class ExamController extends Controller
      */
     public function results(Exam $exam)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('view', $exam);
 
         $exam->load(['attempts.user', 'questions']);
 
@@ -283,10 +269,8 @@ class ExamController extends Controller
      */
     public function reviewEssays(Exam $exam)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('view', $exam);
 
         // Get all attempts that have essay questions
         $attempts = $exam->attempts()
@@ -313,10 +297,8 @@ class ExamController extends Controller
      */
     public function gradeEssay(Request $request, Exam $exam, \App\Models\Answer $answer)
     {
-        // Check if course belongs to this guru
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy - grading is an update operation
+        $this->authorize('update', $exam);
 
         $validated = $request->validate([
             'points_earned' => 'required|numeric|min:0|max:' . $answer->question->points,

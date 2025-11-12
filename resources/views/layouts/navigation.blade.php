@@ -47,6 +47,9 @@
                                 <x-dropdown-link :href="route('admin.forum-categories.index')" :active="request()->routeIs('admin.forum-categories.*')">
                                     <i class="fas fa-tags mr-2"></i>{{ __('Forum Categories') }}
                                 </x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.authorization-logs.index')" :active="request()->routeIs('admin.authorization-logs.*')">
+                                    <i class="fas fa-shield-alt mr-2"></i>{{ __('Authorization Logs') }}
+                                </x-dropdown-link>
                             </x-slot>
                         </x-nav-dropdown>
 

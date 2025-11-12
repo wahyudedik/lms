@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Constants\AuthorizationMessages;
 use App\Models\Course;
 use App\Models\Material;
 use Illuminate\Http\Request;
@@ -12,10 +13,8 @@ class MaterialController extends Controller
 {
     public function index(Course $course)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('view', $course);
 
         $materials = $course->materials()->with('creator')->ordered()->paginate(15);
 
@@ -24,20 +23,17 @@ class MaterialController extends Controller
 
     public function create(Course $course)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('view', $course);
 
         return view('guru.materials.create', compact('course'));
     }
 
     public function store(Request $request, Course $course)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $course);
+        $this->authorize('create', Material::class);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -72,10 +68,8 @@ class MaterialController extends Controller
 
     public function show(Course $course, Material $material)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('view', $material);
 
         $material->load(['creator', 'comments.user', 'comments.replies.user']);
 
@@ -84,20 +78,16 @@ class MaterialController extends Controller
 
     public function edit(Course $course, Material $material)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $material);
 
         return view('guru.materials.edit', compact('course', 'material'));
     }
 
     public function update(Request $request, Course $course, Material $material)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $material);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -135,10 +125,8 @@ class MaterialController extends Controller
 
     public function destroy(Course $course, Material $material)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('delete', $material);
 
         $material->delete();
 
@@ -149,10 +137,8 @@ class MaterialController extends Controller
 
     public function toggleStatus(Course $course, Material $material)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $material);
 
         if ($material->is_published) {
             $material->unpublish();
@@ -167,10 +153,8 @@ class MaterialController extends Controller
 
     public function reorder(Request $request, Course $course)
     {
-        // Ensure the course belongs to the logged-in guru
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $course);
 
         $validated = $request->validate([
             'materials' => 'required|array',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\AuthorizationMessages;
 use App\Models\Certificate;
 use App\Models\Enrollment;
 use App\Services\CertificateService;
@@ -40,6 +41,9 @@ class CertificateController extends Controller
             ->with(['user', 'course', 'enrollment'])
             ->firstOrFail();
 
+        // Check authorization using policy
+        $this->authorize('view', $certificate);
+
         return view('certificates.show', compact('certificate'));
     }
 
@@ -52,10 +56,8 @@ class CertificateController extends Controller
             ->with(['user', 'course'])
             ->firstOrFail();
 
-        // Check if user has permission to download
-        if (!$this->canAccessCertificate($certificate)) {
-            abort(403, 'You do not have permission to download this certificate.');
-        }
+        // Check authorization using policy
+        $this->authorize('download', $certificate);
 
         return $this->certificateService->downloadPDF($certificate);
     }
@@ -68,6 +70,9 @@ class CertificateController extends Controller
         $certificate = Certificate::byCertificateNumber($certificateNumber)
             ->with(['user', 'course'])
             ->firstOrFail();
+
+        // Check authorization using policy
+        $this->authorize('view', $certificate);
 
         return $this->certificateService->streamPDF($certificate);
     }
@@ -93,10 +98,8 @@ class CertificateController extends Controller
      */
     public function generate(Enrollment $enrollment)
     {
-        // Check authorization
-        if (!$this->canGenerateCertificate($enrollment)) {
-            abort(403, 'You do not have permission to generate certificate for this enrollment.');
-        }
+        // Check authorization using policy
+        $this->authorize('generate', $enrollment);
 
         try {
             $certificate = $this->certificateService->generateForEnrollment($enrollment);
@@ -219,61 +222,4 @@ class CertificateController extends Controller
         ]);
     }
 
-    /**
-     * Check if current user can access certificate
-     */
-    protected function canAccessCertificate(Certificate $certificate): bool
-    {
-        $user = auth()->user();
-
-        if (!$user) {
-            return false;
-        }
-
-        // Owner can access
-        if ($certificate->user_id === $user->id) {
-            return true;
-        }
-
-        // Admin can access
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-
-        // Instructor of the course can access
-        if ($user->hasRole('instructor') && $certificate->course->instructor_id === $user->id) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if current user can generate certificate
-     */
-    protected function canGenerateCertificate(Enrollment $enrollment): bool
-    {
-        $user = auth()->user();
-
-        if (!$user) {
-            return false;
-        }
-
-        // Student can generate their own
-        if ($enrollment->user_id === $user->id) {
-            return true;
-        }
-
-        // Admin can generate
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-
-        // Instructor of the course can generate
-        if ($user->hasRole('instructor') && $enrollment->course->instructor_id === $user->id) {
-            return true;
-        }
-
-        return false;
-    }
 }

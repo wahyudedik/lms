@@ -14,10 +14,8 @@ class EnrollmentController extends Controller
      */
     public function index(Course $course)
     {
-        // Check authorization
-        if (auth()->user()->isGuru() && $course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('view', $course);
 
         $enrollments = $course->enrollments()
             ->with('student')
@@ -38,10 +36,9 @@ class EnrollmentController extends Controller
      */
     public function store(Request $request, Course $course)
     {
-        // Check authorization
-        if (auth()->user()->isGuru() && $course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $course);
+        $this->authorize('create', Enrollment::class);
 
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
@@ -75,10 +72,8 @@ class EnrollmentController extends Controller
      */
     public function destroy(Course $course, Enrollment $enrollment)
     {
-        // Check authorization
-        if (auth()->user()->isGuru() && $course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('delete', $enrollment);
 
         // Ensure enrollment belongs to the course
         if ($enrollment->course_id !== $course->id) {
@@ -95,10 +90,8 @@ class EnrollmentController extends Controller
      */
     public function updateStatus(Course $course, Enrollment $enrollment, Request $request)
     {
-        // Check authorization
-        if (auth()->user()->isGuru() && $course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $enrollment);
 
         // Ensure enrollment belongs to the course
         if ($enrollment->course_id !== $course->id) {
@@ -126,10 +119,8 @@ class EnrollmentController extends Controller
      */
     public function updateProgress(Course $course, Enrollment $enrollment, Request $request)
     {
-        // Check authorization
-        if (auth()->user()->isGuru() && $course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $enrollment);
 
         // Ensure enrollment belongs to the course
         if ($enrollment->course_id !== $course->id) {

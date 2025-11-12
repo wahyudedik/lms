@@ -85,6 +85,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::post('exams/{exam}/questions/reorder', [App\Http\Controllers\Admin\QuestionController::class, 'reorder'])->name('exams.questions.reorder');
     Route::post('exams/{exam}/questions/{question}/duplicate', [App\Http\Controllers\Admin\QuestionController::class, 'duplicate'])->name('exams.questions.duplicate');
 
+    // Authorization Logs
+    Route::get('authorization-logs', [App\Http\Controllers\Admin\AuthorizationLogController::class, 'index'])->name('authorization-logs.index');
+    Route::get('authorization-logs/{authorizationLog}', [App\Http\Controllers\Admin\AuthorizationLogController::class, 'show'])->name('authorization-logs.show');
+    Route::get('authorization-logs/export/csv', [App\Http\Controllers\Admin\AuthorizationLogController::class, 'export'])->name('authorization-logs.export');
+
     // Settings & Backup (admin only)
     Route::get('settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');

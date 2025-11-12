@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Constants\AuthorizationMessages;
 use App\Models\Exam;
 use App\Models\Question;
 use Illuminate\Http\Request;
@@ -11,21 +12,12 @@ use Illuminate\Support\Facades\Storage;
 class QuestionController extends Controller
 {
     /**
-     * Check if guru owns the exam's course
-     */
-    private function authorizeExam(Exam $exam)
-    {
-        if ($exam->course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
-    }
-
-    /**
      * Display a listing of questions for an exam
      */
     public function index(Exam $exam)
     {
-        $this->authorizeExam($exam);
+        // Check authorization using policy - need to check exam access
+        $this->authorize('view', $exam);
 
         $questions = $exam->questions()->orderBy('order')->get();
 
@@ -37,7 +29,9 @@ class QuestionController extends Controller
      */
     public function create(Exam $exam)
     {
-        $this->authorizeExam($exam);
+        // Check authorization using policy
+        $this->authorize('update', $exam);
+        $this->authorize('create', Question::class);
 
         return view('guru.questions.create', compact('exam'));
     }
@@ -47,7 +41,9 @@ class QuestionController extends Controller
      */
     public function store(Request $request, Exam $exam)
     {
-        $this->authorizeExam($exam);
+        // Check authorization using policy
+        $this->authorize('update', $exam);
+        $this->authorize('create', Question::class);
 
         // Base validation
         $rules = [
@@ -164,7 +160,8 @@ class QuestionController extends Controller
      */
     public function edit(Exam $exam, Question $question)
     {
-        $this->authorizeExam($exam);
+        // Check authorization using policy
+        $this->authorize('update', $question);
 
         return view('guru.questions.edit', compact('exam', 'question'));
     }
@@ -174,7 +171,8 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Exam $exam, Question $question)
     {
-        $this->authorizeExam($exam);
+        // Check authorization using policy
+        $this->authorize('update', $question);
 
         // Base validation
         $rules = [
@@ -312,7 +310,8 @@ class QuestionController extends Controller
      */
     public function destroy(Exam $exam, Question $question)
     {
-        $this->authorizeExam($exam);
+        // Check authorization using policy
+        $this->authorize('delete', $question);
 
         // Delete question image if exists
         if ($question->question_image && Storage::disk('public')->exists($question->question_image)) {
@@ -329,7 +328,8 @@ class QuestionController extends Controller
      */
     public function reorder(Request $request, Exam $exam)
     {
-        $this->authorizeExam($exam);
+        // Check authorization using policy
+        $this->authorize('update', $exam);
 
         $validated = $request->validate([
             'question_ids' => 'required|array',
@@ -348,7 +348,9 @@ class QuestionController extends Controller
      */
     public function duplicate(Exam $exam, Question $question)
     {
-        $this->authorizeExam($exam);
+        // Check authorization using policy
+        $this->authorize('view', $question);
+        $this->authorize('create', Question::class);
 
         $newQuestion = $question->replicate();
         $newQuestion->order = $exam->questions()->max('order') + 1;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\AuthorizationMessages;
 use App\Models\ForumCategory;
 use App\Models\ForumThread;
 use App\Models\ForumReply;
@@ -74,6 +75,9 @@ class ForumController extends Controller
             ->with(['user', 'category'])
             ->firstOrFail();
 
+        // Check authorization using policy
+        $this->authorize('view', $thread);
+
         // Increment views
         $thread->incrementViews();
 
@@ -134,10 +138,8 @@ class ForumController extends Controller
     {
         $thread = ForumThread::where('slug', $threadSlug)->firstOrFail();
 
-        // Check permission
-        if ($thread->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
-            abort(403, 'Unauthorized');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $thread);
 
         $categories = ForumCategory::active()->ordered()->get();
         $selectedCategory = $thread->category;
@@ -152,10 +154,8 @@ class ForumController extends Controller
     {
         $thread = ForumThread::where('slug', $threadSlug)->firstOrFail();
 
-        // Check permission
-        if ($thread->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
-            abort(403, 'Unauthorized');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $thread);
 
         $validated = $request->validate([
             'category_id' => 'required|exists:forum_categories,id',
@@ -182,10 +182,8 @@ class ForumController extends Controller
     {
         $thread = ForumThread::where('slug', $threadSlug)->firstOrFail();
 
-        // Check permission
-        if ($thread->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
-            abort(403, 'Unauthorized');
-        }
+        // Check authorization using policy
+        $this->authorize('delete', $thread);
 
         $categorySlug = $thread->category->slug;
         $thread->delete();
@@ -203,8 +201,11 @@ class ForumController extends Controller
         $thread = ForumThread::where('slug', $threadSlug)->firstOrFail();
 
         // Check if thread is locked
-        if ($thread->is_locked && !Auth::user()->isAdmin()) {
-            return back()->with('error', 'This thread is locked!');
+        if ($thread->is_locked) {
+            // Admin and guru can still reply to locked threads
+            if (!Auth::user()->isAdmin() && !Auth::user()->isGuru()) {
+                return back()->with('error', AuthorizationMessages::FORUM_THREAD_LOCKED);
+            }
         }
 
         $validated = $request->validate([
@@ -227,10 +228,8 @@ class ForumController extends Controller
      */
     public function updateReply(Request $request, ForumReply $reply)
     {
-        // Check permission
-        if ($reply->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
-            abort(403, 'Unauthorized');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $reply);
 
         $validated = $request->validate([
             'content' => 'required|string|min:3',
@@ -246,10 +245,8 @@ class ForumController extends Controller
      */
     public function destroyReply(ForumReply $reply)
     {
-        // Check permission
-        if ($reply->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
-            abort(403, 'Unauthorized');
-        }
+        // Check authorization using policy
+        $this->authorize('delete', $reply);
 
         // Get thread info before deleting
         $thread = $reply->thread;
@@ -298,11 +295,10 @@ class ForumController extends Controller
      */
     public function togglePin($categorySlug, $threadSlug)
     {
-        if (!Auth::user()->isAdmin() && !Auth::user()->isGuru()) {
-            abort(403, 'Unauthorized');
-        }
-
         $thread = ForumThread::where('slug', $threadSlug)->firstOrFail();
+
+        // Check authorization using policy
+        $this->authorize('pin', $thread);
         $thread->update(['is_pinned' => !$thread->is_pinned]);
 
         return back()->with('success', $thread->is_pinned ? 'Thread pinned!' : 'Thread unpinned!');
@@ -313,11 +309,10 @@ class ForumController extends Controller
      */
     public function toggleLock($categorySlug, $threadSlug)
     {
-        if (!Auth::user()->isAdmin() && !Auth::user()->isGuru()) {
-            abort(403, 'Unauthorized');
-        }
-
         $thread = ForumThread::where('slug', $threadSlug)->firstOrFail();
+
+        // Check authorization using policy
+        $this->authorize('lock', $thread);
         $thread->update(['is_locked' => !$thread->is_locked]);
 
         return back()->with('success', $thread->is_locked ? 'Thread locked!' : 'Thread unlocked!');
@@ -329,12 +324,9 @@ class ForumController extends Controller
     public function markSolution($replyId)
     {
         $reply = ForumReply::findOrFail($replyId);
-        $thread = $reply->thread;
 
-        // Check permission
-        if ($thread->user_id !== Auth::id() && !Auth::user()->isAdmin() && !Auth::user()->isGuru()) {
-            abort(403, 'Unauthorized');
-        }
+        // Check authorization using policy
+        $this->authorize('markAsSolution', $reply);
 
         $reply->markAsSolution();
 

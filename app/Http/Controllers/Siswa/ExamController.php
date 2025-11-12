@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
+use App\Constants\AuthorizationMessages;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
 use Illuminate\Http\Request;
@@ -56,12 +57,12 @@ class ExamController extends Controller
             ->first();
 
         if (!$enrollment) {
-            abort(403, 'You must be enrolled in this course to take this exam.');
+            abort(403, AuthorizationMessages::EXAM_ENROLLMENT_REQUIRED);
         }
 
         // Check if exam is active
         if (!$exam->isActive()) {
-            abort(403, 'This exam is not currently available.');
+            abort(403, AuthorizationMessages::EXAM_NOT_AVAILABLE);
         }
 
         // Get user's attempts
@@ -102,7 +103,7 @@ class ExamController extends Controller
     {
         // Check if attempt belongs to this user
         if ($attempt->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
+            abort(403, AuthorizationMessages::ATTEMPT_ACCESS_DENIED);
         }
 
         // Check if attempt is completed
@@ -114,7 +115,7 @@ class ExamController extends Controller
 
         // Check if exam allows showing results
         if (!$exam->show_results_immediately && $attempt->status !== 'graded') {
-            abort(403, 'Results are not yet available.');
+            abort(403, AuthorizationMessages::RESULTS_NOT_AVAILABLE);
         }
 
         $attempt->load(['answers.question', 'exam.questions']);

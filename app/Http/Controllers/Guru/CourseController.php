@@ -42,6 +42,7 @@ class CourseController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Course::class);
         return view('guru.courses.create');
     }
 
@@ -50,6 +51,8 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Course::class);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'code' => 'nullable|string|max:20|unique:courses,code',
@@ -85,10 +88,8 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        // Ensure guru can only view their own courses
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('view', $course);
 
         $course->load(['enrollments.student']);
         $activeStudents = $course->enrollments()->where('status', 'active')->count();
@@ -102,10 +103,8 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        // Ensure guru can only edit their own courses
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $course);
 
         return view('guru.courses.edit', compact('course'));
     }
@@ -115,10 +114,8 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        // Ensure guru can only update their own courses
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('update', $course);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -157,10 +154,8 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        // Ensure guru can only delete their own courses
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy
+        $this->authorize('delete', $course);
 
         // Delete cover image if exists
         if ($course->cover_image && Storage::disk('public')->exists($course->cover_image)) {
@@ -179,10 +174,8 @@ class CourseController extends Controller
      */
     public function toggleStatus(Course $course)
     {
-        // Ensure guru can only toggle their own courses
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke kelas ini.');
-        }
+        // Check authorization using policy (update permission)
+        $this->authorize('update', $course);
 
         if ($course->status === 'published') {
             $course->update(['status' => 'draft']);
