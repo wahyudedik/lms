@@ -58,7 +58,7 @@ class CertificateSeeder extends Seeder
 
             foreach ($completedEnrollments->take($excellentCount) as $enrollment) {
                 $this->createCertificate($enrollment, [
-                    'final_score' => fake()->numberBetween(90, 100),
+                    'final_score' => rand(90, 100),
                     'grade' => 'A',
                     'metadata' => [
                         'achievement' => 'Excellence Award',
@@ -79,7 +79,7 @@ class CertificateSeeder extends Seeder
             $this->command->info("Creating {$regularCount} regular certificates (Grade B-C)...");
 
             foreach ($completedEnrollments->skip($excellentCount)->take($regularCount) as $enrollment) {
-                $score = fake()->numberBetween(70, 89);
+                $score = rand(70, 89);
                 $grade = $score >= 80 ? 'B' : 'C';
 
                 $this->createCertificate($enrollment, [
@@ -103,7 +103,7 @@ class CertificateSeeder extends Seeder
 
             foreach ($completedEnrollments->skip($excellentCount + $regularCount)->take($passingCount) as $enrollment) {
                 $this->createCertificate($enrollment, [
-                    'final_score' => fake()->numberBetween(60, 69),
+                    'final_score' => rand(60, 69),
                     'grade' => 'D',
                     'metadata' => [
                         'duration_days' => rand(7, 60),
@@ -153,17 +153,19 @@ class CertificateSeeder extends Seeder
         $revokeCount = max(1, (int) (Certificate::count() * 0.05));
         $this->command->info("Revoking {$revokeCount} certificates...");
 
+        $revokeReasons = [
+            'Found violation of course policies',
+            'Student requested withdrawal',
+            'Duplicate certificate issued',
+            'Invalid assessment results',
+            'Course completion requirements not met',
+        ];
+
         Certificate::inRandomOrder()
             ->take($revokeCount)
             ->get()
-            ->each(function ($certificate) {
-                $certificate->revoke(fake()->randomElement([
-                    'Found violation of course policies',
-                    'Student requested withdrawal',
-                    'Duplicate certificate issued',
-                    'Invalid assessment results',
-                    'Course completion requirements not met',
-                ]));
+            ->each(function ($certificate) use ($revokeReasons) {
+                $certificate->revoke($revokeReasons[array_rand($revokeReasons)]);
             });
         $stats['revoked'] = $revokeCount;
 
@@ -207,7 +209,7 @@ class CertificateSeeder extends Seeder
      */
     private function createCertificate(Enrollment $enrollment, array $customAttributes = []): Certificate
     {
-        $score = $customAttributes['final_score'] ?? fake()->numberBetween(60, 100);
+        $score = $customAttributes['final_score'] ?? rand(60, 100);
         $grade = $customAttributes['grade'] ?? match (true) {
             $score >= 90 => 'A',
             $score >= 80 => 'B',
