@@ -1,17 +1,22 @@
 @php
     // Detect school from domain or use default
     $currentSchool = null;
-    if (isset($school)) {
-        // Preview mode from controller
-        $currentSchool = $school;
-    } else {
-        // Try to detect from authenticated user's school or default to first active school
-    if (auth()->check() && auth()->user()->school_id) {
-        $currentSchool = \App\Models\School::find(auth()->user()->school_id);
-    } else {
-        // You can implement domain detection here
-        $currentSchool = \App\Models\School::where('is_active', true)->first();
+    try {
+        if (isset($school)) {
+            // Preview mode from controller
+            $currentSchool = $school;
+        } else {
+            // Try to detect from authenticated user's school or default to first active school
+            if (auth()->check() && auth()->user()->school_id) {
+                $currentSchool = \App\Models\School::find(auth()->user()->school_id);
+            } else {
+                // You can implement domain detection here
+                $currentSchool = \App\Models\School::where('is_active', true)->first();
+            }
         }
+    } catch (\Exception $e) {
+        // Table might not exist - continue without school
+        $currentSchool = null;
     }
 
     // Check if we should show custom landing page
