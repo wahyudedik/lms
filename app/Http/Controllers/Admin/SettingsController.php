@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\AppPreferences;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,13 @@ class SettingsController extends Controller
     public function index()
     {
         $settings = Setting::getAllGrouped();
-        return view('admin.settings.index', compact('settings'));
+        $timezoneOptions = AppPreferences::timezoneOptions();
+        $languageOptions = AppPreferences::languageOptions();
+
+        return view(
+            'admin.settings.index',
+            compact('settings', 'timezoneOptions', 'languageOptions')
+        );
     }
 
     /**
@@ -72,7 +79,7 @@ class SettingsController extends Controller
 
         Setting::clearCache();
 
-        return redirect()->back()->with('success', 'Pengaturan berhasil diperbarui');
+        return redirect()->back()->with('success', __('Pengaturan berhasil diperbarui'));
     }
 
     /**

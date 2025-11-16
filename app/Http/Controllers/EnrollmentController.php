@@ -40,31 +40,74 @@ class EnrollmentController extends Controller
         $this->authorize('update', $course);
         $this->authorize('create', Enrollment::class);
 
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
+        $request->validate([
+            'user_ids' => ['required_without:user_id', 'array'],
+            'user_ids.*' => ['exists:users,id'],
+            'user_id' => ['nullable', 'exists:users,id'],
         ]);
 
-        $student = User::findOrFail($validated['user_id']);
+        $userIds = collect($request->input('user_ids', []));
 
-        // Check if student role
-        if (!$student->isSiswa()) {
-            return back()->with('error', 'Hanya siswa yang dapat didaftarkan.');
+        if ($userIds->isEmpty() && $request->filled('user_id')) {
+            $userIds = collect([$request->input('user_id')]);
         }
 
-        // Check if already enrolled
-        if ($course->isEnrolledBy($student)) {
-            return back()->with('info', 'Siswa sudah terdaftar di kelas ini.');
+        $userIds = $userIds->unique()->values();
+
+        if ($userIds->isEmpty()) {
+            return back()->with('info', 'Pilih minimal satu siswa untuk didaftarkan.');
         }
 
-        // Check if course is full
-        if ($course->isFull()) {
-            return back()->with('error', 'Kelas sudah penuh.');
+        $added = [];
+        $skipped = [];
+        $classFull = false;
+
+        foreach ($userIds as $userId) {
+            $student = User::find($userId);
+
+            if (!$student) {
+                $skipped[] = "ID {$userId} tidak ditemukan.";
+                continue;
+            }
+
+            if (!$student->isSiswa()) {
+                $skipped[] = "{$student->name} bukan akun siswa.";
+                continue;
+            }
+
+            if ($course->isEnrolledBy($student)) {
+                $skipped[] = "{$student->name} sudah terdaftar.";
+                continue;
+            }
+
+            if ($course->isFull()) {
+                $classFull = true;
+                break;
+            }
+
+            $student->enrollInCourse($course->id);
+            $added[] = $student->name;
         }
 
-        // Enroll student
-        $student->enrollInCourse($course->id);
+        if (empty($added)) {
+            $message = $skipped
+                ? 'Tidak ada siswa yang ditambahkan. Alasan: ' . implode(' | ', $skipped)
+                : 'Tidak ada siswa yang dapat ditambahkan.';
 
-        return back()->with('success', 'Siswa berhasil didaftarkan!');
+            return back()->with('info', $message);
+        }
+
+        $message = count($added) . ' siswa berhasil ditambahkan.';
+
+        if ($skipped) {
+            $message .= ' Terlewati: ' . implode(', ', $skipped);
+        }
+
+        if ($classFull) {
+            $message .= ' Kelas sudah penuh, sisa siswa tidak dapat ditambahkan.';
+        }
+
+        return back()->with('success', $message);
     }
 
     /**

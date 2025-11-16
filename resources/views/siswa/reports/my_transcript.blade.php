@@ -5,9 +5,9 @@
         <!-- Header -->
         <div class="mb-6">
             <h1 class="text-3xl font-bold text-gray-800 mb-2">
-                <i class="fas fa-file-alt text-purple-600 mr-2"></i>Transkrip Nilai Saya
+                <i class="fas fa-file-alt text-purple-600 mr-2"></i>{{ __('My Grade Transcript') }}
             </h1>
-            <p class="text-gray-600">Lihat dan export transkrip nilai ujian Anda</p>
+            <p class="text-gray-600">{{ __('View and export your exam grade transcript') }}</p>
         </div>
 
         <!-- Course Filter -->
@@ -30,7 +30,7 @@
                     </select>
                 </div>
                 <button type="submit" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                    <i class="fas fa-search mr-2"></i>Lihat Transkrip
+                    <i class="fas fa-search mr-2"></i>{{ __('View Transcript') }}
                 </button>
             </form>
         </div>
@@ -44,7 +44,7 @@
                         <p class="opacity-90 mb-4">{{ $course->description }}</p>
                         <div class="flex items-center gap-4 text-sm">
                             <span><i class="fas fa-user-tie mr-1"></i>{{ $course->instructor->name }}</span>
-                            <span><i class="fas fa-clipboard-list mr-1"></i>{{ $exams->count() }} Ujian</span>
+                            <span><i class="fas fa-clipboard-list mr-1"></i>{{ $exams->count() }} {{ __('Exams') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('siswa.reports.my-transcript-pdf', $course) }}"
@@ -70,22 +70,30 @@
                     <div class="bg-white rounded-lg shadow-md p-6 text-center">
                         <i class="fas fa-clipboard-list text-blue-500 text-3xl mb-2"></i>
                         <div class="text-2xl font-bold text-gray-800">{{ $totalExams }}</div>
-                        <div class="text-sm text-gray-600">Total Ujian</div>
+                        <div class="text-sm text-gray-600">{{ __('Total Exams') }}</div>
                     </div>
                     <div class="bg-white rounded-lg shadow-md p-6 text-center">
                         <i class="fas fa-check-circle text-green-500 text-3xl mb-2"></i>
                         <div class="text-2xl font-bold text-gray-800">{{ $completedExams }}</div>
-                        <div class="text-sm text-gray-600">Selesai</div>
+                        <div class="text-sm text-gray-600">{{ __('Completed') }}</div>
                     </div>
                     <div class="bg-white rounded-lg shadow-md p-6 text-center">
                         <i class="fas fa-trophy text-yellow-500 text-3xl mb-2"></i>
                         <div class="text-2xl font-bold text-gray-800">{{ $passedExams }}</div>
-                        <div class="text-sm text-gray-600">Lulus</div>
+                        <div class="text-sm text-gray-600">{{ __('Passed') }}</div>
                     </div>
                     <div class="bg-white rounded-lg shadow-md p-6 text-center">
                         <i class="fas fa-star text-purple-500 text-3xl mb-2"></i>
                         <div class="text-2xl font-bold text-gray-800">{{ number_format($avgScore, 1) }}%</div>
-                        <div class="text-sm text-gray-600">Rata-rata Nilai</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
+                        <div class="text-sm text-gray-600">{{ __('Average Score') }}</div>
                     </div>
                 </div>
 
@@ -93,7 +101,7 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="px-6 py-4 bg-gray-50 border-b">
                         <h3 class="text-lg font-semibold text-gray-800">
-                            <i class="fas fa-list text-indigo-600 mr-2"></i>Daftar Ujian & Nilai
+                                <i class="fas fa-list text-indigo-600 mr-2"></i>{{ __('Exam & Grade List') }}
                         </h3>
                     </div>
                     <div class="overflow-x-auto">
@@ -105,28 +113,28 @@
                                         No</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Nama Ujian</th>
+                                        {{ __('Exam Name') }}</th>
                                     <th
                                         class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Durasi</th>
+                                        Duration</th>
                                     <th
                                         class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Nilai Lulus</th>
+                                        {{ __('Pass Score') }}</th>
                                     <th
                                         class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Skor Saya</th>
+                                        My Score</th>
                                     <th
                                         class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Poin</th>
+                                        Points</th>
                                     <th
                                         class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status</th>
                                     <th
                                         class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Tanggal</th>
+                                        Date</th>
                                     <th
                                         class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Aksi</th>
+                                        Action</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -145,7 +153,7 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
-                                            {{ $exam->duration_minutes }} menit
+                                            {{ $exam->duration_minutes }} minutes
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
                                             {{ $exam->pass_score }}%
@@ -158,7 +166,7 @@
                                                 </span>
                                             @else
                                                 <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
-                                                    Belum Dikerjakan
+                                                    Not Attempted
                                                 </span>
                                             @endif
                                         </td>
@@ -174,7 +182,7 @@
                                             @if ($attempt)
                                                 <span
                                                     class="px-3 py-1 text-xs font-semibold rounded-full {{ $attempt->passed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                    {{ $attempt->passed ? 'LULUS' : 'TIDAK LULUS' }}
+                                                    {{ $attempt->passed ? 'PASSED' : 'FAILED' }}
                                                 </span>
                                             @else
                                                 <span
@@ -199,7 +207,7 @@
                                             @else
                                                 <a href="{{ route('siswa.exams.show', $exam) }}"
                                                     class="text-green-600 hover:text-green-800 font-medium">
-                                                    <i class="fas fa-play mr-1"></i>Mulai
+                                                    <i class="fas fa-play mr-1"></i>Start
                                                 </a>
                                             @endif
                                         </td>
@@ -213,16 +221,16 @@
                 <!-- No Exams -->
                 <div class="bg-white rounded-lg shadow-md p-12 text-center">
                     <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Belum Ada Ujian</h3>
-                    <p class="text-gray-500">Kursus ini belum memiliki ujian.</p>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ __('No Exams Yet') }}</h3>
+                    <p class="text-gray-500">{{ __('This course has no exams yet.') }}</p>
                 </div>
             @endif
         @else
             <!-- Select Course Prompt -->
             <div class="bg-white rounded-lg shadow-md p-12 text-center">
                 <i class="fas fa-search text-gray-300 text-6xl mb-4"></i>
-                <h3 class="text-lg font-semibold text-gray-700 mb-2">Pilih Kursus</h3>
-                <p class="text-gray-500">Silakan pilih kursus di atas untuk melihat transkrip nilai Anda</p>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ __('Select a Course') }}</h3>
+                <p class="text-gray-500">{{ __('Please select a course above to view your grade transcript') }}</p>
             </div>
         @endif
     </div>

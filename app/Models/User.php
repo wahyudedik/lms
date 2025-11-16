@@ -32,6 +32,8 @@ class User extends Authenticatable
         'address',
         'profile_photo',
         'is_active',
+        'login_blocked_at',
+        'login_blocked_reason',
     ];
 
     /**
@@ -56,6 +58,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'birth_date' => 'date',
             'is_active' => 'boolean',
+            'login_blocked_at' => 'datetime',
         ];
     }
 
@@ -99,13 +102,17 @@ class User extends Authenticatable
     /**
      * Get dashboard route based on role
      */
-    public function getDashboardRouteAttribute(): string
+    public function getDashboardRouteAttribute(): ?string
     {
+        if (array_key_exists('dashboard_route', $this->attributes) && $this->attributes['dashboard_route']) {
+            return $this->attributes['dashboard_route'];
+        }
+
         return match ($this->role) {
             'admin' => 'admin.dashboard',
             'guru' => 'guru.dashboard',
             'siswa' => 'siswa.dashboard',
-            default => 'dashboard'
+            default => null
         };
     }
 
@@ -256,6 +263,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Cheating incidents associated with the user.
+     */
+    public function cheatingIncidents()
+    {
+        return $this->hasMany(CheatingIncident::class);
+    }
+
+    /**
+     * Only unresolved cheating incidents.
+     */
+    public function activeCheatingIncidents()
+    {
+        return $this->cheatingIncidents()->whereNull('resolved_at');
+    }
+
+    /**
      * Get forum posts count (threads + replies).
      */
     public function getForumPostsCountAttribute(): int
@@ -269,5 +292,77 @@ class User extends Authenticatable
     public function school()
     {
         return $this->belongsTo(School::class);
+    }
+
+    /**
+     * Determine if the user login is blocked.
+     */
+    public function getIsLoginBlockedAttribute(): bool
+    {
+        return !is_null($this->login_blocked_at);
+    }
+
+    /**
+     * Block user login (used when cheating is detected).
+     */
+    public function blockLogin(string $reason = 'Kecurangan terdeteksi'): bool
+    {
+        if ($this->is_login_blocked) {
+            return false;
+        }
+
+        $blocked = $this->forceFill([
+            'login_blocked_at' => now(),
+            'login_blocked_reason' => $reason,
+        ])->save();
+
+        if ($blocked) {
+            UserActivityLog::logActivity(
+                $this->id,
+                'security',
+                'login_blocked',
+                $reason,
+                [
+                    'reason' => $reason,
+                ]
+            );
+        }
+
+        return $blocked;
+    }
+
+    /**
+     * Reset user login block.
+     */
+    public function resetLoginBlock(?User $resolver = null, ?string $resolutionNotes = null): bool
+    {
+        if (!$this->is_login_blocked) {
+            return false;
+        }
+
+        $reset = $this->forceFill([
+            'login_blocked_at' => null,
+            'login_blocked_reason' => null,
+        ])->save();
+
+        if ($reset) {
+            $notes = $resolutionNotes ?? 'Reset login via admin panel';
+
+            $this->activeCheatingIncidents()->update([
+                'status' => 'resolved',
+                'resolved_at' => now(),
+                'resolved_by' => $resolver?->id,
+                'resolution_notes' => $notes,
+            ]);
+
+            UserActivityLog::logActivity(
+                $this->id,
+                'security',
+                'login_unblocked',
+                $notes
+            );
+        }
+
+        return $reset;
     }
 }

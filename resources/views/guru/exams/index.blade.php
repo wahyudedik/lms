@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                📝 Manajemen Ujian Saya
+                📝 {{ __('My Exam Management') }}
             </h2>
             <a href="{{ route('guru.exams.create') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-plus mr-2"></i>Buat Ujian Baru
+                <i class="fas fa-plus mr-2"></i>{{ __('Create New Exam') }}
             </a>
         </div>
     </x-slot>
@@ -71,7 +71,7 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Ujian
+                                            {{ __('Exam') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                             Kursus
@@ -135,11 +135,11 @@
                                                 </a>
                                                 <form action="{{ route('guru.exams.destroy', $exam) }}" method="POST"
                                                     class="inline"
-                                                    onsubmit="return confirmDelete('Yakin ingin menghapus ujian ini?')">
+                                                    onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this exam?') }}')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900"
-                                                        title="Hapus">
+                                                        title="{{ __('Delete') }}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -156,10 +156,10 @@
                     @else
                         <div class="text-center py-8">
                             <i class="fas fa-clipboard-list text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500 text-lg">Belum ada ujian.</p>
+                            <p class="text-gray-500 text-lg">{{ __('No exams yet.') }}</p>
                             <a href="{{ route('guru.exams.create') }}"
                                 class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-plus mr-2"></i>Buat Ujian Pertama
+                                <i class="fas fa-plus mr-2"></i>{{ __('Create First Exam') }}
                             </a>
                         </div>
                     @endif

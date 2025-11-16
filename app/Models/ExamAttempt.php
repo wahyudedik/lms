@@ -89,6 +89,8 @@ class ExamAttempt extends Model
         }
 
         $this->save();
+
+        $this->createPlaceholderAnswers();
     }
 
     /**
@@ -201,6 +203,39 @@ class ExamAttempt extends Model
     }
 
     /**
+     * Ensure placeholder answers exist for each question.
+     */
+    protected function createPlaceholderAnswers(): void
+    {
+        if (!$this->exam) {
+            return;
+        }
+
+        if ($this->answers()->exists()) {
+            return;
+        }
+
+        $questions = $this->exam->questions;
+
+        foreach ($questions as $question) {
+            $answerData = [
+                'attempt_id' => $this->id,
+                'question_id' => $question->id,
+                'answer' => null,
+            ];
+
+            if (
+                $this->exam->shuffle_options
+                && in_array($question->type, ['mcq_single', 'mcq_multiple'])
+            ) {
+                $answerData['shuffled_options'] = $question->getShuffledOptions();
+            }
+
+            Answer::create($answerData);
+        }
+    }
+
+    /**
      * Finalize grading (after manual grading of essays)
      */
     public function finalizeGrading(): void
@@ -226,14 +261,14 @@ class ExamAttempt extends Model
      * Record tab switch violation
      * ✅ FIX BUG #7: Prevent race condition with atomic operations
      */
-    public function recordTabSwitch(): void
+    public function recordTabSwitch(): bool
     {
         // Refresh to get latest status before checking
         $this->refresh();
 
         // Check if attempt is still in progress
         if ($this->status !== 'in_progress') {
-            return;
+            return false;
         }
 
         // Increment tab switches atomically
@@ -251,6 +286,8 @@ class ExamAttempt extends Model
         // Refresh to get updated tab_switches count
         $this->refresh();
 
+        $autoSubmitted = false;
+
         // Auto-submit if max tab switches exceeded (use atomic submit)
         if (
             $this->exam->detect_tab_switch
@@ -258,7 +295,14 @@ class ExamAttempt extends Model
             && $this->status === 'in_progress'
         ) {
             $this->submit(); // Submit uses atomic update, so it's safe
+            $this->blockUserForCheating('Terdeteksi kecurangan ujian (tab switch berlebih)', [
+                'type' => 'tab_switch_threshold',
+                'max_tab_switches' => $this->exam->max_tab_switches,
+            ]);
+            $autoSubmitted = true;
         }
+
+        return $autoSubmitted;
     }
 
     /**
@@ -276,6 +320,42 @@ class ExamAttempt extends Model
 
         $this->violations = $violations;
         $this->save();
+    }
+
+    /**
+     * Block associated user login if cheating is detected.
+     */
+    public function blockUserForCheating(string $reason, array $details = []): void
+    {
+        if ($this->is_guest) {
+            return;
+        }
+
+        $user = $this->user;
+
+        if (!$user) {
+            return;
+        }
+
+        $incident = CheatingIncident::create([
+            'user_id' => $user->id,
+            'exam_id' => $this->exam_id,
+            'exam_attempt_id' => $this->id,
+            'type' => $details['type'] ?? 'anti_cheat',
+            'reason' => $reason,
+            'details' => array_merge([
+                'tab_switches' => $this->tab_switches,
+                'fullscreen_exits' => $this->fullscreen_exits,
+            ], $details),
+            'blocked_at' => now(),
+            'status' => 'blocked',
+        ]);
+
+        $user->blockLogin($reason);
+
+        if ($incident) {
+            $incident->notifyStakeholders();
+        }
     }
 
     /**

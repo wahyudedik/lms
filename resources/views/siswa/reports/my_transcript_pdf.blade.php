@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transkrip Nilai - {{ $user->name }}</title>
+    <title>{{ __('Grade Transcript - :name', ['name' => $user->name]) }}</title>
     <style>
         * {
             margin: 0;
@@ -212,9 +212,9 @@
             <thead>
                 <tr>
                     <th class="text-center" style="width: 30px;">No</th>
-                    <th>Nama Ujian</th>
+                    <th>{{ __('Exam Name') }}</th>
                     <th class="text-center">Durasi</th>
-                    <th class="text-center">Nilai Lulus</th>
+                    <th class="text-center">{{ __('Pass Score') }}</th>
                     <th class="text-center">Skor (%)</th>
                     <th class="text-center">Poin</th>
                     <th class="text-center">Status</th>
@@ -285,7 +285,7 @@
             <div class="summary-title">RINGKASAN NILAI</div>
             <div class="summary-grid">
                 <div class="summary-item">
-                    <div class="summary-label">Total Ujian</div>
+                    <div class="summary-label">{{ __('Total Exams') }}</div>
                     <div class="summary-value">{{ $exams->count() }}</div>
                 </div>
                 <div class="summary-item">
@@ -297,7 +297,7 @@
                     <div class="summary-value">{{ $passedExams }}</div>
                 </div>
                 <div class="summary-item">
-                    <div class="summary-label">Rata-rata Nilai</div>
+                    <div class="summary-label">{{ __('Average Score') }}</div>
                     <div class="summary-value">
                         {{ $completedExams > 0 ? number_format($totalScore / $completedExams, 2) : '0.00' }}%
                     </div>
@@ -306,7 +306,7 @@
         </div>
     @else
         <div class="no-exams">
-            <p>Belum ada ujian di kursus ini.</p>
+            <p>{{ __('No exams in this course yet.') }}</p>
         </div>
     @endif
 

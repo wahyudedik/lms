@@ -3,20 +3,20 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-3xl font-bold text-gray-900">
-                    <i class="fas fa-robot mr-3"></i>AI Assistant Settings
+                    <i class="fas fa-robot mr-3"></i>{{ __('AI Assistant Settings') }}
                 </h2>
-                <p class="text-sm text-gray-600 mt-1">Configure ChatGPT integration for intelligent Q&A assistance</p>
+                <p class="text-sm text-gray-600 mt-1">{{ __('Configure ChatGPT integration for intelligent Q&A assistance') }}</p>
             </div>
             <div class="flex gap-2">
                 <button type="button" onclick="testConnection()"
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <i class="fas fa-plug mr-2"></i>Test Connection
+                    <i class="fas fa-plug mr-2"></i>{{ __('Test Connection') }}
                 </button>
                 <form action="{{ route('admin.ai-settings.reset') }}" method="POST"
-                    onsubmit="return confirm('Reset all AI settings to default?');">
+                    onsubmit="return confirm('{{ __('Reset all AI settings to default?') }}');">
                     @csrf
                     <button type="submit" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
-                        <i class="fas fa-undo mr-2"></i>Reset to Default
+                        <i class="fas fa-undo mr-2"></i>{{ __('Reset to Default') }}
                     </button>
                 </form>
             </div>
@@ -45,7 +45,7 @@
                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-xl shadow-lg text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-blue-100 text-sm">Total Conversations</p>
+                            <p class="text-blue-100 text-sm">{{ __('Total Conversations') }}</p>
                             <p class="text-3xl font-bold mt-1">{{ number_format($stats['total_conversations']) }}</p>
                         </div>
                         <i class="fas fa-comments text-4xl opacity-50"></i>
@@ -55,7 +55,7 @@
                 <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-6 rounded-xl shadow-lg text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-purple-100 text-sm">Total Messages</p>
+                            <p class="text-purple-100 text-sm">{{ __('Total Messages') }}</p>
                             <p class="text-3xl font-bold mt-1">{{ number_format($stats['total_messages']) }}</p>
                         </div>
                         <i class="fas fa-message text-4xl opacity-50"></i>
@@ -65,7 +65,7 @@
                 <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-xl shadow-lg text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-green-100 text-sm">Tokens Used</p>
+                            <p class="text-green-100 text-sm">{{ __('Tokens Used') }}</p>
                             <p class="text-3xl font-bold mt-1">{{ number_format($stats['total_tokens_used']) }}</p>
                         </div>
                         <i class="fas fa-coins text-4xl opacity-50"></i>
@@ -75,7 +75,7 @@
                 <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 rounded-xl shadow-lg text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-orange-100 text-sm">Active Chats</p>
+                            <p class="text-orange-100 text-sm">{{ __('Active Chats') }}</p>
                             <p class="text-3xl font-bold mt-1">{{ number_format($stats['active_conversations']) }}</p>
                         </div>
                         <i class="fas fa-bolt text-4xl opacity-50"></i>
@@ -95,13 +95,13 @@
                         <div>
                             <h3
                                 class="text-lg font-semibold {{ $status['enabled'] ? 'text-green-900' : 'text-yellow-900' }}">
-                                AI Assistant is {{ $status['enabled'] ? 'Active' : 'Disabled' }}
+                                {{ $status['enabled'] ? __('AI Assistant is :status', ['status' => __('Active')]) : __('AI Assistant is :status', ['status' => __('Disabled')]) }}
                             </h3>
                             <p class="text-sm {{ $status['enabled'] ? 'text-green-700' : 'text-yellow-700' }}">
                                 @if ($status['enabled'])
-                                    Students can now use the AI assistant for learning support
+                                    {{ __('Students can now use the AI assistant for learning support') }}
                                 @else
-                                    Enable AI assistant to allow students to ask questions and get instant help
+                                    {{ __('Enable AI assistant to allow students to ask questions and get instant help') }}
                                 @endif
                             </p>
                         </div>
@@ -109,7 +109,7 @@
                     @if ($status['enabled'])
                         <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
                             <i class="fas fa-circle text-xs text-green-500 mr-1 animate-pulse"></i>
-                            Online
+                            {{ __('Online') }}
                         </span>
                     @endif
                 </div>
@@ -123,7 +123,7 @@
                 <div class="bg-white p-8 rounded-xl shadow-md">
                     <h3 class="text-xl font-bold mb-6 text-gray-900 flex items-center">
                         <i class="fas fa-cog mr-3 text-blue-600"></i>
-                        Basic Configuration
+                        {{ __('Basic Configuration') }}
                     </h3>
 
                     <div class="space-y-6">
@@ -134,10 +134,10 @@
                                 class="mt-1 rounded border-gray-300 text-blue-600 shadow-sm">
                             <div class="ml-3">
                                 <label for="ai_enabled" class="text-sm font-medium text-gray-700">
-                                    Enable AI Assistant
+                                    {{ __('Enable AI Assistant') }}
                                 </label>
                                 <p class="text-sm text-gray-500 mt-1">
-                                    Allow students to use ChatGPT-powered Q&A assistant throughout the platform
+                                    {{ __('Allow students to use ChatGPT-powered Q&A assistant throughout the platform') }}
                                 </p>
                             </div>
                         </div>
@@ -149,10 +149,10 @@
                                 class="mt-1 rounded border-gray-300 text-blue-600 shadow-sm">
                             <div class="ml-3">
                                 <label for="ai_show_widget" class="text-sm font-medium text-gray-700">
-                                    Show Floating Chat Widget
+                                    {{ __('Show Floating Chat Widget') }}
                                 </label>
                                 <p class="text-sm text-gray-500 mt-1">
-                                    Display a floating chat button on all authenticated pages
+                                    {{ __('Display a floating chat button on all authenticated pages') }}
                                 </p>
                             </div>
                         </div>
@@ -160,15 +160,14 @@
                         <!-- API Key -->
                         <div>
                             <label for="ai_openai_api_key" class="block text-sm font-medium text-gray-700 mb-2">
-                                OpenAI API Key <span class="text-red-500">*</span>
+                                {{ __('OpenAI API Key') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="password" name="ai_openai_api_key" id="ai_openai_api_key"
                                 value="{{ old('ai_openai_api_key', $settings['ai_openai_api_key']) }}"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 placeholder="sk-proj-...">
                             <p class="text-sm text-gray-500 mt-1">
-                                Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank"
-                                    class="text-blue-600 hover:underline">OpenAI Platform</a>
+                                {!! __('Get your API key from :link', ['link' => '<a href="https://platform.openai.com/api-keys" target="_blank" class="text-blue-600 hover:underline">'.__('OpenAI Platform').'</a>']) !!}
                             </p>
                             @error('ai_openai_api_key')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -178,7 +177,7 @@
                         <!-- Model Selection -->
                         <div>
                             <label for="ai_model" class="block text-sm font-medium text-gray-700 mb-2">
-                                AI Model <span class="text-red-500">*</span>
+                                {{ __('AI Model') }} <span class="text-red-500">*</span>
                             </label>
                             <select name="ai_model" id="ai_model"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -190,8 +189,7 @@
                                 @endforeach
                             </select>
                             <p class="text-sm text-gray-500 mt-1">
-                                Choose the AI model to use. GPT-4 is more capable but slower and expensive. GPT-3.5
-                                Turbo is faster and cost-effective.
+                                {{ __('Choose the AI model to use. GPT-4 is more capable but slower and expensive. GPT-3.5 Turbo is faster and cost-effective.') }}
                             </p>
                             @error('ai_model')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -204,22 +202,21 @@
                 <div class="bg-white p-8 rounded-xl shadow-md">
                     <h3 class="text-xl font-bold mb-6 text-gray-900 flex items-center">
                         <i class="fas fa-sliders-h mr-3 text-purple-600"></i>
-                        Advanced Settings
+                        {{ __('Advanced Settings') }}
                     </h3>
 
                     <div class="space-y-6">
                         <!-- Max Tokens -->
                         <div>
                             <label for="ai_max_tokens" class="block text-sm font-medium text-gray-700 mb-2">
-                                Maximum Tokens per Response
+                                {{ __('Maximum Tokens per Response') }}
                             </label>
                             <input type="number" name="ai_max_tokens" id="ai_max_tokens"
                                 value="{{ old('ai_max_tokens', $settings['ai_max_tokens']) }}" min="100"
                                 max="4000"
                                 class="w-full md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             <p class="text-sm text-gray-500 mt-1">
-                                Limit the length of AI responses (100-4000). Higher = longer responses but more
-                                expensive.
+                                {{ __('Limit the length of AI responses (100-4000). Higher = longer responses but more expensive.') }}
                             </p>
                             @error('ai_max_tokens')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -229,14 +226,14 @@
                         <!-- Temperature -->
                         <div>
                             <label for="ai_temperature" class="block text-sm font-medium text-gray-700 mb-2">
-                                Temperature (Creativity)
+                                {{ __('Temperature (Creativity)') }}
                             </label>
                             <input type="number" name="ai_temperature" id="ai_temperature"
                                 value="{{ old('ai_temperature', $settings['ai_temperature']) }}" min="0"
                                 max="2" step="0.1"
                                 class="w-full md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             <p class="text-sm text-gray-500 mt-1">
-                                Controls randomness. 0 = focused and deterministic, 2 = very creative. Recommended: 0.7
+                                {{ __('Controls randomness. 0 = focused and deterministic, 2 = very creative. Recommended: 0.7') }}
                             </p>
                             @error('ai_temperature')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -246,14 +243,14 @@
                         <!-- Rate Limit -->
                         <div>
                             <label for="ai_rate_limit" class="block text-sm font-medium text-gray-700 mb-2">
-                                Rate Limit (messages per hour per user)
+                                {{ __('Rate Limit (messages per hour per user)') }}
                             </label>
                             <input type="number" name="ai_rate_limit" id="ai_rate_limit"
                                 value="{{ old('ai_rate_limit', $settings['ai_rate_limit']) }}" min="1"
                                 max="100"
                                 class="w-full md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             <p class="text-sm text-gray-500 mt-1">
-                                Limit how many messages each user can send per hour to control costs
+                                {{ __('Limit how many messages each user can send per hour to control costs') }}
                             </p>
                             @error('ai_rate_limit')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -263,14 +260,13 @@
                         <!-- System Prompt -->
                         <div>
                             <label for="ai_system_prompt" class="block text-sm font-medium text-gray-700 mb-2">
-                                Custom System Prompt (Optional)
+                                {{ __('Custom System Prompt (Optional)') }}
                             </label>
                             <textarea name="ai_system_prompt" id="ai_system_prompt" rows="4"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 placeholder="Leave empty to use default prompt...">{{ old('ai_system_prompt', $settings['ai_system_prompt']) }}</textarea>
                             <p class="text-sm text-gray-500 mt-1">
-                                Customize the AI's behavior and personality. Leave empty to use the default educational
-                                assistant prompt.
+                                {{ __('Customize the AI\'s behavior and personality. Leave empty to use the default educational assistant prompt.') }}
                             </p>
                             @error('ai_system_prompt')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -283,10 +279,10 @@
                 <div class="flex justify-end gap-3">
                     <a href="{{ route('admin.dashboard') }}"
                         class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-                        <i class="fas fa-times mr-2"></i>Cancel
+                        <i class="fas fa-times mr-2"></i>{{ __('Cancel') }}
                     </a>
                     <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                        <i class="fas fa-save mr-2"></i>Save Settings
+                        <i class="fas fa-save mr-2"></i>{{ __('Save Settings') }}
                     </button>
                 </div>
             </form>
@@ -295,16 +291,16 @@
             <div class="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-xl border border-blue-200">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">
                     <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
-                    Getting Started with AI Assistant
+                    {{ __('Getting Started with AI Assistant') }}
                 </h3>
                 <div class="space-y-3 text-sm text-gray-700">
-                    <p><strong>1.</strong> Get your OpenAI API key from <a href="https://platform.openai.com/api-keys"
+                    <p><strong>1.</strong> {{ __('Get your OpenAI API key from') }} <a href="https://platform.openai.com/api-keys"
                             target="_blank"
                             class="text-blue-600 hover:underline">https://platform.openai.com/api-keys</a></p>
-                    <p><strong>2.</strong> Paste the API key above and enable the AI assistant</p>
-                    <p><strong>3.</strong> Click "Test Connection" to verify your API key works</p>
-                    <p><strong>4.</strong> Configure advanced settings like model, tokens, and temperature</p>
-                    <p><strong>5.</strong> Students can now access AI assistant via the chat widget or dedicated AI page
+                    <p><strong>2.</strong> {{ __('Paste the API key above and enable the AI assistant') }}</p>
+                    <p><strong>3.</strong> {{ __('Click "Test Connection" to verify your API key works') }}</p>
+                    <p><strong>4.</strong> {{ __('Configure advanced settings like model, tokens, and temperature') }}</p>
+                    <p><strong>5.</strong> {{ __('Students can now access AI assistant via the chat widget or dedicated AI page') }}
                     </p>
                 </div>
             </div>
@@ -314,11 +310,27 @@
 
     @push('scripts')
         <script>
-            function testConnection() {
-                const button = event.target;
+            const aiSettingsLocale = {
+                testingLabel: @json(__('Testing...')),
+                successTitle: @json(__('Connection Successful!')),
+                failTitle: @json(__('Connection Failed')),
+                errorTitle: @json(__('Error')),
+                successDescription: @json(__('Students can now use the AI assistant for learning support')),
+                enableDescription: @json(__('Enable AI assistant to allow students to ask questions and get instant help')),
+                online: @json(__('Online')),
+                gettingStartedStep1: @json(__('Get your OpenAI API key from')),
+                gettingStartedStep2: @json(__('Paste the API key above and enable the AI assistant')),
+                gettingStartedStep3: @json(__('Click "Test Connection" to verify your API key works')),
+                gettingStartedStep4: @json(__('Configure advanced settings like model, tokens, and temperature')),
+                gettingStartedStep5: @json(__('Students can now access AI assistant via the chat widget or dedicated AI page')),
+                modelsAvailable: @json(__(':count models available', ['count' => ':count'])),
+            };
+
+            function testConnection(event) {
+                const button = event.currentTarget;
                 const originalText = button.innerHTML;
                 button.disabled = true;
-                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Testing...';
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>' + aiSettingsLocale.testingLabel;
 
                 fetch('{{ route('admin.ai-settings.test') }}', {
                         method: 'POST',
@@ -335,15 +347,15 @@
                         if (data.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Connection Successful!',
-                                html: data.message + '<br><small>' + data.models_available +
-                                    ' models available</small>',
+                                title: aiSettingsLocale.successTitle,
+                                html: data.message + '<br><small>' + aiSettingsLocale.modelsAvailable.replace(':count', data.models_available) +
+                                    '</small>',
                                 timer: 3000
                             });
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Connection Failed',
+                                title: aiSettingsLocale.failTitle,
                                 text: data.message
                             });
                         }
@@ -353,8 +365,8 @@
                         button.innerHTML = originalText;
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error',
-                            text: 'Failed to test connection: ' + error.message
+                            title: aiSettingsLocale.errorTitle,
+                            text: '{{ __('Failed to test connection:') }} ' + error.message
                         });
                     });
             }

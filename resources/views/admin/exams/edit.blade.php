@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Edit Ujian: {{ $exam->title }}
+                {{ __('Edit Exam: :title', ['title' => $exam->title]) }}
             </h2>
             <a href="{{ route('admin.exams.show', $exam) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -21,15 +21,15 @@
 
                         <!-- Basic Information -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi Dasar</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Informasi Dasar') }}</h3>
 
                             <div class="mb-4">
                                 <label for="course_id" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Kursus <span class="text-red-500">*</span>
+                                    {{ __('Kursus') }} <span class="text-red-500">*</span>
                                 </label>
                                 <select name="course_id" id="course_id" required
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="">Pilih Kursus</option>
+                                    <option value="">{{ __('Pilih Kursus') }}</option>
                                     @foreach ($courses as $course)
                                         <option value="{{ $course->id }}"
                                             {{ old('course_id', $exam->course_id) == $course->id ? 'selected' : '' }}>
@@ -44,7 +44,7 @@
 
                             <div class="mb-4">
                                 <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Judul Ujian <span class="text-red-500">*</span>
+                                    {{ __('Exam Title') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="title" id="title"
                                     value="{{ old('title', $exam->title) }}" required
@@ -56,27 +56,26 @@
 
                             <div class="mb-4">
                                 <label for="description"
-                                    class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
+                                    class="block text-sm font-medium text-gray-700 mb-2">{{ __('Deskripsi') }}</label>
                                 <textarea name="description" id="description" rows="3"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description', $exam->description) }}</textarea>
                             </div>
 
                             <div class="mb-4">
-                                <label for="instructions" class="block text-sm font-medium text-gray-700 mb-2">Instruksi
-                                    Ujian</label>
-                                <textarea name="instructions" id="instructions" rows="3" placeholder="Instruksi khusus untuk peserta ujian..."
+                                <label for="instructions" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Exam Instructions') }}</label>
+                                <textarea name="instructions" id="instructions" rows="3" placeholder="{{ __('Special instructions for examinees...') }}"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('instructions', $exam->instructions) }}</textarea>
                             </div>
                         </div>
 
                         <!-- Time Settings -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pengaturan Waktu</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Pengaturan Waktu') }}</h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                 <div>
                                     <label for="duration_minutes" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Durasi (menit) <span class="text-red-500">*</span>
+                                        {{ __('Durasi (menit)') }} <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="duration_minutes" id="duration_minutes"
                                         value="{{ old('duration_minutes', $exam->duration_minutes) }}" min="1"
@@ -85,16 +84,14 @@
                                 </div>
 
                                 <div>
-                                    <label for="start_time" class="block text-sm font-medium text-gray-700 mb-2">Waktu
-                                        Mulai</label>
+                                    <label for="start_time" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Waktu Mulai') }}</label>
                                     <input type="datetime-local" name="start_time" id="start_time"
                                         value="{{ old('start_time', $exam->start_time ? $exam->start_time->format('Y-m-d\TH:i') : '') }}"
                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 </div>
 
                                 <div>
-                                    <label for="end_time" class="block text-sm font-medium text-gray-700 mb-2">Waktu
-                                        Selesai</label>
+                                    <label for="end_time" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Waktu Selesai') }}</label>
                                     <input type="datetime-local" name="end_time" id="end_time"
                                         value="{{ old('end_time', $exam->end_time ? $exam->end_time->format('Y-m-d\TH:i') : '') }}"
                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -104,12 +101,12 @@
 
                         <!-- Exam Settings -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pengaturan Ujian</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Exam Settings') }}</h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label for="max_attempts" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Maksimal Percobaan <span class="text-red-500">*</span>
+                                        {{ __('Maksimal Percobaan') }} <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="max_attempts" id="max_attempts"
                                         value="{{ old('max_attempts', $exam->max_attempts) }}" min="1" required
@@ -118,7 +115,7 @@
 
                                 <div>
                                     <label for="pass_score" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Nilai Lulus (%) <span class="text-red-500">*</span>
+                                        {{ __('Pass Score (%)') }} <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="pass_score" id="pass_score"
                                         value="{{ old('pass_score', $exam->pass_score) }}" min="0"
@@ -134,7 +131,7 @@
                                         {{ old('shuffle_questions', $exam->shuffle_questions) ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="shuffle_questions" class="ml-2 text-sm text-gray-700">
-                                        Acak Urutan Soal
+                                        {{ __('Shuffle Question Order') }}
                                     </label>
                                 </div>
 
@@ -144,7 +141,7 @@
                                         {{ old('shuffle_options', $exam->shuffle_options) ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="shuffle_options" class="ml-2 text-sm text-gray-700">
-                                        Acak Opsi Jawaban
+                                        {{ __('Shuffle Answer Options') }}
                                     </label>
                                 </div>
 
@@ -154,7 +151,7 @@
                                         {{ old('show_results_immediately', $exam->show_results_immediately) ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="show_results_immediately" class="ml-2 text-sm text-gray-700">
-                                        Tampilkan Hasil Langsung
+                                        {{ __('Tampilkan Hasil Langsung') }}
                                     </label>
                                 </div>
 
@@ -164,7 +161,7 @@
                                         {{ old('show_correct_answers', $exam->show_correct_answers) ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="show_correct_answers" class="ml-2 text-sm text-gray-700">
-                                        Tampilkan Jawaban Benar
+                                        {{ __('Show Correct Answers') }}
                                     </label>
                                 </div>
                             </div>
@@ -172,7 +169,7 @@
 
                         <!-- Anti-Cheat Settings -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pengaturan Anti-Cheat</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Anti-Cheat Settings') }}</h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div class="flex items-center">
@@ -204,7 +201,7 @@
                                 <input type="number" name="max_tab_switches" id="max_tab_switches"
                                     value="{{ old('max_tab_switches', $exam->max_tab_switches) }}" min="1"
                                     class="w-full md:w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <p class="text-sm text-gray-500 mt-1">Ujian akan otomatis dikumpulkan setelah mencapai
+                                <p class="text-sm text-gray-500 mt-1">{{ __('The exam will be automatically submitted after reaching') }}
                                     batas ini.</p>
                             </div>
                         </div>
@@ -212,7 +209,7 @@
                         <!-- Offline Mode Settings -->
                         <div class="mb-8 p-6 bg-indigo-50 rounded-lg border border-indigo-200">
                             <h3 class="text-lg font-semibold mb-4 text-indigo-900">
-                                <i class="fas fa-wifi-slash mr-2"></i>Offline Mode (CBT Lab)
+                                <i class="fas fa-wifi-slash mr-2"></i>{{ __('Offline Mode (CBT Lab)') }}
                             </h3>
 
                             <div class="space-y-4">
@@ -223,10 +220,10 @@
                                         class="mt-1 rounded border-gray-300 text-indigo-600 shadow-sm">
                                     <div class="ml-3">
                                         <label for="offline_enabled" class="text-sm font-medium text-gray-700">
-                                            Enable Offline Mode
+                                            {{ __('Enable Offline Mode') }}
                                         </label>
                                         <p class="text-sm text-gray-500 mt-1">
-                                            Allow students to download and take this exam offline in computer labs
+                                            {{ __('Allow students to download and take this exam offline in computer labs') }}
                                         </p>
                                     </div>
                                 </div>
@@ -235,14 +232,14 @@
                                     class="{{ old('offline_enabled', $exam->offline_enabled) ? '' : 'hidden' }}">
                                     <label for="offline_cache_duration"
                                         class="block text-sm font-medium text-gray-700 mb-2">
-                                        Cache Duration (hours)
+                                        {{ __('Cache Duration (hours)') }}
                                     </label>
                                     <input type="number" name="offline_cache_duration" id="offline_cache_duration"
                                         value="{{ old('offline_cache_duration', $exam->offline_cache_duration ?? 24) }}"
                                         min="1" max="168"
-                                        class="w-full md:w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        class="w-full md:w-1/3 rounded-md border-gray-300 shadow-sm focus-border-indigo-500 focus:ring-indigo-500">
                                     <p class="text-sm text-gray-500 mt-1">
-                                        How long the exam will be available offline (1-168 hours, default: 24)
+                                        {{ __('How long the exam will be available offline (1-168 hours, default: 24)') }}
                                     </p>
                                 </div>
                             </div>
@@ -255,7 +252,7 @@
                                     {{ old('is_published', $exam->is_published) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 shadow-sm">
                                 <label for="is_published" class="ml-2 text-sm text-gray-700">
-                                    Publikasikan Ujian
+                                    {{ __('Publish Exam') }}
                                 </label>
                             </div>
                         </div>
@@ -264,11 +261,11 @@
                         <div class="flex gap-4">
                             <button type="submit"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                                <i class="fas fa-save mr-2"></i>{{ __('Simpan Perubahan') }}
                             </button>
                             <a href="{{ route('admin.exams.show', $exam) }}"
                                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                Batal
+                                {{ __('Batal') }}
                             </a>
                         </div>
                     </form>

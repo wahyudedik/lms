@@ -3,15 +3,15 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-gray-800">
-                    🔌 Offline Exams
+                    🔌 {{ __('Offline Exams') }}
                 </h2>
-                <p class="text-sm text-gray-600 mt-1">Download exams for offline access in computer labs</p>
+                <p class="text-sm text-gray-600 mt-1">{{ __('Download exams for offline access in computer labs') }}</p>
             </div>
 
             <!-- Online Status Indicator -->
             <div id="onlineStatus" class="flex items-center gap-2 px-4 py-2 rounded-lg border">
                 <span id="statusDot">🟢</span>
-                <span id="statusText" class="font-medium">Online</span>
+                <span id="statusText" class="font-medium">{{ __('Online') }}</span>
             </div>
         </div>
     </x-slot>
@@ -26,14 +26,14 @@
                         <i class="fas fa-info-circle text-blue-500 text-xl"></i>
                     </div>
                     <div class="ml-3">
-                        <h3 class="text-sm font-medium text-blue-800">Offline Mode</h3>
+                        <h3 class="text-sm font-medium text-blue-800">{{ __('Offline Mode') }}</h3>
                         <div class="mt-2 text-sm text-blue-700">
-                            <p>Download exams to take them offline in computer labs without stable internet connection.
+                            <p>{{ __('Download exams to take them offline in computer labs without stable internet connection.') }}
                             </p>
                             <ul class="list-disc list-inside mt-2 space-y-1">
-                                <li>Exams are cached in your browser</li>
-                                <li>Answers saved locally and synced when online</li>
-                                <li>Perfect for CBT in labs with unstable connection</li>
+                                <li>{{ __('Exams are cached in your browser') }}</li>
+                                <li>{{ __('Answers saved locally and synced when online') }}</li>
+                                <li>{{ __('Perfect for CBT in labs with unstable connection') }}</li>
                             </ul>
                         </div>
                     </div>
@@ -50,13 +50,13 @@
                             <i class="fas fa-download text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg">Install LMS App</h3>
-                            <p class="text-sm opacity-90">Install for better offline experience and quick access</p>
+                            <h3 class="font-bold text-lg">{{ __('Install LMS App') }}</h3>
+                            <p class="text-sm opacity-90">{{ __('Install for better offline experience and quick access') }}</p>
                         </div>
                     </div>
                     <button id="installButton"
                         class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all">
-                        <i class="fas fa-download mr-2"></i>Install Now
+                        <i class="fas fa-download mr-2"></i>{{ __('Install Now') }}
                     </button>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                             <i class="fas fa-check-circle text-green-600 text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Cached Exams</p>
+                            <p class="text-sm text-gray-600">{{ __('Cached Exams') }}</p>
                             <p class="text-2xl font-bold text-gray-800" id="cachedExamsCount">0</p>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                             <i class="fas fa-database text-blue-600 text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Storage Used</p>
+                            <p class="text-sm text-gray-600">{{ __('Storage Used') }}</p>
                             <p class="text-2xl font-bold text-gray-800" id="storageUsed">0 MB</p>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                             <i class="fas fa-clock text-yellow-600 text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Pending Sync</p>
+                            <p class="text-sm text-gray-600">{{ __('Pending Sync') }}</p>
                             <p class="text-2xl font-bold text-gray-800" id="pendingSync">0</p>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="p-6 border-b border-gray-200">
                     <h3 class="text-lg font-bold text-gray-800">
-                        <i class="fas fa-list mr-2 text-indigo-600"></i>Available Offline Exams
+                        <i class="fas fa-list mr-2 text-indigo-600"></i>{{ __('Available Offline Exams') }}
                     </h3>
                 </div>
 
@@ -117,7 +117,7 @@
                                         <h4 class="text-lg font-bold text-gray-800">{{ $exam->title }}</h4>
                                         <span data-exam-status="{{ $exam->id }}" class="text-sm">
                                             <span class="text-gray-400">
-                                                <i class="fas fa-cloud mr-1"></i>Online Only
+                                                <i class="fas fa-cloud mr-1"></i>{{ __('Online Only') }}
                                             </span>
                                         </span>
                                     </div>
@@ -131,16 +131,16 @@
                                         </span>
                                         <span>
                                             <i class="fas fa-question-circle mr-1 text-indigo-500"></i>
-                                            {{ $exam->questions->count() }} Questions
+                                            {{ $exam->questions->count() }} {{ __('Questions') }}
                                         </span>
                                         <span>
                                             <i class="fas fa-clock mr-1 text-indigo-500"></i>
-                                            {{ $exam->duration }} minutes
+                                            {{ $exam->duration }} {{ __('minutes') }}
                                         </span>
                                         @if ($exam->last_attempt)
                                             <span class="text-green-600 font-medium">
                                                 <i class="fas fa-check-circle mr-1"></i>
-                                                Attempted
+                                                {{ __('Attempted') }}
                                             </span>
                                         @endif
                                     </div>
@@ -150,13 +150,13 @@
                                     <!-- Cache Button -->
                                     <button data-cache-exam="{{ $exam->id }}"
                                         class="btn btn-primary px-4 py-2 rounded-lg font-medium transition-all">
-                                        <i class="fas fa-download mr-2"></i>Cache for Offline
+                                        <i class="fas fa-download mr-2"></i>{{ __('Cache for Offline') }}
                                     </button>
 
                                     <!-- Take Exam Button -->
                                     <a href="{{ route('offline.exams.take', $exam) }}"
                                         class="btn btn-outline px-4 py-2 rounded-lg font-medium transition-all">
-                                        <i class="fas fa-play mr-2"></i>Take Exam
+                                        <i class="fas fa-play mr-2"></i>{{ __('Take Exam') }}
                                     </a>
                                 </div>
                             </div>
@@ -178,8 +178,8 @@
                                 class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
                                 <i class="fas fa-inbox text-gray-400 text-2xl"></i>
                             </div>
-                            <p class="text-gray-600 mb-2">No offline exams available</p>
-                            <p class="text-sm text-gray-500">Contact your instructor to enable offline mode for exams
+                            <p class="text-gray-600 mb-2">{{ __('No offline exams available') }}</p>
+                            <p class="text-sm text-gray-500">{{ __('Contact your instructor to enable offline mode for exams') }}
                             </p>
                         </div>
                     @endforelse
@@ -189,11 +189,11 @@
             <!-- Actions -->
             <div class="mt-6 flex gap-3">
                 <button id="clearCacheButton" class="btn btn-outline text-red-600 border-red-600 hover:bg-red-50">
-                    <i class="fas fa-trash mr-2"></i>Clear All Cache
+                    <i class="fas fa-trash mr-2"></i>{{ __('Clear All Cache') }}
                 </button>
 
                 <button id="syncNowButton" class="btn btn-outline" onclick="offlineManager.syncQueuedSubmissions()">
-                    <i class="fas fa-sync mr-2"></i>Sync Now
+                    <i class="fas fa-sync mr-2"></i>{{ __('Sync Now') }}
                 </button>
             </div>
 
@@ -223,7 +223,11 @@
                     const db = await openIndexedDB();
                     const transaction = db.transaction(['exams'], 'readonly');
                     const store = transaction.objectStore('exams');
-                    const allExams = await store.getAll();
+                    const allExams = await new Promise((resolve, reject) => {
+                        const req = store.getAll();
+                        req.onsuccess = () => resolve(req.result || []);
+                        req.onerror = () => reject(req.error);
+                    });
 
                     let cachedCount = 0;
 

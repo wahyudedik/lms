@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-        <p class="text-gray-600">Sign in to your account to continue</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ __('Welcome Back') }}</h2>
+        <p class="text-gray-600">{{ __('Sign in to your account to continue') }}</p>
     </div>
 
     <!-- Session Status -->
@@ -17,7 +17,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-envelope text-gray-400"></i>
                 </div>
-                <x-text-input id="email" class="block w-full pl-10" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="you@example.com" />
+                <x-text-input id="email" class="block w-full pl-10" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="{{ __('you@example.com') }}" />
             </div>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
@@ -56,7 +56,7 @@
 
         @if (Route::has('register'))
             <div class="text-center text-sm text-gray-600">
-                <span>Don't have an account? </span>
+                <span>{{ __("Don't have an account?") }} </span>
                 <a class="text-blue-600 hover:text-blue-800 font-medium transition-colors" href="{{ route('register') }}">
                     {{ __('Register here') }}
                 </a>

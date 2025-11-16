@@ -12,11 +12,11 @@
             <div class="flex gap-2">
                 <a href="{{ route('guru.exams.questions.create', $exam) }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-plus mr-2"></i>Tambah Soal
+                    <i class="fas fa-plus mr-2"></i>{{ __('Add Question') }}
                 </a>
                 <a href="{{ route('guru.exams.show', $exam) }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -78,11 +78,11 @@
                                                     <form
                                                         action="{{ route('guru.exams.questions.destroy', [$exam, $question]) }}"
                                                         method="POST" class="inline"
-                                                        onsubmit="return confirmDelete('Yakin ingin menghapus soal ini?')">
+                                                        onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this question?') }}')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="text-red-600 hover:text-red-900"
-                                                            title="Hapus">
+                                                            title="{{ __('Delete') }}">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -182,10 +182,10 @@
                     <div class="p-6">
                         <div class="text-center py-8">
                             <i class="fas fa-clipboard-question text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500 text-lg mb-4">Belum ada soal ditambahkan.</p>
+                            <p class="text-gray-500 text-lg mb-4">{{ __('No questions added yet.') }}</p>
                             <a href="{{ route('guru.exams.questions.create', $exam) }}"
                                 class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-plus mr-2"></i>Tambah Soal Pertama
+                                <i class="fas fa-plus mr-2"></i>{{ __('Add First Question') }}
                             </a>
                         </div>
                     </div>

@@ -12,7 +12,7 @@
                             d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                         </path>
                     </svg>
-                    Export
+                    {{ __('Export') }}
                 </a>
                 <a href="{{ route('admin.users.import') }}"
                     class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
@@ -21,11 +21,11 @@
                             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10">
                         </path>
                     </svg>
-                    Import
+                    {{ __('Import Users') }}
                 </a>
                 <a href="{{ route('admin.users.create') }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Add New User
+                    {{ __('Add New User') }}
                 </a>
             </div>
         </div>
@@ -42,35 +42,35 @@
                             class="flex flex-wrap gap-4 items-end">
                             <div class="flex-1 min-w-64">
                                 <label for="search"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                                    class="block text-sm font-medium text-gray-700 mb-1">{{ __('Search') }}</label>
                                 <input type="text" id="search" name="search" value="{{ request('search') }}"
-                                    placeholder="Search by name or email..."
+                                    placeholder="{{ __('Search by name or email...') }}"
                                     class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                             </div>
 
                             <div class="min-w-32">
-                                <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                <label for="role" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Role') }}</label>
                                 <select id="role" name="role"
                                     class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">All Roles</option>
-                                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin
+                                    <option value="">{{ __('All Roles') }}</option>
+                                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>{{ __('Admin') }}
                                     </option>
-                                    <option value="guru" {{ request('role') == 'guru' ? 'selected' : '' }}>Guru
+                                    <option value="guru" {{ request('role') == 'guru' ? 'selected' : '' }}>{{ __('Guru') }}
                                     </option>
-                                    <option value="siswa" {{ request('role') == 'siswa' ? 'selected' : '' }}>Siswa
+                                    <option value="siswa" {{ request('role') == 'siswa' ? 'selected' : '' }}>{{ __('Siswa') }}
                                     </option>
                                 </select>
                             </div>
 
                             <div class="min-w-32">
                                 <label for="status"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                    class="block text-sm font-medium text-gray-700 mb-1">{{ __('Status') }}</label>
                                 <select id="status" name="status"
                                     class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">All Status</option>
-                                    <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active
+                                    <option value="">{{ __('All Status') }}</option>
+                                    <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>{{ __('Active') }}
                                     </option>
-                                    <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive
+                                    <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>{{ __('Inactive') }}
                                     </option>
                                 </select>
                             </div>
@@ -78,11 +78,11 @@
                             <div class="flex gap-2">
                                 <button type="submit"
                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Filter
+                                    {{ __('Filter') }}
                                 </button>
                                 <a href="{{ route('admin.users.index') }}"
                                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                    Clear
+                                    {{ __('Clear') }}
                                 </a>
                             </div>
                         </form>
@@ -97,19 +97,22 @@
                                 <tr>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        User</th>
+                                        {{ __('User') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Role</th>
+                                        {{ __('Role') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status</th>
+                                        {{ __('Status') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Created</th>
+                                        {{ __('Login Access') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Actions</th>
+                                        {{ __('Created') }}</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        {{ __('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -144,18 +147,56 @@
                                             <span
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                 {{ $user->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                {{ $user->is_active ? 'Active' : 'Inactive' }}
+                                                {{ $user->is_active ? __('Active') : __('Inactive') }}
                                             </span>
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if ($user->is_login_blocked)
+                                                <div class="space-y-1">
+                                                    <span
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                        {{ __('Blocked') }}
+                                                    </span>
+                                                    <p class="text-xs text-red-600">
+                                                        {{ $user->login_blocked_reason ?? __('Cheating detected') }}
+                                                    </p>
+                                                    <p class="text-xs text-gray-500">
+                                                        {{ $user->login_blocked_at?->translatedFormat('d M Y H:i') }}
+                                                    </p>
+                                                    @if ($user->active_cheating_incidents_count ?? 0)
+                                                        <p class="text-xs">
+                                                            <a href="{{ route('admin.cheating-incidents.index', ['search' => $user->email]) }}"
+                                                                class="text-indigo-600 hover:text-indigo-900 font-semibold">
+                                                                {{ trans_choice(':count active incident|:count active incidents', $user->active_cheating_incidents_count, ['count' => $user->active_cheating_incidents_count]) }}
+                                                            </a>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    {{ __('Allowed') }}
+                                                </span>
+                                                @if ($user->active_cheating_incidents_count ?? 0)
+                                                    <p class="text-xs text-yellow-600 mt-1">
+                                                        {{ trans_choice(':count incident under review|:count incidents under review', $user->active_cheating_incidents_count, ['count' => $user->active_cheating_incidents_count]) }}
+                                                    </p>
+                                                @endif
+                                            @endif
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $user->created_at->format('M d, Y') }}
+                                            {{ $user->created_at->translatedFormat('d M Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-2">
                                                 <a href="{{ route('admin.users.show', $user) }}"
-                                                    class="text-blue-600 hover:text-blue-900">View</a>
+                                                    class="text-blue-600 hover:text-blue-900">{{ __('View') }}</a>
                                                 <a href="{{ route('admin.users.edit', $user) }}"
-                                                    class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                                    class="text-indigo-600 hover:text-indigo-900">{{ __('Edit') }}</a>
+                                                @if ($user->active_cheating_incidents_count ?? 0)
+                                                    <a href="{{ route('admin.cheating-incidents.index', ['search' => $user->email]) }}"
+                                                        class="text-red-600 hover:text-red-900">{{ __('Incidents') }}</a>
+                                                @endif
 
                                                 @if ($user->id !== auth()->id())
                                                     <form method="POST"
@@ -166,7 +207,7 @@
                                                             class="text-yellow-600 hover:text-yellow-900"
                                                             data-user-name="{{ $user->name }}"
                                                             data-is-active="{{ $user->is_active ? 'true' : 'false' }}">
-                                                            {{ $user->is_active ? 'Deactivate' : 'Activate' }}
+                                                            {{ $user->is_active ? __('Deactivate') : __('Activate') }}
                                                         </button>
                                                     </form>
 
@@ -177,7 +218,20 @@
                                                         @method('DELETE')
                                                         <button type="submit" class="text-red-600 hover:text-red-900"
                                                             data-user-name="{{ $user->name }}">
-                                                            Delete
+                                                            {{ __('Delete') }}
+                                                        </button>
+                                                    </form>
+                                                @endif
+
+                                                @if ($user->is_login_blocked)
+                                                    <form method="POST"
+                                                        action="{{ route('admin.users.reset-login', $user) }}"
+                                                        class="inline reset-login-form">
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="text-teal-600 hover:text-teal-900 font-semibold"
+                                                            data-user-name="{{ $user->name }}">
+                                                            {{ __('Reset Login') }}
                                                         </button>
                                                     </form>
                                                 @endif
@@ -186,8 +240,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                                            No users found.
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                            {{ __('No users found.') }}
                                         </td>
                                     </tr>
                                 @endforelse
@@ -206,6 +260,19 @@
 
     @push('scripts')
         <script>
+            const usersIndexLocale = {
+                deleteConfirm: @json(__('Are you sure you want to delete user ":name"? This action cannot be undone.')),
+                exportLoadingTitle: @json(__('Exporting...')),
+                exportLoadingText: @json(__('Please wait while we prepare your export file.')),
+                exportSuccessTitle: @json(__('Export Completed!')),
+                exportSuccessMessage: @json(__('File exported successfully!')),
+                defaultPasswordLabel: @json(__('Default password for all users:')),
+                passwordNoteLine1: @json(__('This password appears in the "Password" column for all users in the Excel file.')),
+                passwordNoteLine2: @json(__('Instruct users to change their password after the first login.')),
+                ok: @json(__('OK')),
+                exportingPassword: @json(config('app.default_export_password', 'LMS2024@Pass')),
+            };
+
             // Handle delete confirmation
             document.querySelectorAll('.delete-form').forEach(form => {
                 form.addEventListener('submit', function(e) {
@@ -213,7 +280,7 @@
                     const userName = this.querySelector('button').getAttribute('data-user-name');
 
                     confirmDelete(
-                            `Are you sure you want to delete user "${userName}"? This action cannot be undone.`)
+                            usersIndexLocale.deleteConfirm.replace(':name', userName))
                         .then((result) => {
                             if (result.isConfirmed) {
                                 this.submit();
@@ -239,14 +306,30 @@
                 });
             });
 
+            // Handle reset login confirmation
+            document.querySelectorAll('.reset-login-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const button = this.querySelector('button');
+                    const userName = button.getAttribute('data-user-name');
+
+                    confirmResetLogin(userName)
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                this.submit();
+                            }
+                        });
+                });
+            });
+
             // Handle export with loading
             document.querySelector('a[href*="export"]').addEventListener('click', function(e) {
                 e.preventDefault();
                 const exportUrl = this.href;
 
                 Swal.fire({
-                    title: 'Exporting...',
-                    text: 'Please wait while we prepare your export file.',
+                    title: usersIndexLocale.exportLoadingTitle,
+                    text: usersIndexLocale.exportLoadingText,
                     allowOutsideClick: false,
                     showConfirmButton: false,
                     willOpen: () => {
@@ -267,28 +350,28 @@
                 setTimeout(() => {
                     Swal.close();
                     Swal.fire({
-                        title: 'Export Completed!',
+                        title: usersIndexLocale.exportSuccessTitle,
                         html: `
                             <div class="text-left">
-                                <p class="mb-3"><strong>✅ File exported successfully!</strong></p>
+                                <p class="mb-3"><strong>✅ ${usersIndexLocale.exportSuccessMessage}</strong></p>
                                 <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
                                     <p class="text-sm text-gray-700 mb-2">
-                                        <strong>🔐 Default Password untuk semua user:</strong>
+                                        <strong>🔐 ${usersIndexLocale.defaultPasswordLabel}</strong>
                                     </p>
                                     <div class="bg-white p-3 rounded border border-blue-200">
-                                        <code style="font-size: 18px; font-weight: bold; color: #1e40af;">LMS2024@Pass</code>
+                                        <code style="font-size: 18px; font-weight: bold; color: #1e40af;">${usersIndexLocale.exportingPassword}</code>
                                     </div>
                                     <p class="text-xs text-gray-600 mt-3">
-                                        📋 Password ini ditampilkan di kolom "Password" untuk semua user di file Excel
+                                        📋 ${usersIndexLocale.passwordNoteLine1}
                                     </p>
                                     <p class="text-xs text-gray-600 mt-1">
-                                        ⚠️ Instruksikan user untuk segera mengganti password setelah login pertama
+                                        ⚠️ ${usersIndexLocale.passwordNoteLine2}
                                     </p>
                                 </div>
                             </div>
                         `,
                         icon: 'success',
-                        confirmButtonText: 'OK',
+                        confirmButtonText: usersIndexLocale.ok,
                         confirmButtonColor: '#10b981',
                         width: '600px'
                     });

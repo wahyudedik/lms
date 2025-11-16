@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="text-2xl font-bold text-gray-800">
-                🎓 Certificate Settings
+                🎓 {{ __('Certificate Settings') }}
             </h2>
             <form action="{{ route('admin.certificate-settings.reset') }}" method="POST"
-                onsubmit="return confirm('Are you sure you want to reset to default settings?')">
+                onsubmit="return confirm('{{ __('Are you sure you want to reset to default settings?') }}')">
                 @csrf
                 <button type="submit" class="btn btn-outline">
-                    <i class="fas fa-undo mr-2"></i>Reset to Default
+                    <i class="fas fa-undo mr-2"></i>{{ __('Reset to Default') }}
                 </button>
             </form>
         </div>
@@ -33,9 +33,9 @@
                 <div class="bg-white rounded-lg shadow-md mb-6">
                     <div class="p-6 border-b border-gray-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-2">
-                            <i class="fas fa-palette mr-2 text-indigo-600"></i>Certificate Template
+                            <i class="fas fa-palette mr-2 text-indigo-600"></i>{{ __('Certificate Template') }}
                         </h3>
-                        <p class="text-sm text-gray-600">Choose the design style for your certificates</p>
+                        <p class="text-sm text-gray-600">{{ __('Choose the design style for your certificates') }}</p>
                     </div>
 
                     <div class="p-6">
@@ -50,7 +50,7 @@
                                         <!-- Selected Badge -->
                                         <div
                                             class="absolute -top-2 -right-2 bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold hidden peer-checked:block">
-                                            ✓ Selected
+                                            {{ __('Selected') }}
                                         </div>
 
                                         <!-- Template Preview -->
@@ -98,7 +98,7 @@
                                         <!-- Preview Button -->
                                         <button type="button" onclick="previewTemplate('{{ $key }}')"
                                             class="w-full mt-3 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-medium transition-colors">
-                                            <i class="fas fa-eye mr-1"></i>Preview
+                                            <i class="fas fa-eye mr-1"></i>{{ __('Preview') }}
                                         </button>
                                     </div>
                                 </label>
@@ -111,9 +111,9 @@
                 <div class="bg-white rounded-lg shadow-md mb-6">
                     <div class="p-6 border-b border-gray-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-2">
-                            <i class="fas fa-university mr-2 text-indigo-600"></i>Institution Information
+                            <i class="fas fa-university mr-2 text-indigo-600"></i>{{ __('Institution Information') }}
                         </h3>
-                        <p class="text-sm text-gray-600">Information displayed on certificates</p>
+                        <p class="text-sm text-gray-600">{{ __('Information displayed on certificates') }}</p>
                     </div>
 
                     <div class="p-6">
@@ -121,7 +121,7 @@
                             <!-- Institution Name -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Institution Name <span class="text-red-500">*</span>
+                                    {{ __('Institution Name') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="institution_name"
                                     value="{{ old('institution_name', $institutionName) }}"
@@ -135,7 +135,7 @@
                             <!-- Director Name -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Director Name <span class="text-red-500">*</span>
+                                    {{ __('Director Name') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="director_name"
                                     value="{{ old('director_name', $directorName) }}"
@@ -150,7 +150,7 @@
                         <!-- Logo Upload -->
                         <div class="mt-6">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Institution Logo
+                                {{ __('Institution Logo') }}
                             </label>
                             <div class="flex items-center gap-4">
                                 @if ($logoPath)
@@ -165,8 +165,7 @@
                                 <div class="flex-1">
                                     <input type="file" name="logo" accept="image/png,image/jpeg,image/jpg"
                                         class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                                    <p class="mt-1 text-xs text-gray-500">PNG or JPG. Max 2MB. Transparent background
-                                        recommended.</p>
+                                    <p class="mt-1 text-xs text-gray-500">{{ __('PNG or JPG. Max 2MB. Transparent background recommended.') }}</p>
                                 </div>
                             </div>
                             @error('logo')
@@ -180,9 +179,9 @@
                 <div class="bg-white rounded-lg shadow-md mb-6">
                     <div class="p-6 border-b border-gray-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-2">
-                            <i class="fas fa-fill-drip mr-2 text-indigo-600"></i>Color Customization
+                            <i class="fas fa-fill-drip mr-2 text-indigo-600"></i>{{ __('Color Customization') }}
                         </h3>
-                        <p class="text-sm text-gray-600">Customize certificate colors (applies to Modern template)</p>
+                        <p class="text-sm text-gray-600">{{ __('Customize certificate colors (applies to Modern template)') }}</p>
                     </div>
 
                     <div class="p-6">
@@ -190,7 +189,7 @@
                             <!-- Primary Color -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Primary Color <span class="text-red-500">*</span>
+                                    {{ __('Primary Color') }} <span class="text-red-500">*</span>
                                 </label>
                                 <div class="flex items-center gap-3">
                                     <input type="color" name="primary_color"
@@ -208,7 +207,7 @@
                             <!-- Secondary Color -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Secondary Color <span class="text-red-500">*</span>
+                                    {{ __('Secondary Color') }} <span class="text-red-500">*</span>
                                 </label>
                                 <div class="flex items-center gap-3">
                                     <input type="color" name="secondary_color"
@@ -226,8 +225,7 @@
                             <!-- Accent Color -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Accent Color <span class="text-red-500">*</span>
-                                </label>
+                                    {{ __('Accent Color') }} <span class="text-red-500">*</span>
                                 <div class="flex items-center gap-3">
                                     <input type="color" name="accent_color"
                                         value="{{ old('accent_color', $accentColor) }}"
@@ -245,24 +243,24 @@
                         <!-- Color Presets -->
                         <div class="mt-6">
                             <label class="block text-sm font-medium text-gray-700 mb-3">
-                                Color Presets
+                                {{ __('Color Presets') }}
                             </label>
                             <div class="flex flex-wrap gap-3">
                                 <button type="button" onclick="applyColorPreset('#3b82f6', '#8b5cf6', '#ec4899')"
                                     class="px-4 py-2 bg-gradient-to-r from-blue-500 to-pink-500 text-white rounded-lg text-sm font-medium hover:opacity-90">
-                                    Default Blue
+                                    {{ __('Default Blue') }}
                                 </button>
                                 <button type="button" onclick="applyColorPreset('#059669', '#10b981', '#34d399')"
                                     class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-400 text-white rounded-lg text-sm font-medium hover:opacity-90">
-                                    Tech Green
+                                    {{ __('Tech Green') }}
                                 </button>
                                 <button type="button" onclick="applyColorPreset('#7c3aed', '#8b5cf6', '#a78bfa')"
                                     class="px-4 py-2 bg-gradient-to-r from-purple-700 to-purple-400 text-white rounded-lg text-sm font-medium hover:opacity-90">
-                                    Royal Purple
+                                    {{ __('Royal Purple') }}
                                 </button>
                                 <button type="button" onclick="applyColorPreset('#dc2626', '#ef4444', '#f87171')"
                                     class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-400 text-white rounded-lg text-sm font-medium hover:opacity-90">
-                                    Academic Red
+                                    {{ __('Academic Red') }}
                                 </button>
                             </div>
                         </div>
@@ -273,11 +271,11 @@
                 <div class="flex justify-end gap-3">
                     <a href="{{ route('admin.dashboard') }}"
                         class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
-                        Cancel
+                        {{ __('Cancel') }}
                     </a>
                     <button type="submit"
                         class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
-                        <i class="fas fa-save mr-2"></i>Save Settings
+                        <i class="fas fa-save mr-2"></i>{{ __('Save Settings') }}
                     </button>
                 </div>
             </form>

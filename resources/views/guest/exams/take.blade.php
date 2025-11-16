@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $exam->title }} - Ujian</title>
+    <title>{{ $exam->title }} - {{ __('Exam') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -31,7 +31,7 @@
                         <i class="fas fa-clock mr-2"></i>
                         <span id="timer-display">{{ $exam->duration_minutes }}:00</span>
                     </div>
-                    <p class="text-xs text-blue-100">Waktu tersisa</p>
+                    <p class="text-xs text-blue-100">{{ __('Time remaining') }}</p>
                 </div>
             </div>
         </div>
@@ -57,14 +57,15 @@
                                 <!-- Question Header -->
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
-                                        <span class="text-sm text-gray-500">Soal {{ $index + 1 }} dari
-                                            {{ $questions->count() }}</span>
+                                        <span class="text-sm text-gray-500">
+                                            {{ __('Question :current of :total', ['current' => $index + 1, 'total' => $questions->count()]) }}
+                                        </span>
                                         <h3 class="text-lg font-semibold text-gray-900 mt-1">
                                             {{ $question->question_text }}
                                         </h3>
                                     </div>
                                     <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-                                        {{ $question->points }} poin
+                                        {{ trans_choice(__(':count point|:count points'), $question->points, ['count' => $question->points]) }}
                                     </span>
                                 </div>
 
@@ -72,7 +73,7 @@
                                 @if ($question->question_image)
                                     <div class="mb-4">
                                         <img src="{{ Storage::url($question->question_image) }}"
-                                            alt="Question Image" class="max-w-full h-auto rounded-lg">
+                                            alt="{{ __('Question Image') }}" class="max-w-full h-auto rounded-lg">
                                     </div>
                                 @endif
 
@@ -166,7 +167,7 @@
                                                         <select name="question_{{ $question->id }}[{{ $pairIndex }}]"
                                                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                                             onchange="saveAnswer({{ $question->id }})">
-                                                            <option value="">Pilih jawaban...</option>
+                                                            <option value="">{{ __('Select an answer...') }}</option>
                                                             @foreach ($rightOptions as $rightOpt)
                                                                 <option value="{{ $rightOpt }}"
                                                                     {{ isset($savedMatches[$pairIndex]) && $savedMatches[$pairIndex] == $rightOpt ? 'selected' : '' }}>
@@ -183,7 +184,7 @@
                                         <div>
                                             <textarea name="question_{{ $question->id }}" rows="8"
                                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                                placeholder="Tuliskan jawaban Anda di sini..." onchange="saveAnswer({{ $question->id }})">{{ $savedAnswer ? $savedAnswer->answer : '' }}</textarea>
+                                                placeholder="{{ __('Write your answer here...') }}" onchange="saveAnswer({{ $question->id }})">{{ $savedAnswer ? $savedAnswer->answer : '' }}</textarea>
                                         </div>
                                     @endif
                                 </div>
@@ -192,18 +193,18 @@
                                 <div class="flex justify-between mt-8 pt-6 border-t">
                                     <button type="button" onclick="previousQuestion()"
                                         class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 {{ $index === 0 ? 'invisible' : '' }}">
-                                        <i class="fas fa-arrow-left mr-2"></i>Sebelumnya
+                                        <i class="fas fa-arrow-left mr-2"></i>{{ __('Previous') }}
                                     </button>
 
                                     @if ($index < $questions->count() - 1)
                                         <button type="button" onclick="nextQuestion()"
                                             class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                            Selanjutnya<i class="fas fa-arrow-right ml-2"></i>
+                                            {{ __('Next') }}<i class="fas fa-arrow-right ml-2"></i>
                                         </button>
                                     @else
                                         <button type="button" onclick="confirmSubmit()"
                                             class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
-                                            <i class="fas fa-check mr-2"></i>Selesai & Kumpulkan
+                                            <i class="fas fa-check mr-2"></i>{{ __('Finish & Submit') }}
                                         </button>
                                     @endif
                                 </div>
@@ -215,7 +216,7 @@
                 <!-- Question Navigation Sidebar -->
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-lg shadow-lg p-4 sticky top-4">
-                        <h3 class="font-semibold text-gray-900 mb-4">Navigasi Soal</h3>
+                        <h3 class="font-semibold text-gray-900 mb-4">{{ __('Question Navigation') }}</h3>
                         <div class="grid grid-cols-5 gap-2">
                             @foreach ($questions as $index => $question)
                                 @php
@@ -231,7 +232,7 @@
 
                         <div class="mt-6 pt-4 border-t space-y-2 text-sm">
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-600">Terjawab:</span>
+                                <span class="text-gray-600">{{ __('Answered:') }}</span>
                                 <span class="font-semibold text-green-600" id="answered-count">
                                     {{ $attempt->answers->count() }}/{{ $questions->count() }}
                                 </span>
@@ -240,7 +241,7 @@
 
                         <button type="button" onclick="confirmSubmit()"
                             class="w-full mt-6 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold">
-                            <i class="fas fa-check mr-2"></i>Kumpulkan Ujian
+                            <i class="fas fa-check mr-2"></i>{{ __('Submit Exam') }}
                         </button>
                     </div>
                 </div>
@@ -265,6 +266,19 @@
         let currentQuestionIndex = 0;
         let timeRemaining = 0;
         let timerInterval;
+
+        const i18n = {
+            confirmSubmitTitle: @json(__('Submit Exam?')),
+            confirmSubmitMessage: @json(__('Are you sure you want to submit the exam?')),
+            confirmSubmitUnanswered: @json(__('There are :count unanswered questions.')),
+            confirmYes: @json(__('Yes, Submit')),
+            confirmCancel: @json(__('Cancel')),
+            autoSubmitText: @json(__('Exam will be submitted automatically.')),
+            timeUpTitle: @json(__('Time is up!')),
+            tabLimitTitle: @json(__('Tab switch limit reached!')),
+            warningTemplate: @json(__('Warning! Do not leave the exam page. (:current/:max)')),
+            fullscreenWarning: @json(__('Fullscreen mode disabled! Please enable it again.'))
+        };
 
         // Initialize timer
         function initTimer() {
@@ -293,7 +307,7 @@
             timerInterval = setInterval(() => {
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
-                    autoSubmit('Waktu habis!');
+                    autoSubmit(i18n.timeUpTitle);
                     return;
                 }
 
@@ -402,20 +416,20 @@
             const totalQuestions = {{ $questions->count() }};
             const unanswered = totalQuestions - answeredCount;
 
-            let message = 'Yakin ingin mengumpulkan ujian?';
+            let message = i18n.confirmSubmitMessage;
             if (unanswered > 0) {
-                message += ` Masih ada ${unanswered} soal yang belum dijawab.`;
+                message += ' ' + i18n.confirmSubmitUnanswered.replace(':count', unanswered);
             }
 
             Swal.fire({
-                title: 'Kumpulkan Ujian?',
+                title: i18n.confirmSubmitTitle,
                 text: message,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#10b981',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Kumpulkan',
-                cancelButtonText: 'Batal'
+                confirmButtonText: i18n.confirmYes,
+                cancelButtonText: i18n.confirmCancel
             }).then((result) => {
                 if (result.isConfirmed) {
                     submitExam();
@@ -431,7 +445,7 @@
         function autoSubmit(reason) {
             Swal.fire({
                 title: reason,
-                text: 'Ujian akan otomatis dikumpulkan.',
+                text: i18n.autoSubmitText,
                 icon: 'info',
                 timer: 3000,
                 showConfirmButton: false
@@ -457,7 +471,7 @@
 
             document.addEventListener('fullscreenchange', () => {
                 if (!document.fullscreenElement) {
-                    showWarning('Mode layar penuh dimatikan! Harap aktifkan kembali.');
+                    showWarning(i18n.fullscreenWarning);
                     fetch(`/siswa/attempts/${attemptId}/track-fullscreen-exit`, {
                         method: 'POST',
                         headers: {
@@ -483,10 +497,11 @@
                     });
 
                     if (tabSwitchCount >= maxTabSwitches) {
-                        autoSubmit('Batas perpindahan tab tercapai!');
+                        autoSubmit(i18n.tabLimitTitle);
                     } else {
-                        showWarning(
-                            `Peringatan! Jangan keluar dari halaman ujian. (${tabSwitchCount}/${maxTabSwitches})`);
+                        let warningText = i18n.warningTemplate.replace(':current', tabSwitchCount)
+                            .replace(':max', maxTabSwitches);
+                        showWarning(warningText);
                     }
                 }
             });

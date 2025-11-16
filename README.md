@@ -40,6 +40,8 @@ Laravel LMS adalah platform pembelajaran digital yang dirancang untuk memudahkan
   - Deteksi perpindahan tab
   - Penguncian waktu (server-side)
   - Violation logging
+  - Auto block login + incident tracking saat kecurangan terdeteksi
+  - Admin dashboard untuk review & reset akses login
 - Pengacakan soal & opsi per attempt
 - Timer real-time dengan auto-submit
 - Multiple attempts (dapat dikonfigurasi)
@@ -117,6 +119,7 @@ Laravel LMS adalah platform pembelajaran digital yang dirancang untuk memudahkan
 - Database backup & restore
 - User/Course/Exam management
 - System configuration
+- Cheating Incident Center (monitoring, notifikasi, reset login)
 - Built-in documentation system
 
 ### 💻 Modern UI/UX
@@ -126,6 +129,13 @@ Laravel LMS adalah platform pembelajaran digital yang dirancang untuk memudahkan
 - Font Awesome icons
 - Loading states & empty states
 - Form validation (client & server-side)
+
+---
+
+## 🛠️ Pembaruan Terbaru
+- **Blokir user benar-benar efektif:** siswa yang terdeteksi curang otomatis dikeluarkan dan tidak bisa memulai attempt baru sampai admin melakukan reset.
+- **Jadwal ujian sesuai timezone sekolah:** seluruh `start_time` / `end_time` kini disimpan di UTC dan otomatis dikonversi kembali ke zona waktu aplikasi saat ditampilkan, sehingga tidak ada lagi selisih jam.
+- **Notifikasi lebih informatif:** fallback teks ditambahkan di komponen bell, jadi semua notifikasi—termasuk yang lama—selalu menampilkan judul dan detail aksinya.
 
 ---
 

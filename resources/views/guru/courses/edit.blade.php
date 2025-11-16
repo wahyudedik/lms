@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Edit Kelas') }}
+                {{ __('Edit Course') }}
             </h2>
             <a href="{{ route('guru.courses.show', $course) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -23,7 +23,7 @@
                         <!-- Title -->
                         <div class="mb-6">
                             <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                                Nama Kelas <span class="text-red-500">*</span>
+                                {{ __('Course Name') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="title" id="title"
                                 value="{{ old('title', $course->title) }}" required
@@ -36,7 +36,7 @@
                         <!-- Code -->
                         <div class="mb-6">
                             <label for="code" class="block text-sm font-medium text-gray-700 mb-2">
-                                Kode Kelas <span class="text-red-500">*</span>
+                                {{ __('Course Code') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="code" id="code" value="{{ old('code', $course->code) }}"
                                 required
@@ -105,7 +105,7 @@
                         <!-- Cover Image -->
                         <div class="mb-6">
                             <label for="cover_image" class="block text-sm font-medium text-gray-700 mb-2">
-                                Ubah Cover Image
+                                {{ __('Change Cover Image') }}
                             </label>
                             <input type="file" name="cover_image" id="cover_image" accept="image/*"
                                 class="w-full @error('cover_image') border-red-500 @enderror">

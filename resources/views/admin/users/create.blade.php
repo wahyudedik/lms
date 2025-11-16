@@ -6,7 +6,7 @@
             </h2>
             <a href="{{ route('admin.users.index') }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                Back to Users
+                {{ __('Back to Users') }}
             </a>
         </div>
     </x-slot>
@@ -41,10 +41,10 @@
                                 <select id="role" name="role"
                                     class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
                                     required>
-                                    <option value="">Select Role</option>
-                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Guru</option>
-                                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                                    <option value="">{{ __('Select Role') }}</option>
+                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>{{ __('Admin') }}</option>
+                                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>{{ __('Guru') }}</option>
+                                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>{{ __('Siswa') }}</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('role')" class="mt-2" />
                             </div>
@@ -70,11 +70,11 @@
                                 <x-input-label for="gender" :value="__('Gender')" />
                                 <select id="gender" name="gender"
                                     class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-                                    <option value="">Select Gender</option>
+                                    <option value="">{{ __('Select Gender') }}</option>
                                     <option value="laki-laki" {{ old('gender') == 'laki-laki' ? 'selected' : '' }}>
-                                        Laki-laki</option>
+                                        {{ __('Male') }}</option>
                                     <option value="perempuan" {{ old('gender') == 'perempuan' ? 'selected' : '' }}>
-                                        Perempuan</option>
+                                        {{ __('Female') }}</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('gender')" class="mt-2" />
                             </div>
@@ -101,7 +101,7 @@
                             <x-input-label for="address" :value="__('Address')" />
                             <textarea id="address" name="address" rows="3"
                                 class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
-                                placeholder="Enter full address">{{ old('address') }}</textarea>
+                                placeholder="{{ __('Enter full address') }}">{{ old('address') }}</textarea>
                             <x-input-error :messages="$errors->get('address')" class="mt-2" />
                         </div>
 
@@ -111,7 +111,7 @@
                                 <input type="checkbox" name="is_active" value="1"
                                     {{ old('is_active', true) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                <span class="ml-2 text-sm text-gray-600">Active User</span>
+                                <span class="ml-2 text-sm text-gray-600">{{ __('Active User') }}</span>
                             </label>
                         </div>
 
@@ -119,7 +119,7 @@
                         <div class="flex items-center justify-end mt-6">
                             <a href="{{ route('admin.users.index') }}"
                                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-4">
-                                Cancel
+                                {{ __('Cancel') }}
                             </a>
                             <x-primary-button id="createUserBtn">
                                 {{ __('Create User') }}
@@ -136,6 +136,12 @@
             document.getElementById('createUserBtn').addEventListener('click', function(e) {
                 const form = this.closest('form');
                 const formData = new FormData(form);
+                const createUserLocale = {
+                    missingTitle: @json(__('Missing Required Fields')),
+                    missingText: @json(__('Please fill in all required fields before creating the user.')),
+                    loadingTitle: @json(__('Creating User...')),
+                    loadingText: @json(__('Please wait while we create the new user.')),
+                };
 
                 // Check if required fields are filled
                 const name = formData.get('name');
@@ -147,16 +153,16 @@
                     e.preventDefault();
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Missing Required Fields',
-                        text: 'Please fill in all required fields before creating the user.',
+                        title: createUserLocale.missingTitle,
+                        text: createUserLocale.missingText,
                     });
                     return;
                 }
 
                 // Show loading
                 Swal.fire({
-                    title: 'Creating User...',
-                    text: 'Please wait while we create the new user.',
+                    title: createUserLocale.loadingTitle,
+                    text: createUserLocale.loadingText,
                     allowOutsideClick: false,
                     showConfirmButton: false,
                     willOpen: () => {

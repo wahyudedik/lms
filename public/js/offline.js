@@ -350,6 +350,10 @@ class OfflineManager {
      */
     async syncQueuedSubmissions() {
         try {
+            if (this._syncRequested) {
+                return;
+            }
+            this._syncRequested = true;
             // Trigger background sync
             if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
                 const registration = await navigator.serviceWorker.ready;
@@ -357,8 +361,13 @@ class OfflineManager {
 
                 console.log('[Offline] Background sync registered');
             }
+            // Clear the flag after a short delay to allow another manual request later
+            setTimeout(() => {
+                this._syncRequested = false;
+            }, 5000);
         } catch (error) {
             console.error('[Offline] Failed to sync:', error);
+            this._syncRequested = false;
         }
     }
 

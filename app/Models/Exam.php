@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Exam extends Model
 {
@@ -37,6 +38,8 @@ class Exam extends Model
         'require_guest_email',
         'max_token_uses',
         'current_token_uses',
+        'offline_enabled',
+        'offline_cache_duration',
     ];
 
     protected $casts = [
@@ -53,6 +56,8 @@ class Exam extends Model
         'allow_token_access' => 'boolean',
         'require_guest_name' => 'boolean',
         'require_guest_email' => 'boolean',
+        'offline_enabled' => 'boolean',
+        'offline_cache_duration' => 'integer',
     ];
 
     /**
@@ -148,6 +153,59 @@ class Exam extends Model
     public function hasEnded(): bool
     {
         return $this->end_time ? now()->gt($this->end_time) : false;
+    }
+
+    /**
+     * Accessor to always present start_time in the app timezone even though it is stored in UTC.
+     */
+    public function getStartTimeAttribute($value): ?Carbon
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return Carbon::parse($value, 'UTC')->setTimezone(config('app.timezone'));
+    }
+
+    /**
+     * Accessor to always present end_time in the app timezone even though it is stored in UTC.
+     */
+    public function getEndTimeAttribute($value): ?Carbon
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return Carbon::parse($value, 'UTC')->setTimezone(config('app.timezone'));
+    }
+
+    /**
+     * Mutator to ensure start_time is stored in UTC.
+     */
+    public function setStartTimeAttribute($value): void
+    {
+        $this->attributes['start_time'] = $this->convertToUtc($value);
+    }
+
+    /**
+     * Mutator to ensure end_time is stored in UTC.
+     */
+    public function setEndTimeAttribute($value): void
+    {
+        $this->attributes['end_time'] = $this->convertToUtc($value);
+    }
+
+    protected function convertToUtc($value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        $date = $value instanceof Carbon
+            ? $value->copy()
+            : Carbon::parse($value, config('app.timezone'));
+
+        return $date->setTimezone('UTC')->format('Y-m-d H:i:s');
     }
 
     /**

@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Buat Ujian Baru
+                {{ __('Create New Exam') }}
             </h2>
             <a href="{{ route('admin.exams.index') }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -20,15 +20,15 @@
 
                         <!-- Basic Information -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi Dasar</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Informasi Dasar') }}</h3>
 
                             <div class="mb-4">
                                 <label for="course_id" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Kursus <span class="text-red-500">*</span>
+                                    {{ __('Kursus') }} <span class="text-red-500">*</span>
                                 </label>
                                 <select name="course_id" id="course_id" required
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="">Pilih Kursus</option>
+                                    <option value="">{{ __('Pilih Kursus') }}</option>
                                     @foreach ($courses as $course)
                                         <option value="{{ $course->id }}"
                                             {{ old('course_id') == $course->id ? 'selected' : '' }}>
@@ -43,7 +43,7 @@
 
                             <div class="mb-4">
                                 <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Judul Ujian <span class="text-red-500">*</span>
+                                    {{ __('Exam Title') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="title" id="title" value="{{ old('title') }}" required
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -54,27 +54,26 @@
 
                             <div class="mb-4">
                                 <label for="description"
-                                    class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
+                                    class="block text-sm font-medium text-gray-700 mb-2">{{ __('Deskripsi') }}</label>
                                 <textarea name="description" id="description" rows="3"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description') }}</textarea>
                             </div>
 
                             <div class="mb-4">
-                                <label for="instructions" class="block text-sm font-medium text-gray-700 mb-2">Instruksi
-                                    Ujian</label>
-                                <textarea name="instructions" id="instructions" rows="3" placeholder="Instruksi khusus untuk peserta ujian..."
+                                <label for="instructions" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Exam Instructions') }}</label>
+                                <textarea name="instructions" id="instructions" rows="3" placeholder="{{ __('Special instructions for examinees...') }}"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('instructions') }}</textarea>
                             </div>
                         </div>
 
                         <!-- Time Settings -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pengaturan Waktu</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Time Settings') }}</h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                 <div>
                                     <label for="duration_minutes" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Durasi (menit) <span class="text-red-500">*</span>
+                                        {{ __('Durasi (menit)') }} <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="duration_minutes" id="duration_minutes"
                                         value="{{ old('duration_minutes', 60) }}" min="1" required
@@ -82,16 +81,14 @@
                                 </div>
 
                                 <div>
-                                    <label for="start_time" class="block text-sm font-medium text-gray-700 mb-2">Waktu
-                                        Mulai</label>
+                                    <label for="start_time" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Waktu Mulai') }}</label>
                                     <input type="datetime-local" name="start_time" id="start_time"
                                         value="{{ old('start_time') }}"
                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 </div>
 
                                 <div>
-                                    <label for="end_time" class="block text-sm font-medium text-gray-700 mb-2">Waktu
-                                        Selesai</label>
+                                    <label for="end_time" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Waktu Selesai') }}</label>
                                     <input type="datetime-local" name="end_time" id="end_time"
                                         value="{{ old('end_time') }}"
                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -101,12 +98,12 @@
 
                         <!-- Exam Settings -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pengaturan Ujian</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Exam Settings') }}</h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label for="max_attempts" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Maksimal Percobaan <span class="text-red-500">*</span>
+                                        {{ __('Maksimal Percobaan') }} <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="max_attempts" id="max_attempts"
                                         value="{{ old('max_attempts', 1) }}" min="1" required
@@ -115,7 +112,7 @@
 
                                 <div>
                                     <label for="pass_score" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Nilai Lulus (%) <span class="text-red-500">*</span>
+                                        {{ __('Pass Score (%)') }} <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="pass_score" id="pass_score"
                                         value="{{ old('pass_score', 60) }}" min="0" max="100"
@@ -130,7 +127,7 @@
                                         id="shuffle_questions" {{ old('shuffle_questions') ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="shuffle_questions" class="ml-2 text-sm text-gray-700">
-                                        Acak Urutan Soal
+                                        {{ __('Shuffle Question Order') }}
                                     </label>
                                 </div>
 
@@ -139,7 +136,7 @@
                                         id="shuffle_options" {{ old('shuffle_options') ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="shuffle_options" class="ml-2 text-sm text-gray-700">
-                                        Acak Opsi Jawaban
+                                        {{ __('Shuffle Answer Options') }}
                                     </label>
                                 </div>
 
@@ -149,7 +146,7 @@
                                         {{ old('show_results_immediately', true) ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="show_results_immediately" class="ml-2 text-sm text-gray-700">
-                                        Tampilkan Hasil Langsung
+                                        {{ __('Tampilkan Hasil Langsung') }}
                                     </label>
                                 </div>
 
@@ -159,7 +156,7 @@
                                         {{ old('show_correct_answers', true) ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="show_correct_answers" class="ml-2 text-sm text-gray-700">
-                                        Tampilkan Jawaban Benar
+                                        {{ __('Show Correct Answers') }}
                                     </label>
                                 </div>
                             </div>
@@ -167,7 +164,7 @@
 
                         <!-- Anti-Cheat Settings -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pengaturan Anti-Cheat</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Anti-Cheat Settings') }}</h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div class="flex items-center">
@@ -175,7 +172,7 @@
                                         id="require_fullscreen" {{ old('require_fullscreen') ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="require_fullscreen" class="ml-2 text-sm text-gray-700">
-                                        Wajib Fullscreen
+                                        {{ __('Wajib Fullscreen') }}
                                     </label>
                                 </div>
 
@@ -184,20 +181,19 @@
                                         id="detect_tab_switch" {{ old('detect_tab_switch') ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-blue-600 shadow-sm">
                                     <label for="detect_tab_switch" class="ml-2 text-sm text-gray-700">
-                                        Deteksi Perpindahan Tab
+                                        {{ __('Deteksi Perpindahan Tab') }}
                                     </label>
                                 </div>
                             </div>
 
                             <div id="tab_switch_settings" class="{{ old('detect_tab_switch') ? '' : 'hidden' }}">
                                 <label for="max_tab_switches" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Maksimal Perpindahan Tab
+                                    {{ __('Maksimal Perpindahan Tab') }}
                                 </label>
                                 <input type="number" name="max_tab_switches" id="max_tab_switches"
                                     value="{{ old('max_tab_switches', 3) }}" min="1"
                                     class="w-full md:w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <p class="text-sm text-gray-500 mt-1">Ujian akan otomatis dikumpulkan setelah mencapai
-                                    batas ini.</p>
+                                <p class="text-sm text-gray-500 mt-1">{{ __('The exam will be automatically submitted after reaching this limit.') }}</p>
                             </div>
                         </div>
 
@@ -208,7 +204,7 @@
                                     {{ old('is_published') ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 shadow-sm">
                                 <label for="is_published" class="ml-2 text-sm text-gray-700">
-                                    Publikasikan Ujian
+                                    {{ __('Publish Exam') }}
                                 </label>
                             </div>
                         </div>
@@ -217,15 +213,13 @@
                         <div class="mb-8">
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">
                                 <i class="fas fa-ticket-alt text-indigo-600 mr-2"></i>
-                                Akses via Token (Guest Access)
+                                {{ __('Akses via Token (Guest Access)') }}
                             </h3>
 
                             <div class="p-4 bg-indigo-50 rounded-lg mb-4">
                                 <p class="text-sm text-indigo-800">
                                     <i class="fas fa-info-circle mr-1"></i>
-                                    Aktifkan fitur ini jika ingin memberikan akses ujian kepada peserta tanpa harus
-                                    login.
-                                    Peserta dapat mengakses ujian via token unik.
+                                    {{ __('Aktifkan fitur ini jika ingin memberikan akses ujian kepada peserta tanpa harus login. Peserta dapat mengakses ujian via token unik.') }}
                                 </p>
                             </div>
 
@@ -235,7 +229,7 @@
                                     class="rounded border-gray-300 text-indigo-600 shadow-sm"
                                     onchange="toggleTokenSettings()">
                                 <label for="allow_token_access" class="ml-2 text-sm font-medium text-gray-700">
-                                    Izinkan Akses via Token
+                                    {{ __('Izinkan Akses via Token') }}
                                 </label>
                             </div>
 
@@ -247,7 +241,7 @@
                                             {{ old('require_guest_name', true) ? 'checked' : '' }}
                                             class="rounded border-gray-300 text-indigo-600 shadow-sm">
                                         <label for="require_guest_name" class="ml-2 text-sm text-gray-700">
-                                            Wajib Isi Nama
+                                            {{ __('Wajib Isi Nama') }}
                                         </label>
                                     </div>
 
@@ -256,23 +250,22 @@
                                             id="require_guest_email" {{ old('require_guest_email') ? 'checked' : '' }}
                                             class="rounded border-gray-300 text-indigo-600 shadow-sm">
                                         <label for="require_guest_email" class="ml-2 text-sm text-gray-700">
-                                            Wajib Isi Email
+                                            {{ __('Wajib Isi Email') }}
                                         </label>
                                     </div>
                                 </div>
 
                                 <div class="mb-4">
                                     <label for="max_token_uses" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Maksimal Penggunaan Token
+                                        {{ __('Maksimal Penggunaan Token') }}
                                     </label>
                                     <input type="number" name="max_token_uses" id="max_token_uses"
                                         value="{{ old('max_token_uses') }}" min="1"
-                                        placeholder="Kosongkan untuk unlimited"
+                                        placeholder="{{ __('Kosongkan untuk unlimited') }}"
                                         class="w-full md:w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <p class="text-sm text-gray-500 mt-1">
                                         <i class="fas fa-lightbulb mr-1"></i>
-                                        Kosongkan untuk penggunaan tidak terbatas. Isi angka untuk membatasi jumlah
-                                        peserta.
+                                        {{ __('Kosongkan untuk penggunaan tidak terbatas. Isi angka untuk membatasi jumlah peserta.') }}
                                     </p>
                                 </div>
                             </div>
@@ -282,11 +275,11 @@
                         <div class="flex gap-4">
                             <button type="submit"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-save mr-2"></i>Simpan Ujian
+                                <i class="fas fa-save mr-2"></i>{{ __('Save Exam') }}
                             </button>
                             <a href="{{ route('admin.exams.index') }}"
                                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                Batal
+                                {{ __('Batal') }}
                             </a>
                         </div>
                     </form>

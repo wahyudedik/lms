@@ -3,11 +3,11 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-history text-gray-600 mr-2"></i>
-                Import History
+                {{ __('Import History') }}
             </h2>
             <a href="{{ route('admin.question-bank.index') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Back to Question Bank
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back to Question Bank') }}
             </a>
         </div>
     </x-slot>
@@ -21,24 +21,20 @@
                         <div class="flex gap-4">
                             <select name="status"
                                 class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">All Status</option>
-                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending
-                                </option>
-                                <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>
-                                    Processing</option>
-                                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
-                                    Completed</option>
-                                <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed
-                                </option>
+                                <option value="">{{ __('All Status') }}</option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ __('Pending') }}</option>
+                                <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>{{ __('Processing') }}</option>
+                                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>{{ __('Completed') }}</option>
+                                <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>{{ __('Failed') }}</option>
                             </select>
                             <button type="submit"
                                 class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                                <i class="fas fa-filter mr-2"></i>Filter
+                                <i class="fas fa-filter mr-2"></i>{{ __('Filter') }}
                             </button>
                             @if (request('status'))
                                 <a href="{{ route('admin.question-bank.import-history') }}"
                                     class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-                                    <i class="fas fa-times mr-2"></i>Clear
+                                    <i class="fas fa-times mr-2"></i>{{ __('Clear') }}
                                 </a>
                             @endif
                         </div>
@@ -49,23 +45,14 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Filename</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Imported By</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Size
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Status
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Results</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Actions</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('ID') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Filename') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Imported By') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Size') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Status') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Results') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Date') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -91,13 +78,12 @@
                                                 @if ($import->status == 'completed')
                                                     <div class="text-green-600">
                                                         <i class="fas fa-check mr-1"></i>{{ $import->imported_count }}
-                                                        imported
+                                                        {{ __('imported') }}
                                                     </div>
                                                     @if ($import->skipped_count > 0)
                                                         <div class="text-yellow-600">
-                                                            <i
-                                                                class="fas fa-exclamation-triangle mr-1"></i>{{ $import->skipped_count }}
-                                                            skipped
+                                                            <i class="fas fa-exclamation-triangle mr-1"></i>{{ $import->skipped_count }}
+                                                            {{ __('skipped') }}
                                                         </div>
                                                     @endif
                                                 @else
@@ -118,7 +104,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900"
-                                                        onclick="return confirmDelete('Delete this import record?')">
+                                                        onclick="return confirmDelete('{{ __('Delete this import record?') }}')">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -135,13 +121,13 @@
                     @else
                         <div class="text-center py-12">
                             <i class="fas fa-history text-gray-300 text-6xl mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-700 mb-2">No Import History</h3>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-2">{{ __('No Import History') }}</h3>
                             <p class="text-gray-500 mb-6">
-                                No imports have been performed yet.
+                                {{ __('No imports have been performed yet.') }}
                             </p>
                             <a href="{{ route('admin.question-bank.index') }}"
                                 class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">
-                                <i class="fas fa-file-import mr-2"></i>Import Your First File
+                                <i class="fas fa-file-import mr-2"></i>{{ __('Import Your First File') }}
                             </a>
                         </div>
                     @endif

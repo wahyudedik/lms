@@ -6,7 +6,7 @@
             </h2>
             <a href="{{ route('siswa.exams.index') }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -30,7 +30,7 @@
                             <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-yellow-800">Ujian Sedang Berlangsung</h3>
+                            <h3 class="text-sm font-medium text-yellow-800">{{ __('Exam in Progress') }}</h3>
                             <div class="mt-2 text-sm text-yellow-700">
                                 <p>Anda memiliki ujian yang belum diselesaikan. Silakan lanjutkan atau ujian akan
                                     otomatis
@@ -39,7 +39,7 @@
                             <div class="mt-4">
                                 <a href="{{ route('siswa.exams.take', $latestAttempt) }}"
                                     class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                                    <i class="fas fa-play mr-2"></i>Lanjutkan Ujian
+                                    <i class="fas fa-play mr-2"></i>{{ __('Resume Exam') }}
                                 </a>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
             <!-- Exam Information -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi Ujian</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Exam Information') }}</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
@@ -80,12 +80,12 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Jumlah Soal</label>
+                            <label class="block text-sm font-medium text-gray-700">{{ __('Number of Questions') }}</label>
                             <p class="mt-1 text-sm text-gray-900">{{ $exam->total_questions }} soal</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Nilai Lulus</label>
+                            <label class="block text-sm font-medium text-gray-700">{{ __('Pass Score') }}</label>
                             <p class="mt-1 text-sm text-gray-900">{{ $exam->pass_score }}%</p>
                         </div>
 
@@ -127,7 +127,7 @@
 
                     @if ($exam->instructions)
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Instruksi</label>
+                            <label class="block text-sm font-medium text-gray-700">{{ __('Instructions') }}</label>
                             <div class="mt-1 text-sm text-gray-900 bg-blue-50 p-4 rounded-lg whitespace-pre-line">
                                 {{ $exam->instructions }}
                             </div>
@@ -139,7 +139,7 @@
             <!-- Exam Rules -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Aturan Ujian</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Exam Rules') }}</h3>
 
                     <div class="space-y-2 text-sm text-gray-700">
                         <div class="flex items-start">
@@ -200,7 +200,7 @@
                                             Waktu
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Nilai
+                                            {{ __('Score') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                             Status
@@ -264,14 +264,14 @@
                                 <p class="text-sm text-gray-700">
                                     Pastikan Anda telah membaca semua instruksi dengan seksama. Timer akan dimulai
                                     segera
-                                    setelah Anda mengklik tombol "Mulai Ujian".
+                                    {{ __('after you click the "Start Exam" button.') }}
                                 </p>
                             </div>
 
                             <div class="flex gap-4">
                                 <button type="submit"
                                     class="flex-1 bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded text-lg">
-                                    <i class="fas fa-pencil mr-2"></i>Mulai Ujian
+                                    <i class="fas fa-pencil mr-2"></i>{{ __('Start Exam') }}
                                 </button>
                                 <a href="{{ route('siswa.exams.index') }}"
                                     class="flex-1 bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded text-lg text-center">

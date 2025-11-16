@@ -6,7 +6,7 @@
             </h2>
             <a href="{{ route('admin.users.index') }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                Back to Users
+                {{ __('Back to Users') }}
             </a>
         </div>
     </x-slot>
@@ -45,13 +45,13 @@
                                 <select id="role" name="role"
                                     class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
                                     required>
-                                    <option value="">Select Role</option>
+                                    <option value="">{{ __('Select Role') }}</option>
                                     <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>
-                                        Admin</option>
+                                        {{ __('Admin') }}</option>
                                     <option value="guru" {{ old('role', $user->role) == 'guru' ? 'selected' : '' }}>
-                                        Guru</option>
+                                        {{ __('Guru') }}</option>
                                     <option value="siswa" {{ old('role', $user->role) == 'siswa' ? 'selected' : '' }}>
-                                        Siswa</option>
+                                        {{ __('Siswa') }}</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('role')" class="mt-2" />
                             </div>
@@ -77,12 +77,12 @@
                                 <x-input-label for="gender" :value="__('Gender')" />
                                 <select id="gender" name="gender"
                                     class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-                                    <option value="">Select Gender</option>
+                                    <option value="">{{ __('Select Gender') }}</option>
                                     <option value="laki-laki"
-                                        {{ old('gender', $user->gender) == 'laki-laki' ? 'selected' : '' }}>Laki-laki
+                                        {{ old('gender', $user->gender) == 'laki-laki' ? 'selected' : '' }}>{{ __('Male') }}
                                     </option>
                                     <option value="perempuan"
-                                        {{ old('gender', $user->gender) == 'perempuan' ? 'selected' : '' }}>Perempuan
+                                        {{ old('gender', $user->gender) == 'perempuan' ? 'selected' : '' }}>{{ __('Female') }}
                                     </option>
                                 </select>
                                 <x-input-error :messages="$errors->get('gender')" class="mt-2" />
@@ -94,7 +94,7 @@
                             <x-input-label for="address" :value="__('Address')" />
                             <textarea id="address" name="address" rows="3"
                                 class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
-                                placeholder="Enter full address">{{ old('address', $user->address) }}</textarea>
+                                placeholder="{{ __('Enter full address') }}">{{ old('address', $user->address) }}</textarea>
                             <x-input-error :messages="$errors->get('address')" class="mt-2" />
                         </div>
 
@@ -104,7 +104,7 @@
                                 <input type="checkbox" name="is_active" value="1"
                                     {{ old('is_active', $user->is_active) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                <span class="ml-2 text-sm text-gray-600">Active User</span>
+                                <span class="ml-2 text-sm text-gray-600">{{ __('Active User') }}</span>
                             </label>
                         </div>
 
@@ -112,7 +112,7 @@
                         <div class="flex items-center justify-end mt-6">
                             <a href="{{ route('admin.users.index') }}"
                                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-4">
-                                Cancel
+                                {{ __('Cancel') }}
                             </a>
                             <x-primary-button id="updateUserBtn">
                                 {{ __('Update User') }}
@@ -122,7 +122,7 @@
 
                     <!-- Password Update Section -->
                     <div class="mt-8 pt-8 border-t border-gray-200">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Update Password</h3>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Update Password') }}</h3>
                         <form method="POST" action="{{ route('admin.users.update-password', $user) }}">
                             @csrf
                             @method('PATCH')
@@ -161,6 +161,12 @@
             document.getElementById('updateUserBtn').addEventListener('click', function(e) {
                 const form = this.closest('form');
                 const formData = new FormData(form);
+                const updateUserLocale = {
+                    missingTitle: @json(__('Missing Required Fields')),
+                    missingText: @json(__('Please fill in all required fields before updating the user.')),
+                    loadingTitle: @json(__('Updating User...')),
+                    loadingText: @json(__('Please wait while we update the user information.')),
+                };
 
                 // Check if required fields are filled
                 const name = formData.get('name');
@@ -171,16 +177,16 @@
                     e.preventDefault();
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Missing Required Fields',
-                        text: 'Please fill in all required fields before updating the user.',
+                        title: updateUserLocale.missingTitle,
+                        text: updateUserLocale.missingText,
                     });
                     return;
                 }
 
                 // Show loading
                 Swal.fire({
-                    title: 'Updating User...',
-                    text: 'Please wait while we update the user information.',
+                    title: updateUserLocale.loadingTitle,
+                    text: updateUserLocale.loadingText,
                     allowOutsideClick: false,
                     showConfirmButton: false,
                     willOpen: () => {
@@ -193,6 +199,18 @@
             document.getElementById('updatePasswordBtn').addEventListener('click', function(e) {
                 const form = this.closest('form');
                 const formData = new FormData(form);
+                const updatePasswordLocale = {
+                    missingTitle: @json(__('Missing Password Fields')),
+                    missingText: @json(__('Please fill in both password fields.')),
+                    mismatchTitle: @json(__('Password Mismatch')),
+                    mismatchText: @json(__('Password and confirmation do not match.')),
+                    confirmTitle: @json(__('Update Password?')),
+                    confirmText: @json(__('Are you sure you want to update the password for this user?')),
+                    confirmYes: @json(__('Yes, update it!')),
+                    confirmCancel: @json(__('Cancel')),
+                    loadingTitle: @json(__('Updating Password...')),
+                    loadingText: @json(__('Please wait while we update the password.')),
+                };
 
                 const password = formData.get('password');
                 const passwordConfirmation = formData.get('password_confirmation');
@@ -201,8 +219,8 @@
                     e.preventDefault();
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Missing Password Fields',
-                        text: 'Please fill in both password fields.',
+                        title: updatePasswordLocale.missingTitle,
+                        text: updatePasswordLocale.missingText,
                     });
                     return;
                 }
@@ -211,28 +229,28 @@
                     e.preventDefault();
                     Swal.fire({
                         icon: 'error',
-                        title: 'Password Mismatch',
-                        text: 'Password and confirmation do not match.',
+                        title: updatePasswordLocale.mismatchTitle,
+                        text: updatePasswordLocale.mismatchText,
                     });
                     return;
                 }
 
                 // Show confirmation
                 Swal.fire({
-                    title: 'Update Password?',
-                    text: 'Are you sure you want to update the password for this user?',
+                    title: updatePasswordLocale.confirmTitle,
+                    text: updatePasswordLocale.confirmText,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, update it!',
-                    cancelButtonText: 'Cancel'
+                    confirmButtonText: updatePasswordLocale.confirmYes,
+                    cancelButtonText: updatePasswordLocale.confirmCancel
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Show loading
                         Swal.fire({
-                            title: 'Updating Password...',
-                            text: 'Please wait while we update the password.',
+                            title: updatePasswordLocale.loadingTitle,
+                            text: updatePasswordLocale.loadingText,
                             allowOutsideClick: false,
                             showConfirmButton: false,
                             willOpen: () => {

@@ -35,8 +35,17 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('login')->with('error', 'Akun Anda telah dinonaktifkan.');
         }
 
-        // Redirect based on role
-        return redirect()->intended(route($user->dashboard_route, absolute: false));
+        if ($user->is_login_blocked) {
+            $message = $user->login_blocked_reason
+                ? 'Akun Anda diblokir: ' . $user->login_blocked_reason . '. Hubungi admin untuk reset.'
+                : 'Akun Anda diblokir. Hubungi admin untuk reset.';
+
+            Auth::logout();
+            return redirect()->route('login')->with('error', $message);
+        }
+
+        // Redirect to dashboard (route handles per-role redirects)
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

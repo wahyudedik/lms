@@ -49,11 +49,19 @@ class GradesExport implements FromCollection, WithHeadings, WithMapping, WithSty
         static $no = 0;
         $no++;
 
+        $studentName = $attempt->is_guest
+            ? ($attempt->guest_name ?? 'Tamu')
+            : optional($attempt->user)->name;
+
+        $studentEmail = $attempt->is_guest
+            ? ($attempt->guest_email ?? '-')
+            : optional($attempt->user)->email;
+
         return [
             $no,
-            $attempt->user->name,
-            $attempt->user->email,
-            $attempt->exam->title,
+            $studentName ?? 'Tidak diketahui',
+            $studentEmail ?? '-',
+            optional($attempt->exam)->title,
             $attempt->submitted_at ? $attempt->submitted_at->format('d/m/Y H:i') : '-',
             $attempt->time_spent ? round($attempt->time_spent / 60, 2) : '-',
             $attempt->score ? number_format($attempt->score, 2) : '-',

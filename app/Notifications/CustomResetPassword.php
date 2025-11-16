@@ -24,7 +24,7 @@ class CustomResetPassword extends ResetPassword implements ShouldQueue
      *
      * @return array<int, string>
      */
-    public function via(object $notifiable): array
+    public function via($notifiable): array
     {
         return ['mail'];
     }
@@ -32,7 +32,7 @@ class CustomResetPassword extends ResetPassword implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
         $resetUrl = url(route('password.reset', [
             'token' => $this->token,
@@ -55,7 +55,7 @@ class CustomResetPassword extends ResetPassword implements ShouldQueue
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
+    public function toArray($notifiable): array
     {
         return [
             //

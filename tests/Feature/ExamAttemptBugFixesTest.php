@@ -70,12 +70,11 @@ class ExamAttemptBugFixesTest extends TestCase
     public function test_bug_2_race_condition_prevention()
     {
         // BUG #2: Verify only one attempt is created even with rapid requests
-        $this->actingAs($this->siswa);
+        $this->loginAsSiswa();
 
         // Simulate rapid requests
-        $responses = [];
         for ($i = 0; $i < 5; $i++) {
-            $responses[] = $this->post(route('siswa.exams.start', $this->exam));
+            $this->post(route('siswa.exams.start', $this->exam));
         }
 
         // Verify only one attempt was created
@@ -91,7 +90,7 @@ class ExamAttemptBugFixesTest extends TestCase
     public function test_bug_3_question_validation()
     {
         // BUG #3: Verify question validation prevents cross-exam answer submission
-        $this->actingAs($this->siswa);
+        $this->loginAsSiswa();
 
         // Create another exam with different questions
         $otherExam = Exam::factory()->create([
@@ -124,7 +123,7 @@ class ExamAttemptBugFixesTest extends TestCase
     public function test_bug_5_server_side_timer_validation()
     {
         // BUG #5: Verify server-side timer validation works
-        $this->actingAs($this->siswa);
+        $this->loginAsSiswa();
 
         $attempt = ExamAttempt::create([
             'exam_id' => $this->exam->id,
@@ -156,7 +155,7 @@ class ExamAttemptBugFixesTest extends TestCase
     public function test_bug_7_atomic_submit_prevention()
     {
         // BUG #7: Verify atomic submit prevents duplicate submissions
-        $this->actingAs($this->siswa);
+        $this->loginAsSiswa();
 
         $attempt = ExamAttempt::create([
             'exam_id' => $this->exam->id,
@@ -185,7 +184,7 @@ class ExamAttemptBugFixesTest extends TestCase
     public function test_bug_8_double_submit_prevention()
     {
         // BUG #8: Verify double-submit prevention works
-        $this->actingAs($this->siswa);
+        $this->loginAsSiswa();
 
         $attempt = ExamAttempt::create([
             'exam_id' => $this->exam->id,
@@ -290,11 +289,10 @@ class ExamAttemptBugFixesTest extends TestCase
         // BUG #13: Verify dashboard route error handling works
         // Create user without dashboard_route
         $user = User::factory()->create([
-            'role' => 'siswa',
-            // No dashboard_route attribute
+            'role' => 'unknown',
         ]);
 
-        $this->actingAs($user);
+        $this->loginUser($user);
 
         // Access dashboard route
         $response = $this->get(route('dashboard'));
@@ -308,7 +306,7 @@ class ExamAttemptBugFixesTest extends TestCase
     public function test_bug_4_transaction_atomicity()
     {
         // BUG #4: Verify transaction ensures atomicity
-        $this->actingAs($this->siswa);
+        $this->loginAsSiswa();
 
         // Count initial attempts
         $initialCount = ExamAttempt::where('exam_id', $this->exam->id)
@@ -367,6 +365,22 @@ class ExamAttemptBugFixesTest extends TestCase
         // Should fail validation
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['question_id']);
+    }
+
+    protected function loginAsSiswa(): void
+    {
+        $this->loginUser($this->siswa);
+    }
+
+    protected function loginUser(User $user): void
+    {
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertAuthenticatedAs($user);
     }
 }
 

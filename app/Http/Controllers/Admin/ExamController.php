@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Exam;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ExamController extends Controller
 {
@@ -82,9 +83,19 @@ class ExamController extends Controller
         ]);
 
         $validated['created_by'] = auth()->id();
+        $validated['start_time'] = $this->normalizeDateTime($request->input('start_time'));
+        $validated['end_time'] = $this->normalizeDateTime($request->input('end_time'));
+        $validated['offline_enabled'] = $request->boolean('offline_enabled');
+        $validated['offline_cache_duration'] = $validated['offline_enabled']
+            ? ($request->input('offline_cache_duration') ?: 24)
+            : 24;
 
-        if ($request->has('is_published') && $request->is_published) {
+        if ($request->boolean('is_published')) {
+            $validated['is_published'] = true;
             $validated['published_at'] = now();
+        } else {
+            $validated['is_published'] = false;
+            $validated['published_at'] = null;
         }
 
         $exam = Exam::create($validated);
@@ -145,9 +156,20 @@ class ExamController extends Controller
             'offline_cache_duration' => 'nullable|integer|min:1|max:168',
         ]);
 
-        if ($request->has('is_published') && $request->is_published && !$exam->is_published) {
-            $validated['published_at'] = now();
-        } elseif (!$request->has('is_published') || !$request->is_published) {
+        $validated['start_time'] = $this->normalizeDateTime($request->input('start_time'));
+        $validated['end_time'] = $this->normalizeDateTime($request->input('end_time'));
+        $validated['offline_enabled'] = $request->boolean('offline_enabled');
+        $validated['offline_cache_duration'] = $validated['offline_enabled']
+            ? ($request->input('offline_cache_duration') ?: 24)
+            : 24;
+
+        if ($request->boolean('is_published')) {
+            $validated['is_published'] = true;
+            if (!$exam->is_published) {
+                $validated['published_at'] = now();
+            }
+        } else {
+            $validated['is_published'] = false;
             $validated['published_at'] = null;
         }
 
@@ -241,5 +263,19 @@ class ExamController extends Controller
             ->paginate(20);
 
         return view('admin.exams.results', compact('exam', 'statistics', 'attempts'));
+    }
+
+    /**
+     * Normalize datetime input using application timezone before persisting.
+     */
+    protected function normalizeDateTime(?string $value): ?Carbon
+    {
+        if (!$value) {
+            return null;
+        }
+
+        $appTimezone = config('app.timezone', 'UTC');
+
+        return Carbon::parse($value, $appTimezone)->timezone('UTC');
     }
 }

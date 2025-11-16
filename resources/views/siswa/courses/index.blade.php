@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Jelajahi Kelas') }}
+                {{ __('Browse Courses') }}
             </h2>
             <a href="{{ route('siswa.courses.my-courses') }}"
                 class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-book mr-2"></i>Kelas Saya
+                <i class="fas fa-book mr-2"></i>{{ __('My Courses') }}
             </a>
         </div>
     </x-slot>
@@ -16,14 +16,14 @@
             <!-- Enroll by Code -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-4">Daftar dengan Kode Kelas</h3>
+                    <h3 class="text-lg font-semibold mb-4">{{ __('Enroll with Course Code') }}</h3>
                     <form method="POST" action="{{ route('siswa.courses.enroll-by-code') }}" class="flex gap-4">
                         @csrf
                         <input type="text" name="code" placeholder="Masukkan kode kelas (contoh: MTK001)" required
                             class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         <button type="submit"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Daftar
+                            <i class="fas fa-sign-in-alt mr-2"></i>{{ __('Enroll') }}
                         </button>
                     </form>
                 </div>
@@ -88,7 +88,7 @@
 
                             <a href="{{ route('siswa.courses.show', $course) }}"
                                 class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">
-                                <i class="fas fa-arrow-right mr-2"></i>Lihat Detail
+                                <i class="fas fa-arrow-right mr-2"></i>{{ __('View Details') }}
                             </a>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-12 text-center">
                                 <i class="fas fa-inbox text-gray-400 text-6xl mb-4"></i>
-                                <p class="text-gray-500 text-lg">Tidak ada kelas ditemukan</p>
+                                <p class="text-gray-500 text-lg">{{ __('No courses found') }}</p>
                                 @if (request('search'))
                                     <a href="{{ route('siswa.courses.index') }}"
                                         class="text-blue-600 hover:text-blue-800 mt-2 inline-block">

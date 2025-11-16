@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <i class="fas fa-chart-line text-blue-600 mr-2"></i>Advanced Analytics
+                <i class="fas fa-chart-line text-blue-600 mr-2"></i>{{ __('Advanced Analytics') }}
             </h2>
             <div class="flex gap-2">
                 <input type="date" id="start_date" value="{{ $startDate }}"
@@ -11,7 +11,7 @@
                     class="rounded-md border-gray-300 shadow-sm text-sm">
                 <button onclick="refreshCharts()"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-sync-alt mr-1"></i>Refresh
+                    <i class="fas fa-sync-alt mr-1"></i>{{ __('Refresh') }}
                 </button>
             </div>
         </div>
@@ -23,9 +23,9 @@
             <!-- Export Buttons -->
             <div class="flex gap-2 justify-end">
                 <button
-                    onclick="exportDashboardPDF('admin-analytics-{{ date('Y-m-d') }}.pdf', 'Admin Analytics Dashboard')"
+                    onclick="exportDashboardPDF('admin-analytics-{{ date('Y-m-d') }}.pdf', '{{ __('Admin Analytics Dashboard') }}')"
                     class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-lg">
-                    <i class="fas fa-file-export mr-2"></i>Export Dashboard PDF
+                    <i class="fas fa-file-export mr-2"></i>{{ __('Export Dashboard PDF') }}
                 </button>
             </div>
 
@@ -34,7 +34,7 @@
                 <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-blue-100 text-sm">Total Users</p>
+                            <p class="text-blue-100 text-sm">{{ __('Total Users') }}</p>
                             <p class="text-3xl font-bold mt-2">{{ number_format($stats['total_users']) }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -46,7 +46,7 @@
                 <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-green-100 text-sm">Active Courses</p>
+                            <p class="text-green-100 text-sm">{{ __('Active Courses') }}</p>
                             <p class="text-3xl font-bold mt-2">{{ number_format($stats['active_courses']) }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -58,7 +58,7 @@
                 <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-purple-100 text-sm">Total Exams</p>
+                            <p class="text-purple-100 text-sm">{{ __('Total Exams') }}</p>
                             <p class="text-3xl font-bold mt-2">{{ number_format($stats['total_exams']) }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -70,7 +70,7 @@
                 <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-orange-100 text-sm">Avg Score</p>
+                            <p class="text-orange-100 text-sm">{{ __('Avg Score') }}</p>
                             <p class="text-3xl font-bold mt-2">{{ number_format($stats['avg_exam_score'], 1) }}%</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -83,7 +83,7 @@
             <!-- User Registration Trend -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                    <i class="fas fa-user-plus text-blue-600 mr-2"></i>User Registration Trend
+                    <i class="fas fa-user-plus text-blue-600 mr-2"></i>{{ __('User Registration Trend') }}
                 </h3>
                 <div class="h-80">
                     <canvas id="registrationTrendChart"></canvas>
@@ -95,7 +95,7 @@
                 <!-- Course Enrollment Statistics -->
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                        <i class="fas fa-chart-pie text-green-600 mr-2"></i>Top 10 Popular Courses
+                        <i class="fas fa-chart-pie text-green-600 mr-2"></i>{{ __('Top 10 Popular Courses') }}
                     </h3>
                     <div class="h-80">
                         <canvas id="courseEnrollmentChart"></canvas>
@@ -105,7 +105,7 @@
                 <!-- User Role Distribution -->
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                        <i class="fas fa-user-tag text-purple-600 mr-2"></i>User Role Distribution
+                        <i class="fas fa-user-tag text-purple-600 mr-2"></i>{{ __('User Role Distribution') }}
                     </h3>
                     <div class="h-80">
                         <canvas id="roleDistributionChart"></canvas>
@@ -116,7 +116,7 @@
             <!-- Exam Performance Statistics -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                    <i class="fas fa-award text-orange-600 mr-2"></i>Exam Performance Overview
+                    <i class="fas fa-award text-orange-600 mr-2"></i>{{ __('Exam Performance Overview') }}
                 </h3>
                 <div class="h-96">
                     <canvas id="examPerformanceChart"></canvas>
@@ -126,7 +126,7 @@
             <!-- Monthly Activity Statistics -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                    <i class="fas fa-calendar-alt text-indigo-600 mr-2"></i>Monthly Activity (Last 12 Months)
+                    <i class="fas fa-calendar-alt text-indigo-600 mr-2"></i>{{ __('Monthly Activity (Last 12 Months)') }}
                 </h3>
                 <div class="h-80">
                     <canvas id="monthlyActivityChart"></canvas>
@@ -146,6 +146,9 @@
         <script src="{{ asset('js/chart-export.js') }}"></script>
 
         <script>
+            const analyticsLocale = {
+                chartsRefreshed: @json(__('Charts refreshed successfully!')),
+            };
             let charts = {};
 
             // Initialize all charts
@@ -289,7 +292,7 @@
 
                 Toast.fire({
                     icon: 'success',
-                    title: 'Charts refreshed successfully!'
+                    title: analyticsLocale.chartsRefreshed
                 });
             }
 

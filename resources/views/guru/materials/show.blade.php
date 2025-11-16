@@ -11,7 +11,7 @@
                 </a>
                 <a href="{{ route('guru.courses.materials.index', $course) }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -93,7 +93,7 @@
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                                 <button type="submit"
                                     class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    <i class="fas fa-comment mr-2"></i>Kirim Komentar
+                                    <i class="fas fa-comment mr-2"></i>{{ __('Post Comment') }}
                                 </button>
                             </form>
 
@@ -118,7 +118,7 @@
                                             @if ($comment->canDelete(auth()->user()))
                                                 <form action="{{ route('comments.destroy', $comment) }}" method="POST"
                                                     class="ml-4"
-                                                    onsubmit="return confirmDelete('Yakin ingin menghapus komentar ini?');">
+                                                    onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this comment?') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
@@ -150,7 +150,7 @@
                                                         @if ($reply->canDelete(auth()->user()))
                                                             <form action="{{ route('comments.destroy', $reply) }}"
                                                                 method="POST" class="ml-4"
-                                                                onsubmit="return confirmDelete('Yakin ingin menghapus balasan ini?');">
+                                                                onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this reply?') }}');">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit"
@@ -171,17 +171,17 @@
                                             <input type="hidden" name="parent_id" value="{{ $comment->id }}">
                                             <div class="flex gap-2">
                                                 <input type="text" name="comment" required
-                                                    placeholder="Balas komentar..."
+                                                    placeholder="{{ __('Write a reply...') }}"
                                                     class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
                                                 <button type="submit"
                                                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded text-sm">
-                                                    <i class="fas fa-reply mr-1"></i>Balas
+                                                    <i class="fas fa-reply mr-1"></i>{{ __('Reply') }}
                                                 </button>
                                             </div>
                                         </form>
                                     </div>
                                 @empty
-                                    <p class="text-gray-500 text-center py-4">Belum ada komentar. Jadilah yang pertama
+                                    <p class="text-gray-500 text-center py-4">{{ __('No comments yet. Be the first to comment!') }}
                                         berkomentar!</p>
                                 @endforelse
                             </div>
@@ -197,7 +197,7 @@
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi</h3>
                             <dl class="space-y-3">
                                 <div>
-                                    <dt class="text-sm text-gray-500">Kelas</dt>
+                                    <dt class="text-sm text-gray-500">{{ __('Course') }}</dt>
                                     <dd class="text-sm font-medium text-gray-900">{{ $course->title }}</dd>
                                 </div>
                                 <div>
@@ -251,12 +251,12 @@
 
                                 <form action="{{ route('guru.courses.materials.destroy', [$course, $material]) }}"
                                     method="POST"
-                                    onsubmit="return confirmDelete('Yakin ingin menghapus materi ini?');">
+                                    onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this material?') }}');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
                                         class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                        <i class="fas fa-trash mr-2"></i>Hapus Materi
+                                        <i class="fas fa-trash mr-2"></i>{{ __('Delete Material') }}
                                     </button>
                                 </form>
                             </div>

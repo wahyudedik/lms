@@ -247,16 +247,30 @@
             @foreach ($attempts->sortByDesc('score') as $index => $attempt)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $attempt->user->name }}</td>
-                    <td>{{ $attempt->user->email }}</td>
+                    <td>{{ $attempt->is_guest ? ($attempt->guest_name ?? 'Tamu') : ($attempt->user->name ?? 'Tidak diketahui') }}</td>
+                    <td>{{ $attempt->is_guest ? ($attempt->guest_email ?? '-') : ($attempt->user->email ?? '-') }}</td>
                     <td class="text-center">
-                        <strong>{{ number_format($attempt->score, 2) }}%</strong>
+                        @if (!is_null($attempt->score))
+                            <strong>{{ number_format($attempt->score, 2) }}%</strong>
+                        @else
+                            -
+                        @endif
                     </td>
                     <td class="text-center">
-                        {{ number_format($attempt->total_points_earned, 2) }} /
-                        {{ number_format($attempt->total_points_possible, 2) }}
+                        @if (!is_null($attempt->total_points_possible) && $attempt->total_points_possible > 0)
+                            {{ number_format($attempt->total_points_earned, 2) }} /
+                            {{ number_format($attempt->total_points_possible, 2) }}
+                        @else
+                            -
+                        @endif
                     </td>
-                    <td class="text-center">{{ $attempt->time_spent ?? '-' }}</td>
+                    <td class="text-center">
+                        @if ($attempt->time_spent)
+                            {{ gmdate('H:i:s', $attempt->time_spent) }}
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td class="text-center">
                         <span class="badge {{ $attempt->passed ? 'badge-success' : 'badge-danger' }}">
                             {{ $attempt->passed ? 'LULUS' : 'TIDAK LULUS' }}

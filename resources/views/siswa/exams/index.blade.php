@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            📝 Ujian Tersedia
+            📝 {{ __('Available Exams') }}
         </h2>
     </x-slot>
 
@@ -70,7 +70,7 @@
                                     </div>
                                     <div class="flex items-center">
                                         <i class="fas fa-trophy w-5 text-gray-400"></i>
-                                        <span>Nilai lulus: {{ $exam->pass_score }}%</span>
+                                        <span>{{ __('Pass score: :score%', ['score' => $exam->pass_score]) }}</span>
                                     </div>
 
                                     @if ($exam->end_time)
@@ -96,7 +96,7 @@
 
                                         @if ($latestAttempt && $latestAttempt->status === 'completed')
                                             <div class="flex items-center justify-between">
-                                                <span class="text-sm text-gray-600">Nilai Terakhir:</span>
+                                                <span class="text-sm text-gray-600">{{ __('Last Score:') }}</span>
                                                 <span
                                                     class="text-lg font-bold {{ $latestAttempt->score >= $exam->pass_score ? 'text-green-600' : 'text-red-600' }}">
                                                     {{ number_format($latestAttempt->score, 2) }}%
@@ -114,7 +114,7 @@
                                 <div class="flex gap-2">
                                     <a href="{{ route('siswa.exams.show', $exam) }}"
                                         class="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">
-                                        <i class="fas fa-eye mr-1"></i>Lihat Detail
+                                        <i class="fas fa-eye mr-1"></i>{{ __('View Details') }}
                                     </a>
 
                                     @if ($attemptCount > 0 && $latestAttempt && $latestAttempt->status === 'in_progress')
@@ -142,8 +142,8 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-12 text-center">
                         <i class="fas fa-clipboard-list text-6xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500 text-lg mb-2">Belum ada ujian tersedia saat ini.</p>
-                        <p class="text-gray-400 text-sm">Ujian akan muncul di sini ketika guru memublikasikannya.</p>
+                        <p class="text-gray-500 text-lg mb-2">{{ __('No exams available at the moment.') }}</p>
+                        <p class="text-gray-400 text-sm">{{ __('Exams will appear here when published by the teacher.') }}</p>
                     </div>
                 </div>
             @endif

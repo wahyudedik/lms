@@ -3,8 +3,8 @@
         <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
             <i class="fas fa-shield-alt text-yellow-600 text-2xl"></i>
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Confirm Password</h2>
-        <p class="text-gray-600">This is a secure area. Please confirm your password before continuing.</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ __('Confirm Password') }}</h2>
+        <p class="text-gray-600">{{ __('This is a secure area. Please confirm your password before continuing.') }}</p>
     </div>
 
     <form method="POST" action="{{ route('password.confirm') }}" class="space-y-6">

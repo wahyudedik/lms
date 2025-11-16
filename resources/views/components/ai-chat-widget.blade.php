@@ -21,8 +21,8 @@
                     <div class="flex items-center gap-2">
                         <i class="fas fa-robot text-2xl"></i>
                         <div>
-                            <h3 class="font-semibold">AI Assistant</h3>
-                            <p class="text-xs text-blue-100">Powered by ChatGPT</p>
+                            <h3 class="font-semibold">{{ __('AI Assistant') }}</h3>
+                            <p class="text-xs text-blue-100">{{ __('Powered by ChatGPT') }}</p>
                         </div>
                     </div>
                     <button onclick="closeAIWidget()" class="text-white hover:text-blue-200">
@@ -33,15 +33,15 @@
 
             <!-- Quick Actions -->
             <div class="p-4 bg-gray-50 border-b">
-                <p class="text-sm text-gray-600 mb-3">Quick actions:</p>
+                <p class="text-sm text-gray-600 mb-3">{{ __('Quick actions:') }}</p>
                 <div class="flex flex-wrap gap-2">
                     <a href="{{ route('ai.index') }}"
                         class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs hover:bg-blue-200">
-                        <i class="fas fa-comments mr-1"></i>View All Chats
+                        <i class="fas fa-comments mr-1"></i>{{ __('View All Chats') }}
                     </a>
                     <button onclick="startQuickChat()"
                         class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs hover:bg-purple-200">
-                        <i class="fas fa-plus mr-1"></i>New Chat
+                        <i class="fas fa-plus mr-1"></i>{{ __('New Chat') }}
                     </button>
                 </div>
             </div>
@@ -50,14 +50,14 @@
             <div id="aiWidgetMessages" class="h-64 overflow-y-auto p-4 space-y-3">
                 <div class="text-center text-gray-500 text-sm py-8">
                     <i class="fas fa-comment-dots text-4xl mb-2 text-gray-300"></i>
-                    <p>Click "New Chat" to start a conversation</p>
+                    <p>{{ __('Click ":button" to start a conversation', ['button' => __('New Chat')]) }}</p>
                 </div>
             </div>
 
             <!-- Quick Input -->
             <div class="p-3 bg-gray-50 border-t">
                 <form id="aiWidgetForm" class="flex gap-2" onsubmit="sendQuickMessage(event)">
-                    <input type="text" id="aiWidgetInput" placeholder="Ask me anything..."
+                    <input type="text" id="aiWidgetInput" placeholder="{{ __('Ask me anything...') }}"
                         class="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <button type="submit"
                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
@@ -70,6 +70,10 @@
 
     @push('scripts')
         <script>
+            const aiWidgetLocale = {
+                sendError: @json(__('Failed to send message. Please try again.')),
+            };
+
             function toggleAIWidget() {
                 const popup = document.getElementById('aiChatPopup');
                 popup.classList.toggle('hidden');
@@ -111,7 +115,7 @@
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('Failed to send message. Please try again.');
+                    alert(aiWidgetLocale.sendError);
                 }
             }
 

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\ExamAttempt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -129,6 +131,80 @@ class ReportController extends Controller
             'statistics' => $statistics,
             'generated_at' => now(),
         ]);
+
+        return $pdf->download($filename);
+    }
+
+    /**
+     * Show the student's transcript per course.
+     */
+    public function myTranscript(Request $request)
+    {
+        $user = $request->user();
+
+        $enrolledCourses = $user->enrolledCourses()
+            ->where('enrollments.status', 'active')
+            ->with('instructor')
+            ->orderBy('title')
+            ->get();
+
+        $course = null;
+        $exams = collect();
+
+        if ($request->filled('course_id')) {
+            $course = $user->enrolledCourses()
+                ->where('courses.id', (int) $request->input('course_id'))
+                ->with([
+                    'instructor',
+                    'exams' => function ($query) use ($user) {
+                        $query->with(['attempts' => function ($attempts) use ($user) {
+                            $attempts->where('user_id', $user->id)
+                                ->orderByDesc('submitted_at');
+                        }]);
+                    },
+                ])
+                ->first();
+
+            if (!$course) {
+                return redirect()
+                    ->route('siswa.reports.my-transcript')
+                    ->with('error', 'Kursus tidak ditemukan atau Anda belum terdaftar di kursus tersebut.');
+            }
+
+            $exams = $course->exams;
+        }
+
+        return view('siswa.reports.my_transcript', compact('enrolledCourses', 'course', 'exams'));
+    }
+
+    /**
+     * Export the student's transcript for a specific course to PDF.
+     */
+    public function exportMyTranscriptPdf(Course $course)
+    {
+        $user = auth()->user();
+
+        abort_unless($course->isEnrolledBy($user), 403, 'Anda tidak terdaftar di kursus ini.');
+
+        $course->load([
+            'instructor',
+            'exams' => function ($query) use ($user) {
+                $query->with(['attempts' => function ($attempts) use ($user) {
+                    $attempts->where('user_id', $user->id)
+                        ->orderByDesc('submitted_at');
+                }]);
+            },
+        ]);
+
+        $exams = $course->exams;
+
+        $pdf = Pdf::loadView('siswa.reports.my_transcript_pdf', [
+            'user' => $user,
+            'course' => $course,
+            'exams' => $exams,
+        ]);
+
+        $filename = sprintf('transkrip_%s_%s.pdf', Str::slug($user->name), now()->format('Ymd_His'));
 
         return $pdf->download($filename);
     }

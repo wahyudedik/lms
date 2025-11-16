@@ -3,24 +3,24 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Kelola Soal: {{ $exam->title }}
+                    {{ __('Manage Questions: :title', ['title' => $exam->title]) }}
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">
-                    Total: {{ $questions->count() }} soal | {{ $exam->total_points }} poin
+                    {{ __('Total: :count questions | :points points', ['count' => $questions->count(), 'points' => $exam->total_points]) }}
                 </p>
             </div>
             <div class="flex gap-2">
                 <button onclick="openImportModal()"
                     class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-database mr-2"></i>Import from Bank
+                    <i class="fas fa-database mr-2"></i>{{ __('Import from Bank') }}
                 </button>
                 <a href="{{ route('admin.exams.questions.create', $exam) }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-plus mr-2"></i>Tambah Soal
+                    <i class="fas fa-plus mr-2"></i>{{ __('Add Question') }}
                 </a>
                 <a href="{{ route('admin.exams.show', $exam) }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -65,7 +65,7 @@
                                                 <!-- Actions -->
                                                 <div class="flex gap-2">
                                                     <a href="{{ route('admin.exams.questions.edit', [$exam, $question]) }}"
-                                                        class="text-yellow-600 hover:text-yellow-900" title="Edit">
+                                                        class="text-yellow-600 hover:text-yellow-900" title="{{ __('Edit') }}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
 
@@ -74,7 +74,7 @@
                                                         method="POST" class="inline">
                                                         @csrf
                                                         <button type="submit" class="text-blue-600 hover:text-blue-900"
-                                                            title="Duplikat">
+                                                            title="{{ __('Duplicate') }}">
                                                             <i class="fas fa-copy"></i>
                                                         </button>
                                                     </form>
@@ -82,11 +82,11 @@
                                                     <form
                                                         action="{{ route('admin.exams.questions.destroy', [$exam, $question]) }}"
                                                         method="POST" class="inline"
-                                                        onsubmit="return confirmDelete('Yakin ingin menghapus soal ini?')">
+                                                        onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this question?') }}')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="text-red-600 hover:text-red-900"
-                                                            title="Hapus">
+                                                            title="{{ __('Delete') }}">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -135,14 +135,14 @@
                                             @elseif($question->type === 'matching')
                                                 <div class="grid grid-cols-2 gap-4 text-sm">
                                                     <div>
-                                                        <p class="font-semibold text-gray-700 mb-1">Kolom Kiri:</p>
+                                                        <p class="font-semibold text-gray-700 mb-1">{{ __('Left Column:') }}</p>
                                                         @foreach ($question->pairs ?? [] as $pair)
                                                             <div class="text-gray-700">• {{ $pair['left'] ?? '' }}
                                                             </div>
                                                         @endforeach
                                                     </div>
                                                     <div>
-                                                        <p class="font-semibold text-gray-700 mb-1">Kolom Kanan:</p>
+                                                        <p class="font-semibold text-gray-700 mb-1">{{ __('Right Column:') }}</p>
                                                         @foreach ($question->pairs ?? [] as $pair)
                                                             <div class="text-gray-700">• {{ $pair['right'] ?? '' }}
                                                             </div>
@@ -152,7 +152,7 @@
                                             @elseif($question->type === 'essay')
                                                 <div class="text-sm text-gray-600 italic">
                                                     <i class="fas fa-info-circle mr-1"></i>
-                                                    Soal esai - Memerlukan penilaian manual
+                                                    {{ __('Essay question - Requires manual grading') }}
                                                 </div>
                                             @endif
 
@@ -160,7 +160,7 @@
                                             @if ($question->explanation)
                                                 <div class="mt-3 pt-3 border-t border-gray-200">
                                                     <p class="text-xs font-semibold text-gray-600 mb-1">
-                                                        <i class="fas fa-lightbulb mr-1"></i>Penjelasan:
+                                                        <i class="fas fa-lightbulb mr-1"></i>{{ __('Penjelasan:') }}
                                                     </p>
                                                     <p class="text-sm text-gray-700">{{ $question->explanation }}</p>
                                                 </div>
@@ -175,8 +175,7 @@
                         <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <p class="text-sm text-blue-800">
                                 <i class="fas fa-info-circle mr-2"></i>
-                                <strong>Tips:</strong> Klik dan drag ikon <i class="fas fa-grip-vertical mx-1"></i>
-                                untuk mengubah urutan soal.
+                                <strong>{{ __('Tips:') }}</strong> {{ __('Klik dan drag ikon') }} <i class="fas fa-grip-vertical mx-1"></i> {{ __('untuk mengubah urutan soal.') }}
                             </p>
                         </div>
                     </div>
@@ -186,10 +185,10 @@
                     <div class="p-6">
                         <div class="text-center py-8">
                             <i class="fas fa-clipboard-question text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500 text-lg mb-4">Belum ada soal ditambahkan.</p>
+                            <p class="text-gray-500 text-lg mb-4">{{ __('No questions added yet.') }}</p>
                             <a href="{{ route('admin.exams.questions.create', $exam) }}"
                                 class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-plus mr-2"></i>Tambah Soal Pertama
+                                <i class="fas fa-plus mr-2"></i>{{ __('Add First Question') }}
                             </a>
                         </div>
                     </div>
@@ -200,9 +199,38 @@
     </div>
 
     @if ($questions->count() > 0)
+        @php
+            $questionLocale = [
+                'reorderSuccess' => __('Urutan soal berhasil diperbarui!'),
+                'reorderFail' => __('Gagal memperbarui urutan soal'),
+                'loadFail' => __('Gagal memuat soal'),
+                'noQuestions' => __('No questions found'),
+                'usedTimes' => __('Digunakan :countx'),
+                'selectedCountSingular' => __('1 soal dipilih'),
+                'selectedCountPlural' => __(':count soal dipilih'),
+                'importSuccessFallback' => __('Soal berhasil diimport!'),
+                'importFail' => __('Gagal mengimport soal'),
+                'importError' => __('Terjadi kesalahan'),
+                'importing' => __('Mengimpor...'),
+                'importSelected' => __('Import Terpilih'),
+                'typeLabels' => [
+                    'mcq_single' => __('MCQ Single'),
+                    'mcq_multiple' => __('MCQ Multiple'),
+                    'matching' => __('Matching'),
+                    'essay' => __('Essay'),
+                ],
+                'difficultyLabels' => [
+                    'easy' => __('Mudah'),
+                    'medium' => __('Sedang'),
+                    'hard' => __('Sulit'),
+                ],
+            ];
+        @endphp
         @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
             <script>
+                const questionLocale = @json($questionLocale);
+
                 // Initialize Sortable for drag-and-drop reordering
                 const questionsList = document.getElementById('questions-list');
                 if (questionsList) {
@@ -231,7 +259,7 @@
                                     if (data.success) {
                                         Toast.fire({
                                             icon: 'success',
-                                            title: 'Urutan soal berhasil diperbarui!'
+                                            title: questionLocale.reorderSuccess
                                         });
                                     }
                                 })
@@ -239,7 +267,7 @@
                                     console.error('Error:', error);
                                     Toast.fire({
                                         icon: 'error',
-                                        title: 'Gagal memperbarui urutan soal'
+                                        title: questionLocale.reorderFail
                                     });
                                 });
                         }
@@ -256,7 +284,7 @@
             <div class="flex items-center justify-between pb-4 border-b">
                 <h3 class="text-2xl font-bold text-gray-900">
                     <i class="fas fa-database text-purple-600 mr-2"></i>
-                    Import Questions from Bank
+                    {{ __('Import Soal dari Bank') }}
                 </h3>
                 <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-2xl"></i>
@@ -268,14 +296,14 @@
                 <!-- Filters -->
                 <div class="bg-gray-50 p-4 rounded-lg mb-4">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <input type="text" id="bankSearch" placeholder="Search questions..."
+                        <input type="text" id="bankSearch" placeholder="{{ __('Cari soal...') }}"
                             class="rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                             onkeyup="filterBankQuestions()">
 
                         <select id="bankCategory"
                             class="rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                             onchange="filterBankQuestions()">
-                            <option value="">All Categories</option>
+                            <option value="">{{ __('Semua Kategori') }}</option>
                             @foreach ($categories ?? [] as $category)
                                 <option value="{{ $category->id }}">{{ $category->full_path }}</option>
                             @endforeach
@@ -284,20 +312,20 @@
                         <select id="bankType"
                             class="rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                             onchange="filterBankQuestions()">
-                            <option value="">All Types</option>
-                            <option value="mcq_single">MCQ Single</option>
-                            <option value="mcq_multiple">MCQ Multiple</option>
-                            <option value="matching">Matching</option>
-                            <option value="essay">Essay</option>
+                            <option value="">{{ __('Semua Tipe') }}</option>
+                            <option value="mcq_single">{{ __('MCQ Single') }}</option>
+                            <option value="mcq_multiple">{{ __('MCQ Multiple') }}</option>
+                            <option value="matching">{{ __('Matching') }}</option>
+                            <option value="essay">{{ __('Essay') }}</option>
                         </select>
 
                         <select id="bankDifficulty"
                             class="rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
                             onchange="filterBankQuestions()">
-                            <option value="">All Difficulties</option>
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
+                            <option value="">{{ __('Semua Tingkat Kesulitan') }}</option>
+                            <option value="easy">{{ __('Mudah') }}</option>
+                            <option value="medium">{{ __('Sedang') }}</option>
+                            <option value="hard">{{ __('Sulit') }}</option>
                         </select>
                     </div>
                 </div>
@@ -306,7 +334,7 @@
                 <div id="bankQuestionsList" class="space-y-2 max-h-96 overflow-y-auto">
                     <div class="text-center py-8">
                         <i class="fas fa-spinner fa-spin text-4xl text-gray-400"></i>
-                        <p class="text-gray-600 mt-2">Loading questions...</p>
+                        <p class="text-gray-600 mt-2">{{ __('Memuat soal...') }}</p>
                     </div>
                 </div>
 
@@ -314,7 +342,7 @@
                 <div id="selectedCount" class="mt-4 p-3 bg-blue-50 rounded-lg hidden">
                     <p class="text-blue-800">
                         <i class="fas fa-check-circle mr-2"></i>
-                        <span id="selectedCountText">0 questions selected</span>
+                        <span id="selectedCountText">{{ __('0 soal dipilih') }}</span>
                     </p>
                 </div>
             </div>
@@ -323,11 +351,11 @@
             <div class="flex items-center justify-end gap-3 pt-4 border-t mt-4">
                 <button onclick="closeImportModal()"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Cancel
+                    {{ __('Batal') }}
                 </button>
                 <button onclick="importSelected()" id="importBtn"
                     class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" disabled>
-                    <i class="fas fa-download mr-2"></i>Import Selected
+                    <i class="fas fa-download mr-2"></i>{{ __('Import Terpilih') }}
                 </button>
             </div>
         </div>
@@ -360,7 +388,7 @@
                         document.getElementById('bankQuestionsList').innerHTML =
                             '<div class="text-center py-8 text-red-600">' +
                             '<i class="fas fa-exclamation-circle text-4xl mb-2"></i>' +
-                            '<p>Failed to load questions</p>' +
+                            `<p>${questionLocale.loadFail}</p>` +
                             '</div>';
                     });
             }
@@ -389,7 +417,7 @@
                     container.innerHTML =
                         '<div class="text-center py-8 text-gray-500">' +
                         '<i class="fas fa-inbox text-4xl mb-2"></i>' +
-                        '<p>No questions found</p>' +
+                        `<p>${questionLocale.noQuestions}</p>` +
                         '</div>';
                     return;
                 }
@@ -415,7 +443,7 @@
                                             <i class="fas fa-star mr-1"></i>${q.default_points} pts
                                         </span>
                                         ${q.category_name ? `<span class="px-2 py-1 text-xs rounded bg-gray-100 text-gray-800">${escapeHtml(q.category_name)}</span>` : ''}
-                                        ${q.times_used > 0 ? `<span class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800"><i class="fas fa-recycle mr-1"></i>Used ${q.times_used}x</span>` : ''}
+                                        ${q.times_used > 0 ? `<span class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800"><i class="fas fa-recycle mr-1"></i>${questionLocale.usedTimes.replace(':count', q.times_used)}</span>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -453,7 +481,9 @@
 
                 if (count > 0) {
                     countDiv.classList.remove('hidden');
-                    countText.textContent = `${count} question${count > 1 ? 's' : ''} selected`;
+                    countText.textContent = count === 1
+                        ? questionLocale.selectedCountSingular
+                        : questionLocale.selectedCountPlural.replace(':count', count);
                     importBtn.disabled = false;
                 } else {
                     countDiv.classList.add('hidden');
@@ -466,7 +496,7 @@
 
                 const importBtn = document.getElementById('importBtn');
                 importBtn.disabled = true;
-                importBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Importing...';
+                importBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>${questionLocale.importing}`;
 
                 fetch('{{ route('admin.exams.questions.import-from-bank', $exam) }}', {
                         method: 'POST',
@@ -483,26 +513,26 @@
                         if (data.success) {
                             Toast.fire({
                                 icon: 'success',
-                                title: data.message || `${data.imported} questions imported successfully!`
+                                title: data.message || questionLocale.importSuccessFallback
                             });
                             closeImportModal();
                             setTimeout(() => location.reload(), 1000);
                         } else {
                             Toast.fire({
                                 icon: 'error',
-                                title: data.message || 'Failed to import questions'
+                                title: data.message || questionLocale.importFail
                             });
                             importBtn.disabled = false;
-                            importBtn.innerHTML = '<i class="fas fa-download mr-2"></i>Import Selected';
+                            importBtn.innerHTML = `<i class="fas fa-download mr-2"></i>${questionLocale.importSelected}`;
                         }
                     })
                     .catch(error => {
                         Toast.fire({
                             icon: 'error',
-                            title: 'An error occurred'
+                            title: questionLocale.importError
                         });
                         importBtn.disabled = false;
-                        importBtn.innerHTML = '<i class="fas fa-download mr-2"></i>Import Selected';
+                        importBtn.innerHTML = `<i class="fas fa-download mr-2"></i>${questionLocale.importSelected}`;
                     });
             }
 
@@ -513,22 +543,28 @@
             }
 
             function getTypeBadge(type) {
-                const types = {
-                    'mcq_single': '<span class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">MCQ Single</span>',
-                    'mcq_multiple': '<span class="px-2 py-1 text-xs rounded bg-purple-100 text-purple-800">MCQ Multiple</span>',
-                    'matching': '<span class="px-2 py-1 text-xs rounded bg-indigo-100 text-indigo-800">Matching</span>',
-                    'essay': '<span class="px-2 py-1 text-xs rounded bg-pink-100 text-pink-800">Essay</span>'
+                const colors = {
+                    'mcq_single': 'bg-blue-100 text-blue-800',
+                    'mcq_multiple': 'bg-purple-100 text-purple-800',
+                    'matching': 'bg-indigo-100 text-indigo-800',
+                    'essay': 'bg-pink-100 text-pink-800'
                 };
-                return types[type] || '';
+                if (!questionLocale.typeLabels[type]) {
+                    return '';
+                }
+                return `<span class="px-2 py-1 text-xs rounded ${colors[type] || 'bg-gray-100 text-gray-800'}">${questionLocale.typeLabels[type]}</span>`;
             }
 
             function getDifficultyBadge(difficulty) {
-                const difficulties = {
-                    'easy': '<span class="px-2 py-1 text-xs rounded bg-green-100 text-green-800">Easy</span>',
-                    'medium': '<span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">Medium</span>',
-                    'hard': '<span class="px-2 py-1 text-xs rounded bg-red-100 text-red-800">Hard</span>'
+                const colors = {
+                    'easy': 'bg-green-100 text-green-800',
+                    'medium': 'bg-yellow-100 text-yellow-800',
+                    'hard': 'bg-red-100 text-red-800'
                 };
-                return difficulties[difficulty] || '';
+                if (!questionLocale.difficultyLabels[difficulty]) {
+                    return '';
+                }
+                return `<span class="px-2 py-1 text-xs rounded ${colors[difficulty] || 'bg-gray-100 text-gray-800'}">${questionLocale.difficultyLabels[difficulty]}</span>`;
             }
         </script>
     @endpush

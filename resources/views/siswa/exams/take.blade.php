@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $exam->title }} - Ujian</title>
+    <title>{{ $exam->title }} - {{ __('Exam') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -16,6 +16,27 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
+@php
+    $initialAnsweredCount = $attempt->answers->filter(function ($answer) {
+        $value = $answer->answer;
+        if (is_null($value)) {
+            return false;
+        }
+        if (is_string($value)) {
+            return trim($value) !== '';
+        }
+        if (is_array($value)) {
+            return collect($value)->filter(function ($item) {
+                if (is_array($item)) {
+                    return collect($item)->filter(fn ($v) => $v !== null && $v !== '')->isNotEmpty();
+                }
+                return $item !== null && $item !== '';
+            })->isNotEmpty();
+        }
+        return true;
+    })->count();
+@endphp
 
 <body class="font-sans antialiased bg-gray-100">
     <div id="exam-container" class="min-h-screen">
@@ -57,7 +78,7 @@
                                 <!-- Question Header -->
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
-                                        <span class="text-sm text-gray-500">Soal {{ $index + 1 }} dari
+                                        <span class="text-sm text-gray-500">{{ __('Question :num of', ['num' => $index + 1]) }}
                                             {{ $questions->count() }}</span>
                                         <h3 class="text-lg font-semibold text-gray-900 mt-1">
                                             {{ $question->question_text }}
@@ -215,7 +236,7 @@
                 <!-- Question Navigation Sidebar -->
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-lg shadow-lg p-4 sticky top-4">
-                        <h3 class="font-semibold text-gray-900 mb-4">Navigasi Soal</h3>
+                        <h3 class="font-semibold text-gray-900 mb-4">{{ __('Question Navigation') }}</h3>
                         <div class="grid grid-cols-5 gap-2">
                             @foreach ($questions as $index => $question)
                                 @php
@@ -233,14 +254,14 @@
                             <div class="flex items-center justify-between">
                                 <span class="text-gray-600">Terjawab:</span>
                                 <span class="font-semibold text-green-600" id="answered-count">
-                                    {{ $attempt->answers->count() }}/{{ $questions->count() }}
+                                    {{ $initialAnsweredCount }}/{{ $questions->count() }}
                                 </span>
                             </div>
                         </div>
 
                         <button type="button" onclick="confirmSubmit()"
                             class="w-full mt-6 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold">
-                            <i class="fas fa-check mr-2"></i>Kumpulkan Ujian
+                            <i class="fas fa-check mr-2"></i>{{ __('Submit Exam') }}
                         </button>
                     </div>
                 </div>
@@ -261,6 +282,9 @@
         const requireFullscreen = {{ $exam->require_fullscreen ? 'true' : 'false' }};
         const detectTabSwitch = {{ $exam->detect_tab_switch ? 'true' : 'false' }};
         const maxTabSwitches = {{ $exam->max_tab_switches ?? 999 }};
+        const totalQuestions = {{ $questions->count() }};
+        let answeredCount = {{ $initialAnsweredCount }};
+        const answeredCountEl = document.getElementById('answered-count');
         let tabSwitchCount = {{ $attempt->tab_switches }};
         let currentQuestionIndex = 0;
         let timeRemaining = 0;
@@ -269,21 +293,31 @@
         // Initialize timer
         function initTimer() {
             fetch(`/siswa/attempts/${attemptId}/time-remaining`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch remaining time');
+                    }
+                    return res.json();
+                })
                 .then(data => {
-                    if (data && data.seconds_remaining !== undefined) {
-                        timeRemaining = data.seconds_remaining;
+                    if (data && (data.seconds_remaining !== undefined || data.timeRemaining !== undefined)) {
+                        const serverValue = data.seconds_remaining ?? data.timeRemaining ?? 0;
+                        timeRemaining = Number(serverValue) || 0;
+
+                        if (data.isTimeUp) {
+                            autoSubmit('Waktu habis!');
+                            return;
+                        }
+
                         startTimer();
                     } else {
                         console.error('Invalid time data:', data);
-                        // Fallback: calculate from exam duration
                         timeRemaining = examDuration * 60;
                         startTimer();
                     }
                 })
                 .catch(error => {
                     console.error('Timer fetch error:', error);
-                    // Fallback: use exam duration
                     timeRemaining = examDuration * 60;
                     startTimer();
                 });
@@ -368,8 +402,13 @@
                 answerData = textarea.value;
             }
 
-            // Send to server
-                fetch(`/siswa/attempts/${attemptId}/save-answer`, {
+            if (answerData === undefined) {
+                answerData = null;
+            }
+
+            const questionIndex = parseInt(container.dataset.questionIndex, 10);
+
+            fetch(`/siswa/attempts/${attemptId}/save-answer`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -380,35 +419,55 @@
                         answer: answerData
                     })
                 })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        return res.text().then(text => {
+                            throw new Error(text || 'Failed to save answer');
+                        });
+                    }
+                    return res.json();
+                })
                 .then(data => {
-                    if (data.success) {
-                        // Update navigation button
-                        const navBtn = document.querySelector(
-                            `.nav-btn[data-question-index="${currentQuestionIndex}"]`);
+                    if (!data.success) {
+                        if (data.timeUp) {
+                            autoSubmit(data.message || 'Waktu habis!');
+                        } else if (data.message) {
+                            showWarning(data.message);
+                        }
+                        return;
+                    }
+
+                    const navBtn = document.querySelector(`.nav-btn[data-question-index="${questionIndex}"]`);
+                    if (navBtn) {
                         navBtn.classList.remove('bg-gray-200', 'text-gray-700');
                         navBtn.classList.add('bg-green-500', 'text-white');
-
-                        // Update answered count
-                        document.getElementById('answered-count').textContent =
-                            `${data.answered_count}/${{{ $questions->count() }}}`;
                     }
+
+                    if (typeof data.answered_count !== 'undefined') {
+                        answeredCount = data.answered_count;
+                    }
+
+                    if (answeredCountEl) {
+                        answeredCountEl.textContent = `${answeredCount}/${totalQuestions}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to save answer', error);
+                    showWarning('Gagal menyimpan jawaban. Pastikan koneksi stabil lalu coba lagi.');
                 });
         }
 
         // Submit exam
         function confirmSubmit() {
-            const answeredCount = {{ $attempt->answers->count() }};
-            const totalQuestions = {{ $questions->count() }};
             const unanswered = totalQuestions - answeredCount;
 
-            let message = 'Yakin ingin mengumpulkan ujian?';
+            let message = '{{ __('Are you sure you want to submit the exam?') }}';
             if (unanswered > 0) {
                 message += ` Masih ada ${unanswered} soal yang belum dijawab.`;
             }
 
             Swal.fire({
-                title: 'Kumpulkan Ujian?',
+                title: '{{ __('Submit Exam?') }}',
                 text: message,
                 icon: 'warning',
                 showCancelButton: true,
@@ -431,7 +490,7 @@
         function autoSubmit(reason) {
             Swal.fire({
                 title: reason,
-                text: 'Ujian akan otomatis dikumpulkan.',
+                text: '{{ __('The exam will be submitted automatically.') }}',
                 icon: 'info',
                 timer: 3000,
                 showConfirmButton: false
@@ -445,28 +504,49 @@
             function requestFullscreen() {
                 const elem = document.documentElement;
                 if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
+                    return elem.requestFullscreen();
                 } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
+                    return elem.webkitRequestFullscreen();
                 } else if (elem.msRequestFullscreen) {
-                    elem.msRequestFullscreen();
+                    return elem.msRequestFullscreen();
                 }
+                return Promise.reject(new Error('Fullscreen API is not supported'));
             }
 
-            requestFullscreen();
-
-            document.addEventListener('fullscreenchange', () => {
-                if (!document.fullscreenElement) {
-                    showWarning('Mode layar penuh dimatikan! Harap aktifkan kembali.');
-                    fetch(`/siswa/attempts/${attemptId}/track-fullscreen-exit`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
+            function promptFullscreen(message = 'Klik tombol untuk mengaktifkan mode layar penuh.') {
+                Swal.fire({
+                    title: 'Mode Layar Penuh Diperlukan',
+                    text: message,
+                    icon: 'info',
+                    confirmButtonText: 'Aktifkan',
+                    allowOutsideClick: false
+                }).then(() => {
+                    requestFullscreen().catch(() => {
+                        showWarning('Browser menolak mode layar penuh. Klik tombol di atas untuk mencoba lagi.');
+                        setTimeout(() => promptFullscreen('Klik tombol untuk mencoba lagi.'), 500);
                     });
-                    requestFullscreen();
+                });
+            }
+
+            const handleFullscreenExit = () => {
+                if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                    return;
                 }
-            });
+
+                showWarning('Mode layar penuh dimatikan! Harap aktifkan kembali.');
+                fetch(`/siswa/attempts/${attemptId}/track-fullscreen-exit`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+                promptFullscreen('Aktifkan kembali mode layar penuh untuk melanjutkan ujian.');
+            };
+
+            promptFullscreen();
+            document.addEventListener('fullscreenchange', handleFullscreenExit);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenExit);
+            document.addEventListener('msfullscreenchange', handleFullscreenExit);
         }
 
         // Anti-cheat: Tab switching

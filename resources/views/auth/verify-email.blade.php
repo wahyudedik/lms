@@ -3,8 +3,8 @@
         <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-4">
             <i class="fas fa-envelope-open text-blue-600 text-2xl"></i>
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Verify Your Email</h2>
-        <p class="text-gray-600">Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ __('Verify Your Email') }}</h2>
+        <p class="text-gray-600">{{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?') }}</p>
     </div>
 
     @if (session('status') == 'verification-link-sent')

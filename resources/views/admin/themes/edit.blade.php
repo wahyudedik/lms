@@ -3,11 +3,11 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-palette text-purple-600 mr-2"></i>
-                Theme Editor: {{ $school->name }}
+                {{ __('Theme Editor: :name', ['name' => $school->name]) }}
             </h2>
             <a href="{{ route('admin.schools.show', $school) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Back
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -25,7 +25,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">
-                        <i class="fas fa-swatchbook mr-2"></i>Quick Apply Palettes
+                        <i class="fas fa-swatchbook mr-2"></i>{{ __('Quick Apply Palettes') }}
                     </h3>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         @foreach ($palettes as $key => $palette)
@@ -63,11 +63,11 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-fill-drip mr-2"></i>Main Colors
+                            <i class="fas a-fill-drip mr-2"></i>{{ __('Main Colors') }}
                         </h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Primary Color</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Primary Color') }}</label>
                                 <input type="color" name="primary_color"
                                     value="{{ old('primary_color', $theme->primary_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
@@ -76,7 +76,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Secondary Color</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Secondary Color') }}</label>
                                 <input type="color" name="secondary_color"
                                     value="{{ old('secondary_color', $theme->secondary_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
@@ -85,7 +85,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Accent Color</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Accent Color') }}</label>
                                 <input type="color" name="accent_color"
                                     value="{{ old('accent_color', $theme->accent_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
@@ -94,7 +94,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Dark Color</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Dark Color') }}</label>
                                 <input type="color" name="dark_color"
                                     value="{{ old('dark_color', $theme->dark_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
@@ -109,32 +109,32 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-traffic-light mr-2"></i>Status Colors
+                            <i class="fas fa-traffic-light mr-2"></i>{{ __('Status Colors') }}
                         </h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Success</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Success') }}</label>
                                 <input type="color" name="success_color"
                                     value="{{ old('success_color', $theme->success_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Warning</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Warning') }}</label>
                                 <input type="color" name="warning_color"
                                     value="{{ old('warning_color', $theme->warning_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Danger</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Danger') }}</label>
                                 <input type="color" name="danger_color"
                                     value="{{ old('danger_color', $theme->danger_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Info</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Info') }}</label>
                                 <input type="color" name="info_color"
                                     value="{{ old('info_color', $theme->info_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
@@ -147,25 +147,25 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-font mr-2"></i>Text Colors
+                            <i class="fas fa-font mr-2"></i>{{ __('Text Colors') }}
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Primary Text</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Primary Text') }}</label>
                                 <input type="color" name="text_primary"
                                     value="{{ old('text_primary', $theme->text_primary) }}"
                                     class="w-full h-12 rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Secondary Text</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Secondary Text') }}</label>
                                 <input type="color" name="text_secondary"
                                     value="{{ old('text_secondary', $theme->text_secondary) }}"
                                     class="w-full h-12 rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Muted Text</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Muted Text') }}</label>
                                 <input type="color" name="text_muted"
                                     value="{{ old('text_muted', $theme->text_muted) }}"
                                     class="w-full h-12 rounded border-gray-300">
@@ -178,32 +178,32 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-layer-group mr-2"></i>Background Colors
+                            <i class="fas fa-layer-group mr-2"></i>{{ __('Background Colors') }}
                         </h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Page Background</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Page Background') }}</label>
                                 <input type="color" name="background_color"
                                     value="{{ old('background_color', $theme->background_color) }}"
                                     class="w-full h-12 rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Card Background</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Card Background') }}</label>
                                 <input type="color" name="card_background"
                                     value="{{ old('card_background', $theme->card_background) }}"
                                     class="w-full h-12 rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Navbar Background</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Navbar Background') }}</label>
                                 <input type="color" name="navbar_background"
                                     value="{{ old('navbar_background', $theme->navbar_background) }}"
                                     class="w-full h-12 rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Sidebar Background</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Sidebar Background') }}</label>
                                 <input type="color" name="sidebar_background"
                                     value="{{ old('sidebar_background', $theme->sidebar_background) }}"
                                     class="w-full h-12 rounded border-gray-300">
@@ -216,26 +216,25 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-text-height mr-2"></i>Typography
+                            <i class="fas fa-text-height mr-2"></i>{{ __('Typography') }}
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Font Family</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Font Family') }}</label>
                                 <input type="text" name="font_family"
                                     value="{{ old('font_family', $theme->font_family) }}"
                                     placeholder="Inter, sans-serif" class="w-full rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Heading Font
-                                    (Optional)</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Heading Font (Optional)') }}</label>
                                 <input type="text" name="heading_font"
                                     value="{{ old('heading_font', $theme->heading_font) }}"
                                     placeholder="Same as body font" class="w-full rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Base Font Size (px)</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Base Font Size (px)') }}</label>
                                 <input type="number" name="font_size"
                                     value="{{ old('font_size', $theme->font_size) }}" min="10" max="24"
                                     class="w-full rounded border-gray-300">
@@ -248,18 +247,18 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-cog mr-2"></i>Advanced Settings
+                            <i class="fas fa-cog mr-2"></i>{{ __('Advanced Settings') }}
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Border Radius</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Border Radius') }}</label>
                                 <input type="text" name="border_radius"
                                     value="{{ old('border_radius', $theme->border_radius) }}" placeholder="0.5rem"
                                     class="w-full rounded border-gray-300">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Box Shadow</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Box Shadow') }}</label>
                                 <input type="text" name="box_shadow"
                                     value="{{ old('box_shadow', $theme->box_shadow) }}"
                                     placeholder="0 1px 3px 0 rgb(0 0 0 / 0.1)" class="w-full rounded border-gray-300">
@@ -271,7 +270,7 @@
                                 <input type="checkbox" name="dark_mode" value="1"
                                     {{ old('dark_mode', $theme->dark_mode) ? 'checked' : '' }}
                                     class="rounded border-gray-300">
-                                <span class="ml-2 text-sm text-gray-700">Enable Dark Mode</span>
+                                <span class="ml-2 text-sm text-gray-700">{{ __('Enable Dark Mode') }}</span>
                             </label>
                         </div>
                     </div>
@@ -281,11 +280,11 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-code mr-2"></i>Custom CSS
+                            <i class="fas fa-code mr-2"></i>{{ __('Custom CSS') }}
                         </h3>
-                        <textarea name="custom_css" rows="8" placeholder="/* Add your custom CSS here */"
+                        <textarea name="custom_css" rows="8" placeholder="{{ __('/* Add your custom CSS here */') }}"
                             class="w-full font-mono text-sm rounded border-gray-300">{{ old('custom_css', $theme->custom_css) }}</textarea>
-                        <p class="text-sm text-gray-500 mt-2">Advanced: Add custom CSS rules to override defaults</p>
+                        <p class="text-sm text-gray-500 mt-2">{{ __('Advanced: Add custom CSS rules to override defaults') }}</p>
                     </div>
                 </div>
 
@@ -293,11 +292,11 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-image mr-2"></i>Background Images
+                            <i class="fas fa-image mr-2"></i>{{ __('Background Images') }}
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Login Background</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Login Background') }}</label>
                                 @if ($theme->login_background)
                                     <div class="mb-2">
                                         <img src="{{ $theme->login_background_url }}" alt="Login BG"
@@ -306,11 +305,11 @@
                                 @endif
                                 <input type="file" name="login_background" accept="image/jpeg,image/png,image/jpg"
                                     class="w-full">
-                                <p class="text-sm text-gray-500 mt-1">Max 2MB</p>
+                                <p class="text-sm text-gray-500 mt-1">{{ __('Max 2MB') }}</p>
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Dashboard Hero</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Dashboard Hero') }}</label>
                                 @if ($theme->dashboard_hero)
                                     <div class="mb-2">
                                         <img src="{{ $theme->dashboard_hero_url }}" alt="Dashboard Hero"
@@ -319,7 +318,7 @@
                                 @endif
                                 <input type="file" name="dashboard_hero" accept="image/jpeg,image/png,image/jpg"
                                     class="w-full">
-                                <p class="text-sm text-gray-500 mt-1">Max 2MB</p>
+                                <p class="text-sm text-gray-500 mt-1">{{ __('Max 2MB') }}</p>
                             </div>
                         </div>
                     </div>
@@ -331,23 +330,23 @@
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div class="flex gap-2">
                                 <form action="{{ route('admin.schools.theme.reset', $school) }}" method="POST"
-                                    onsubmit="return confirmDelete('This will reset all theme settings to default. Are you sure?')">
+                                    onsubmit="return confirmDelete('{{ __('This will reset all theme settings to default. Are you sure?') }}')">
                                     @csrf
                                     <button type="submit"
                                         class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                        <i class="fas fa-undo mr-2"></i>Reset to Default
+                                        <i class="fas fa-undo mr-2"></i>{{ __('Reset to Default') }}
                                     </button>
                                 </form>
 
                                 <a href="{{ route('admin.schools.theme.export', $school) }}"
                                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                    <i class="fas fa-download mr-2"></i>Export JSON
+                                    <i class="fas fa-download mr-2"></i>{{ __('Export JSON') }}
                                 </a>
                             </div>
 
                             <button type="submit"
                                 class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded">
-                                <i class="fas fa-save mr-2"></i>Save Theme
+                                <i class="fas fa-save mr-2"></i>{{ __('Save Theme') }}
                             </button>
                         </div>
                     </div>

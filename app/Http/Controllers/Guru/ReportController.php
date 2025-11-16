@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -93,7 +94,7 @@ class ReportController extends Controller
     }
 
     /**
-     * Export grades to Excel
+     * Export consolidated grades to Excel (legacy)
      */
     public function exportExcel(Request $request)
     {
@@ -135,7 +136,7 @@ class ReportController extends Controller
     }
 
     /**
-     * Export grades to PDF
+     * Export consolidated grades to PDF (legacy)
      */
     public function exportPdf(Request $request)
     {
@@ -199,6 +200,73 @@ class ReportController extends Controller
     }
 
     /**
+     * Export specific exam grades to Excel
+     */
+    public function exportGradesExcel(Exam $exam)
+    {
+        abort_if($exam->course->instructor_id !== auth()->id(), 403, 'Anda tidak memiliki akses ke ujian ini.');
+
+        $attempts = $exam->attempts()
+            ->with(['user', 'exam'])
+            ->where('status', '!=', 'in_progress')
+            ->orderByDesc('submitted_at')
+            ->get();
+
+        $filename = sprintf(
+            'nilai_%s_%s.xlsx',
+            \Str::slug($exam->title),
+            now()->format('Ymd_His')
+        );
+
+        return Excel::download(
+            new \App\Exports\GradesExport($attempts, $exam->course, $exam),
+            $filename
+        );
+    }
+
+    /**
+     * Export specific exam grades to PDF
+     */
+    public function exportGradesPdf(Exam $exam)
+    {
+        abort_if($exam->course->instructor_id !== auth()->id(), 403, 'Anda tidak memiliki akses ke ujian ini.');
+
+        $attempts = $exam->attempts()
+            ->with(['user', 'exam'])
+            ->where('status', '!=', 'in_progress')
+            ->orderByDesc('submitted_at')
+            ->get();
+
+        $gradedAttempts = $attempts->where('status', 'graded');
+        $statistics = [
+            'total_students' => $attempts->pluck('user_id')->unique()->count(),
+            'total_attempts' => $attempts->count(),
+            'completed' => $gradedAttempts->count(),
+            'average_score' => $gradedAttempts->avg('score'),
+            'highest_score' => $gradedAttempts->max('score'),
+            'lowest_score' => $gradedAttempts->min('score'),
+            'pass_rate' => $gradedAttempts->count() > 0
+                ? ($gradedAttempts->where('passed', true)->count() / $gradedAttempts->count() * 100)
+                : 0,
+        ];
+
+        $pdf = Pdf::loadView('guru.reports.grades_pdf', [
+            'exam' => $exam->load('course'),
+            'attempts' => $attempts,
+            'statistics' => $statistics,
+            'generated_at' => now(),
+        ]);
+
+        $filename = sprintf(
+            'nilai_%s_%s.pdf',
+            \Str::slug($exam->title),
+            now()->format('Ymd_His')
+        );
+
+        return $pdf->download($filename);
+    }
+
+    /**
      * Display student detail report
      */
     public function studentDetail(Request $request, $studentId)
@@ -236,5 +304,40 @@ class ReportController extends Controller
         ];
 
         return view('guru.reports.student-detail', compact('student', 'attempts', 'statistics'));
+    }
+
+    /**
+     * Export a specific student's transcript for a course to PDF
+     */
+    public function exportStudentTranscriptPdf(Course $course, User $student)
+    {
+        abort_if($course->instructor_id !== auth()->id(), 403, 'Anda tidak memiliki akses ke kursus ini.');
+        abort_unless($course->isEnrolledBy($student), 404, 'Siswa tidak terdaftar di kursus ini.');
+
+        $course->load([
+            'instructor',
+            'exams' => function ($query) use ($student) {
+                $query->with(['attempts' => function ($attempts) use ($student) {
+                    $attempts->where('user_id', $student->id)
+                        ->where('status', '!=', 'in_progress')
+                        ->orderByDesc('submitted_at');
+                }]);
+            },
+        ]);
+
+        $pdf = Pdf::loadView('guru.reports.student_transcript_pdf', [
+            'course' => $course,
+            'student' => $student,
+            'exams' => $course->exams,
+        ]);
+
+        $filename = sprintf(
+            'transkrip_%s_%s_%s.pdf',
+            \Str::slug($student->name),
+            \Str::slug($course->title),
+            now()->format('Ymd_His')
+        );
+
+        return $pdf->download($filename);
     }
 }

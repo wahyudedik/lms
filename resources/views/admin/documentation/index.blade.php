@@ -1,10 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-2xl font-bold text-gray-800">
-            <i class="fas fa-book mr-2 text-indigo-600"></i>📚 System Documentation
+            <i class="fas fa-book mr-2 text-indigo-600"></i>📚 {{ __('System Documentation') }}
         </h2>
-        <p class="text-sm text-gray-600 mt-1">Complete guides and documentation for optimizing the Laravel LMS
-            application</p>
+        <p class="text-sm text-gray-600 mt-1">{{ __('Complete guides and documentation for optimizing the Laravel LMS application') }}</p>
     </x-slot>
 
     <div class="py-6">
@@ -18,7 +17,7 @@
                             <i class="fas fa-file-alt text-indigo-600 text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Total Docs</p>
+                            <p class="text-sm text-gray-600">{{ __('Total Docs') }}</p>
                             <p class="text-2xl font-bold text-gray-800">{{ count($docs) }}</p>
                         </div>
                     </div>
@@ -30,7 +29,7 @@
                             <i class="fas fa-certificate text-green-600 text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Certificates</p>
+                            <p class="text-sm text-gray-600">{{ __('Certificates') }}</p>
                             <p class="text-2xl font-bold text-gray-800">
                                 {{ collect($docs)->where('category', 'Certificates')->count() }}
                             </p>
@@ -44,7 +43,7 @@
                             <i class="fas fa-wifi-slash text-purple-600 text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Offline Mode</p>
+                            <p class="text-sm text-gray-600">{{ __('Offline Mode') }}</p>
                             <p class="text-2xl font-bold text-gray-800">
                                 {{ collect($docs)->where('category', 'Offline Mode')->count() }}
                             </p>
@@ -58,7 +57,7 @@
                             <i class="fas fa-star text-yellow-600 text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Categories</p>
+                            <p class="text-sm text-gray-600">{{ __('Categories') }}</p>
                             <p class="text-2xl font-bold text-gray-800">
                                 {{ collect($docs)->pluck('category')->unique()->count() }}
                             </p>
@@ -80,7 +79,7 @@
                             {{ $category }}
                         </h3>
                         <p class="text-indigo-100 text-sm mt-1">
-                            {{ $categoryDocs->count() }} {{ Str::plural('document', $categoryDocs->count()) }} available
+                            {{ trans_choice(':count document available|:count documents available', $categoryDocs->count(), ['count' => $categoryDocs->count()]) }}
                         </p>
                     </div>
 
@@ -111,19 +110,18 @@
                                         <div class="flex items-center gap-4 mt-3 ml-12 text-xs text-gray-500">
                                             <span>
                                                 <i class="fas fa-hdd mr-1"></i>
-                                                {{ number_format($doc['size'] / 1024, 1) }} KB
+                                                {{ number_format($doc['size'] / 1024, 1) }} {{ __('KB') }}
                                             </span>
                                             <span>
                                                 <i class="fas fa-clock mr-1"></i>
-                                                Updated
-                                                {{ \Carbon\Carbon::createFromTimestamp($doc['modified'])->diffForHumans() }}
+                                                {{ __('Updated :time', ['time' => \Carbon\Carbon::createFromTimestamp($doc['modified'])->diffForHumans()]) }}
                                             </span>
                                         </div>
                                     </div>
                                     <div class="ml-4">
                                         <div
                                             class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium text-sm group-hover:bg-indigo-700 transition-colors">
-                                            <i class="fas fa-arrow-right mr-2"></i>Read
+                                            <i class="fas fa-arrow-right mr-2"></i>{{ __('Read') }}
                                         </div>
                                     </div>
                                 </div>
@@ -136,15 +134,15 @@
             <!-- Quick Links -->
             <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-indigo-200">
                 <h3 class="text-lg font-bold text-gray-800 mb-4">
-                    <i class="fas fa-rocket mr-2 text-indigo-600"></i>Quick Access
+                    <i class="fas fa-rocket mr-2 text-indigo-600"></i>{{ __('Quick Access') }}
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="{{ route('admin.certificate-settings.index') }}"
                         class="flex items-center gap-3 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
                         <i class="fas fa-certificate text-green-600 text-2xl"></i>
                         <div>
-                            <p class="font-medium text-gray-800">Certificate Settings</p>
-                            <p class="text-xs text-gray-500">Configure templates</p>
+                            <p class="font-medium text-gray-800">{{ __('Certificate Settings') }}</p>
+                            <p class="text-xs text-gray-500">{{ __('Configure templates') }}</p>
                         </div>
                     </a>
 
@@ -152,8 +150,8 @@
                         class="flex items-center gap-3 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
                         <i class="fas fa-wifi-slash text-purple-600 text-2xl"></i>
                         <div>
-                            <p class="font-medium text-gray-800">Offline Exams</p>
-                            <p class="text-xs text-gray-500">Test offline mode</p>
+                            <p class="font-medium text-gray-800">{{ __('Offline Exams') }}</p>
+                            <p class="text-xs text-gray-500">{{ __('Test offline mode') }}</p>
                         </div>
                     </a>
 
@@ -161,8 +159,8 @@
                         class="flex items-center gap-3 p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow">
                         <i class="fas fa-cog text-blue-600 text-2xl"></i>
                         <div>
-                            <p class="font-medium text-gray-800">System Settings</p>
-                            <p class="text-xs text-gray-500">General configuration</p>
+                            <p class="font-medium text-gray-800">{{ __('System Settings') }}</p>
+                            <p class="text-xs text-gray-500">{{ __('General configuration') }}</p>
                         </div>
                     </a>
                 </div>
@@ -175,18 +173,16 @@
                         <i class="fas fa-info-circle text-blue-600 text-xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-800 mb-2">About Documentation</h4>
+                        <h4 class="font-bold text-gray-800 mb-2">{{ __('About Documentation') }}</h4>
                         <p class="text-sm text-gray-600 mb-2">
-                            This documentation provides comprehensive guides for all major features and systems in the
-                            Laravel LMS application.
+                            {{ __('This documentation provides comprehensive guides for all major features and systems in the Laravel LMS application.') }}
                         </p>
                         <ul class="text-sm text-gray-600 space-y-1">
-                            <li><i class="fas fa-check text-green-600 mr-2"></i>Complete system guides and tutorials
+                            <li><i class="fas fa-check text-green-600 mr-2"></i>{{ __('Complete system guides and tutorials') }}
                             </li>
-                            <li><i class="fas fa-check text-green-600 mr-2"></i>Configuration and customization
-                                instructions</li>
-                            <li><i class="fas fa-check text-green-600 mr-2"></i>Troubleshooting and best practices</li>
-                            <li><i class="fas fa-check text-green-600 mr-2"></i>API references and technical details
+                            <li><i class="fas fa-check text-green-600 mr-2"></i>{{ __('Configuration and customization instructions') }}</li>
+                            <li><i class="fas fa-check text-green-600 mr-2"></i>{{ __('Troubleshooting and best practices') }}</li>
+                            <li><i class="fas fa-check text-green-600 mr-2"></i>{{ __('API references and technical details') }}
                             </li>
                         </ul>
                     </div>

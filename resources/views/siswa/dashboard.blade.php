@@ -10,9 +10,10 @@
 
             <!-- Welcome Message -->
             <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
-                <h3 class="text-2xl font-bold mb-2">Selamat datang, {{ auth()->user()->name }}! 🎓</h3>
-                <p class="text-purple-100">Anda login sebagai <span
-                        class="font-semibold">{{ auth()->user()->role_display }}</span></p>
+                <h3 class="text-2xl font-bold mb-2">{{ __('Selamat datang, :name! 🎓', ['name' => auth()->user()->name]) }}
+                </h3>
+                <p class="text-purple-100">{{ __('Anda login sebagai :role', ['role' => auth()->user()->role_display]) }}
+                </p>
             </div>
 
             <!-- Stats Cards -->
@@ -20,10 +21,10 @@
                 <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-purple-100 text-sm">Enrolled Courses</p>
+                            <p class="text-purple-100 text-sm">{{ __('Enrolled Courses') }}</p>
                             <p class="text-3xl font-bold mt-2">{{ number_format($stats['enrolled_courses']) }}</p>
                             <p class="text-purple-100 text-xs mt-1">
-                                <i class="fas fa-book-open mr-1"></i>Active
+                                <i class="fas fa-book-open mr-1"></i>{{ __('Active') }}
                             </p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -35,10 +36,10 @@
                 <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-green-100 text-sm">Completed</p>
+                            <p class="text-green-100 text-sm">{{ __('Completed') }}</p>
                             <p class="text-3xl font-bold mt-2">{{ number_format($stats['completed_courses']) }}</p>
                             <p class="text-green-100 text-xs mt-1">
-                                <i class="fas fa-check-circle mr-1"></i>Courses
+                                <i class="fas fa-check-circle mr-1"></i>{{ __('Courses') }}
                             </p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -50,10 +51,10 @@
                 <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-yellow-100 text-sm">Pending Exams</p>
+                            <p class="text-yellow-100 text-sm">{{ __('Pending Exams') }}</p>
                             <p class="text-3xl font-bold mt-2">{{ number_format($stats['pending_exams']) }}</p>
                             <p class="text-yellow-100 text-xs mt-1">
-                                <i class="fas fa-clock mr-1"></i>To Do
+                                <i class="fas fa-clock mr-1"></i>{{ __('To Do') }}
                             </p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -65,11 +66,11 @@
                 <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-blue-100 text-sm">Average Score</p>
+                            <p class="text-blue-100 text-sm">{{ __('Average Score') }}</p>
                             <p class="text-3xl font-bold mt-2">
                                 {{ $stats['avg_score'] > 0 ? number_format($stats['avg_score'], 1) . '%' : '-' }}</p>
                             <p class="text-blue-100 text-xs mt-1">
-                                <i class="fas fa-star mr-1"></i>Performance
+                                <i class="fas fa-star mr-1"></i>{{ __('Performance') }}
                             </p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -82,36 +83,35 @@
             <!-- Quick Actions -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h4 class="text-lg font-semibold text-gray-900 mb-4"><i
-                        class="fas fa-bolt text-yellow-500 mr-2"></i>Quick
-                    Actions</h4>
+                        class="fas fa-bolt text-yellow-500 mr-2"></i>{{ __('Quick Actions') }}</h4>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <a href="{{ route('siswa.courses.index') }}"
                         class="flex items-center p-4 bg-purple-50 rounded-lg border-2 border-purple-200 hover:border-purple-400 hover:shadow-md transition-all">
                         <div class="bg-purple-500 rounded-full p-3 text-white mr-3">
                             <i class="fas fa-search"></i>
                         </div>
-                        <span class="text-gray-700 font-medium">Browse Courses</span>
+                        <span class="text-gray-700 font-medium">{{ __('Browse Courses') }}</span>
                     </a>
                     <a href="{{ route('siswa.courses.my-courses') }}"
                         class="flex items-center p-4 bg-blue-50 rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all">
                         <div class="bg-blue-500 rounded-full p-3 text-white mr-3">
                             <i class="fas fa-book"></i>
                         </div>
-                        <span class="text-gray-700 font-medium">My Courses</span>
+                        <span class="text-gray-700 font-medium">{{ __('My Courses') }}</span>
                     </a>
                     <a href="{{ route('siswa.exams.index') }}"
                         class="flex items-center p-4 bg-green-50 rounded-lg border-2 border-green-200 hover:border-green-400 hover:shadow-md transition-all">
                         <div class="bg-green-500 rounded-full p-3 text-white mr-3">
                             <i class="fas fa-clipboard-list"></i>
                         </div>
-                        <span class="text-gray-700 font-medium">Exams</span>
+                        <span class="text-gray-700 font-medium">{{ __('Exams') }}</span>
                     </a>
                     <a href="{{ route('siswa.analytics.index') }}"
                         class="flex items-center p-4 bg-orange-50 rounded-lg border-2 border-orange-200 hover:border-orange-400 hover:shadow-md transition-all">
                         <div class="bg-orange-500 rounded-full p-3 text-white mr-3">
                             <i class="fas fa-poll"></i>
                         </div>
-                        <span class="text-gray-700 font-medium">Analytics</span>
+                        <span class="text-gray-700 font-medium">{{ __('Analytics') }}</span>
                     </a>
                 </div>
             </div>
@@ -122,9 +122,9 @@
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <div class="flex items-center justify-between mb-4">
                         <h4 class="text-lg font-semibold text-gray-900"><i
-                                class="fas fa-book-open text-purple-500 mr-2"></i>My Courses</h4>
+                                class="fas fa-book-open text-purple-500 mr-2"></i>{{ __('My Courses') }}</h4>
                         <a href="{{ route('siswa.courses.my-courses') }}"
-                            class="text-sm text-blue-600 hover:text-blue-800">View all →</a>
+                            class="text-sm text-blue-600 hover:text-blue-800">{{ __('View all →') }}</a>
                     </div>
                     @forelse($myCourses as $course)
                         <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
@@ -133,7 +133,7 @@
                             </div>
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-gray-900">{{ $course->title }}</p>
-                                <p class="text-xs text-gray-500">By {{ $course->instructor->name }}</p>
+                                <p class="text-xs text-gray-500">{{ __('By :name', ['name' => $course->instructor->name]) }}</p>
                             </div>
                             <div class="text-right">
                                 <div class="text-xs text-gray-500 mb-1">{{ number_format($course->pivot->progress) }}%
@@ -147,10 +147,10 @@
                     @empty
                         <div class="text-center py-8">
                             <i class="fas fa-book text-gray-400 text-4xl mb-3"></i>
-                            <p class="text-gray-500 mb-3">No courses enrolled</p>
+                            <p class="text-gray-500 mb-3">{{ __('No courses enrolled') }}</p>
                             <a href="{{ route('siswa.courses.index') }}"
                                 class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                                <i class="fas fa-search mr-2"></i>Browse Courses
+                                <i class="fas fa-search mr-2"></i>{{ __('Browse Courses') }}
                             </a>
                         </div>
                     @endforelse
@@ -160,10 +160,9 @@
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <div class="flex items-center justify-between mb-4">
                         <h4 class="text-lg font-semibold text-gray-900"><i
-                                class="fas fa-calendar-alt text-green-500 mr-2"></i>Upcoming Exams</h4>
+                                class="fas fa-calendar-alt text-green-500 mr-2"></i>{{ __('Upcoming Exams') }}</h4>
                         <a href="{{ route('siswa.exams.index') }}"
-                            class="text-sm text-blue-600 hover:text-blue-800">View
-                            all →</a>
+                            class="text-sm text-blue-600 hover:text-blue-800">{{ __('View all →') }}</a>
                     </div>
                     @forelse($upcomingExams as $exam)
                         <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
@@ -176,12 +175,14 @@
                             </div>
                             <div class="text-right">
                                 <p class="text-xs font-semibold text-green-600">
-                                    {{ $exam->start_time ? $exam->start_time->format('d M') : 'Available' }}</p>
-                                <p class="text-xs text-gray-500">{{ $exam->duration }} min</p>
+                                    {{ $exam->start_time ? $exam->start_time->translatedFormat('d M') : __('Available') }}</p>
+                                <p class="text-xs text-gray-500">
+                                    {{ trans_choice(__(':count minute|:count minutes'), $exam->duration, ['count' => $exam->duration]) }}
+                                </p>
                             </div>
                         </div>
                     @empty
-                        <p class="text-center text-gray-500 py-4">No upcoming exams</p>
+                        <p class="text-center text-gray-500 py-4">{{ __('No upcoming exams') }}</p>
                     @endforelse
                 </div>
             </div>
@@ -190,9 +191,9 @@
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h4 class="text-lg font-semibold text-gray-900"><i
-                            class="fas fa-chart-bar text-blue-500 mr-2"></i>Recent Grades</h4>
+                            class="fas fa-chart-bar text-blue-500 mr-2"></i>{{ __('Recent Grades') }}</h4>
                     <a href="{{ route('siswa.exams.my-attempts') }}"
-                        class="text-sm text-blue-600 hover:text-blue-800">View all →</a>
+                        class="text-sm text-blue-600 hover:text-blue-800">{{ __('View all →') }}</a>
                 </div>
                 @forelse($recentGrades as $attempt)
                     <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
@@ -217,8 +218,8 @@
                 @empty
                     <div class="text-center py-8">
                         <i class="fas fa-clipboard text-gray-400 text-4xl mb-3"></i>
-                        <p class="text-gray-500 mb-3">No exam results yet</p>
-                        <p class="text-xs text-gray-400">Complete your first exam to see your grades here</p>
+                        <p class="text-gray-500 mb-3">{{ __('No exam results yet') }}</p>
+                        <p class="text-xs text-gray-400">{{ __('Complete your first exam to see your grades here') }}</p>
                     </div>
                 @endforelse
             </div>

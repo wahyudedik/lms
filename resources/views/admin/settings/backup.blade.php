@@ -5,13 +5,13 @@
         <div class="mb-6 flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-gray-800">
-                    <i class="fas fa-database text-green-600 mr-2"></i>Backup Database
+                    <i class="fas fa-database text-green-600 mr-2"></i>{{ __('Backup Database') }}
                 </h1>
-                <p class="text-gray-600 mt-1">Kelola backup database untuk keamanan data</p>
+                <p class="text-gray-600 mt-1">{{ __('Manage database backups for data security') }}</p>
             </div>
             <a href="{{ route('admin.settings.index') }}"
                 class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
 
@@ -19,14 +19,14 @@
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-800">Buat Backup Baru</h2>
-                    <p class="text-sm text-gray-600 mt-1">Backup akan disimpan di storage/app/backups</p>
+                    <h2 class="text-lg font-semibold text-gray-800">{{ __('Create New Backup') }}</h2>
+                    <p class="text-sm text-gray-600 mt-1">{{ __('Backups are stored in storage/app/backups') }}</p>
                 </div>
                 <form action="{{ route('admin.settings.backup.create') }}" method="POST">
                     @csrf
                     <button type="submit"
                         class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                        <i class="fas fa-plus-circle mr-2"></i>Buat Backup Sekarang
+                        <i class="fas fa-plus-circle mr-2"></i>{{ __('Create Backup Now') }}
                     </button>
                 </form>
             </div>
@@ -36,7 +36,7 @@
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="px-6 py-4 bg-gray-50 border-b">
                 <h2 class="text-lg font-semibold text-gray-800">
-                    <i class="fas fa-list text-blue-600 mr-2"></i>Daftar Backup ({{ $backups->count() }})
+                    <i class="fas fa-list text-blue-600 mr-2"></i>{{ __('Backup List (:count)', ['count' => $backups->count()]) }}
                 </h2>
             </div>
 
@@ -59,16 +59,16 @@
                             <div class="flex items-center gap-2">
                                 <a href="{{ route('admin.settings.backup.download', $backup['filename']) }}"
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
-                                    <i class="fas fa-download mr-1"></i>Download
+                                    <i class="fas fa-download mr-1"></i>{{ __('Download') }}
                                 </a>
                                 <form action="{{ route('admin.settings.backup.delete', $backup['filename']) }}"
                                     method="POST"
-                                    onsubmit="return confirmDelete('Yakin ingin menghapus backup ini? File backup akan dihapus permanen!')">
+                                    onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this backup? This action cannot be undone!') }}')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
                                         class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm">
-                                        <i class="fas fa-trash mr-1"></i>Hapus
+                                        <i class="fas fa-trash mr-1"></i>{{ __('Delete') }}
                                     </button>
                                 </form>
                             </div>
@@ -78,8 +78,8 @@
             @else
                 <div class="p-12 text-center text-gray-500">
                     <i class="fas fa-inbox text-6xl mb-4"></i>
-                    <h3 class="text-lg font-semibold mb-2">Belum Ada Backup</h3>
-                    <p class="text-sm">Klik "Buat Backup Sekarang" untuk membuat backup pertama</p>
+                    <h3 class="text-lg font-semibold mb-2">{{ __('No Backups Yet') }}</h3>
+                    <p class="text-sm">{{ __('Click "Create Backup Now" to create your first backup') }}</p>
                 </div>
             @endif
         </div>
@@ -89,12 +89,12 @@
             <div class="flex">
                 <i class="fas fa-info-circle text-blue-600 text-xl mr-4"></i>
                 <div>
-                    <h3 class="font-semibold text-gray-800 mb-2">Informasi Penting</h3>
+                    <h3 class="font-semibold text-gray-800 mb-2">{{ __('Important Information') }}</h3>
                     <ul class="text-sm text-gray-700 space-y-1">
-                        <li>• Backup dilakukan secara manual, disarankan backup rutin setiap minggu</li>
-                        <li>• File backup berisi seluruh data database dalam format SQL</li>
-                        <li>• Simpan file backup di tempat aman (eksternal drive, cloud storage)</li>
-                        <li>• Untuk restore, hubungi administrator sistem</li>
+                        <li>• {{ __('Backups are manual; we recommend weekly backups') }}</li>
+                        <li>• {{ __('Backup files contain the entire database in SQL format') }}</li>
+                        <li>• {{ __('Store backup files securely (external drive, cloud storage)') }}</li>
+                        <li>• {{ __('For restore operations, contact the system administrator') }}</li>
                     </ul>
                 </div>
             </div>

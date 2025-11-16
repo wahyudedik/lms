@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Detail Ujian: {{ $exam->title }}
+                {{ __('Exam Details: :title', ['title' => $exam->title]) }}
             </h2>
             <div class="flex gap-2">
                 <a href="{{ route('guru.exams.edit', $exam) }}"
@@ -11,7 +11,7 @@
                 </a>
                 <a href="{{ route('guru.exams.index') }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -25,7 +25,7 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Status Ujian</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Exam Status') }}</h3>
                             <div class="mt-2">
                                 {!! $exam->status_badge !!}
                             </div>
@@ -103,7 +103,7 @@
             <!-- Schedule -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Jadwal Ujian</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Exam Schedule') }}</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -219,10 +219,10 @@
                     @else
                         <div class="text-center py-8">
                             <i class="fas fa-clipboard-question text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500 text-lg">Belum ada soal ditambahkan.</p>
+                            <p class="text-gray-500 text-lg">{{ __('No questions added yet.') }}</p>
                             <a href="{{ route('guru.exams.questions.index', $exam) }}"
                                 class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-plus mr-2"></i>Tambah Soal
+                                <i class="fas fa-plus mr-2"></i>{{ __('Add Question') }}
                             </a>
                         </div>
                     @endif
@@ -233,7 +233,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                        Percobaan Ujian ({{ $exam->attempts->count() }})
+                        {{ __('Exam Attempts (:count)', ['count' => $exam->attempts->count()]) }}
                     </h3>
 
                     @if ($exam->attempts->count() > 0)
@@ -256,7 +256,11 @@
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm font-medium text-gray-900">
-                                                    {{ $attempt->user->name }}</div>
+                                                    {{ $attempt->user?->name ?? ($attempt->guest_name ?? 'Guest') }}
+                                                </div>
+                                                <div class="text-sm text-gray-500">
+                                                    {{ $attempt->user?->email ?? ($attempt->guest_email ?? '-') }}
+                                                </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">
@@ -279,7 +283,7 @@
                     @else
                         <div class="text-center py-8">
                             <i class="fas fa-users text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500">Belum ada siswa yang mengerjakan ujian ini.</p>
+                            <p class="text-gray-500">{{ __('No students have taken this exam yet.') }}</p>
                         </div>
                     @endif
                 </div>

@@ -54,7 +54,7 @@ class OfflineExamController extends Controller
         // Check if user already has an active attempt
         $activeAttempt = ExamAttempt::where('exam_id', $exam->id)
             ->where('user_id', $user->id)
-            ->whereNull('finished_at')
+            ->where('status', 'in_progress')
             ->first();
 
         if (!$activeAttempt) {
@@ -74,7 +74,7 @@ class OfflineExamController extends Controller
 
         // Get existing answers
         $existingAnswers = Answer::where('attempt_id', $activeAttempt->id)
-            ->pluck('answer_text', 'question_id')
+            ->pluck('answer', 'question_id')
             ->toArray();
 
         return view('offline.exams.take', compact('exam', 'activeAttempt', 'existingAnswers'));
@@ -125,7 +125,7 @@ class OfflineExamController extends Controller
                 'question_id' => $request->question_id,
             ],
             [
-                'answer_text' => $request->answer,
+                'answer' => $this->normalizeAnswerInput($request->answer),
                 'saved_at' => now(),
             ]
         );
@@ -165,7 +165,7 @@ class OfflineExamController extends Controller
                         'question_id' => $questionId,
                     ],
                     [
-                        'answer_text' => $answer,
+                        'answer' => $this->normalizeAnswerInput($answer),
                         'saved_at' => now(),
                     ]
                 );
@@ -173,8 +173,8 @@ class OfflineExamController extends Controller
 
             // Mark attempt as finished
             $attempt->update([
-                'finished_at' => now(),
                 'submitted_at' => now(),
+                'status' => 'graded',
                 'is_offline' => $request->boolean('was_offline', false),
             ]);
 
@@ -217,8 +217,10 @@ class OfflineExamController extends Controller
                 continue;
             }
 
-            // Check if answer is correct
-            if ($this->isAnswerCorrect($question, $userAnswer->answer_text)) {
+            // Decode JSON answer to native PHP
+            $decodedAnswer = $userAnswer->answer;
+            // Check if answer is correct using Question model helper
+            if ($question->checkAnswer($decodedAnswer)) {
                 $correctAnswers++;
             }
         }
@@ -235,22 +237,25 @@ class OfflineExamController extends Controller
     /**
      * Check if answer is correct
      */
-    private function isAnswerCorrect(Question $question, $userAnswer)
+    // Normalize answer input from request to be storable in JSON column
+    private function normalizeAnswerInput($input)
     {
-        if ($question->type === 'multiple_choice') {
-            return $userAnswer === $question->correct_answer;
+        // If already array/object, return as is
+        if (is_array($input)) {
+            return $input;
         }
-
-        if ($question->type === 'true_false') {
-            return strtolower($userAnswer) === strtolower($question->correct_answer);
+        // If JSON string, decode; fallback to raw string
+        if (is_string($input)) {
+            $trim = trim($input);
+            if ((str_starts_with($trim, '[') && str_ends_with($trim, ']')) || (str_starts_with($trim, '{') && str_ends_with($trim, '}'))) {
+                $decoded = json_decode($trim, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    return $decoded;
+                }
+            }
+            return $input;
         }
-
-        if ($question->type === 'short_answer') {
-            return strtolower(trim($userAnswer)) === strtolower(trim($question->correct_answer));
-        }
-
-        // Essay questions need manual grading
-        return false;
+        return $input;
     }
 
     /**

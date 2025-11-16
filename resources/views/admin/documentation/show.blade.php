@@ -4,7 +4,7 @@
             <div>
                 <div class="flex items-center gap-3 mb-2">
                     <a href="{{ route('admin.documentation.index') }}"
-                        class="text-gray-500 hover:text-gray-700 transition-colors">
+                        class="text-gray-500 hover:text-gray-700 transition-colors" title="{{ __('Back') }}">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     <h2 class="text-2xl font-bold text-gray-800">
@@ -16,8 +16,7 @@
                     <span class="mx-2">•</span>
                     <i class="fas fa-file mr-1"></i>{{ $doc['filename'] }}
                     <span class="mx-2">•</span>
-                    <i class="fas fa-clock mr-1"></i>Updated
-                    {{ \Carbon\Carbon::createFromTimestamp($doc['modified'])->diffForHumans() }}
+                    <i class="fas fa-clock mr-1"></i>{{ __('Updated :time', ['time' => \Carbon\Carbon::createFromTimestamp($doc['modified'])->diffForHumans()]) }}
                 </p>
             </div>
 
@@ -25,13 +24,13 @@
                 <!-- Print Button -->
                 <button onclick="window.print()"
                     class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-print mr-2"></i>Print
+                    <i class="fas fa-print mr-2"></i>{{ __('Print') }}
                 </button>
 
                 <!-- Download Button -->
                 <a href="{{ asset('docs/' . $doc['filename']) }}" download="{{ $doc['filename'] }}"
                     class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
-                    <i class="fas fa-download mr-2"></i>Download
+                    <i class="fas fa-download mr-2"></i>{{ __('Download') }}
                 </a>
             </div>
         </div>
@@ -45,7 +44,7 @@
                 <div class="hidden lg:block w-64 flex-shrink-0">
                     <div class="bg-white rounded-lg shadow-md p-4 sticky top-6">
                         <h3 class="font-bold text-gray-800 mb-4">
-                            <i class="fas fa-list mr-2 text-indigo-600"></i>Documentation
+                            <i class="fas fa-list mr-2 text-indigo-600"></i>{{ __('Documentation') }}
                         </h3>
                         <div class="space-y-1 text-sm">
                             @foreach ($docs as $d)
@@ -82,7 +81,7 @@
                                 <i
                                     class="fas fa-arrow-left text-gray-400 group-hover:text-indigo-600 transition-colors"></i>
                                 <div>
-                                    <p class="text-xs text-gray-500">Previous</p>
+                                    <p class="text-xs text-gray-500">{{ __('Previous') }}</p>
                                     <p class="font-medium text-gray-800">{{ Str::limit($prevDoc['title'], 30) }}</p>
                                 </div>
                             </a>
@@ -94,7 +93,7 @@
                             <a href="{{ route('admin.documentation.show', $nextDoc['slug']) }}"
                                 class="flex items-center gap-3 px-6 py-3 bg-white rounded-lg shadow hover:shadow-md transition-shadow group">
                                 <div class="text-right">
-                                    <p class="text-xs text-gray-500">Next</p>
+                                    <p class="text-xs text-gray-500">{{ __('Next') }}</p>
                                     <p class="font-medium text-gray-800">{{ Str::limit($nextDoc['title'], 30) }}</p>
                                 </div>
                                 <i

@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::query()->withCount('activeCheatingIncidents');
 
         // Search functionality
         if ($request->has('search') && $request->search) {
@@ -91,7 +91,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return view('admin.users.show', compact('user'));
+        $recentIncidents = $user->cheatingIncidents()->latest()->limit(5)->get();
+        $activeIncidentCount = $user->activeCheatingIncidents()->count();
+
+        return view('admin.users.show', compact('user', 'recentIncidents', 'activeIncidentCount'));
     }
 
     /**
@@ -163,6 +166,20 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')
             ->with('success', "User {$status} successfully.");
+    }
+
+    /**
+     * Reset user login block (admin action)
+     */
+    public function resetLogin(Request $request, User $user)
+    {
+        if (!$user->is_login_blocked) {
+            return back()->with('info', 'User login is not blocked.');
+        }
+
+        $user->resetLoginBlock($request->user());
+
+        return back()->with('success', 'User login access has been reset.');
     }
 
     /**

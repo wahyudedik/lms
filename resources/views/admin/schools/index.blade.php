@@ -3,11 +3,11 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-school text-indigo-600 mr-2"></i>
-                Schools Management
+                {{ __('Schools Management') }}
             </h2>
             <a href="{{ route('admin.schools.create') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-plus mr-2"></i>Add School
+                <i class="fas fa-plus mr-2"></i>{{ __('Add School') }}
             </a>
         </div>
     </x-slot>
@@ -30,23 +30,23 @@
                                     <tr>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            School
+                                            {{ __('School') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Contact
+                                            {{ __('Contact') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Users
+                                            {{ __('Users') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status
+                                            {{ __('Status') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Actions
+                                            {{ __('Actions') }}
                                         </th>
                                     </tr>
                                 </thead>
@@ -84,9 +84,9 @@
                                                     {{ $school->users_count }}
                                                 </div>
                                                 <div class="text-xs text-gray-500">
-                                                    A: {{ $school->admins_count }} |
-                                                    T: {{ $school->teachers_count }} |
-                                                    S: {{ $school->students_count }}
+                                                    {{ __('Admins: :count', ['count' => $school->admins_count]) }} |
+                                                    {{ __('Teachers: :count', ['count' => $school->teachers_count]) }} |
+                                                    {{ __('Students: :count', ['count' => $school->students_count]) }}
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
@@ -95,35 +95,35 @@
                                                     @csrf
                                                     <button type="submit"
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $school->is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
-                                                        {{ $school->is_active ? 'Active' : 'Inactive' }}
+                                                        {{ $school->is_active ? __('Active') : __('Inactive') }}
                                                     </button>
                                                 </form>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <a href="{{ route('admin.schools.show', $school) }}"
-                                                    class="text-blue-600 hover:text-blue-900 mr-3" title="View">
+                                                    class="text-blue-600 hover:text-blue-900 mr-3" title="{{ __('View') }}">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="{{ route('admin.schools.theme.edit', $school) }}"
-                                                    class="text-purple-600 hover:text-purple-900 mr-3" title="Theme">
+                                                    class="text-purple-600 hover:text-purple-900 mr-3" title="{{ __('Theme') }}">
                                                     <i class="fas fa-palette"></i>
                                                 </a>
                                                 <a href="{{ route('admin.landing-page.edit', $school) }}"
                                                     class="text-indigo-600 hover:text-indigo-900 mr-3"
-                                                    title="Landing Page">
+                                                    title="{{ __('Landing Page') }}">
                                                     <i class="fas fa-paint-brush"></i>
                                                 </a>
                                                 <a href="{{ route('admin.schools.edit', $school) }}"
-                                                    class="text-yellow-600 hover:text-yellow-900 mr-3" title="Edit">
+                                                    class="text-yellow-600 hover:text-yellow-900 mr-3" title="{{ __('Edit') }}">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <form action="{{ route('admin.schools.destroy', $school) }}"
                                                     method="POST" class="inline"
-                                                    onsubmit="return confirmDelete('All users in this school will be unassigned from {{ $school->name }}. This action cannot be undone!')">
+                                                    onsubmit="return confirmDelete('{{ __('All users in this school will be unassigned from :name. This action cannot be undone!', ['name' => $school->name]) }}')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900"
-                                                        title="Delete">
+                                                        title="{{ __('Delete') }}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -141,12 +141,11 @@
                     @else
                         <div class="text-center py-12">
                             <i class="fas fa-school text-6xl text-gray-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-700 mb-2">No Schools Yet</h3>
-                            <p class="text-gray-500 mb-6">Create your first school to get started with multi-tenant
-                                features!</p>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-2">{{ __('No Schools Yet') }}</h3>
+                            <p class="text-gray-500 mb-6">{{ __('Create your first school to get started with multi-tenant features!') }}</p>
                             <a href="{{ route('admin.schools.create') }}"
                                 class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">
-                                <i class="fas fa-plus mr-2"></i>Create First School
+                                <i class="fas fa-plus mr-2"></i>{{ __('Create First School') }}
                             </a>
                         </div>
                     @endif

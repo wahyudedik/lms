@@ -17,7 +17,7 @@ trait AuthorizesResources
      * @param mixed $resource
      * @return void
      */
-    protected function authorizeResource(string $ability, $resource): void
+    protected function authorizeResourceAbility(string $ability, $resource): void
     {
         $this->authorize($ability, $resource);
     }

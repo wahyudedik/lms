@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                📋 Riwayat Ujian Saya
+                📋 {{ __('My Exam History') }}
             </h2>
             <a href="{{ route('siswa.exams.index') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-list mr-2"></i>Browse Ujian
+                <i class="fas fa-list mr-2"></i>{{ __('Browse Exams') }}
             </a>
         </div>
     </x-slot>
@@ -23,7 +23,7 @@
                                     <tr>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Ujian
+                                            {{ __('Exam') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -35,7 +35,7 @@
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Nilai
+                                            {{ __('Score') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -149,7 +149,7 @@
 
                                                     <a href="{{ route('siswa.exams.show', $attempt->exam) }}"
                                                         class="text-green-600 hover:text-green-900"
-                                                        title="Detail Ujian">
+                                                        title="{{ __('Exam Details') }}">
                                                         <i class="fas fa-info-circle"></i>
                                                     </a>
                                                 </div>
@@ -208,7 +208,7 @@
                             <div class="text-3xl font-bold text-purple-600">
                                 {{ $avgScore ? number_format($avgScore, 1) . '%' : '-' }}
                             </div>
-                            <div class="text-sm text-gray-600 mt-1">Rata-rata Nilai</div>
+                            <div class="text-sm text-gray-600 mt-1">{{ __('Average Score') }}</div>
                         </div>
                     </div>
                 </div>
@@ -217,11 +217,11 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-12 text-center">
                         <i class="fas fa-clipboard-list text-6xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500 text-lg mb-2">Belum ada riwayat ujian.</p>
+                        <p class="text-gray-500 text-lg mb-2">{{ __('No exam history yet.') }}</p>
                         <p class="text-gray-400 text-sm mb-6">Mulai kerjakan ujian untuk melihat riwayat di sini.</p>
                         <a href="{{ route('siswa.exams.index') }}"
                             class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            <i class="fas fa-list mr-2"></i>Browse Ujian
+                            <i class="fas fa-list mr-2"></i>{{ __('Browse Exams') }}
                         </a>
                     </div>
                 </div>

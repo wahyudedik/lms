@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Hasil Ujian: {{ $exam->title }}
+                {{ __('Exam Results: :title', ['title' => $exam->title]) }}
             </h2>
             <a href="{{ route('admin.exams.show', $exam) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -58,7 +58,7 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Nilai Rata-rata</dt>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">{{ __('Average Score') }}</dt>
                                     <dd class="text-lg font-semibold text-gray-900">
                                         {{ $statistics['average_score'] ? number_format($statistics['average_score'], 2) . '%' : '-' }}
                                     </dd>
@@ -76,7 +76,7 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Nilai Tertinggi</dt>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">{{ __('Highest Score') }}</dt>
                                     <dd class="text-lg font-semibold text-gray-900">
                                         {{ $statistics['highest_score'] ? number_format($statistics['highest_score'], 2) . '%' : '-' }}
                                     </dd>
@@ -94,7 +94,7 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Nilai Terendah</dt>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">{{ __('Lowest Score') }}</dt>
                                     <dd class="text-lg font-semibold text-gray-900">
                                         {{ $statistics['lowest_score'] ? number_format($statistics['lowest_score'], 2) . '%' : '-' }}
                                     </dd>
@@ -126,7 +126,7 @@
             <!-- Attempts Table -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Daftar Percobaan</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Attempts List') }}</h3>
 
                     @if ($attempts->count() > 0)
                         <div class="overflow-x-auto">
@@ -146,7 +146,7 @@
                                             Waktu
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Nilai
+                                            {{ __('Score') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                             Status
@@ -160,16 +160,27 @@
                                     @foreach ($attempts as $attempt)
                                         <tr>
                                             <td class="px-6 py-4">
+                                                @php
+                                                    $attemptUser = $attempt->user;
+                                                    $isGuest = $attempt->is_guest;
+                                                    $displayName = $isGuest
+                                                        ? ($attempt->guest_name ?? __('Guest'))
+                                                        : ($attemptUser->name ?? __('Tidak diketahui'));
+                                                    $displayEmail = $isGuest
+                                                        ? ($attempt->guest_email ?? __('-'))
+                                                        : ($attemptUser->email ?? __('-'));
+                                                    $avatarUrl = $attemptUser?->profile_photo_url ?? asset('images/avatars/default-avatar.png');
+                                                @endphp
                                                 <div class="flex items-center">
                                                     <img class="h-8 w-8 rounded-full object-cover"
-                                                        src="{{ $attempt->user->profile_photo_url }}"
-                                                        alt="{{ $attempt->user->name }}">
+                                                        src="{{ $avatarUrl }}"
+                                                        alt="{{ $displayName }}">
                                                     <div class="ml-3">
                                                         <div class="text-sm font-medium text-gray-900">
-                                                            {{ $attempt->user->name }}
+                                                            {{ $displayName }}
                                                         </div>
                                                         <div class="text-sm text-gray-500">
-                                                            {{ $attempt->user->email }}
+                                                            {{ $displayEmail }}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -240,7 +251,7 @@
                     @else
                         <div class="text-center py-8">
                             <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500 text-lg">Belum ada siswa yang mengerjakan ujian ini.</p>
+                            <p class="text-gray-500 text-lg">{{ __('No students have taken this exam yet.') }}</p>
                         </div>
                     @endif
                 </div>

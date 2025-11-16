@@ -6,6 +6,7 @@ use App\Models\Answer;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -14,10 +15,15 @@ class ExamAttemptController extends Controller
     /**
      * Start a new exam attempt
      */
-    public function start(Exam $exam)
+    public function start(Request $request, Exam $exam)
     {
+        $blockedResponse = $this->handleBlockedUser($request);
+        if ($blockedResponse) {
+            return $blockedResponse;
+        }
+
         // Check if student is enrolled in the course
-        $enrollment = auth()->user()->enrollments()
+        $enrollment = $request->user()->enrollments()
             ->where('course_id', $exam->course_id)
             ->where('status', 'active')
             ->first();
@@ -32,7 +38,7 @@ class ExamAttemptController extends Controller
         }
 
         // Check if user can take the exam
-        if (!$exam->canUserTake(auth()->id())) {
+        if (!$exam->canUserTake($request->user()->id)) {
             return back()->with('error', 'You have reached the maximum number of attempts for this exam.');
         }
 
@@ -55,24 +61,7 @@ class ExamAttemptController extends Controller
                 'user_id' => auth()->id(),
             ]);
 
-            $attempt->start();
-
-            // Create placeholder answers for all questions (all or nothing)
-            $questions = $exam->questions;
-            foreach ($questions as $question) {
-                $answerData = [
-                    'attempt_id' => $attempt->id,
-                    'question_id' => $question->id,
-                    'answer' => null,
-                ];
-
-                // Store shuffled options if exam has shuffle_options enabled
-                if ($exam->shuffle_options && ($question->type === 'mcq_single' || $question->type === 'mcq_multiple')) {
-                    $answerData['shuffled_options'] = $question->getShuffledOptions();
-                }
-
-                Answer::create($answerData);
-            }
+        $attempt->start();
 
             return redirect()->route('siswa.exams.take', $attempt);
         });
@@ -159,10 +148,37 @@ class ExamAttemptController extends Controller
         $answer = Answer::where('attempt_id', $attempt->id)
             ->where('question_id', $validated['question_id'])
             ->firstOrFail();
-
         $answer->update(['answer' => $validated['answer']]);
 
-        return response()->json(['success' => true, 'message' => 'Answer saved']);
+        $attempt->load('answers.question');
+        $answeredCount = $attempt->answers->filter(function (Answer $ans) {
+            $value = $ans->answer;
+
+            if (is_null($value)) {
+                return false;
+            }
+
+            if (is_string($value)) {
+                return trim($value) !== '';
+            }
+
+            if (is_array($value)) {
+                return collect($value)->filter(function ($item) {
+                    if (is_array($item)) {
+                        return collect($item)->filter(fn ($v) => $v !== null && $v !== '')->isNotEmpty();
+                    }
+                    return $item !== null && $item !== '';
+                })->isNotEmpty();
+            }
+
+            return true;
+        })->count();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Answer saved',
+            'answered_count' => $answeredCount,
+        ]);
     }
 
     /**
@@ -220,10 +236,10 @@ class ExamAttemptController extends Controller
             return response()->json(['success' => false], 400);
         }
 
-        $attempt->recordTabSwitch();
+        $autoSubmitted = $attempt->recordTabSwitch();
 
         // Check if attempt was auto-submitted due to max violations
-        if ($attempt->fresh()->status !== 'in_progress') {
+        if ($autoSubmitted || $attempt->fresh()->status !== 'in_progress') {
             return response()->json([
                 'success' => true,
                 'autoSubmitted' => true,
@@ -271,10 +287,32 @@ class ExamAttemptController extends Controller
             return response()->json(['success' => false], 403);
         }
 
+        $remainingSeconds = max(0, $attempt->getTimeRemaining());
+
         return response()->json([
             'success' => true,
-            'timeRemaining' => $attempt->getTimeRemaining(),
+            'seconds_remaining' => $remainingSeconds,
+            'timeRemaining' => $remainingSeconds,
             'isTimeUp' => $attempt->isTimeUp(),
         ]);
+    }
+
+    protected function handleBlockedUser(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user || !$user->is_login_blocked) {
+            return null;
+        }
+
+        $message = $user->login_blocked_reason
+            ? 'Akun Anda diblokir: ' . $user->login_blocked_reason . '. Hubungi admin untuk reset.'
+            : 'Akun Anda diblokir. Hubungi admin untuk reset.';
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('error', $message);
     }
 }

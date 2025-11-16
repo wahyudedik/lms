@@ -2,12 +2,12 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <i class="fas fa-shield-alt text-red-600 mr-2"></i>Authorization Logs
+                <i class="fas fa-shield-alt text-red-600 mr-2"></i>{{ __('Authorization Logs') }}
             </h2>
             <div class="flex gap-2">
                 <a href="{{ route('admin.authorization-logs.export', request()->all()) }}"
                     class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm">
-                    <i class="fas fa-download mr-1"></i>Export CSV
+                    <i class="fas fa-download mr-1"></i>{{ __('Export CSV') }}
                 </a>
             </div>
         </div>
@@ -20,7 +20,7 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-gray-500 text-sm">Total Logs</p>
+                            <p class="text-gray-500 text-sm">{{ __('Total Logs') }}</p>
                             <p class="text-3xl font-bold text-gray-800 mt-2">{{ number_format($stats['total']) }}</p>
                         </div>
                         <div class="bg-blue-100 rounded-full p-3">
@@ -32,7 +32,7 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-gray-500 text-sm">Denied</p>
+                            <p class="text-gray-500 text-sm">{{ __('Denied') }}</p>
                             <p class="text-3xl font-bold text-red-600 mt-2">{{ number_format($stats['denied']) }}</p>
                         </div>
                         <div class="bg-red-100 rounded-full p-3">
@@ -44,7 +44,7 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-gray-500 text-sm">Allowed</p>
+                            <p class="text-gray-500 text-sm">{{ __('Allowed') }}</p>
                             <p class="text-3xl font-bold text-green-600 mt-2">{{ number_format($stats['allowed']) }}</p>
                         </div>
                         <div class="bg-green-100 rounded-full p-3">
@@ -56,7 +56,7 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-gray-500 text-sm">Denied %</p>
+                            <p class="text-gray-500 text-sm">{{ __('Denied %') }}</p>
                             <p class="text-3xl font-bold text-orange-600 mt-2">{{ number_format($stats['denied_percentage'], 1) }}%</p>
                         </div>
                         <div class="bg-orange-100 rounded-full p-3">
@@ -70,25 +70,25 @@
             <div class="bg-white rounded-lg shadow mb-6 p-6">
                 <form method="GET" action="{{ route('admin.authorization-logs.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Result</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Result') }}</label>
                         <select name="result" class="w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="">All</option>
-                            <option value="denied" {{ request('result') == 'denied' ? 'selected' : '' }}>Denied</option>
-                            <option value="allowed" {{ request('result') == 'allowed' ? 'selected' : '' }}>Allowed</option>
+                            <option value="">{{ __('All') }}</option>
+                            <option value="denied" {{ request('result') == 'denied' ? 'selected' : '' }}>{{ __('Denied') }}</option>
+                            <option value="allowed" {{ request('result') == 'allowed' ? 'selected' : '' }}>{{ __('Allowed') }}</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Resource Type</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Resource Type') }}</label>
                         <input type="text" name="resource_type" value="{{ request('resource_type') }}"
-                            placeholder="e.g., App\Models\Exam"
+                            placeholder="{{ __('e.g., App\\Models\\Exam') }}"
                             class="w-full rounded-md border-gray-300 shadow-sm">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">User</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('User') }}</label>
                         <select name="user_id" class="w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="">All Users</option>
+                            <option value="">{{ __('All Users') }}</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
                                     {{ $user->name }} ({{ $user->email }})
@@ -98,31 +98,31 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Date From') }}</label>
                         <input type="date" name="date_from" value="{{ request('date_from') }}"
                             class="w-full rounded-md border-gray-300 shadow-sm">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Date To') }}</label>
                         <input type="date" name="date_to" value="{{ request('date_to') }}"
                             class="w-full rounded-md border-gray-300 shadow-sm">
                     </div>
 
                     <div class="md:col-span-5">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Search') }}</label>
                         <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="Search by action, ability, route, reason..."
+                            placeholder="{{ __('Search by action, ability, route, reason...') }}"
                             class="w-full rounded-md border-gray-300 shadow-sm">
                     </div>
 
                     <div class="md:col-span-5 flex gap-2">
                         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            <i class="fas fa-filter mr-1"></i>Filter
+                            <i class="fas fa-filter mr-1"></i>{{ __('Filter') }}
                         </button>
                         <a href="{{ route('admin.authorization-logs.index') }}"
                             class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
-                            <i class="fas fa-times mr-1"></i>Clear
+                            <i class="fas fa-times mr-1"></i>{{ __('Clear') }}
                         </a>
                     </div>
                 </form>
@@ -134,15 +134,15 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resource</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Route</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP Address</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('ID') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('User') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Resource') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Action') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Result') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Route') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('IP Address') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Date') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -156,7 +156,7 @@
                                                 <div class="text-gray-500 text-xs">{{ $log->user->email }}</div>
                                             </div>
                                         @else
-                                            <span class="text-gray-400">Guest</span>
+                                            <span class="text-gray-400">{{ __('Guest') }}</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -175,34 +175,34 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         @if($log->result === 'denied')
                                             <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                                <i class="fas fa-times-circle mr-1"></i>Denied
+                                                <i class="fas fa-times-circle mr-1"></i>{{ __('Denied') }}
                                             </span>
                                         @else
                                             <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                                <i class="fas fa-check-circle mr-1"></i>Allowed
+                                                <i class="fas fa-check-circle mr-1"></i>{{ __('Allowed') }}
                                             </span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <div class="max-w-xs truncate" title="{{ $log->route }}">
-                                            {{ $log->route ?? 'N/A' }}
+                                            {{ $log->route ?? __('N/A') }}
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $log->ip_address ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $log->ip_address ?? __('N/A') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $log->created_at->format('Y-m-d H:i:s') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('admin.authorization-logs.show', $log) }}"
                                             class="text-blue-600 hover:text-blue-900">
-                                            <i class="fas fa-eye"></i> View
+                                            <i class="fas fa-eye"></i> {{ __('View') }}
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
                                     <td colspan="9" class="px-6 py-4 text-center text-gray-500">
-                                        No authorization logs found.
+                                        {{ __('No authorization logs found.') }}
                                     </td>
                                 </tr>
                             @endforelse

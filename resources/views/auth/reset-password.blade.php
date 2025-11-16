@@ -3,8 +3,8 @@
         <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
             <i class="fas fa-lock text-green-600 text-2xl"></i>
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Reset Password</h2>
-        <p class="text-gray-600">Enter your new password below</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ __('Reset Password') }}</h2>
+        <p class="text-gray-600">{{ __('Enter your new password below') }}</p>
     </div>
 
     <form method="POST" action="{{ route('password.store') }}" class="space-y-6">
@@ -20,7 +20,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-envelope text-gray-400"></i>
                 </div>
-                <x-text-input id="email" class="block w-full pl-10" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" placeholder="you@example.com" />
+                <x-text-input id="email" class="block w-full pl-10" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" placeholder="{{ __('you@example.com') }}" />
             </div>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>

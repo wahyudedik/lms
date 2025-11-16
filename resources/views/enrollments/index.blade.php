@@ -3,13 +3,13 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Kelola Siswa - {{ $course->title }}
+                    {{ __('Manage Students - :title', ['title' => $course->title]) }}
                 </h2>
-                <p class="text-sm text-gray-600 mt-1">Kode: {{ $course->code }}</p>
+                <p class="text-sm text-gray-600 mt-1">{{ __('Code: :code', ['code' => $course->code]) }}</p>
             </div>
             <a href="{{ auth()->user()->isAdmin() ? route('admin.courses.show', $course) : route('guru.courses.show', $course) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -19,28 +19,91 @@
             <!-- Add Student Form -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Tambah Siswa</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Add Students') }}</h3>
 
                     @if ($availableStudents->count() > 0)
                         <form
                             action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments.store', $course) : route('guru.courses.enrollments.store', $course) }}"
-                            method="POST" class="flex gap-4">
+                            method="POST"
+                            x-data="{
+                                open: false,
+                                students: @js($availableStudents->map(fn ($student) => [
+                                    'id' => $student->id,
+                                    'name' => $student->name,
+                                    'email' => $student->email,
+                                ])->values()),
+                                selected: @js(old('user_ids', [])),
+                                toggleAll(event) {
+                                    if (event.target.checked) {
+                                        this.selected = this.students.map(student => student.id);
+                                    } else {
+                                        this.selected = [];
+                                    }
+                                }
+                            }"
+                            class="space-y-4">
                             @csrf
-                            <select name="user_id" required
-                                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option value="">Pilih Siswa</option>
-                                @foreach ($availableStudents as $student)
-                                    <option value="{{ $student->id }}">{{ $student->name }} ({{ $student->email }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            <button type="submit"
-                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded">
-                                <i class="fas fa-user-plus mr-2"></i>Tambah
-                            </button>
+
+                            <div class="flex flex-col md:flex-row md:items-center gap-4">
+                                <div class="flex-1">
+                                    <button type="button" @click="open = !open"
+                                        class="w-full md:w-auto flex items-center justify-between px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <span class="font-medium" x-text="selected.length
+                                            ? `${selected.length} ${@js(__('students selected'))}`
+                                            : @js(__('Select students'))"></span>
+                                        <svg class="w-4 h-4 ml-2 transform transition"
+                                            :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+
+                                    <div x-show="open" x-transition
+                                        class="mt-3 border rounded-lg p-4 bg-gray-50 max-h-72 overflow-y-auto space-y-3">
+                                        <label class="flex items-center gap-2">
+                                            <input type="checkbox" class="rounded border-gray-300"
+                                                @change="toggleAll($event)" :checked="selected.length === students.length && students.length > 0">
+                                            <span class="text-sm font-medium">{{ __('Select All (:count)', ['count' => $availableStudents->count()]) }}</span>
+                                        </label>
+
+                                        <div class="divide-y divide-gray-200">
+                                            <template x-for="student in students" :key="student.id">
+                                                <label class="flex items-start gap-3 py-2">
+                                                    <input type="checkbox" name="user_ids[]" :value="student.id"
+                                                        class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                        x-model="selected">
+                                                    <div>
+                                                        <p class="font-medium text-gray-900" x-text="student.name"></p>
+                                                        <p class="text-xs text-gray-500" x-text="student.email"></p>
+                                                    </div>
+                                                </label>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm text-gray-600">
+                                        {{ __('Selected:') }}
+                                        <span class="font-semibold text-blue-600" x-text="selected.length"></span>
+                                    </span>
+                                </div>
+
+                                <button type="submit"
+                                    :disabled="selected.length === 0"
+                                    :class="selected.length === 0 ? 'opacity-50 cursor-not-allowed bg-green-400' : 'bg-green-500 hover:bg-green-600'"
+                                    class="text-white font-bold py-2 px-6 rounded inline-flex items-center justify-center">
+                                    <i class="fas fa-user-plus mr-2"></i>{{ __('Add') }}
+                                </button>
+                            </div>
+
+                            @error('user_ids')
+                                <p class="text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </form>
                     @else
-                        <p class="text-gray-500">Semua siswa sudah terdaftar di kelas ini.</p>
+                        <p class="text-gray-500">{{ __('All students are already enrolled in this course.') }}</p>
                     @endif
                 </div>
             </div>
@@ -79,7 +142,7 @@
             <!-- Enrollments Table -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Daftar Siswa</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Student List') }}</h3>
 
                     @if ($enrollments->count() > 0)
                         <div class="overflow-x-auto">
@@ -88,19 +151,19 @@
                                     <tr>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Siswa</th>
+                                            {{ __('Student') }}</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status</th>
+                                            {{ __('Status') }}</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Progress</th>
+                                            {{ __('Progress') }}</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Terdaftar</th>
+                                            {{ __('Enrolled') }}</th>
                                         <th
                                             class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Aksi</th>
+                                            {{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -127,15 +190,12 @@
                                                             @if ($enrollment->status == 'active') bg-green-100 text-green-800
                                                             @elseif($enrollment->status == 'completed') bg-blue-100 text-blue-800
                                                             @else bg-red-100 text-red-800 @endif">
-                                                        <option value="active"
-                                                            {{ $enrollment->status == 'active' ? 'selected' : '' }}>
-                                                            Aktif</option>
-                                                        <option value="completed"
-                                                            {{ $enrollment->status == 'completed' ? 'selected' : '' }}>
-                                                            Selesai</option>
-                                                        <option value="dropped"
-                                                            {{ $enrollment->status == 'dropped' ? 'selected' : '' }}>
-                                                            Berhenti</option>
+                                                        <option value="active" {{ $enrollment->status == 'active' ? 'selected' : '' }}>
+                                                            {{ __('Active') }}</option>
+                                                        <option value="completed" {{ $enrollment->status == 'completed' ? 'selected' : '' }}>
+                                                            {{ __('Completed') }}</option>
+                                                        <option value="dropped" {{ $enrollment->status == 'dropped' ? 'selected' : '' }}>
+                                                            {{ __('Dropped') }}</option>
                                                     </select>
                                                 </form>
                                             </td>
@@ -171,7 +231,7 @@
                                                 <form
                                                     action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments.destroy', [$course, $enrollment]) : route('guru.courses.enrollments.destroy', [$course, $enrollment]) }}"
                                                     method="POST" class="inline"
-                                                    onsubmit="return confirmDelete('Yakin ingin menghapus siswa dari kelas ini?');">
+                                                    onsubmit="return confirmDelete('{{ __('Are you sure you want to remove this student from the class?') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900">
@@ -190,10 +250,11 @@
                             {{ $enrollments->links() }}
                         </div>
                     @else
-                        <p class="text-gray-500 text-center py-8">Belum ada siswa terdaftar di kelas ini.</p>
+                        <p class="text-gray-500 text-center py-8">{{ __('No students enrolled in this course yet.') }}</p>
                     @endif
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+

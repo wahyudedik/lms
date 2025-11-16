@@ -11,7 +11,7 @@
                 </a>
                 <a href="{{ route('guru.courses.index') }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -47,7 +47,7 @@
 
                             <div class="prose max-w-none">
                                 <h4 class="text-lg font-semibold text-gray-900 mb-2">Deskripsi</h4>
-                                <p class="text-gray-700">{{ $course->description ?: 'Tidak ada deskripsi' }}</p>
+                                <p class="text-gray-700">{{ $course->description ?: __('No description') }}</p>
                             </div>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                                     </div>
                                 @endif
                             @else
-                                <p class="text-gray-500 text-center py-4">Belum ada siswa terdaftar</p>
+                                <p class="text-gray-500 text-center py-4">{{ __('No students enrolled yet') }}</p>
                             @endif
                         </div>
                     </div>
@@ -127,10 +127,10 @@
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold text-gray-900">Materi Pembelajaran</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Learning Materials') }}</h3>
                                 <a href="{{ route('guru.courses.materials.index', $course) }}"
                                     class="text-blue-600 hover:text-blue-900">
-                                    <i class="fas fa-cog mr-1"></i>Kelola Materi
+                                    <i class="fas fa-cog mr-1"></i>{{ __('Manage Materials') }}
                                 </a>
                             </div>
 
@@ -159,7 +159,7 @@
                                     </div>
                                 @endif
                             @else
-                                <p class="text-gray-500 text-center py-4">Belum ada materi dipublikasikan</p>
+                                <p class="text-gray-500 text-center py-4">{{ __('No materials published yet') }}</p>
                             @endif
                         </div>
                     </div>
@@ -170,7 +170,7 @@
                     <!-- Course Info -->
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi Kelas</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Course Information') }}</h3>
 
                             <div class="space-y-3">
                                 <div>
@@ -253,12 +253,12 @@
                                 </a>
 
                                 <form action="{{ route('guru.courses.destroy', $course) }}" method="POST"
-                                    onsubmit="return confirmDelete('Yakin ingin menghapus kelas ini? Semua data terkait akan dihapus!');">
+                                    onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this class? All related data will be deleted!') }}');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
                                         class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                        <i class="fas fa-trash mr-2"></i>Hapus Kelas
+                                        <i class="fas fa-trash mr-2"></i>{{ __('Delete Course') }}
                                     </button>
                                 </form>
                             </div>

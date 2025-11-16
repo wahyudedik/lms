@@ -6,7 +6,7 @@
             </h2>
             <a href="{{ route('guru.exams.questions.index', $exam) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                ← Kembali
+                ← {{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -78,7 +78,7 @@
                                 <!-- Existing options will be populated by JavaScript -->
                             </div>
                             <button type="button" id="add-option" class="text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-plus-circle mr-1"></i>Tambah Opsi
+                                <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Option') }}
                             </button>
 
                             <!-- Correct Answer (Single) -->
@@ -114,7 +114,7 @@
                                 <!-- Pairs will be added by JavaScript -->
                             </div>
                             <button type="button" id="add-pair" class="mt-3 text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-plus-circle mr-1"></i>Tambah Pasangan
+                                <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Pair') }}
                             </button>
                         </div>
 
@@ -182,7 +182,7 @@
                                     </div>
                                     <button type="button" id="add-keyword"
                                         class="mt-3 text-yellow-600 hover:text-yellow-900">
-                                        <i class="fas fa-plus-circle mr-1"></i>Tambah Kata Kunci
+                                        <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Keyword') }}
                                     </button>
                                 </div>
                             </div>

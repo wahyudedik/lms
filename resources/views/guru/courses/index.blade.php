@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Manajemen Kelas') }}
+                {{ __('Course Management') }}
             </h2>
             <a href="{{ route('guru.courses.create') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-plus mr-2"></i>Tambah Kelas
+                <i class="fas fa-plus mr-2"></i>{{ __('Add Course') }}
             </a>
         </div>
     </x-slot>
@@ -20,7 +20,7 @@
                         class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Search -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Cari Kelas</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Search Courses') }}</label>
                             <input type="text" name="search" value="{{ request('search') }}"
                                 placeholder="Nama kelas, kode, atau deskripsi..."
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -62,7 +62,7 @@
                                 <tr>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Kelas</th>
+                                        {{ __('Course') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status</th>
@@ -113,7 +113,7 @@
                                             </a>
                                             <form action="{{ route('guru.courses.destroy', $course) }}" method="POST"
                                                 class="inline"
-                                                onsubmit="return confirmDelete('Yakin ingin menghapus kelas ini?');">
+                                                onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this class?') }}');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900">
@@ -125,7 +125,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                                            Tidak ada kelas ditemukan.
+                                            {{ __('No courses found.') }}
                                         </td>
                                     </tr>
                                 @endforelse

@@ -8,15 +8,15 @@
             <div class="flex gap-2">
                 <a href="{{ route('admin.schools.theme.edit', $school) }}"
                     class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-palette mr-2"></i>Theme
+                    <i class="fas fa-palette mr-2"></i>{{ __('Theme') }}
                 </a>
                 <a href="{{ route('admin.schools.edit', $school) }}"
                     class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-edit mr-2"></i>Edit
+                    <i class="fas fa-edit mr-2"></i>{{ __('Edit') }}
                 </a>
                 <a href="{{ route('admin.schools.index') }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>Back
+                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -53,38 +53,38 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 @if ($school->email)
                                     <div>
-                                        <span class="text-sm text-gray-500">Email:</span>
+                                        <span class="text-sm text-gray-500">{{ __('Email:') }}</span>
                                         <p class="font-medium">{{ $school->email }}</p>
                                     </div>
                                 @endif
 
                                 @if ($school->phone)
                                     <div>
-                                        <span class="text-sm text-gray-500">Phone:</span>
+                                        <span class="text-sm text-gray-500">{{ __('Phone:') }}</span>
                                         <p class="font-medium">{{ $school->phone }}</p>
                                     </div>
                                 @endif
 
                                 @if ($school->domain)
                                     <div>
-                                        <span class="text-sm text-gray-500">Domain:</span>
+                                        <span class="text-sm text-gray-500">{{ __('Domain:') }}</span>
                                         <p class="font-medium">{{ $school->domain }}</p>
                                     </div>
                                 @endif
 
                                 <div>
-                                    <span class="text-sm text-gray-500">Status:</span>
+                                    <span class="text-sm text-gray-500">{{ __('Status:') }}</span>
                                     <p>
                                         <span
                                             class="px-2 py-1 text-xs font-semibold rounded-full {{ $school->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                            {{ $school->is_active ? 'Active' : 'Inactive' }}
+                                            {{ $school->is_active ? __('Active') : __('Inactive') }}
                                         </span>
                                     </p>
                                 </div>
 
                                 @if ($school->address)
                                     <div class="md:col-span-2">
-                                        <span class="text-sm text-gray-500">Address:</span>
+                                        <span class="text-sm text-gray-500">{{ __('Address:') }}</span>
                                         <p class="font-medium">{{ $school->address }}</p>
                                     </div>
                                 @endif
@@ -100,7 +100,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-600 text-sm font-medium">Total Users</span>
+                            <span class="text-gray-600 text-sm font-medium">{{ __('Total Users') }}</span>
                             <i class="fas fa-users text-2xl text-blue-500"></i>
                         </div>
                         <div class="text-3xl font-bold text-gray-900">{{ $stats['total_users'] }}</div>
@@ -111,7 +111,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-600 text-sm font-medium">Admins</span>
+                            <span class="text-gray-600 text-sm font-medium">{{ __('Admins') }}</span>
                             <i class="fas fa-user-shield text-2xl text-purple-500"></i>
                         </div>
                         <div class="text-3xl font-bold text-gray-900">{{ $stats['admins'] }}</div>
@@ -122,7 +122,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-600 text-sm font-medium">Teachers</span>
+                            <span class="text-gray-600 text-sm font-medium">{{ __('Teachers') }}</span>
                             <i class="fas fa-chalkboard-teacher text-2xl text-green-500"></i>
                         </div>
                         <div class="text-3xl font-bold text-gray-900">{{ $stats['teachers'] }}</div>
@@ -133,7 +133,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-600 text-sm font-medium">Students</span>
+                            <span class="text-gray-600 text-sm font-medium">{{ __('Students') }}</span>
                             <i class="fas fa-user-graduate text-2xl text-orange-500"></i>
                         </div>
                         <div class="text-3xl font-bold text-gray-900">{{ $stats['students'] }}</div>
@@ -147,11 +147,11 @@
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-bold text-gray-900">
-                                <i class="fas fa-palette mr-2"></i>Theme Colors
+                                <i class="fas fa-palette mr-2"></i>{{ __('Theme Colors') }}
                             </h3>
                             <a href="{{ route('admin.schools.theme.edit', $school) }}"
                                 class="text-purple-600 hover:text-purple-800">
-                                <i class="fas fa-edit mr-1"></i>Edit Theme
+                                <i class="fas fa-edit mr-1"></i>{{ __('Edit Theme') }}
                             </a>
                         </div>
 
@@ -174,26 +174,26 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-users mr-2"></i>Recent Users
+                            <i class="fas fa-users mr-2"></i>{{ __('Recent Users') }}
                         </h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Name
+                                            {{ __('Name') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Email
+                                            {{ __('Email') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Role
+                                            {{ __('Role') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Status
+                                            {{ __('Status') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Joined
+                                            {{ __('Joined') }}
                                         </th>
                                     </tr>
                                 </thead>

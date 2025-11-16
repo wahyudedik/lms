@@ -6,7 +6,7 @@
             </h2>
             <a href="{{ route('siswa.exams.show', $exam) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -23,7 +23,7 @@
                             <div class="text-4xl font-bold {{ $attempt->passed ? 'text-green-600' : 'text-red-600' }}">
                                 {{ number_format($attempt->score, 2) }}%
                             </div>
-                            <div class="text-sm text-gray-600 mt-1">Nilai Anda</div>
+                            <div class="text-sm text-gray-600 mt-1">{{ __('Your Score') }}</div>
                             <div class="mt-2">
                                 @if ($attempt->passed)
                                     <span
@@ -44,9 +44,9 @@
                             <div class="text-3xl font-bold text-gray-900">
                                 {{ floor($attempt->time_spent / 60) }}:{{ str_pad($attempt->time_spent % 60, 2, '0', STR_PAD_LEFT) }}
                             </div>
-                            <div class="text-sm text-gray-600 mt-1">Waktu Pengerjaan</div>
+                            <div class="text-sm text-gray-600 mt-1">{{ __('Time Spent') }}</div>
                             <div class="text-xs text-gray-500 mt-1">
-                                dari {{ $exam->duration_minutes }} menit
+                                {{ __('from :duration minutes', ['duration' => $exam->duration_minutes]) }}
                             </div>
                         </div>
 
@@ -55,9 +55,9 @@
                             <div class="text-3xl font-bold text-gray-900">
                                 {{ number_format($attempt->total_points_earned, 2) }}
                             </div>
-                            <div class="text-sm text-gray-600 mt-1">Poin Diperoleh</div>
+                            <div class="text-sm text-gray-600 mt-1">{{ __('Points Earned') }}</div>
                             <div class="text-xs text-gray-500 mt-1">
-                                dari {{ number_format($attempt->total_points_possible, 2) }} poin
+                                {{ __('from :total_points possible', ['total_points' => number_format($attempt->total_points_possible, 2)]) }}
                             </div>
                         </div>
 
@@ -66,9 +66,9 @@
                             <div class="text-3xl font-bold text-gray-900">
                                 {{ $attempt->answers->where('is_correct', true)->count() }}/{{ $attempt->answers->count() }}
                             </div>
-                            <div class="text-sm text-gray-600 mt-1">Soal Benar</div>
+                            <div class="text-sm text-gray-600 mt-1">{{ __('Correct Answers') }}</div>
                             <div class="text-xs text-gray-500 mt-1">
-                                Nilai lulus: {{ $exam->pass_score }}%
+                                {{ __('Pass score: :score%', ['score' => $exam->pass_score]) }}
                             </div>
                         </div>
                     </div>
@@ -80,12 +80,12 @@
                                     <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
                                 </div>
                                 <div class="ml-3">
-                                    <h3 class="text-sm font-medium text-yellow-800">Pelanggaran Terdeteksi</h3>
+                                    <h3 class="text-sm font-medium text-yellow-800">{{ __('Violations Detected') }}</h3>
                                     <div class="mt-2 text-sm text-yellow-700">
                                         <ul class="list-disc list-inside space-y-1">
                                             @foreach ($attempt->violations as $violation)
                                                 <li>
-                                                    {{ ucfirst(str_replace('_', ' ', $violation['type'])) }} pada
+                                                    {{ ucfirst(str_replace('_', ' ', $violation['type'])) }} at
                                                     {{ \Carbon\Carbon::parse($violation['timestamp'])->format('H:i:s') }}
                                                 </li>
                                             @endforeach
@@ -101,7 +101,7 @@
             <!-- Questions Review -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Review Jawaban</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">{{ __('Review Answers') }}</h3>
 
                     @foreach ($attempt->answers as $index => $answer)
                         @php
@@ -113,7 +113,7 @@
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2 mb-2">
                                         <span class="bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded">
-                                            Soal {{ $index + 1 }}
+                                            {{ __('Question :number', ['number' => $index + 1]) }}
                                         </span>
                                         <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded">
                                             <i
@@ -121,7 +121,7 @@
                                         </span>
                                         <span
                                             class="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded">
-                                            {{ $question->points }} poin
+                                            {{ $question->points }} points
                                         </span>
                                     </div>
                                     <h4 class="text-base font-semibold text-gray-900">
@@ -133,18 +133,17 @@
                                         <div class="flex items-center text-green-600 bg-green-50 px-4 py-2 rounded-lg">
                                             <i class="fas fa-check-circle text-xl mr-2"></i>
                                             <div>
-                                                <div class="font-bold">Benar</div>
-                                                <div class="text-sm">+{{ number_format($answer->points_earned, 2) }}
-                                                    poin</div>
+                                                <div class="font-bold">{{ __('Correct') }}</div>
+                                                <div class="text-sm">{{ __('+:points points', ['points' => number_format($answer->points_earned, 2)]) }}</div>
                                             </div>
                                         </div>
                                     @else
                                         <div class="flex items-center text-red-600 bg-red-50 px-4 py-2 rounded-lg">
                                             <i class="fas fa-times-circle text-xl mr-2"></i>
                                             <div>
-                                                <div class="font-bold">Salah</div>
+                                                <div class="font-bold">{{ __('Incorrect') }}</div>
                                                 <div class="text-sm">{{ number_format($answer->points_earned, 2) }}
-                                                    poin</div>
+                                                    points</div>
                                             </div>
                                         </div>
                                     @endif
@@ -161,12 +160,12 @@
                             <!-- User Answer -->
                             <div class="bg-gray-50 rounded-lg p-4 mb-3">
                                 <div class="text-sm font-medium text-gray-700 mb-2">
-                                    <i class="fas fa-user mr-1"></i>Jawaban Anda:
+                                    <i class="fas fa-user mr-1"></i>{{ __('Your Answer:') }}
                                 </div>
                                 <div class="text-gray-900">
                                     @if ($question->type === 'essay')
                                         <div class="whitespace-pre-wrap">
-                                            {{ $answer->answer ?: '(Tidak dijawab)' }}</div>
+                                            {{ $answer->answer ?: __('Not answered') }}</div>
                                     @elseif ($question->type === 'matching')
                                         @php
                                             $userMatches = is_array($answer->answer)
@@ -179,7 +178,7 @@
                                                 <div class="flex items-center gap-2">
                                                     <span class="font-medium">{{ $pair['left'] ?? '' }}</span>
                                                     <i class="fas fa-arrow-right text-gray-400"></i>
-                                                    <span>{{ $userMatches[$pairIndex] ?? '(Tidak dijawab)' }}</span>
+                                                    <span>{{ $userMatches[$pairIndex] ?? __('Not answered') }}</span>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -190,7 +189,7 @@
                                                 : json_decode($answer->answer, true) ?? [];
                                         @endphp
                                         @if (empty($userAnswers))
-                                            (Tidak dijawab)
+                                            {{ __('Not answered') }}
                                         @else
                                             <ul class="list-disc list-inside">
                                                 @foreach ($userAnswers as $ans)
@@ -199,7 +198,7 @@
                                             </ul>
                                         @endif
                                     @else
-                                        {{ $answer->answer ?: '(Tidak dijawab)' }}
+                                        {{ $answer->answer ?: __('Not answered') }}
                                     @endif
                                 </div>
                             </div>
@@ -208,14 +207,14 @@
                             @if ($exam->show_correct_answers)
                                 <div class="bg-green-50 rounded-lg p-4 mb-3">
                                     <div class="text-sm font-medium text-green-700 mb-2">
-                                        <i class="fas fa-check mr-1"></i>Jawaban Benar:
+                                        <i class="fas fa-check mr-1"></i>{{ __('Correct Answer:') }}
                                     </div>
                                     <div class="text-gray-900">
                                         @if ($question->type === 'essay')
                                             <div class="text-sm text-gray-600">
-                                                <em>Essay akan dinilai oleh guru</em>
+                                                <em>{{ __('Essay will be graded by the teacher') }}</em>
                                                 @if ($question->essay_grading_mode !== 'manual')
-                                                    <br>Mode penilaian: {{ $question->essay_grading_mode_display }}
+                                                    <br>{{ __('Grading mode:') }} {{ $question->essay_grading_mode_display }}
                                                 @endif
                                             </div>
                                         @elseif ($question->type === 'matching')
@@ -240,12 +239,12 @@
                                                     @endforeach
                                                 </ul>
                                             @else
-                                                <span class="text-gray-500 italic">(Tidak ada jawaban benar yang
-                                                    ditentukan)</span>
+                                                <span class="text-gray-500 italic">{{ __('No correct answers provided.') }}
+                                                    {{ __('determined') }}</span>
                                             @endif
                                         @else
                                             <span
-                                                class="text-green-700 font-medium">{{ $question->correct_answer_single ?? '(Tidak ditentukan)' }}</span>
+                                                class="text-green-700 font-medium">{{ $question->correct_answer_single ?? __('Not determined') }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -255,7 +254,7 @@
                             @if ($question->explanation)
                                 <div class="bg-blue-50 rounded-lg p-4">
                                     <div class="text-sm font-medium text-blue-700 mb-2">
-                                        <i class="fas fa-lightbulb mr-1"></i>Pembahasan:
+                                        <i class="fas fa-lightbulb mr-1"></i>{{ __('Explanation') }}:
                                     </div>
                                     <div class="text-gray-900 whitespace-pre-wrap">{{ $question->explanation }}</div>
                                 </div>
@@ -265,7 +264,7 @@
                             @if ($answer->feedback)
                                 <div class="bg-purple-50 rounded-lg p-4 mt-3">
                                     <div class="text-sm font-medium text-purple-700 mb-2">
-                                        <i class="fas fa-comment mr-1"></i>Feedback Guru:
+                                        <i class="fas fa-comment mr-1"></i>{{ __('Feedback from Teacher') }}:
                                     </div>
                                     <div class="text-gray-900 whitespace-pre-wrap">{{ $answer->feedback }}</div>
                                 </div>
@@ -281,11 +280,11 @@
                     <div class="flex gap-4 justify-center">
                         <a href="{{ route('siswa.exams.show', $exam) }}"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
-                            <i class="fas fa-arrow-left mr-2"></i>Kembali ke Detail Ujian
+                            <i class="fas fa-arrow-left mr-2"></i>{{ __('Back to Exam Details') }}
                         </a>
                         <a href="{{ route('siswa.exams.index') }}"
                             class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded">
-                            <i class="fas fa-list mr-2"></i>Daftar Ujian
+                            <i class="fas fa-list mr-2"></i>{{ __('Exam List') }}
                         </a>
                     </div>
                 </div>

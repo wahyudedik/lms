@@ -3,18 +3,18 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Materi - {{ $course->title }}
+                    {{ __('Materials - :title', ['title' => $course->title]) }}
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">Kode: {{ $course->code }}</p>
             </div>
             <div class="flex gap-2">
                 <a href="{{ route('guru.courses.materials.create', $course) }}"
                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-plus mr-2"></i>Tambah Materi
+                    <i class="fas fa-plus mr-2"></i>{{ __('Add Material') }}
                 </a>
                 <a href="{{ route('guru.courses.show', $course) }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -34,7 +34,7 @@
                                         Order</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Materi</th>
+                                        {{ __('Material') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tipe</th>
@@ -101,7 +101,7 @@
                                             <form
                                                 action="{{ route('guru.courses.materials.destroy', [$course, $material]) }}"
                                                 method="POST" class="inline"
-                                                onsubmit="return confirmDelete('Yakin ingin menghapus materi ini?');">
+                                                onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this material?') }}');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900">
@@ -114,10 +114,10 @@
                                     <tr>
                                         <td colspan="6" class="px-6 py-12 text-center text-gray-500">
                                             <i class="fas fa-folder-open text-6xl text-gray-300 mb-4"></i>
-                                            <p class="text-lg">Belum ada materi</p>
+                                            <p class="text-lg">{{ __('No materials yet') }}</p>
                                             <a href="{{ route('guru.courses.materials.create', $course) }}"
                                                 class="text-blue-600 hover:text-blue-800 mt-2 inline-block">
-                                                Tambah materi pertama
+                                                {{ __('Add your first material') }}
                                             </a>
                                         </td>
                                     </tr>

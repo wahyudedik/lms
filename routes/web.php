@@ -56,7 +56,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     // Resource routes
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::post('users/{user}/toggle-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::post('users/{user}/reset-login', [App\Http\Controllers\Admin\UserController::class, 'resetLogin'])->name('users.reset-login');
     Route::patch('users/{user}/password', [App\Http\Controllers\Admin\UserController::class, 'updatePassword'])->name('users.update-password');
+
+    // Cheating incidents
+    Route::resource('cheating-incidents', App\Http\Controllers\Admin\CheatingIncidentController::class)->only(['index', 'show']);
+    Route::post('cheating-incidents/{cheatingIncident}/resolve', [App\Http\Controllers\Admin\CheatingIncidentController::class, 'resolve'])->name('cheating-incidents.resolve');
 
     // Course Management
     Route::resource('courses', App\Http\Controllers\Admin\CourseController::class);
@@ -130,10 +135,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
         Route::get('/', [App\Http\Controllers\Admin\QuestionBankController::class, 'index'])->name('index');
         Route::get('/create', [App\Http\Controllers\Admin\QuestionBankController::class, 'create'])->name('create');
         Route::post('/', [App\Http\Controllers\Admin\QuestionBankController::class, 'store'])->name('store');
-        Route::get('/{questionBank}', [App\Http\Controllers\Admin\QuestionBankController::class, 'show'])->name('show');
-        Route::get('/{questionBank}/edit', [App\Http\Controllers\Admin\QuestionBankController::class, 'edit'])->name('edit');
-        Route::put('/{questionBank}', [App\Http\Controllers\Admin\QuestionBankController::class, 'update'])->name('update');
-        Route::delete('/{questionBank}', [App\Http\Controllers\Admin\QuestionBankController::class, 'destroy'])->name('destroy');
 
         // Additional actions
         Route::post('/{questionBank}/toggle-verification', [App\Http\Controllers\Admin\QuestionBankController::class, 'toggleVerification'])->name('toggle-verification');
@@ -144,10 +145,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
         Route::post('/get-random', [App\Http\Controllers\Admin\QuestionBankController::class, 'getRandom'])->name('get-random');
 
         // Import & Export
+        Route::get('/download-template', [App\Http\Controllers\Admin\QuestionBankController::class, 'downloadTemplate'])->name('download-template');
         Route::get('/export', [App\Http\Controllers\Admin\QuestionBankController::class, 'export'])->name('export');
         Route::post('/import', [App\Http\Controllers\Admin\QuestionBankController::class, 'import'])->name('import');
         Route::post('/validate-import', [App\Http\Controllers\Admin\QuestionBankController::class, 'validateImport'])->name('validate-import');
-        Route::get('/download-template', [App\Http\Controllers\Admin\QuestionBankController::class, 'downloadTemplate'])->name('download-template');
 
         // Import History
         Route::get('/import-history', [App\Http\Controllers\Admin\QuestionBankController::class, 'importHistory'])->name('import-history');
@@ -159,6 +160,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 
         // Import modal
         Route::get('/get-for-import', [App\Http\Controllers\Admin\QuestionBankController::class, 'getForImport'])->name('get-for-import');
+
+        // Core CRUD (keep at bottom to avoid conflicts)
+        Route::get('/{questionBank}', [App\Http\Controllers\Admin\QuestionBankController::class, 'show'])->name('show');
+        Route::get('/{questionBank}/edit', [App\Http\Controllers\Admin\QuestionBankController::class, 'edit'])->name('edit');
+        Route::put('/{questionBank}', [App\Http\Controllers\Admin\QuestionBankController::class, 'update'])->name('update');
+        Route::delete('/{questionBank}', [App\Http\Controllers\Admin\QuestionBankController::class, 'destroy'])->name('destroy');
     });
 
     // Import questions from bank

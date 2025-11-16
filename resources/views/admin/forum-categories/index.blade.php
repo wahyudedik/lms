@@ -3,11 +3,11 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-folder text-indigo-600 mr-2"></i>
-                Forum Categories
+                {{ __('Forum Categories') }}
             </h2>
             <a href="{{ route('admin.forum-categories.create') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-plus mr-2"></i>Add Category
+                <i class="fas fa-plus mr-2"></i>{{ __('Add Category') }}
             </a>
         </div>
     </x-slot>
@@ -23,27 +23,27 @@
                                     <tr>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Category
+                                            {{ __('Category') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Threads
+                                            {{ __('Threads') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Order
+                                            {{ __('Order') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status
+                                            {{ __('Status') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Created By
+                                            {{ __('Created By') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Actions
+                                            {{ __('Actions') }}
                                         </th>
                                     </tr>
                                 </thead>
@@ -78,7 +78,7 @@
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span
                                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                    {{ $category->is_active ? 'Active' : 'Inactive' }}
+                                                    {{ $category->is_active ? __('Active') : __('Inactive') }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -86,19 +86,20 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <a href="{{ route('forum.category', $category->slug) }}"
-                                                    class="text-blue-600 hover:text-blue-900 mr-3" title="View">
+                                                    class="text-blue-600 hover:text-blue-900 mr-3" title="{{ __('View') }}">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="{{ route('admin.forum-categories.edit', $category) }}"
-                                                    class="text-yellow-600 hover:text-yellow-900 mr-3" title="Edit">
+                                                    class="text-yellow-600 hover:text-yellow-900 mr-3" title="{{ __('Edit') }}">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <form action="{{ route('admin.forum-categories.destroy', $category) }}"
-                                                    method="POST" class="inline" onsubmit="return confirmDelete()">
+                                                    method="POST" class="inline"
+                                                    onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this category?') }}')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900"
-                                                        title="Delete">
+                                                        title="{{ __('Delete') }}">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -111,11 +112,11 @@
                     @else
                         <div class="text-center py-12">
                             <i class="fas fa-folder-open text-6xl text-gray-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-700 mb-2">No Categories Yet</h3>
-                            <p class="text-gray-500 mb-6">Create your first forum category to get started!</p>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-2">{{ __('No Categories Yet') }}</h3>
+                            <p class="text-gray-500 mb-6">{{ __('Create your first forum category to get started!') }}</p>
                             <a href="{{ route('admin.forum-categories.create') }}"
                                 class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">
-                                <i class="fas fa-plus mr-2"></i>Create First Category
+                                <i class="fas fa-plus mr-2"></i>{{ __('Create First Category') }}
                             </a>
                         </div>
                     @endif

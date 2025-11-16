@@ -33,7 +33,7 @@
             </div>
             
             <div class="mt-6 text-center text-sm text-gray-600">
-                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('All rights reserved.') }}</p>
             </div>
         </div>
     </body>

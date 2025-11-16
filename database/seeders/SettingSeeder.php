@@ -21,6 +21,10 @@ class SettingSeeder extends Seeder
             ['key' => 'school_phone', 'value' => '021-12345678', 'type' => 'text', 'group' => 'general'],
             ['key' => 'school_email', 'value' => 'info@sekolah.com', 'type' => 'text', 'group' => 'general'],
 
+            // Localization Settings
+            ['key' => 'app_timezone', 'value' => config('app.timezone', 'UTC'), 'type' => 'select', 'group' => 'localization'],
+            ['key' => 'app_locale', 'value' => config('app.locale', 'en'), 'type' => 'select', 'group' => 'localization'],
+
             // Appearance Settings
             ['key' => 'primary_color', 'value' => '#3B82F6', 'type' => 'color', 'group' => 'appearance'],
             ['key' => 'secondary_color', 'value' => '#10B981', 'type' => 'color', 'group' => 'appearance'],

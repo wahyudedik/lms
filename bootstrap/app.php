@@ -21,6 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Load school theme
         $middleware->append(\App\Http\Middleware\LoadSchoolTheme::class);
+
+        // Force logout if login is blocked
+        $middleware->append(\App\Http\Middleware\EnsureUserNotBlocked::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

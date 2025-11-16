@@ -83,21 +83,21 @@
                     <div class="flex items-center space-x-3">
                         <a href="{{ route('forum.index') }}"
                             class="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                            <i class="fas fa-comments mr-1"></i>Forum
+                            <i class="fas fa-comments mr-1"></i>@lang('Forum')
                         </a>
                         <a href="{{ route('guest.exams.index') }}"
                             class="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                            <i class="fas fa-clipboard-list mr-1"></i>Guest Exam
+                            <i class="fas fa-clipboard-list mr-1"></i>@lang('Guest Exam')
                         </a>
                         @auth
                             <a href="{{ url('/dashboard') }}"
                                 class="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                                <i class="fas fa-th-large mr-1"></i>Dashboard
+                                <i class="fas fa-th-large mr-1"></i>@lang('Dashboard')
                             </a>
                         @else
                             <a href="{{ route('login') }}"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
-                                <i class="fas fa-sign-in-alt mr-1"></i>Login
+                                <i class="fas fa-sign-in-alt mr-1"></i>@lang('Login')
                             </a>
                         @endauth
                     </div>
@@ -118,7 +118,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="max-w-3xl mx-auto text-center">
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                        {{ $currentSchool->hero_title ?? 'Welcome to ' . $currentSchool->name }}
+                        {{ $currentSchool->hero_title ?? __('Welcome to :name', ['name' => $currentSchool->name]) }}
                     </h1>
                     @if ($currentSchool->hero_subtitle)
                         <p class="text-xl md:text-2xl mb-6 text-blue-100 font-medium">
@@ -133,7 +133,7 @@
                     @if ($currentSchool->hero_cta_link)
                         <a href="{{ $currentSchool->hero_cta_link }}"
                             class="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold text-lg rounded-lg hover:bg-gray-50 transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl">
-                            {{ $currentSchool->hero_cta_text ?? 'Get Started' }}
+                            {{ $currentSchool->hero_cta_text ?? __('Get Started') }}
                             <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     @endif
@@ -167,8 +167,8 @@
             <section class="py-20 bg-gray-50">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center mb-16">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Why Choose Us?</h2>
-                        <p class="text-lg text-gray-600">Discover what makes us special</p>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">@lang('Why Choose Us?')</h2>
+                        <p class="text-lg text-gray-600">@lang('Discover what makes us special')</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -204,7 +204,7 @@
                         @endif
                         <div class="order-1 lg:order-2 {{ $currentSchool->about_image ? '' : 'lg:col-span-2' }}">
                             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                                {{ $currentSchool->about_title ?? 'About Us' }}
+                                {{ $currentSchool->about_title ?? __('About Us') }}
                             </h2>
                             <div class="text-base md:text-lg text-gray-700 leading-relaxed whitespace-pre-line">
                                 {{ $currentSchool->about_content }}
@@ -220,8 +220,8 @@
             <section class="py-20 bg-gray-50">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center mb-16">
-                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Get in Touch</h2>
-                        <p class="text-lg text-gray-600">We'd love to hear from you</p>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">@lang('Get in Touch')</h2>
+                        <p class="text-lg text-gray-600">@lang("We'd love to hear from you")</p>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
@@ -231,7 +231,7 @@
                                 <div class="text-3xl text-blue-600 mb-3">
                                     <i class="fas fa-envelope"></i>
                                 </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Email</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">@lang('Email')</h3>
                                 <a href="mailto:{{ $currentSchool->contact_email }}"
                                     class="text-sm text-gray-600 hover:text-blue-600 transition-colors break-all">
                                     {{ $currentSchool->contact_email }}
@@ -245,7 +245,7 @@
                                 <div class="text-3xl text-blue-600 mb-3">
                                     <i class="fas fa-phone"></i>
                                 </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Phone</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">@lang('Phone')</h3>
                                 <a href="tel:{{ $currentSchool->contact_phone }}"
                                     class="text-sm text-gray-600 hover:text-blue-600 transition-colors">
                                     {{ $currentSchool->contact_phone }}
@@ -259,7 +259,7 @@
                                 <div class="text-3xl text-blue-600 mb-3">
                                     <i class="fas fa-map-marker-alt"></i>
                                 </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Address</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">@lang('Address')</h3>
                                 <p class="text-sm text-gray-600 leading-relaxed">
                                     {{ $currentSchool->contact_address }}
                                 </p>
@@ -272,7 +272,7 @@
                                 <div class="text-3xl text-green-600 mb-3">
                                     <i class="fab fa-whatsapp"></i>
                                 </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">WhatsApp</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">@lang('WhatsApp')</h3>
                                 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $currentSchool->contact_whatsapp) }}"
                                     target="_blank"
                                     class="text-sm text-gray-600 hover:text-green-600 transition-colors">
@@ -306,24 +306,24 @@
 
                     <!-- Quick Links -->
                     <div>
-                        <h4 class="text-base font-semibold mb-4">Quick Links</h4>
+                        <h4 class="text-base font-semibold mb-4">@lang('Quick Links')</h4>
                         <ul class="space-y-2">
                             <li>
                                 <a href="{{ route('login') }}"
                                     class="text-sm text-gray-400 hover:text-white transition-colors">
-                                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                                    <i class="fas fa-sign-in-alt mr-2"></i>@lang('Login')
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('guest.exams.index') }}"
                                     class="text-sm text-gray-400 hover:text-white transition-colors">
-                                    <i class="fas fa-clipboard-list mr-2"></i>Guest Exam
+                                    <i class="fas fa-clipboard-list mr-2"></i>@lang('Guest Exam')
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('forum.index') }}"
                                     class="text-sm text-gray-400 hover:text-white transition-colors">
-                                    <i class="fas fa-comments mr-2"></i>Forum
+                                    <i class="fas fa-comments mr-2"></i>@lang('Forum')
                                 </a>
                             </li>
                         </ul>
@@ -336,7 +336,7 @@
                             $currentSchool->social_twitter ||
                             $currentSchool->social_youtube)
                         <div>
-                            <h4 class="text-base font-semibold mb-4">Follow Us</h4>
+                            <h4 class="text-base font-semibold mb-4">@lang('Follow Us')</h4>
                             <div class="flex space-x-4">
                                 @if ($currentSchool->social_facebook)
                                     <a href="{{ $currentSchool->social_facebook }}" target="_blank"
@@ -369,9 +369,9 @@
 
                 <div class="border-t border-gray-800 pt-8 text-center">
                     <p class="text-sm text-gray-400">
-                        &copy; {{ date('Y') }} {{ $currentSchool->name }}. All rights reserved.
+                        &copy; {{ date('Y') }} {{ $currentSchool->name }}. @lang('All rights reserved.')
                     </p>
-                    <p class="text-xs text-gray-500 mt-2">Powered by {{ config('app.name') }}</p>
+                    <p class="text-xs text-gray-500 mt-2">@lang('Powered by :name', ['name' => config('app.name')])</p>
                 </div>
             </div>
         </footer>
@@ -405,17 +405,17 @@
                     @auth
                         <a href="{{ url('/dashboard') }}"
                             class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                            Dashboard
+                            @lang('Dashboard')
                         </a>
                     @else
                         <a href="{{ route('login') }}"
                             class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal">
-                            Log in
+                            @lang('Log in')
                         </a>
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}"
                                 class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                Register
+                                @lang('Register')
                             </a>
                         @endif
                     @endauth
@@ -426,13 +426,15 @@
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row text-center">
                 <div
                     class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
-                    <h1 class="mb-1 font-medium text-2xl">Welcome to {{ config('app.name') }}</h1>
-                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">A modern Learning Management System built with
-                        Laravel</p>
+                    <h1 class="mb-1 font-medium text-2xl">{{ __('Welcome to :name', ['name' => config('app.name')]) }}
+                    </h1>
+                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
+                        @lang('A modern Learning Management System built with Laravel')
+                    </p>
                     <p class="text-sm text-gray-500 mt-4">
                         @if (auth()->check() && auth()->user()->isAdmin())
                             <a href="{{ route('admin.schools.index') }}" class="text-blue-600 hover:underline">
-                                Configure landing page in School Settings
+                                @lang('Configure landing page in School Settings')
                             </a>
                         @endif
                     </p>

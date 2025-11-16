@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Tambah Kelas Baru') }}
+                {{ __('Create New Course') }}
             </h2>
             <a href="{{ route('guru.courses.index') }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -21,7 +21,7 @@
                         <!-- Title -->
                         <div class="mb-6">
                             <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                                Nama Kelas <span class="text-red-500">*</span>
+                                {{ __('Course Name') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="title" id="title" value="{{ old('title') }}" required
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('title') border-red-500 @enderror">
@@ -33,7 +33,7 @@
                         <!-- Code -->
                         <div class="mb-6">
                             <label for="code" class="block text-sm font-medium text-gray-700 mb-2">
-                                Kode Kelas
+                                {{ __('Course Code') }}
                             </label>
                             <input type="text" name="code" id="code" value="{{ old('code') }}"
                                 placeholder="Kosongkan untuk auto-generate"

@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-xl font-bold text-gray-800">{{ $exam->title }}</h2>
-                <p class="text-sm text-gray-600">Offline Mode Enabled</p>
+                <p class="text-sm text-gray-600">{{ __('Offline Mode Enabled') }}</p>
             </div>
 
             <!-- Status Indicators -->
@@ -12,14 +12,14 @@
                 <div id="connectionStatus"
                     class="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 border border-green-200">
                     <span class="status-dot online"></span>
-                    <span class="text-sm font-medium text-green-700">Online</span>
+                    <span class="text-sm font-medium text-green-700">{{ __('Online') }}</span>
                 </div>
 
                 <!-- Auto-save Status -->
                 <div id="saveStatus"
                     class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
                     <i class="fas fa-check-circle text-gray-400"></i>
-                    <span class="text-sm text-gray-600">All saved</span>
+                    <span class="text-sm text-gray-600">{{ __('All saved') }}</span>
                 </div>
             </div>
         </div>
@@ -36,22 +36,22 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="text-center">
                             <i class="fas fa-question-circle text-indigo-600 text-2xl mb-2"></i>
-                            <p class="text-sm text-gray-600">Questions</p>
+                            <p class="text-sm text-gray-600">{{ __('Questions') }}</p>
                             <p class="text-xl font-bold text-gray-800">{{ $exam->questions->count() }}</p>
                         </div>
                         <div class="text-center">
                             <i class="fas fa-clock text-indigo-600 text-2xl mb-2"></i>
-                            <p class="text-sm text-gray-600">Time Remaining</p>
+                            <p class="text-sm text-gray-600">{{ __('Time Remaining') }}</p>
                             <p class="text-xl font-bold text-gray-800" id="timer">{{ $exam->duration }}:00</p>
                         </div>
                         <div class="text-center">
                             <i class="fas fa-check-circle text-green-600 text-2xl mb-2"></i>
-                            <p class="text-sm text-gray-600">Answered</p>
+                            <p class="text-sm text-gray-600">{{ __('Answered') }}</p>
                             <p class="text-xl font-bold text-gray-800" id="answeredCount">0</p>
                         </div>
                         <div class="text-center">
                             <i class="fas fa-circle text-gray-400 text-2xl mb-2"></i>
-                            <p class="text-sm text-gray-600">Unanswered</p>
+                            <p class="text-sm text-gray-600">{{ __('Unanswered') }}</p>
                             <p class="text-xl font-bold text-gray-800" id="unansweredCount">
                                 {{ $exam->questions->count() }}</p>
                         </div>
@@ -64,10 +64,9 @@
                     <div class="flex items-start">
                         <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-3"></i>
                         <div>
-                            <h3 class="font-medium text-yellow-800">You are currently offline</h3>
+                            <h3 class="font-medium text-yellow-800">{{ __('You are currently offline') }}</h3>
                             <p class="text-sm text-yellow-700 mt-1">
-                                Don't worry! Your answers are being saved locally and will be submitted when you're back
-                                online.
+                                {{ __('Don\'t worry! Your answers are being saved locally and will be submitted when you\'re back online.') }}
                             </p>
                         </div>
                     </div>
@@ -90,7 +89,7 @@
                                         <h3 class="text-lg font-medium text-gray-800">{{ $question->question_text }}
                                         </h3>
                                         @if ($question->points)
-                                            <p class="text-sm text-gray-500 mt-1">{{ $question->points }} points</p>
+                                            <p class="text-sm text-gray-500 mt-1">{{ $question->points }} {{ __('points') }}</p>
                                         @endif
                                     </div>
                                 </div>
@@ -123,24 +122,24 @@
                                         <input type="radio" name="answer[{{ $question->id }}]" value="true"
                                             {{ isset($existingAnswers[$question->id]) && $existingAnswers[$question->id] == 'true' ? 'checked' : '' }}
                                             class="w-4 h-4 text-indigo-600">
-                                        <span class="text-gray-700">True</span>
+                                        <span class="text-gray-700">{{ __('True') }}</span>
                                     </label>
                                     <label
                                         class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                                         <input type="radio" name="answer[{{ $question->id }}]" value="false"
                                             {{ isset($existingAnswers[$question->id]) && $existingAnswers[$question->id] == 'false' ? 'checked' : '' }}
                                             class="w-4 h-4 text-indigo-600">
-                                        <span class="text-gray-700">False</span>
+                                        <span class="text-gray-700">{{ __('False') }}</span>
                                     </label>
                                 @elseif($question->type === 'short_answer')
                                     <input type="text" name="answer[{{ $question->id }}]"
                                         value="{{ $existingAnswers[$question->id] ?? '' }}"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="Type your answer here...">
+                                        placeholder="{{ __('Type your answer here...') }}">
                                 @elseif($question->type === 'essay')
                                     <textarea name="answer[{{ $question->id }}]" rows="6"
                                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="Type your essay here...">{{ $existingAnswers[$question->id] ?? '' }}</textarea>
+                                        placeholder="{{ __('Type your essay here...') }}">{{ $existingAnswers[$question->id] ?? '' }}</textarea>
                                 @endif
                             </div>
                         </div>
@@ -151,10 +150,10 @@
                 <div class="mt-6 flex justify-between items-center bg-white rounded-lg shadow-md p-6">
                     <div class="text-sm text-gray-600">
                         <i class="fas fa-info-circle mr-2"></i>
-                        Make sure to review all your answers before submitting
+                        {{ __('Make sure to review all your answers before submitting') }}
                     </div>
                     <button type="button" id="submitExam" class="btn btn-primary px-8 py-3 text-lg font-bold">
-                        <i class="fas fa-paper-plane mr-2"></i>Submit Exam
+                        <i class="fas fa-paper-plane mr-2"></i>{{ __('Submit Exam') }}
                     </button>
                 </div>
             </form>
@@ -165,6 +164,26 @@
     @push('scripts')
         <script src="{{ asset('js/offline.js') }}"></script>
         <script>
+            const offlineExamLocale = {
+                online: @json(__('Online')),
+                offline: @json(__('Offline')),
+                allSaved: @json(__('All saved')),
+                saving: @json(__('Saving...')),
+                saved: @json(__('Saved')),
+                backOnlineSync: @json(__('Back online! Syncing...')),
+                fiveMinutesWarning: @json(__('5 minutes remaining!')),
+                submitTitle: @json(__('Submit Exam?')),
+                submitText: @json(__('Are you sure you want to submit? You cannot change your answers after submission.')),
+                submitConfirm: @json(__('Yes, Submit')),
+                submitCancel: @json(__('Review Again')),
+                submittingTitle: @json(__('Submitting...')),
+                submittingText: @json(__('Please wait')),
+                submittedTitle: @json(__('Submitted!')),
+                submittedMessage: @json(__('Your exam has been submitted. Score: :score%', ['score' => ':score'])),
+                queuedTitle: @json(__('Submission Queued')),
+                queuedText: @json(__('Your answers have been saved locally and will be submitted when you\'re back online.')),
+            };
+
             const examId = {{ $exam->id }};
             const attemptId = {{ $activeAttempt->id }};
             const duration = {{ $exam->duration }};
@@ -216,7 +235,7 @@
 
                     // Warning at 5 minutes
                     if (timeRemaining === 300) {
-                        showToast('5 minutes remaining!', 'warning');
+                        showToast(offlineExamLocale.fiveMinutesWarning, 'warning');
                     }
                 }, 1000);
             }
@@ -242,7 +261,7 @@
                     if (navigator.onLine) {
                         statusElement.innerHTML = `
                             <span class="status-dot online"></span>
-                            <span class="text-sm font-medium text-green-700">Online</span>
+                            <span class="text-sm font-medium text-green-700">${offlineExamLocale.online}</span>
                         `;
                         statusElement.className =
                             'flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 border border-green-200';
@@ -250,14 +269,14 @@
 
                         // Sync if we were offline
                         if (wasOffline) {
-                            showToast('Back online! Syncing...', 'success');
+                            showToast(offlineExamLocale.backOnlineSync, 'success');
                             saveAllAnswers();
                             wasOffline = false;
                         }
                     } else {
                         statusElement.innerHTML = `
                             <span class="status-dot offline"></span>
-                            <span class="text-sm font-medium text-red-700">Offline</span>
+                            <span class="text-sm font-medium text-red-700">${offlineExamLocale.offline}</span>
                         `;
                         statusElement.className =
                             'flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200';
@@ -309,7 +328,7 @@
                     const saveStatus = document.getElementById('saveStatus');
                     saveStatus.innerHTML = `
                         <i class="fas fa-spinner fa-spin text-gray-400"></i>
-                        <span class="text-sm text-gray-600">Saving...</span>
+                        <span class="text-sm text-gray-600">${offlineExamLocale.saving}</span>
                     `;
 
                     const response = await fetch(`/offline/exams/${examId}/answer`, {
@@ -328,7 +347,7 @@
                     if (response.ok) {
                         saveStatus.innerHTML = `
                             <i class="fas fa-check-circle text-green-600"></i>
-                            <span class="text-sm text-green-600">Saved</span>
+                            <span class="text-sm text-green-600">${offlineExamLocale.saved}</span>
                         `;
                     } else {
                         throw new Error('Save failed');
@@ -337,7 +356,7 @@
                     setTimeout(() => {
                         saveStatus.innerHTML = `
                             <i class="fas fa-check-circle text-gray-400"></i>
-                            <span class="text-sm text-gray-600">All saved</span>
+                            <span class="text-sm text-gray-600">${offlineExamLocale.allSaved}</span>
                         `;
                     }, 2000);
 
@@ -424,12 +443,12 @@
             async function submitExam(autoSubmit = false) {
                 if (!autoSubmit) {
                     const confirmed = await Swal.fire({
-                        title: 'Submit Exam?',
-                        text: 'Are you sure you want to submit? You cannot change your answers after submission.',
+                        title: offlineExamLocale.submitTitle,
+                        text: offlineExamLocale.submitText,
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonText: 'Yes, Submit',
-                        cancelButtonText: 'Review Again'
+                        confirmButtonText: offlineExamLocale.submitConfirm,
+                        cancelButtonText: offlineExamLocale.submitCancel
                     });
 
                     if (!confirmed.isConfirmed) return;
@@ -449,9 +468,9 @@
                     }
 
                     // Show loading
-                    Swal.fire({
-                        title: 'Submitting...',
-                        text: 'Please wait',
+                Swal.fire({
+                    title: offlineExamLocale.submittingTitle,
+                    text: offlineExamLocale.submittingText,
                         allowOutsideClick: false,
                         didOpen: () => {
                             Swal.showLoading();
@@ -484,8 +503,8 @@
 
                         // Show success
                         await Swal.fire({
-                            title: 'Submitted!',
-                            text: `Your exam has been submitted. Score: ${result.score}%`,
+                            title: offlineExamLocale.submittedTitle,
+                            text: offlineExamLocale.submittedMessage.replace(':score', result.score),
                             icon: 'success'
                         });
 
@@ -498,10 +517,10 @@
                 } catch (error) {
                     console.error('[Offline Exam] Submit failed:', error);
 
-                    Swal.fire({
-                        title: 'Submission Queued',
-                        text: 'Your answers have been saved locally and will be submitted when you\'re back online.',
-                        icon: 'info'
+                Swal.fire({
+                    title: offlineExamLocale.queuedTitle,
+                    text: offlineExamLocale.queuedText,
+                    icon: 'info'
                     });
                 }
             }

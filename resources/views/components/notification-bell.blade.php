@@ -1,4 +1,14 @@
-<div x-data="notificationBell()" x-init="init()" class="relative">
+@php
+    $notificationLocale = [
+        'defaultMessage' => __('New notification'),
+        'justNow' => __('Just now'),
+        'minutesAgo' => __(':count minutes ago'),
+        'hoursAgo' => __(':count hours ago'),
+        'daysAgo' => __(':count days ago'),
+    ];
+@endphp
+
+<div x-data='notificationBell(@json($notificationLocale))' x-init="init()" class="relative">
     <!-- Bell Icon -->
     <button @click="toggleDropdown" class="relative p-2 text-gray-600 hover:text-gray-800 focus:outline-none">
         <i class="fas fa-bell text-xl"></i>
@@ -13,9 +23,9 @@
 
         <!-- Header -->
         <div class="p-4 border-b flex items-center justify-between bg-gray-50">
-            <h3 class="font-semibold text-gray-800">Notifikasi</h3>
+            <h3 class="font-semibold text-gray-800">{{ __('Notifications') }}</h3>
             <button @click="markAllAsRead" class="text-xs text-blue-600 hover:text-blue-800">
-                Tandai Semua Dibaca
+                {{ __('Mark All as Read') }}
             </button>
         </div>
 
@@ -33,7 +43,10 @@
                             </div>
                         </div>
                         <div class="ml-3 flex-1">
-                            <p class="text-sm text-gray-800" x-text="notif.data.message"></p>
+                            <p class="text-sm text-gray-800"
+                                x-text="notif.data.message || notif.data.title || locale.defaultMessage"></p>
+                            <p class="text-xs text-gray-500 mt-1" x-show="notif.data.details"
+                                x-text="notif.data.details"></p>
                             <p class="text-xs text-gray-500 mt-1" x-text="formatTime(notif.created_at)"></p>
                         </div>
                         <div x-show="!notif.read_at" class="flex-shrink-0 ml-2">
@@ -45,25 +58,32 @@
 
             <div x-show="notifications.length === 0" class="p-8 text-center text-gray-500">
                 <i class="fas fa-bell-slash text-4xl mb-2"></i>
-                <p class="text-sm">Tidak ada notifikasi</p>
+                <p class="text-sm">{{ __('No notifications') }}</p>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="p-3 bg-gray-50 border-t text-center">
             <a href="{{ route('notifications.index') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                Lihat Semua Notifikasi
+                {{ __('View All Notifications') }}
             </a>
         </div>
     </div>
 </div>
 
 <script>
-    function notificationBell() {
+    function notificationBell(localeTexts = {}) {
         return {
             dropdownOpen: false,
             notifications: [],
             unreadCount: 0,
+            locale: Object.assign({
+                defaultMessage: 'New notification',
+                justNow: 'Just now',
+                minutesAgo: ':count minutes ago',
+                hoursAgo: ':count hours ago',
+                daysAgo: ':count days ago',
+            }, localeTexts),
 
             init() {
                 this.fetchNotifications();
@@ -80,7 +100,21 @@
 
             async fetchNotifications() {
                 try {
-                    const response = await fetch('/notifications/unread');
+                    const response = await fetch('/notifications/unread', {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin',
+                        cache: 'no-store'
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Error fetching notifications:', response.status, errorText);
+                        return;
+                    }
+
                     const data = await response.json();
                     this.notifications = data.notifications;
                     this.unreadCount = data.unread_count;
@@ -95,8 +129,12 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({})
                     });
                     this.fetchNotifications();
                 } catch (error) {
@@ -111,8 +149,12 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({})
                     });
                 }
 
@@ -127,10 +169,17 @@
                 const now = new Date();
                 const diff = Math.floor((now - date) / 1000); // seconds
 
-                if (diff < 60) return 'Baru saja';
-                if (diff < 3600) return Math.floor(diff / 60) + ' menit yang lalu';
-                if (diff < 86400) return Math.floor(diff / 3600) + ' jam yang lalu';
-                return Math.floor(diff / 86400) + ' hari yang lalu';
+                if (diff < 60) return this.locale.justNow;
+                if (diff < 3600) {
+                    const minutes = Math.floor(diff / 60);
+                    return this.locale.minutesAgo.replace(':count', minutes);
+                }
+                if (diff < 86400) {
+                    const hours = Math.floor(diff / 3600);
+                    return this.locale.hoursAgo.replace(':count', hours);
+                }
+                const days = Math.floor(diff / 86400);
+                return this.locale.daysAgo.replace(':count', days);
             }
         }
     }

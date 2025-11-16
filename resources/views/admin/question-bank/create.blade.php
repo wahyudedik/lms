@@ -3,11 +3,11 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-database text-indigo-600 mr-2"></i>
-                Add Question to Bank
+                {{ __('Add Question to Bank') }}
             </h2>
             <a href="{{ route('admin.question-bank.index') }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Back to Bank
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back to Bank') }}
             </a>
         </div>
     </x-slot>
@@ -23,11 +23,11 @@
                         <!-- Category -->
                         <div class="mb-6">
                             <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
-                                Category (Optional)
+                                {{ __('Category (Optional)') }}
                             </label>
                             <select name="category_id" id="category_id"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">-- No Category --</option>
+                                <option value="">{{ __('-- No Category --') }}</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}"
                                         {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -42,23 +42,20 @@
                             <!-- Difficulty -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Difficulty <span class="text-red-500">*</span>
+                                    {{ __('Difficulty') }} <span class="text-red-500">*</span>
                                 </label>
                                 <select name="difficulty" required
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <option value="easy" {{ old('difficulty') == 'easy' ? 'selected' : '' }}>Easy
-                                    </option>
-                                    <option value="medium"
-                                        {{ old('difficulty', 'medium') == 'medium' ? 'selected' : '' }}>Medium</option>
-                                    <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>Hard
-                                    </option>
+                                    <option value="easy" {{ old('difficulty') == 'easy' ? 'selected' : '' }}>{{ __('Easy') }}</option>
+                                    <option value="medium" {{ old('difficulty', 'medium') == 'medium' ? 'selected' : '' }}>{{ __('Medium') }}</option>
+                                    <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>{{ __('Hard') }}</option>
                                 </select>
                             </div>
 
                             <!-- Default Points -->
                             <div>
                                 <label for="default_points" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Default Points <span class="text-red-500">*</span>
+                                    {{ __('Default Points') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" name="default_points" id="default_points"
                                     value="{{ old('default_points', 1) }}" step="0.01" min="0.01" required
@@ -71,7 +68,7 @@
                                     <input type="checkbox" name="is_active" value="1"
                                         {{ old('is_active', true) ? 'checked' : '' }}
                                         class="rounded border-gray-300 text-indigo-600 shadow-sm">
-                                    <span class="ml-2 text-sm text-gray-700">Active</span>
+                                    <span class="ml-2 text-sm text-gray-700">{{ __('Active') }}</span>
                                 </label>
                             </div>
                         </div>
@@ -79,12 +76,12 @@
                         <!-- Tags -->
                         <div class="mb-6">
                             <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tags (comma-separated)
+                                {{ __('Tags (comma-separated)') }}
                             </label>
                             <input type="text" name="tags" id="tags" value="{{ old('tags') }}"
-                                placeholder="algebra, equations, linear"
+                                placeholder="{{ __('algebra, equations, linear') }}"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <p class="text-sm text-gray-500 mt-1">Separate tags with commas for better search</p>
+                            <p class="text-sm text-gray-500 mt-1">{{ __('Separate tags with commas for better search') }}</p>
                         </div>
 
                         <!-- Question Type -->
@@ -137,7 +134,7 @@
                                 <!-- Options will be added by JavaScript -->
                             </div>
                             <button type="button" id="add-option" class="mt-3 text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-plus-circle mr-1"></i>Tambah Opsi
+                                <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Option') }}
                             </button>
 
                             <div id="correct-answer-single" class="mt-4">
@@ -168,7 +165,7 @@
                                 <!-- Pairs will be added by JavaScript -->
                             </div>
                             <button type="button" id="add-pair" class="mt-3 text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-plus-circle mr-1"></i>Tambah Pasangan
+                                <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Pair') }}
                             </button>
                         </div>
 
@@ -225,7 +222,7 @@
                                     </div>
                                     <button type="button" id="add-keyword"
                                         class="mt-3 text-yellow-600 hover:text-yellow-900">
-                                        <i class="fas fa-plus-circle mr-1"></i>Tambah Kata Kunci
+                                        <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Keyword') }}
                                     </button>
                                 </div>
                             </div>
@@ -283,11 +280,11 @@
                         <div class="flex gap-4">
                             <button type="submit"
                                 class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-save mr-2"></i>Add to Bank
+                                <i class="fas fa-save mr-2"></i>{{ __('Add to Bank') }}
                             </button>
                             <a href="{{ route('admin.question-bank.index') }}"
                                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                Cancel
+                                {{ __('Cancel') }}
                             </a>
                         </div>
                     </form>

@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Edit Ujian: {{ $exam->title }}
+                {{ __('Edit Exam: :title', ['title' => $exam->title]) }}
             </h2>
             <a href="{{ route('guru.exams.show', $exam) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -44,7 +44,7 @@
 
                             <div class="mb-4">
                                 <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Judul Ujian <span class="text-red-500">*</span>
+                                    {{ __('Exam Title') }} <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="title" id="title"
                                     value="{{ old('title', $exam->title) }}" required
@@ -63,7 +63,7 @@
 
                             <div class="mb-4">
                                 <label for="instructions" class="block text-sm font-medium text-gray-700 mb-2">Instruksi
-                                    Ujian</label>
+                                    {{ __('Exam') }}</label>
                                 <textarea name="instructions" id="instructions" rows="3" placeholder="Instruksi khusus untuk peserta ujian..."
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('instructions', $exam->instructions) }}</textarea>
                             </div>
@@ -104,7 +104,7 @@
 
                         <!-- Exam Settings -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Pengaturan Ujian</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Exam Settings') }}</h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
@@ -204,7 +204,7 @@
                                 <input type="number" name="max_tab_switches" id="max_tab_switches"
                                     value="{{ old('max_tab_switches', $exam->max_tab_switches) }}" min="1"
                                     class="w-full md:w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <p class="text-sm text-gray-500 mt-1">Ujian akan otomatis dikumpulkan setelah mencapai
+                                <p class="text-sm text-gray-500 mt-1">{{ __('The exam will be automatically submitted after reaching') }}
                                     batas ini.</p>
                             </div>
                         </div>
@@ -216,7 +216,7 @@
                                     {{ old('is_published', $exam->is_published) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 shadow-sm">
                                 <label for="is_published" class="ml-2 text-sm text-gray-700">
-                                    Publikasikan Ujian
+                                    {{ __('Publish Exam') }}
                                 </label>
                             </div>
                         </div>

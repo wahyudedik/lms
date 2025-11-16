@@ -6,11 +6,9 @@
 const CACHE_VERSION = 'lms-v1.0.0';
 const CACHE_NAME = `lms-cache-${CACHE_VERSION}`;
 
-// Assets to cache immediately on install
-const PRECACHE_ASSETS = [
+// Core assets that should always be cached
+const CORE_ASSETS = [
     '/',
-    '/css/app.css',
-    '/js/app.js',
     '/manifest.json',
     '/offline.html',
 ];
@@ -27,9 +25,9 @@ self.addEventListener('install', (event) => {
 
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then((cache) => {
+            .then(async (cache) => {
                 console.log('[Service Worker] Precaching assets');
-                return cache.addAll(PRECACHE_ASSETS);
+                await precacheAssets(cache);
             })
             .then(() => self.skipWaiting())
     );
@@ -63,6 +61,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
+
+    // Only handle http/https requests to avoid chrome-extension cache errors
+    if (!['http:', 'https:'].includes(url.protocol)) {
+        return;
+    }
 
     // Skip non-GET requests
     if (request.method !== 'GET') {
@@ -225,7 +228,7 @@ function openDatabase() {
             }
 
             if (!db.objectStoreNames.contains('exams')) {
-                db.createObjectStore('exams', { keyPath: 'id' });
+                db.createObjectStore('exams', { keyPath: 'exam.id' });
             }
         };
     });
@@ -236,6 +239,56 @@ function openDatabase() {
  */
 function isCacheFirstRequest(pathname) {
     return CACHE_FIRST.some(type => pathname.includes(`/${type}/`));
+}
+
+/**
+ * Precache assets individually so missing files don't break install phase
+ */
+async function precacheAssets(cache) {
+    const assetsToCache = await buildPrecacheList();
+
+    const results = await Promise.allSettled(
+        assetsToCache.map((asset) => cache.add(asset))
+    );
+
+    results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+            console.warn('[Service Worker] Failed to precache asset:', assetsToCache[index], result.reason);
+        }
+    });
+}
+
+/**
+ * Build dynamic precache list including current Vite build assets
+ */
+async function buildPrecacheList() {
+    const viteAssets = await getViteBuildAssets();
+    const combined = [...CORE_ASSETS, ...viteAssets];
+
+    // Remove duplicates while preserving order
+    return Array.from(new Set(combined));
+}
+
+/**
+ * Read Vite manifest to locate hashed asset filenames
+ */
+async function getViteBuildAssets() {
+    try {
+        const response = await fetch('/build/manifest.json', { cache: 'no-cache' });
+
+        if (!response.ok) {
+            throw new Error(`Manifest fetch failed with status ${response.status}`);
+        }
+
+        const manifest = await response.json();
+
+        return Object.values(manifest)
+            .map((entry) => entry.file ? `/build/${entry.file}` : null)
+            .filter(Boolean);
+    } catch (error) {
+        console.warn('[Service Worker] Unable to load Vite manifest:', error);
+        return [];
+    }
 }
 
 /**
@@ -257,7 +310,11 @@ async function syncQueuedSubmissions() {
         const db = await openDatabase();
         const transaction = db.transaction(['submissions'], 'readonly');
         const store = transaction.objectStore('submissions');
-        const submissions = await store.getAll();
+        const submissions = await new Promise((resolve, reject) => {
+            const req = store.getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = () => reject(req.error);
+        });
 
         console.log(`[Service Worker] Syncing ${submissions.length} submissions`);
 
@@ -321,10 +378,26 @@ async function cacheExamData(examId) {
         const cache = await caches.open(CACHE_NAME);
 
         // Cache exam page
-        await cache.add(`/offline/exams/${examId}`);
+        {
+            const req = new Request(`/offline/exams/${examId}`, { credentials: 'include', cache: 'no-store' });
+            const res = await fetch(req);
+            if (res.ok) {
+                await cache.put(req, res.clone());
+            } else {
+                throw new Error(`Failed to fetch exam page: ${res.status}`);
+            }
+        }
 
         // Cache exam data API
-        await cache.add(`/api/offline/exams/${examId}`);
+        {
+            const req = new Request(`/offline/exams/${examId}/data`, { credentials: 'include', cache: 'no-store' });
+            const res = await fetch(req);
+            if (res.ok) {
+                await cache.put(req, res.clone());
+            } else {
+                throw new Error(`Failed to fetch exam data: ${res.status}`);
+            }
+        }
 
         console.log('[Service Worker] Exam cached:', examId);
     } catch (error) {

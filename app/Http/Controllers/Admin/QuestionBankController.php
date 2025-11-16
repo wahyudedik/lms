@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Exports\QuestionBankTemplateExport;
 use App\Models\QuestionBank;
 use App\Models\QuestionBankCategory;
 use App\Models\QuestionBankImportHistory;
@@ -496,13 +497,19 @@ class QuestionBankController extends Controller
     /**
      * Download import template
      */
-    public function downloadTemplate()
+    public function downloadTemplate(Request $request)
     {
+        $format = strtolower($request->get('format', 'excel'));
+
+        if ($format === 'excel' || $format === 'xlsx') {
+            return Excel::download(new QuestionBankTemplateExport(), 'question-bank-import-template.xlsx');
+        }
+
         $headers = [
-            ['type', 'difficulty', 'question_text', 'category', 'options_json', 'correct_answer_json', 'default_points', 'explanation', 'tags', 'image_url', 'is_active', 'is_verified'],
-            ['mcq_single', 'easy', 'What is 2+2?', 'Mathematics', '["1","2","3","4"]', '["4"]', '1', 'Simple addition', 'math, basic', '', 'yes', 'yes'],
-            ['mcq_multiple', 'medium', 'Select prime numbers', 'Mathematics', '["1","2","3","4","5"]', '["2","3","5"]', '2', 'Prime numbers are divisible by 1 and themselves', 'math, prime', '', 'yes', 'no'],
-            ['essay', 'hard', 'Explain photosynthesis', 'Biology', '', '', '5', 'Process by which plants make food', 'biology, science', '', 'yes', 'yes'],
+            ['type', 'difficulty', 'question_text', 'category', 'option_a', 'option_b', 'option_c', 'option_d', 'option_e', 'correct_answer', 'correct_answers', 'default_points', 'explanation', 'tags', 'image_url', 'is_active', 'is_verified'],
+            ['mcq_single', 'easy', 'What is 2+2?', 'Mathematics', '1', '2', '3', '4', '', '4', '', '1', 'Simple addition', 'math, basic', '', 'yes', 'yes'],
+            ['mcq_multiple', 'medium', 'Select prime numbers', 'Mathematics', '1', '2', '3', '4', '5', '', '2,3,5', '2', 'Prime numbers are divisible by 1 and themselves', 'math, prime', '', 'yes', 'no'],
+            ['essay', 'hard', 'Explain photosynthesis', 'Biology', '', '', '', '', '', '', '', '5', 'Process by which plants make food', 'biology, science', '', 'yes', 'yes'],
         ];
 
         $filename = 'question-bank-import-template.csv';

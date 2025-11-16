@@ -7,11 +7,11 @@
             <div class="flex gap-2">
                 <a href="{{ route('admin.courses.edit', $course) }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-edit mr-2"></i>Edit
+                    <i class="fas fa-edit mr-2"></i>{{ __('Edit') }}
                 </a>
                 <a href="{{ route('admin.courses.index') }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -46,8 +46,8 @@
                             </div>
 
                             <div class="prose max-w-none">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-2">Deskripsi</h4>
-                                <p class="text-gray-700">{{ $course->description ?: 'Tidak ada deskripsi' }}</p>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-2">{{ __('Deskripsi') }}</h4>
+                                <p class="text-gray-700">{{ $course->description ?: __('No description') }}</p>
                             </div>
                         </div>
                     </div>
@@ -56,10 +56,10 @@
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold text-gray-900">Siswa Terdaftar</h3>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ __('Siswa Terdaftar') }}</h3>
                                 <a href="{{ route('admin.courses.enrollments', $course) }}"
                                     class="text-blue-600 hover:text-blue-900">
-                                    <i class="fas fa-cog mr-1"></i>Kelola
+                                    <i class="fas fa-cog mr-1"></i>{{ __('Manage') }}
                                 </a>
                             </div>
 
@@ -70,13 +70,13 @@
                                             <tr>
                                                 <th
                                                     class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                                                    Siswa</th>
+                                                    {{ __('Siswa') }}</th>
                                                 <th
                                                     class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                                                    Status</th>
+                                                    {{ __('Status') }}</th>
                                                 <th
                                                     class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                                                    Progress</th>
+                                                    {{ __('Progress') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white divide-y divide-gray-200">
@@ -113,12 +113,12 @@
                                     <div class="mt-4 text-center">
                                         <a href="{{ route('admin.courses.enrollments', $course) }}"
                                             class="text-blue-600 hover:text-blue-900 text-sm">
-                                            Lihat semua {{ $course->enrollments->count() }} siswa
+                                            {{ trans_choice(__('Lihat semua :count siswa'), $course->enrollments->count(), ['count' => $course->enrollments->count()]) }}
                                         </a>
                                     </div>
                                 @endif
                             @else
-                                <p class="text-gray-500 text-center py-4">Belum ada siswa terdaftar</p>
+                                <p class="text-gray-500 text-center py-4">{{ __('No students enrolled yet') }}</p>
                             @endif
                         </div>
                     </div>
@@ -127,10 +127,10 @@
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold text-gray-900">Materi Pembelajaran</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Learning Materials') }}</h3>
                                 <a href="{{ route('admin.courses.materials.index', $course) }}"
                                     class="text-blue-600 hover:text-blue-900">
-                                    <i class="fas fa-cog mr-1"></i>Kelola Materi
+                                    <i class="fas fa-cog mr-1"></i>{{ __('Manage Materials') }}
                                 </a>
                             </div>
 
@@ -154,12 +154,12 @@
                                     <div class="mt-4 text-center">
                                         <a href="{{ route('admin.courses.materials.index', $course) }}"
                                             class="text-blue-600 hover:text-blue-900 text-sm">
-                                            Lihat semua {{ $course->materials()->published()->count() }} materi
+                                            {{ trans_choice(__('Lihat semua :count materi'), $course->materials()->published()->count(), ['count' => $course->materials()->published()->count()]) }}
                                         </a>
                                     </div>
                                 @endif
                             @else
-                                <p class="text-gray-500 text-center py-4">Belum ada materi dipublikasikan</p>
+                                <p class="text-gray-500 text-center py-4">{{ __('No materials published yet') }}</p>
                             @endif
                         </div>
                     </div>
@@ -170,35 +170,37 @@
                     <!-- Course Info -->
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi Kelas</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Course Information') }}</h3>
 
                             <div class="space-y-3">
                                 <div>
-                                    <p class="text-sm text-gray-500">Pengajar</p>
+                                    <p class="text-sm text-gray-500">{{ __('Pengajar') }}</p>
                                     <p class="text-base font-medium text-gray-900">{{ $course->instructor->name }}</p>
                                 </div>
 
                                 <div>
-                                    <p class="text-sm text-gray-500">Kapasitas</p>
+                                    <p class="text-sm text-gray-500">{{ __('Kapasitas') }}</p>
                                     <p class="text-base font-medium text-gray-900">
                                         @if ($course->max_students)
-                                            {{ $course->enrollments->count() }} / {{ $course->max_students }} siswa
+                                            {{ trans_choice(__(':count siswa'), $course->enrollments->count(), ['count' => $course->enrollments->count()]) }}
+                                            / {{ $course->max_students }} {{ __('siswa') }}
                                         @else
-                                            {{ $course->enrollments->count() }} siswa (Tidak terbatas)
+                                            {{ trans_choice(__(':count siswa'), $course->enrollments->count(), ['count' => $course->enrollments->count()]) }}
+                                            ({{ __('Tidak terbatas') }})
                                         @endif
                                     </p>
                                 </div>
 
                                 @if ($course->published_at)
                                     <div>
-                                        <p class="text-sm text-gray-500">Dipublikasikan</p>
+                                        <p class="text-sm text-gray-500">{{ __('Dipublikasikan') }}</p>
                                         <p class="text-base font-medium text-gray-900">
                                             {{ $course->published_at->format('d M Y') }}</p>
                                     </div>
                                 @endif
 
                                 <div>
-                                    <p class="text-sm text-gray-500">Dibuat</p>
+                                    <p class="text-sm text-gray-500">{{ __('Dibuat') }}</p>
                                     <p class="text-base font-medium text-gray-900">
                                         {{ $course->created_at->format('d M Y') }}</p>
                                 </div>
@@ -209,19 +211,19 @@
                     <!-- Statistics -->
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Statistik</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Statistik') }}</h3>
 
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600">Siswa Aktif</span>
+                                    <span class="text-sm text-gray-600">{{ __('Siswa Aktif') }}</span>
                                     <span class="text-lg font-bold text-green-600">{{ $activeStudents }}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600">Siswa Selesai</span>
+                                    <span class="text-sm text-gray-600">{{ __('Siswa Selesai') }}</span>
                                     <span class="text-lg font-bold text-blue-600">{{ $completedStudents }}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600">Total Siswa</span>
+                                    <span class="text-sm text-gray-600">{{ __('Total Siswa') }}</span>
                                     <span
                                         class="text-lg font-bold text-gray-900">{{ $course->enrollments->count() }}</span>
                                 </div>
@@ -232,7 +234,7 @@
                     <!-- Actions -->
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Aksi</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Actions') }}</h3>
 
                             <div class="space-y-2">
                                 <form action="{{ route('admin.courses.toggle-status', $course) }}" method="POST">
@@ -240,25 +242,25 @@
                                     <button type="submit"
                                         class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                                         @if ($course->status == 'published')
-                                            <i class="fas fa-archive mr-2"></i>Arsipkan
+                                            <i class="fas fa-archive mr-2"></i>{{ __('Archive') }}
                                         @else
-                                            <i class="fas fa-check mr-2"></i>Publikasikan
+                                            <i class="fas fa-check mr-2"></i>{{ __('Publish') }}
                                         @endif
                                     </button>
                                 </form>
 
                                 <a href="{{ route('admin.courses.enrollments', $course) }}"
                                     class="block w-full bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-center">
-                                    <i class="fas fa-users mr-2"></i>Kelola Siswa
+                                    <i class="fas fa-users mr-2"></i>{{ __('Manage Students') }}
                                 </a>
 
                                 <form action="{{ route('admin.courses.destroy', $course) }}" method="POST"
-                                    onsubmit="return confirmDelete('Yakin ingin menghapus kelas ini? Semua data terkait akan dihapus!')">
+                                    onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this class? All related data will be deleted!') }}')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
                                         class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                        <i class="fas fa-trash mr-2"></i>Hapus Kelas
+                                        <i class="fas fa-trash mr-2"></i>{{ __('Delete Course') }}
                                     </button>
                                 </form>
                             </div>

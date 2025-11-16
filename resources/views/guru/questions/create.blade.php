@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Tambah Soal - {{ $exam->title }}
+                {{ __('Add Question - :title', ['title' => $exam->title]) }}
             </h2>
             <a href="{{ route('guru.exams.questions.index', $exam) }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -22,7 +22,7 @@
                         <!-- Question Type -->
                         <div class="mb-6">
                             <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
-                                Tipe Soal <span class="text-red-500">*</span>
+                                {{ __('Question Type') }} <span class="text-red-500">*</span>
                             </label>
                             <select name="type" id="type" required
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -63,27 +63,27 @@
                         <!-- MCQ Options Section -->
                         <div id="mcq-section" class="mb-6">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Opsi Jawaban <span class="text-red-500">*</span>
+                                {{ __('Answer Options') }} <span class="text-red-500">*</span>
                             </label>
                             <div id="options-container" class="space-y-3">
                                 <!-- Options will be added by JavaScript -->
                             </div>
                             <button type="button" id="add-option" class="mt-3 text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-plus-circle mr-1"></i>Tambah Opsi
+                                <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Option') }}
                             </button>
 
                             <div id="correct-answer-single" class="mt-4">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Jawaban Benar <span class="text-red-500">*</span>
+                                    {{ __('Correct Answer') }} <span class="text-red-500">*</span>
                                 </label>
                                 <select name="correct_answer_single" class="w-full rounded-md border-gray-300">
-                                    <option value="">Pilih Jawaban Benar</option>
+                                    <option value="">{{ __('Select Correct Answer') }}</option>
                                 </select>
                             </div>
 
                             <div id="correct-answer-multiple" class="mt-4 hidden">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Jawaban Benar (Pilih Semua yang Benar) <span class="text-red-500">*</span>
+                                    {{ __('Correct Answers (Select all that apply)') }} <span class="text-red-500">*</span>
                                 </label>
                                 <div id="correct-checkboxes" class="space-y-2">
                                     <!-- Checkboxes will be added by JavaScript -->
@@ -100,7 +100,7 @@
                                 <!-- Pairs will be added by JavaScript -->
                             </div>
                             <button type="button" id="add-pair" class="mt-3 text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-plus-circle mr-1"></i>Tambah Pasangan
+                                <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Pair') }}
                             </button>
                         </div>
 
@@ -149,7 +149,7 @@
                                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
                                     <h5 class="font-medium text-yellow-900 mb-2">Kata Kunci & Poin</h5>
                                     <p class="text-sm text-yellow-700 mb-3">
-                                        Tambahkan kata kunci yang harus ada dalam jawaban siswa. Sistem akan menghitung
+                                        {{ __('Add keywords that must appear in the student answer. The system will award points based on keywords found.') }}
                                         poin berdasarkan kata kunci yang ditemukan.
                                     </p>
                                     <div id="keywords-container" class="space-y-2">
@@ -157,7 +157,7 @@
                                     </div>
                                     <button type="button" id="add-keyword"
                                         class="mt-3 text-yellow-600 hover:text-yellow-900">
-                                        <i class="fas fa-plus-circle mr-1"></i>Tambah Kata Kunci
+                                        <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Keyword') }}
                                     </button>
                                 </div>
                             </div>
@@ -165,7 +165,7 @@
                             <!-- Similarity Matching Fields -->
                             <div id="similarity-fields" class="hidden">
                                 <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                                    <h5 class="font-medium text-green-900 mb-2">Jawaban Model</h5>
+                                    <h5 class="font-medium text-green-900 mb-2">{{ __('Model Answer') }}</h5>
                                     <p class="text-sm text-green-700 mb-3">
                                         Berikan jawaban yang benar/ideal. Sistem akan membandingkan jawaban siswa dengan
                                         jawaban model ini.
@@ -227,7 +227,7 @@
                         <div class="flex gap-4">
                             <button type="submit"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-save mr-2"></i>Simpan Soal
+                                <i class="fas fa-save mr-2"></i>{{ __('Save Question') }}
                             </button>
                             <a href="{{ route('guru.exams.questions.index', $exam) }}"
                                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">

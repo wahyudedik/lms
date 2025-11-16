@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Manajemen Kelas') }}
+                {{ __('Course Management') }}
             </h2>
             <a href="{{ route('admin.courses.create') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-plus mr-2"></i>Tambah Kelas
+                <i class="fas fa-plus mr-2"></i>{{ __('Add Course') }}
             </a>
         </div>
     </x-slot>
@@ -20,33 +20,34 @@
                         class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <!-- Search -->
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Cari Kelas</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Search Courses') }}</label>
                             <input type="text" name="search" value="{{ request('search') }}"
-                                placeholder="Nama kelas, kode, atau deskripsi..."
+                                placeholder="{{ __('Nama kelas, kode, atau deskripsi...') }}"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
                         <!-- Status Filter -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Status') }}</label>
                             <select name="status"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option value="">Semua Status</option>
+                                <option value="">{{ __('Semua Status') }}</option>
                                 <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>
-                                    Dipublikasikan</option>
-                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft
+                                    {{ __('Dipublikasikan') }}</option>
+                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>
+                                    {{ __('Draft') }}
                                 </option>
                                 <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>
-                                    Diarsipkan</option>
+                                    {{ __('Diarsipkan') }}</option>
                             </select>
                         </div>
 
                         <!-- Instructor Filter -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Pengajar</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Pengajar') }}</label>
                             <select name="instructor_id"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option value="">Semua Guru</option>
+                                <option value="">{{ __('Semua Guru') }}</option>
                                 @foreach ($instructors as $instructor)
                                     <option value="{{ $instructor->id }}"
                                         {{ request('instructor_id') == $instructor->id ? 'selected' : '' }}>
@@ -59,11 +60,11 @@
                         <div class="md:col-span-4 flex gap-2">
                             <button type="submit"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-search mr-2"></i>Cari
+                                <i class="fas fa-search mr-2"></i>{{ __('Cari') }}
                             </button>
                             <a href="{{ route('admin.courses.index') }}"
                                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-redo mr-2"></i>Reset
+                                <i class="fas fa-redo mr-2"></i>{{ __('Reset') }}
                             </a>
                         </div>
                     </form>
@@ -79,19 +80,19 @@
                                 <tr>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Kelas</th>
+                                        {{ __('Course') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Pengajar</th>
+                                        {{ __('Pengajar') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status</th>
+                                        {{ __('Status') }}</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Siswa</th>
+                                        {{ __('Siswa') }}</th>
                                     <th
                                         class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Aksi</th>
+                                        {{ __('Aksi') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -102,7 +103,7 @@
                                                 <div>
                                                     <div class="text-sm font-medium text-gray-900">{{ $course->title }}
                                                     </div>
-                                                    <div class="text-sm text-gray-500">Kode: {{ $course->code }}</div>
+                                                    <div class="text-sm text-gray-500">{{ __('Kode: :code', ['code' => $course->code]) }}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -119,7 +120,7 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $course->enrollments->count() }} siswa
+                                            {{ trans_choice(':count student|:count students', $course->enrollments->count(), ['count' => $course->enrollments->count()]) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <a href="{{ route('admin.courses.show', $course) }}"
@@ -131,12 +132,12 @@
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <a href="{{ route('admin.courses.enrollments', $course) }}"
-                                                class="text-purple-600 hover:text-purple-900 mr-3" title="Kelola Siswa">
+                                                class="text-purple-600 hover:text-purple-900 mr-3" title="{{ __('Manage Students') }}">
                                                 <i class="fas fa-users"></i>
                                             </a>
                                             <form action="{{ route('admin.courses.destroy', $course) }}" method="POST"
                                                 class="inline"
-                                                onsubmit="return confirmDelete('Yakin ingin menghapus kelas ini?')">
+                                                onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this class?') }}')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900">
@@ -148,7 +149,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                                            Tidak ada kelas ditemukan.
+                                            {{ __('No courses found.') }}
                                         </td>
                                     </tr>
                                 @endforelse

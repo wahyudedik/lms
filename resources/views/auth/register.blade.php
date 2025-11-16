@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-        <p class="text-gray-600">Sign up to get started</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ __('Create Account') }}</h2>
+        <p class="text-gray-600">{{ __('Sign up to get started') }}</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-5">
@@ -14,7 +14,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-user text-gray-400"></i>
                 </div>
-                <x-text-input id="name" class="block w-full pl-10" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="John Doe" />
+                <x-text-input id="name" class="block w-full pl-10" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="{{ __('John Doe') }}" />
             </div>
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
@@ -26,7 +26,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-envelope text-gray-400"></i>
                 </div>
-                <x-text-input id="email" class="block w-full pl-10" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="you@example.com" />
+                <x-text-input id="email" class="block w-full pl-10" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="{{ __('you@example.com') }}" />
             </div>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
@@ -39,9 +39,9 @@
                     <i class="fas fa-user-tag text-gray-400"></i>
                 </div>
                 <select id="role" name="role" class="block w-full pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" required>
-                    <option value="">Select your role</option>
-                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Student</option>
-                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Teacher</option>
+                    <option value="">{{ __('Select your role') }}</option>
+                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>{{ __('Student') }}</option>
+                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>{{ __('Teacher') }}</option>
                 </select>
             </div>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
@@ -55,7 +55,7 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-phone text-gray-400"></i>
                     </div>
-                    <x-text-input id="phone" class="block w-full pl-10" type="tel" name="phone" :value="old('phone')" autocomplete="tel" placeholder="+62xxx" />
+                    <x-text-input id="phone" class="block w-full pl-10" type="tel" name="phone" :value="old('phone')" autocomplete="tel" placeholder="{{ __('+62xxx') }}" />
                 </div>
                 <x-input-error :messages="$errors->get('phone')" class="mt-2" />
             </div>
@@ -81,9 +81,9 @@
                     <i class="fas fa-venus-mars text-gray-400"></i>
                 </div>
                 <select id="gender" name="gender" class="block w-full pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-                    <option value="">Select gender</option>
-                    <option value="laki-laki" {{ old('gender') == 'laki-laki' ? 'selected' : '' }}>Male</option>
-                    <option value="perempuan" {{ old('gender') == 'perempuan' ? 'selected' : '' }}>Female</option>
+                    <option value="">{{ __('Select gender') }}</option>
+                    <option value="laki-laki" {{ old('gender') == 'laki-laki' ? 'selected' : '' }}>{{ __('Male') }}</option>
+                    <option value="perempuan" {{ old('gender') == 'perempuan' ? 'selected' : '' }}>{{ __('Female') }}</option>
                 </select>
             </div>
             <x-input-error :messages="$errors->get('gender')" class="mt-2" />
@@ -96,7 +96,7 @@
                 <div class="absolute top-3 left-3">
                     <i class="fas fa-map-marker-alt text-gray-400"></i>
                 </div>
-                <textarea id="address" name="address" rows="3" class="block w-full pl-10 pt-2 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" placeholder="Enter your full address">{{ old('address') }}</textarea>
+                <textarea id="address" name="address" rows="3" class="block w-full pl-10 pt-2 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" placeholder="{{ __('Enter your full address') }}">{{ old('address') }}</textarea>
             </div>
             <x-input-error :messages="$errors->get('address')" class="mt-2" />
         </div>
@@ -132,7 +132,7 @@
         </div>
 
         <div class="text-center text-sm text-gray-600">
-            <span>Already have an account? </span>
+            <span>{{ __('Already have an account?') }} </span>
             <a class="text-blue-600 hover:text-blue-800 font-medium transition-colors" href="{{ route('login') }}">
                 {{ __('Login here') }}
             </a>

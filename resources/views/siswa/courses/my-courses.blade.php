@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Kelas Saya') }}
+                {{ __('My Courses') }}
             </h2>
             <a href="{{ route('siswa.courses.index') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-search mr-2"></i>Jelajahi Kelas
+                <i class="fas fa-search mr-2"></i>{{ __('Browse Courses') }}
             </a>
         </div>
     </x-slot>
@@ -22,7 +22,7 @@
                                 <i class="fas fa-book text-white text-2xl"></i>
                             </div>
                             <div class="ml-4">
-                                <p class="text-sm text-gray-500">Total Kelas</p>
+                                <p class="text-sm text-gray-500">{{ __('Total Courses') }}</p>
                                 <p class="text-2xl font-bold text-gray-900">{{ $enrollments->total() }}</p>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
 
                             <a href="{{ route('siswa.courses.show', $enrollment->course) }}"
                                 class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">
-                                <i class="fas fa-arrow-right mr-2"></i>Lihat Kelas
+                                <i class="fas fa-arrow-right mr-2"></i>{{ __('View Course') }}
                             </a>
                         </div>
                     </div>
@@ -122,11 +122,11 @@
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-12 text-center">
                                 <i class="fas fa-inbox text-gray-400 text-6xl mb-4"></i>
-                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum Ada Kelas</h3>
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ __('No Courses Yet') }}</h3>
                                 <p class="text-gray-500 mb-6">Anda belum terdaftar di kelas manapun</p>
                                 <a href="{{ route('siswa.courses.index') }}"
                                     class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
-                                    <i class="fas fa-search mr-2"></i>Jelajahi Kelas
+                                    <i class="fas fa-search mr-2"></i>{{ __('Browse Courses') }}
                                 </a>
                             </div>
                         </div>

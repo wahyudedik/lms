@@ -6,7 +6,7 @@
             </h2>
             <a href="{{ route('siswa.courses.index') }}"
                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -40,9 +40,9 @@
                             </div>
 
                             <div class="prose max-w-none">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Tentang Kelas Ini</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">{{ __('About This Course') }}</h3>
                                 <p class="text-gray-700 whitespace-pre-wrap">
-                                    {{ $course->description ?: 'Tidak ada deskripsi' }}</p>
+                                    {{ $course->description ?: __('No description') }}</p>
                             </div>
 
                             @if ($isEnrolled)
@@ -79,7 +79,7 @@
                     @if ($isEnrolled && $course->materials()->published()->count() > 0)
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 Materi Pembelajaran</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 {{ __('Learning Materials') }}</h3>
 
                                 <div class="space-y-3">
                                     @foreach ($course->materials()->published()->ordered()->get() as $material)
@@ -176,27 +176,27 @@
 
                                     <a href="{{ route('siswa.courses.my-courses') }}"
                                         class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded mb-2">
-                                        <i class="fas fa-book mr-2"></i>Ke Kelas Saya
+                                        <i class="fas fa-book mr-2"></i>{{ __('Go to My Courses') }}
                                     </a>
 
                                     <form action="{{ route('siswa.courses.unenroll', $course) }}" method="POST"
-                                        onsubmit="return confirmDelete('Yakin ingin keluar dari kelas ini?');">
+                                        onsubmit="return confirmDelete('{{ __('Are you sure you want to leave this class?') }}');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
                                             class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                            <i class="fas fa-sign-out-alt mr-2"></i>Keluar dari Kelas
+                                            <i class="fas fa-sign-out-alt mr-2"></i>{{ __('Leave Course') }}
                                         </button>
                                     </form>
                                 </div>
                             @else
                                 <div class="text-center">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Daftar ke Kelas Ini</h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Enroll in this Course') }}</h3>
 
                                     @if ($course->isFull())
                                         <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded">
                                             <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
-                                            <span class="text-red-700 text-sm">Kelas sudah penuh</span>
+                                            <span class="text-red-700 text-sm">{{ __('Course is full') }}</span>
                                         </div>
                                     @else
                                         <form action="{{ route('siswa.courses.enroll', $course) }}" method="POST">
@@ -216,7 +216,7 @@
                     <!-- Course Info -->
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi Kelas</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Course Information') }}</h3>
 
                             <div class="space-y-4">
                                 <div class="flex items-start">

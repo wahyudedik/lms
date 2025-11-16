@@ -3,46 +3,46 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-database text-indigo-600 mr-2"></i>
-                Question Bank
+                {{ __('Question Bank') }}
             </h2>
             <div class="flex gap-2">
                 <a href="{{ route('admin.question-bank.statistics') }}"
                     class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-chart-bar mr-2"></i>Statistics
+                    <i class="fas fa-chart-bar mr-2"></i>{{ __('Statistics') }}
                 </a>
                 <div class="relative inline-block">
                     <button onclick="toggleExportMenu()"
                         class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                        <i class="fas fa-file-export mr-2"></i>Export
+                        <i class="fas fa-file-export mr-2"></i>{{ __('Export') }}
                         <i class="fas fa-chevron-down ml-2"></i>
                     </button>
                     <div id="exportMenu"
                         class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
                         <a href="{{ route('admin.question-bank.export', array_merge(request()->all(), ['format' => 'excel'])) }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-file-excel text-green-600 mr-2"></i>Excel
+                            <i class="fas fa-file-excel text-green-600 mr-2"></i>{{ __('Excel') }}
                         </a>
                         <a href="{{ route('admin.question-bank.export', array_merge(request()->all(), ['format' => 'pdf'])) }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-file-pdf text-red-600 mr-2"></i>PDF
+                            <i class="fas fa-file-pdf text-red-600 mr-2"></i>{{ __('PDF') }}
                         </a>
                         <a href="{{ route('admin.question-bank.export', array_merge(request()->all(), ['format' => 'json'])) }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-code text-blue-600 mr-2"></i>JSON
+                            <i class="fas fa-code text-blue-600 mr-2"></i>{{ __('JSON') }}
                         </a>
                     </div>
                 </div>
                 <button onclick="openImportModal()"
                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-file-import mr-2"></i>Import
+                    <i class="fas fa-file-import mr-2"></i>{{ __('Import') }}
                 </button>
                 <a href="{{ route('admin.question-bank.import-history') }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-history mr-2"></i>History
+                    <i class="fas fa-history mr-2"></i>{{ __('History') }}
                 </a>
                 <a href="{{ route('admin.question-bank.create') }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-plus mr-2"></i>Add Question
+                    <i class="fas fa-plus mr-2"></i>{{ __('Add Question') }}
                 </a>
             </div>
         </div>
@@ -59,7 +59,7 @@
                             <!-- Search -->
                             <div class="md:col-span-2">
                                 <input type="text" name="search" value="{{ request('search') }}"
-                                    placeholder="Search questions..."
+                                    placeholder="{{ __('Search questions...') }}"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             </div>
 
@@ -67,7 +67,7 @@
                             <div>
                                 <select name="category_id"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <option value="">All Categories</option>
+                                    <option value="">{{ __('All Categories') }}</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
                                             {{ request('category_id') == $category->id ? 'selected' : '' }}>
@@ -81,7 +81,7 @@
                             <div>
                                 <select name="type"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <option value="">All Types</option>
+                                    <option value="">{{ __('All Types') }}</option>
                                     <option value="mcq_single" {{ request('type') == 'mcq_single' ? 'selected' : '' }}>
                                         MCQ Single</option>
                                     <option value="mcq_multiple"
@@ -98,12 +98,9 @@
                                 <select name="difficulty"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <option value="">All Difficulties</option>
-                                    <option value="easy" {{ request('difficulty') == 'easy' ? 'selected' : '' }}>Easy
-                                    </option>
-                                    <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>
-                                        Medium</option>
-                                    <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>Hard
-                                    </option>
+                                    <option value="easy" {{ request('difficulty') == 'easy' ? 'selected' : '' }}>{{ __('Easy') }}</option>
+                                    <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>{{ __('Medium') }}</option>
+                                    <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>{{ __('Hard') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -111,11 +108,11 @@
                         <div class="flex gap-2">
                             <button type="submit"
                                 class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-search mr-2"></i>Filter
+                                <i class="fas fa-search mr-2"></i>{{ __('Filter') }}
                             </button>
                             <a href="{{ route('admin.question-bank.index') }}"
                                 class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-redo mr-2"></i>Reset
+                                <i class="fas fa-redo mr-2"></i>{{ __('Reset') }}
                             </a>
                         </div>
                     </form>
@@ -169,11 +166,11 @@
                                                     <div class="flex flex-wrap gap-4 text-sm text-gray-600">
                                                         <span>
                                                             <i class="fas fa-star text-yellow-500 mr-1"></i>
-                                                            <strong>{{ $question->default_points }}</strong> points
+                                                            <strong>{{ $question->default_points }}</strong> {{ __('points') }}
                                                         </span>
                                                         <span>
                                                             <i class="fas fa-recycle text-blue-500 mr-1"></i>
-                                                            Used <strong>{{ $question->times_used }}</strong> times
+                                                            {{ __('Used :count times', ['count' => $question->times_used]) }}
                                                         </span>
                                                         @if ($question->average_score !== null)
                                                             <span>
@@ -301,7 +298,7 @@
                     <a href="{{ route('admin.question-bank.download-template') }}"
                         class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
                         <i class="fas fa-download mr-2"></i>
-                        Download Import Template
+                        {{ __('Download Import Template') }}
                     </a>
                 </div>
             </div>
@@ -312,7 +309,7 @@
 
                 <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">
-                        Select File to Import
+                        {{ __('Select File to Import') }}
                     </label>
                     <div class="relative">
                         <input type="file" name="file" id="importFile" accept=".xlsx,.xls,.csv" required
@@ -325,7 +322,7 @@
                                 cursor-pointer border border-gray-300 rounded-lg">
                     </div>
                     <p class="text-xs text-gray-500 mt-1">
-                        Accepted formats: Excel (.xlsx, .xls) or CSV (.csv)
+                        {{ __('Accepted formats: Excel (.xlsx, .xls) or CSV (.csv)') }}
                     </p>
                 </div>
 
@@ -344,7 +341,7 @@
                         <input type="checkbox" name="use_queue" value="1"
                             class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
                         <span class="ml-2 text-sm text-gray-700">
-                            Process in background (recommended for large files > 100 rows)
+                            {{ __('Process in background (recommended for large files > 100 rows)') }}
                         </span>
                     </label>
                 </div>
@@ -352,11 +349,11 @@
                 <div class="flex justify-end gap-3">
                     <button type="button" onclick="closeImportModal()"
                         class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
-                        <i class="fas fa-times mr-2"></i>Cancel
+                        <i class="fas fa-times mr-2"></i>{{ __('Cancel') }}
                     </button>
                     <button type="submit"
                         class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                        <i class="fas fa-upload mr-2"></i>Import Questions
+                        <i class="fas fa-upload mr-2"></i>{{ __('Import Questions') }}
                     </button>
                 </div>
             </form>
