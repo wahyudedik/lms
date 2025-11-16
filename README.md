@@ -2,6 +2,20 @@
 
 Sistem manajemen pembelajaran berbasis web yang lengkap dengan fitur Computer-Based Test (CBT), manajemen kursus, forum diskusi, dan analytics yang powerful.
 
+## Daftar Isi
+
+- [📖 Tentang Aplikasi](#-tentang-aplikasi)
+- [✨ Fitur Utama](#-fitur-utama)
+- [🛠️ Pembaruan Terbaru](#️-pembaruan-terbaru)
+- [🚀 Instalasi di VPS Ubuntu](#-instalasi-di-vps-ubuntu)
+- [🧑‍💻 Quick Start (Pengembangan Lokal)](#-quick-start-pengembangan-lokal)
+- [⚙️ Variabel Environment Penting](#️-variabel-environment-penting)
+- [⏰ Catatan Timezone](#-catatan-timezone)
+- [🧾 Backup & Restore](#-backup--restore)
+- [🧰 Troubleshooting](#-troubleshooting)
+- [📚 Dokumentasi Lengkap](#-dokumentasi-lengkap)
+- [📄 License](#-license)
+
 ## 📖 Tentang Aplikasi
 
 Laravel LMS adalah platform pembelajaran digital yang dirancang untuk memudahkan proses belajar mengajar secara online. Aplikasi ini mendukung multi-role (Admin, Guru, Siswa) dengan fitur lengkap untuk manajemen kursus, ujian berbasis komputer, dan pelacakan progress siswa.
@@ -398,6 +412,169 @@ Akses aplikasi di: `https://yourdomain.com`
 - Setup backup database secara berkala
 - Monitor queue worker dengan `sudo systemctl status lms-queue`
 - Update aplikasi: `git pull && composer install && npm run build && php artisan migrate`
+
+---
+
+## 🧑‍💻 Quick Start (Pengembangan Lokal)
+
+Cara cepat menyiapkan environment development di Windows/Mac/Linux.
+
+1) Persiapan
+- PHP 8.2+, Composer, Node.js 18+ (atau LTS), Git
+- MySQL 8.0+ atau gunakan SQLite untuk setup paling cepat
+
+2) Clone & install
+
+```bash
+git clone https://github.com/your-repo/lms.git
+cd lms
+composer install
+npm install
+```
+
+3) Konfigurasi environment
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Untuk setup paling cepat gunakan SQLite:
+
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=${BASE_PATH}/database/database.sqlite
+```
+
+Lalu buat file databasenya:
+
+```bash
+mkdir -p database
+type NUL > database/database.sqlite   # Windows PowerShell / CMD
+# atau: touch database/database.sqlite  (Mac/Linux)
+```
+
+4) Migrasi & seed data contoh
+
+```bash
+php artisan migrate
+php artisan db:seed
+php artisan storage:link
+```
+
+5) Jalankan aplikasi (dua terminal)
+
+```bash
+php artisan serve
+```
+
+```bash
+npm run dev
+```
+
+Default login contoh tersedia di bagian atas README.
+
+Tips Windows:
+- Jalankan PowerShell sebagai Administrator saat membuat symlink `storage:link` jika diperlukan.
+- Jika port 8000 terpakai, jalankan `php artisan serve --port=8001`.
+
+---
+
+## ⚙️ Variabel Environment Penting
+
+Contoh pengaturan yang relevan dengan fitur-fitur terbaru:
+
+```env
+# App
+APP_NAME="Laravel LMS"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+# Timezone (lihat catatan di bawah)
+APP_TIMEZONE=Asia/Jakarta
+
+# Database (MySQL contoh)
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=lms_db
+DB_USERNAME=lms_user
+DB_PASSWORD=your_strong_password
+
+# Queue & Cache
+QUEUE_CONNECTION=database
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+
+# PWA / Offline
+PWA_ENABLED=true
+
+# AI Integration (opsional)
+OPENAI_API_KEY=your_openai_api_key
+AI_MODEL=gpt-4o-mini
+AI_MAX_TOKENS=1024
+AI_TEMPERATURE=0.2
+
+# CBT / Anti-cheat (contoh)
+CBT_FULLSCREEN_ENFORCE=true
+CBT_TAB_SWITCH_LIMIT=3
+CBT_VIOLATION_AUTO_BLOCK=true
+```
+
+Catatan:
+- Jika tidak menggunakan AI, kosongkan `OPENAI_API_KEY` atau set `PWA_ENABLED=false` bila tidak perlu PWA.
+- Nama variabel mungkin berbeda pada implementasi Anda; sesuaikan dengan `.env.example`.
+
+---
+
+## ⏰ Catatan Timezone
+
+- Semua `start_time` / `end_time` ujian disimpan dalam UTC di database.
+- Aplikasi akan mengonversi waktu ke timezone aplikasi saat ditampilkan di UI.
+- Pastikan:
+  - `APP_TIMEZONE` di `.env` sesuai zona waktu sekolah.
+  - Server/OS menggunakan UTC (disarankan) untuk konsistensi.
+  - Saat melakukan export/import, kolom waktu dijelaskan sebagai UTC di metadata.
+
+---
+
+## 🧾 Backup & Restore
+
+MySQL:
+
+```bash
+# Backup
+mysqldump -u lms_user -p lms_db > backup_$(date +%F).sql
+
+# Restore
+mysql -u lms_user -p lms_db < backup_2025-01-01.sql
+```
+
+File penting:
+- `storage/app` (lampiran, upload)
+- `public/storage` (symlink ke storage)
+- `bootstrap/cache`
+
+Jalankan secara berkala dan simpan di lokasi terpisah.
+
+---
+
+## 🧰 Troubleshooting
+
+- 500 setelah deploy:
+  - Jalankan: `php artisan config:clear && php artisan cache:clear && php artisan view:clear`
+  - Pastikan permission `storage/` dan `bootstrap/cache/` benar.
+- Notifikasi tidak muncul:
+  - Cek queue worker jalan: `php artisan queue:work` (lokal) atau systemd service di produksi.
+- Waktu ujian bergeser:
+  - Verifikasi `APP_TIMEZONE`, dan jam server (disarankan UTC).
+- PWA tidak offline:
+  - Pastikan build produksi `npm run build` dan service worker terdaftar di browser (Application → Service Workers).
+- 502/504 Nginx:
+  - Cek `php8.2-fpm` service, socket path sesuai dengan konfigurasi Nginx.
+- Symlink gagal di Windows:
+  - Jalankan terminal sebagai Administrator, atau gunakan `php artisan storage:link` ulang.
 
 ---
 
