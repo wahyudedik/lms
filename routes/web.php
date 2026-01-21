@@ -29,6 +29,9 @@ Route::prefix('exam')->name('guest.exams.')->group(function () {
         
     Route::post('/attempt/{attempt}/submit', [App\Http\Controllers\GuestExamController::class, 'submit'])->name('submit');
     Route::get('/attempt/{attempt}/review', [App\Http\Controllers\GuestExamController::class, 'review'])->name('review');
+    Route::get('/result/{token}', [App\Http\Controllers\GuestExamController::class, 'reviewByToken'])
+        ->middleware('throttle:20,1')
+        ->name('review-token');
     Route::post('/attempt/{attempt}/violation', [App\Http\Controllers\GuestExamController::class, 'logViolation'])->name('log-violation');
 });
 
@@ -55,7 +58,7 @@ Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::
     ->name('admin.dashboard');
 
 // Admin User Management & Course Management
-Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admin')->name('admin.')->group(function () {
     // User Management
     // Import/Export Routes (must be before resource routes)
     Route::get('users/export', [App\Http\Controllers\Admin\UserController::class, 'export'])->name('users.export');
@@ -307,13 +310,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Profile Photo Routes
-    Route::post('/profile/photo/upload', [App\Http\Controllers\ProfilePhotoController::class, 'upload'])->name('profile.photo.upload');
+    Route::post('/profile/photo/upload', [App\Http\Controllers\ProfilePhotoController::class, 'upload'])
+        ->middleware('throttle:10,1')
+        ->name('profile.photo.upload');
     Route::delete('/profile/photo/delete', [App\Http\Controllers\ProfilePhotoController::class, 'delete'])->name('profile.photo.delete');
 
     // Material Comments (all authenticated users)
-    Route::post('materials/{material}/comments', [App\Http\Controllers\MaterialCommentController::class, 'store'])->name('materials.comments.store');
-    Route::patch('comments/{comment}', [App\Http\Controllers\MaterialCommentController::class, 'update'])->name('comments.update');
-    Route::delete('comments/{comment}', [App\Http\Controllers\MaterialCommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('materials/{material}/comments', [App\Http\Controllers\MaterialCommentController::class, 'store'])
+        ->middleware('throttle:20,1')
+        ->name('materials.comments.store');
+    Route::patch('comments/{comment}', [App\Http\Controllers\MaterialCommentController::class, 'update'])
+        ->middleware('throttle:20,1')
+        ->name('comments.update');
+    Route::delete('comments/{comment}', [App\Http\Controllers\MaterialCommentController::class, 'destroy'])
+        ->middleware('throttle:20,1')
+        ->name('comments.destroy');
 
     // Notifications (all authenticated users)
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
@@ -327,24 +338,44 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [App\Http\Controllers\ForumController::class, 'index'])->name('index');
         Route::get('/search', [App\Http\Controllers\ForumController::class, 'search'])->name('search');
         Route::get('/create', [App\Http\Controllers\ForumController::class, 'create'])->name('create');
-        Route::post('/store', [App\Http\Controllers\ForumController::class, 'store'])->name('store');
+        Route::post('/store', [App\Http\Controllers\ForumController::class, 'store'])
+            ->middleware('throttle:20,1')
+            ->name('store');
         Route::get('/{category}', [App\Http\Controllers\ForumController::class, 'category'])->name('category');
         Route::get('/{category}/create', [App\Http\Controllers\ForumController::class, 'create'])->name('create-in-category');
         Route::get('/{category}/{thread}', [App\Http\Controllers\ForumController::class, 'show'])->name('thread');
         Route::get('/{category}/{thread}/edit', [App\Http\Controllers\ForumController::class, 'edit'])->name('edit');
-        Route::put('/{category}/{thread}', [App\Http\Controllers\ForumController::class, 'update'])->name('update');
-        Route::delete('/{category}/{thread}', [App\Http\Controllers\ForumController::class, 'destroy'])->name('destroy');
+        Route::put('/{category}/{thread}', [App\Http\Controllers\ForumController::class, 'update'])
+            ->middleware('throttle:20,1')
+            ->name('update');
+        Route::delete('/{category}/{thread}', [App\Http\Controllers\ForumController::class, 'destroy'])
+            ->middleware('throttle:20,1')
+            ->name('destroy');
 
         // Replies
-        Route::post('/{category}/{thread}/reply', [App\Http\Controllers\ForumController::class, 'storeReply'])->name('reply');
-        Route::put('/reply/{reply}', [App\Http\Controllers\ForumController::class, 'updateReply'])->name('reply.update');
-        Route::delete('/reply/{reply}', [App\Http\Controllers\ForumController::class, 'destroyReply'])->name('reply.destroy');
+        Route::post('/{category}/{thread}/reply', [App\Http\Controllers\ForumController::class, 'storeReply'])
+            ->middleware('throttle:20,1')
+            ->name('reply');
+        Route::put('/reply/{reply}', [App\Http\Controllers\ForumController::class, 'updateReply'])
+            ->middleware('throttle:20,1')
+            ->name('reply.update');
+        Route::delete('/reply/{reply}', [App\Http\Controllers\ForumController::class, 'destroyReply'])
+            ->middleware('throttle:20,1')
+            ->name('reply.destroy');
 
         // Actions
-        Route::post('/like', [App\Http\Controllers\ForumController::class, 'toggleLike'])->name('like');
-        Route::post('/{category}/{thread}/pin', [App\Http\Controllers\ForumController::class, 'togglePin'])->name('pin');
-        Route::post('/{category}/{thread}/lock', [App\Http\Controllers\ForumController::class, 'toggleLock'])->name('lock');
-        Route::post('/reply/{reply}/solution', [App\Http\Controllers\ForumController::class, 'markSolution'])->name('solution');
+        Route::post('/like', [App\Http\Controllers\ForumController::class, 'toggleLike'])
+            ->middleware('throttle:30,1')
+            ->name('like');
+        Route::post('/{category}/{thread}/pin', [App\Http\Controllers\ForumController::class, 'togglePin'])
+            ->middleware('throttle:20,1')
+            ->name('pin');
+        Route::post('/{category}/{thread}/lock', [App\Http\Controllers\ForumController::class, 'toggleLock'])
+            ->middleware('throttle:20,1')
+            ->name('lock');
+        Route::post('/reply/{reply}/solution', [App\Http\Controllers\ForumController::class, 'markSolution'])
+            ->middleware('throttle:20,1')
+            ->name('solution');
     });
 });
 

@@ -14,6 +14,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mb-6 rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                {{ __('Pengaturan ini bersifat sistem/global. Untuk desain, landing page, dan branding sekolah gunakan menu Schools → Theme / Landing Page.') }}
+            </div>
             <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 

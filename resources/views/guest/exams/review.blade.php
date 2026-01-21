@@ -73,6 +73,27 @@
                         </div>
                     </div>
 
+                    <div class="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                        <div class="text-sm font-medium text-blue-800">{{ __('Permanent Result Link') }}</div>
+                        <div class="text-sm text-blue-700 mt-1">
+                            {{ __('Copy this link to access your results later.') }}
+                        </div>
+                        <div class="mt-3">
+                            <input type="text" readonly
+                                value="{{ route('guest.exams.review-token', $attempt->guest_token) }}"
+                                class="w-full rounded-md border-blue-200 bg-white text-sm text-gray-700"
+                                id="guest-result-link">
+                        </div>
+                        <div class="mt-3 flex items-center gap-3">
+                            <button type="button"
+                                class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                                id="copy-guest-result-link">
+                                <i class="fas fa-copy"></i>{{ __('Copy Link') }}
+                            </button>
+                            <span class="text-sm text-blue-700" id="copy-guest-result-status"></span>
+                        </div>
+                    </div>
+
                     @if ($attempt->violations && count($attempt->violations) > 0)
                         <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
                             <div class="flex">
@@ -80,7 +101,8 @@
                                     <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
                                 </div>
                                 <div class="ml-3">
-                                    <h3 class="text-sm font-medium text-yellow-800">{{ __('Violations Detected') }}</h3>
+                                    <h3 class="text-sm font-medium text-yellow-800">{{ __('Violations Detected') }}
+                                    </h3>
                                     <div class="mt-2 text-sm text-yellow-700">
                                         <ul class="list-disc list-inside space-y-1">
                                             @foreach ($attempt->violations as $violation)
@@ -130,21 +152,21 @@
                                 </div>
                                 <div class="ml-4">
                                     @if ($answer->is_correct)
-                                                <div class="flex items-center text-green-600 bg-green-50 px-4 py-2 rounded-lg">
+                                        <div class="flex items-center text-green-600 bg-green-50 px-4 py-2 rounded-lg">
                                             <i class="fas fa-check-circle text-xl mr-2"></i>
                                             <div>
-                                                        <div class="font-bold">{{ __('Correct') }}</div>
-                                                        <div class="text-sm">+{{ number_format($answer->points_earned, 2) }}
-                                                            {{ __('points') }}</div>
+                                                <div class="font-bold">{{ __('Correct') }}</div>
+                                                <div class="text-sm">+{{ number_format($answer->points_earned, 2) }}
+                                                    {{ __('points') }}</div>
                                             </div>
                                         </div>
                                     @else
                                         <div class="flex items-center text-red-600 bg-red-50 px-4 py-2 rounded-lg">
                                             <i class="fas fa-times-circle text-xl mr-2"></i>
                                             <div>
-                                                        <div class="font-bold">{{ __('Incorrect') }}</div>
-                                                        <div class="text-sm">{{ number_format($answer->points_earned, 2) }}
-                                                            {{ __('points') }}</div>
+                                                <div class="font-bold">{{ __('Incorrect') }}</div>
+                                                <div class="text-sm">{{ number_format($answer->points_earned, 2) }}
+                                                    {{ __('points') }}</div>
                                             </div>
                                         </div>
                                     @endif
@@ -160,9 +182,9 @@
 
                             <!-- User Answer -->
                             <div class="bg-gray-50 rounded-lg p-4 mb-3">
-                                    <div class="text-sm font-medium text-gray-700 mb-2">
-                                        <i class="fas fa-user mr-1"></i>{{ __('Your Answer:') }}
-                                    </div>
+                                <div class="text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-user mr-1"></i>{{ __('Your Answer:') }}
+                                </div>
                                 <div class="text-gray-900">
                                     @if ($question->type === 'essay')
                                         <div class="whitespace-pre-wrap">
@@ -236,11 +258,13 @@
                                             @if (!empty($correctAnswers))
                                                 <ul class="list-disc list-inside">
                                                     @foreach ($correctAnswers as $ans)
-                                                        <li class="text-green-700 font-medium">{{ $ans }}</li>
+                                                        <li class="text-green-700 font-medium">{{ $ans }}
+                                                        </li>
                                                     @endforeach
                                                 </ul>
                                             @else
-                                                <span class="text-gray-500 italic">{{ __('No correct answers provided.') }}</span>
+                                                <span
+                                                    class="text-gray-500 italic">{{ __('No correct answers provided.') }}</span>
                                             @endif
                                         @else
                                             <span
@@ -292,4 +316,24 @@
 
         </div>
     </div>
+    @push('scripts')
+        <script>
+            const guestResultLinkInput = document.getElementById('guest-result-link');
+            const guestResultCopyButton = document.getElementById('copy-guest-result-link');
+            const guestResultStatus = document.getElementById('copy-guest-result-status');
+
+            if (guestResultCopyButton && guestResultLinkInput) {
+                guestResultCopyButton.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(guestResultLinkInput.value);
+                        guestResultStatus.textContent = @json(__('Link copied'));
+                    } catch (error) {
+                        guestResultLinkInput.select();
+                        document.execCommand('copy');
+                        guestResultStatus.textContent = @json(__('Link copied'));
+                    }
+                });
+            }
+        </script>
+    @endpush
 </x-app-layout>

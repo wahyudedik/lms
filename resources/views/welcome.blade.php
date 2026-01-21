@@ -3,19 +3,22 @@
     $currentSchool = null;
     try {
         if (isset($school)) {
-            // Preview mode from controller
             $currentSchool = $school;
         } else {
-            // Try to detect from authenticated user's school or default to first active school
-        if (auth()->check() && auth()->user()->school_id) {
-            $currentSchool = \App\Models\School::find(auth()->user()->school_id);
-        } else {
-            // You can implement domain detection here
-            $currentSchool = \App\Models\School::where('is_active', true)->first();
+            $host = request()->getHost();
+            $hostWithoutWww = preg_replace('/^www\./', '', $host);
+
+            $currentSchool = \App\Models\School::where('domain', $host)->orWhere('domain', $hostWithoutWww)->first();
+
+            if (!$currentSchool && auth()->check() && auth()->user()->school_id) {
+                $currentSchool = \App\Models\School::find(auth()->user()->school_id);
+            }
+
+            if (!$currentSchool) {
+                $currentSchool = \App\Models\School::where('is_active', true)->first();
             }
         }
     } catch (\Exception $e) {
-        // Table might not exist - continue without school
         $currentSchool = null;
     }
 
@@ -42,9 +45,7 @@
         @endif
 
         <!-- Favicon -->
-        @if ($currentSchool->favicon)
-            <link rel="icon" href="{{ asset('storage/' . $currentSchool->favicon) }}">
-        @endif
+        <link rel="icon" href="{{ $currentSchool->favicon_url }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -70,12 +71,8 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="/" class="flex items-center space-x-3">
-                            @if ($currentSchool->logo)
-                                <img src="{{ asset('storage/' . $currentSchool->logo) }}"
-                                    alt="{{ $currentSchool->name }}" class="h-10 w-auto">
-                            @else
-                                <span class="text-xl font-bold text-gray-900">{{ $currentSchool->name }}</span>
-                            @endif
+                            <img src="{{ $currentSchool->logo_url }}" alt="{{ $currentSchool->name }}"
+                                class="h-10 w-auto">
                         </a>
                     </div>
 
@@ -107,13 +104,8 @@
 
         <!-- Hero Section -->
         <section
-            class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-24 md:py-32 overflow-hidden">
-            @if ($currentSchool->hero_image)
-                <div class="absolute inset-0">
-                    <img src="{{ asset('storage/' . $currentSchool->hero_image) }}" alt="Hero"
-                        class="w-full h-full object-cover opacity-20">
-                </div>
-            @endif
+            class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-24 md:py-32 overflow-hidden"
+            @if ($currentSchool->hero_image) style="background-image: url('{{ $currentSchool->hero_image_url }}'); background-size: cover; background-position: center;" @endif>
             <div class="absolute inset-0 bg-gradient-to-br from-blue-600/90 to-indigo-800/90"></div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="max-w-3xl mx-auto text-center">

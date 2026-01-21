@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
             'roles' => \App\Http\Middleware\CheckMultipleRoles::class,
+            'log.admin' => \App\Http\Middleware\LogAdminAction::class,
         ]);
 
         // Track user activity

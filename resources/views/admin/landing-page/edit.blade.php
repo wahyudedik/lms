@@ -115,6 +115,9 @@
                                         <p class="text-sm text-blue-700">
                                             {{ __('When enabled, visitors will see your custom landing page instead of the default Laravel welcome page. Make sure to fill in the sections below to create an engaging landing page.') }}
                                         </p>
+                                        <p class="text-sm text-blue-700 mt-2">
+                                            {{ __('Landing page mengikuti domain sekolah. Pastikan kolom Custom Domain di pengaturan sekolah sudah diisi dan sekolah aktif agar hero image tampil di publik.') }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>

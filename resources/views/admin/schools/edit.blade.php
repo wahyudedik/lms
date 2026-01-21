@@ -106,7 +106,7 @@
                                 <input type="text" name="domain" id="domain"
                                     value="{{ old('domain', $school->domain) }}" placeholder="{{ __('school.yourdomain.com') }}"
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <p class="text-sm text-gray-500 mt-1">{{ __('For white-label multi-tenant setup') }}</p>
+                                <p class="text-sm text-gray-500 mt-1">{{ __('Untuk multi-tenant dan menentukan landing page publik sekolah ini.') }}</p>
                                 @error('domain')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror

@@ -290,6 +290,32 @@ class GuestExamController extends Controller
         return view('guest.exams.review', compact('attempt', 'exam', 'questions'));
     }
 
+    public function reviewByToken($token)
+    {
+        $attempt = ExamAttempt::with(['exam.questions', 'answers.question'])
+            ->where('guest_token', $token)
+            ->where('is_guest', true)
+            ->firstOrFail();
+
+        if ($attempt->status === 'in_progress') {
+            return redirect()->route('guest.exams.index')
+                ->with('error', __('Guest exam results are only available after completion.'));
+        }
+
+        $exam = $attempt->exam;
+
+        $questions = $exam->questions;
+        if ($exam->shuffle_questions && !empty($attempt->shuffled_question_ids)) {
+            $questions = $questions->sortBy(function ($question) use ($attempt) {
+                return array_search($question->id, $attempt->shuffled_question_ids);
+            });
+        } else {
+            $questions = $questions->sortBy('order');
+        }
+
+        return view('guest.exams.review', compact('attempt', 'exam', 'questions'));
+    }
+
     /**
      * Log anti-cheat violation for guest (AJAX)
      */

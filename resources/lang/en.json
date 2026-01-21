@@ -856,5 +856,11 @@
     "Submit Exam?": "Submit Exam?",
     "The exam will be submitted automatically.": "The exam will be submitted automatically.",
     "Question :num of": "Question :num of",
-    "My Exam Management": "My Exam Management"
+    "My Exam Management": "My Exam Management",
+    "Permanent Result Link": "Permanent Result Link",
+    "Copy this link to access your results later.": "Copy this link to access your results later.",
+    "Guest exam results are only available after completion.": "Guest exam results are only available after completion.",
+    "Copy Link": "Copy Link",
+    "Link copied": "Link copied",
+    "Pengaturan ini bersifat sistem/global. Untuk desain, landing page, dan branding sekolah gunakan menu Schools → Theme / Landing Page.": "These settings are global. For school landing page and branding, use Schools → Theme / Landing Page."
 }

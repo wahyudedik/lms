@@ -873,5 +873,11 @@
     "Submit Exam?": "Kumpulkan Ujian?",
     "The exam will be submitted automatically.": "Ujian akan otomatis dikumpulkan.",
     "Question :num of": "Soal :num dari",
-    "My Exam Management": "Manajemen Ujian Saya"
+    "My Exam Management": "Manajemen Ujian Saya",
+    "Permanent Result Link": "Link Hasil Permanen",
+    "Copy this link to access your results later.": "Salin link ini untuk mengakses hasil ujian di lain waktu.",
+    "Guest exam results are only available after completion.": "Hasil ujian tamu hanya tersedia setelah ujian selesai.",
+    "Copy Link": "Salin Link",
+    "Link copied": "Link berhasil disalin",
+    "Pengaturan ini bersifat sistem/global. Untuk desain, landing page, dan branding sekolah gunakan menu Schools → Theme / Landing Page.": "Pengaturan ini bersifat sistem/global. Untuk desain, landing page, dan branding sekolah gunakan menu Schools → Theme / Landing Page."
 }
