@@ -6,6 +6,48 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property string $code
+ * @property string|null $description
+ * @property int $instructor_id
+ * @property string $status
+ * @property string|null $cover_image
+ * @property int|null $max_students
+ * @property \Illuminate\Support\Carbon|null $published_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Enrollment> $enrollments
+ * @property-read int|null $enrollments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Exam> $exams
+ * @property-read int|null $exams_count
+ * @property-read string $status_color
+ * @property-read string $status_display
+ * @property-read \App\Models\User $instructor
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Material> $materials
+ * @property-read int|null $materials_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $students
+ * @property-read int|null $students_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course byInstructor($instructorId)
+ * @method static \Database\Factories\CourseFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course published()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereCoverImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereInstructorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereMaxStudents($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course wherePublishedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Course extends Model
 {
     use HasFactory;

@@ -1,0 +1,11 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+
+    # Level 5 is a good starting point for existing projects
+    level: 5
+
+    # checkMissingIterableValueType: false

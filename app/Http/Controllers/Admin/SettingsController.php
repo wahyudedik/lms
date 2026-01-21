@@ -35,6 +35,8 @@ class SettingsController extends Controller
     {
         $request->validate([
             'settings' => 'required|array',
+            'settings.app_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'settings.app_favicon' => 'nullable|image|mimes:ico,png,svg|max:512',
         ]);
 
         foreach ($request->settings as $key => $value) {

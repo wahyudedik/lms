@@ -6,6 +6,90 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $email
+ * @property string|null $phone
+ * @property string|null $address
+ * @property string|null $logo
+ * @property string|null $favicon
+ * @property string|null $domain
+ * @property bool $is_active
+ * @property bool $show_landing_page
+ * @property string|null $hero_title
+ * @property string|null $hero_subtitle
+ * @property string|null $hero_description
+ * @property string|null $hero_image
+ * @property string $hero_cta_text
+ * @property string|null $hero_cta_link
+ * @property string|null $about_title
+ * @property string|null $about_content
+ * @property string|null $about_image
+ * @property string|null $features
+ * @property string|null $statistics
+ * @property string|null $contact_address
+ * @property string|null $contact_phone
+ * @property string|null $contact_email
+ * @property string|null $contact_whatsapp
+ * @property string|null $social_facebook
+ * @property string|null $social_instagram
+ * @property string|null $social_twitter
+ * @property string|null $social_youtube
+ * @property string|null $meta_title
+ * @property string|null $meta_description
+ * @property string|null $meta_keywords
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $about_image_url
+ * @property-read mixed $favicon_url
+ * @property-read mixed $hero_image_url
+ * @property-read mixed $logo_url
+ * @property-read int|null $users_count
+ * @property-read \App\Models\SchoolTheme|null $theme
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereAboutContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereAboutImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereAboutTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereContactAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereContactEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereContactPhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereContactWhatsapp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereDomain($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereFavicon($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereFeatures($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereHeroCtaLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereHeroCtaText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereHeroDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereHeroImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereHeroSubtitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereHeroTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereLogo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereMetaDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereMetaKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereMetaTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereShowLandingPage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereSocialFacebook($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereSocialInstagram($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereSocialTwitter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereSocialYoutube($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereStatistics($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|School whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class School extends Model
 {
     use HasFactory;

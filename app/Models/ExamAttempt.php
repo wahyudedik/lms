@@ -7,6 +7,70 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int $exam_id
+ * @property int|null $user_id
+ * @property int $is_offline
+ * @property bool $is_guest
+ * @property string|null $guest_name
+ * @property string|null $guest_email
+ * @property string|null $guest_token
+ * @property \Illuminate\Support\Carbon|null $started_at
+ * @property \Illuminate\Support\Carbon|null $submitted_at
+ * @property int|null $time_spent
+ * @property numeric|null $score
+ * @property int|null $correct_answers
+ * @property int|null $total_questions
+ * @property numeric|null $total_points_earned
+ * @property numeric|null $total_points_possible
+ * @property bool|null $passed
+ * @property string $status
+ * @property int $tab_switches
+ * @property int $fullscreen_exits
+ * @property array<array-key, mixed>|null $violations
+ * @property array<array-key, mixed>|null $shuffled_question_ids
+ * @property string|null $ip_address
+ * @property string|null $user_agent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Answer> $answers
+ * @property-read int|null $answers_count
+ * @property-read \App\Models\Exam $exam
+ * @property-read string $formatted_time_spent
+ * @property-read string $status_badge
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereCorrectAnswers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereExamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereFullscreenExits($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereGuestEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereGuestName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereGuestToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereIpAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereIsGuest($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereIsOffline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt wherePassed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereShuffledQuestionIds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereStartedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereSubmittedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereTabSwitches($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereTimeSpent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereTotalPointsEarned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereTotalPointsPossible($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereTotalQuestions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereUserAgent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExamAttempt whereViolations($value)
+ * @mixin \Eloquent
+ */
 class ExamAttempt extends Model
 {
     use HasFactory;

@@ -24,7 +24,7 @@ class CustomVerifyEmail extends VerifyEmail implements ShouldQueue
      *
      * @return array<int, string>
      */
-    public function via(object $notifiable): array
+    public function via($notifiable): array
     {
         return ['mail'];
     }
@@ -32,7 +32,7 @@ class CustomVerifyEmail extends VerifyEmail implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
         $verificationUrl = $this->verificationUrl($notifiable);
 
@@ -52,7 +52,7 @@ class CustomVerifyEmail extends VerifyEmail implements ShouldQueue
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
+    public function toArray($notifiable): array
     {
         return [
             //

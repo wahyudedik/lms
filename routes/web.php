@@ -278,6 +278,7 @@ Route::middleware(['auth', 'verified', 'role:siswa'])->prefix('siswa')->name('si
     Route::get('attempts/{attempt}/time-remaining', [App\Http\Controllers\ExamAttemptController::class, 'getTimeRemaining'])->name('exams.time-remaining');
 
     // Report Routes (Siswa)
+    Route::get('reports', [App\Http\Controllers\Siswa\ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/my-transcript', [App\Http\Controllers\Siswa\ReportController::class, 'myTranscript'])->name('reports.my-transcript');
     Route::get('reports/courses/{course}/transcript-pdf', [App\Http\Controllers\Siswa\ReportController::class, 'exportMyTranscriptPdf'])->name('reports.my-transcript-pdf');
 

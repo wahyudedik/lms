@@ -49,7 +49,7 @@ class QuestionController extends Controller
         $rules = [
             'type' => 'required|in:mcq_single,mcq_multiple,matching,essay',
             'question_text' => 'required|string',
-            'question_image' => 'nullable|image|max:2048',
+            'question_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'points' => 'required|numeric|min:0',
             'order' => 'nullable|integer',
             'explanation' => 'nullable|string',
@@ -178,7 +178,7 @@ class QuestionController extends Controller
         $rules = [
             'type' => 'required|in:mcq_single,mcq_multiple,matching,essay',
             'question_text' => 'required|string',
-            'question_image' => 'nullable|image|max:2048',
+            'question_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'points' => 'required|numeric|min:0',
             'order' => 'nullable|integer',
             'explanation' => 'nullable|string',

@@ -10,6 +10,76 @@ use Illuminate\Support\Facades\Storage;
 use App\Notifications\CustomVerifyEmail;
 use App\Notifications\CustomResetPassword;
 
+/**
+ * @property int $id
+ * @property int|null $school_id
+ * @property string $name
+ * @property string $email
+ * @property string $role
+ * @property string|null $phone
+ * @property \Illuminate\Support\Carbon|null $birth_date
+ * @property string|null $gender
+ * @property string|null $address
+ * @property string|null $profile_photo
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $login_blocked_at
+ * @property string|null $login_blocked_reason
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CheatingIncident> $cheatingIncidents
+ * @property-read int|null $cheating_incidents_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Exam> $createdExams
+ * @property-read int|null $created_exams_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Course> $enrolledCourses
+ * @property-read int|null $enrolled_courses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Enrollment> $enrollments
+ * @property-read int|null $enrollments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExamAttempt> $examAttempts
+ * @property-read int|null $exam_attempts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForumLike> $forumLikes
+ * @property-read int|null $forum_likes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForumReply> $forumReplies
+ * @property-read int|null $forum_replies_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForumThread> $forumThreads
+ * @property-read int|null $forum_threads_count
+ * @property-read string|null $dashboard_route
+ * @property-read int $forum_posts_count
+ * @property-read bool $is_login_blocked
+ * @property-read string $profile_photo_path
+ * @property-read string $profile_photo_url
+ * @property-read string $role_display
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \App\Models\School|null $school
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Course> $teachingCourses
+ * @property-read int|null $teaching_courses_count
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereBirthDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLoginBlockedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLoginBlockedReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereProfilePhoto($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereSchoolId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable 
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

@@ -28,7 +28,7 @@ class MaterialController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:file,video,link,youtube',
-            'file' => 'required_if:type,file,video|file|max:51200', // 50MB max
+            'file' => 'required_if:type,file,video|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,txt,zip,rar,mp4,mp3,jpg,jpeg,png,gif,svg,webp|max:51200', // 50MB max
             'url' => 'required_if:type,link,youtube|url|nullable',
             'order' => 'nullable|integer|min:0',
             'is_published' => 'boolean',
@@ -73,7 +73,7 @@ class MaterialController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:file,video,link,youtube',
-            'file' => 'nullable|file|max:51200', // 50MB max
+            'file' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,txt,zip,rar,mp4,mp3,jpg,jpeg,png,gif,svg,webp|max:51200', // 50MB max
             'url' => 'nullable|url',
             'order' => 'nullable|integer|min:0',
             'is_published' => 'boolean',

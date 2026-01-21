@@ -6,6 +6,36 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $conversation_id
+ * @property string $role
+ * @property string $content
+ * @property int $tokens
+ * @property string|null $model
+ * @property array<array-key, mixed>|null $metadata
+ * @property \Illuminate\Support\Carbon $sent_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\AiConversation $conversation
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage assistant()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage system()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage user()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereConversationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereMetadata($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereModel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereSentAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereTokens($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AiMessage whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class AiMessage extends Model
 {
     use HasFactory;

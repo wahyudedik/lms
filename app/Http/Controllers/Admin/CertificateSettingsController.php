@@ -74,7 +74,7 @@ class CertificateSettingsController extends Controller
             'template' => 'required|in:default,modern,elegant,minimalist',
             'institution_name' => 'required|string|max:255',
             'director_name' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'primary_color' => 'required|string|size:7|regex:/^#[a-fA-F0-9]{6}$/',
             'secondary_color' => 'required|string|size:7|regex:/^#[a-fA-F0-9]{6}$/',
             'accent_color' => 'required|string|size:7|regex:/^#[a-fA-F0-9]{6}$/',

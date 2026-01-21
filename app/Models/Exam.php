@@ -8,6 +8,84 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
+/**
+ * @property int $id
+ * @property int $course_id
+ * @property int $created_by
+ * @property string $title
+ * @property string|null $description
+ * @property string|null $instructions
+ * @property int $duration_minutes
+ * @property \Illuminate\Support\Carbon|null $start_time
+ * @property \Illuminate\Support\Carbon|null $end_time
+ * @property int $max_attempts
+ * @property bool $shuffle_questions
+ * @property bool $shuffle_options
+ * @property bool $show_results_immediately
+ * @property bool $show_correct_answers
+ * @property bool $allow_token_access
+ * @property string|null $access_token
+ * @property bool $require_guest_name
+ * @property bool $require_guest_email
+ * @property int|null $max_token_uses Null = unlimited
+ * @property int $current_token_uses
+ * @property numeric $pass_score
+ * @property bool $require_fullscreen
+ * @property bool $detect_tab_switch
+ * @property int $max_tab_switches
+ * @property bool $is_published
+ * @property bool $offline_enabled
+ * @property int $offline_cache_duration Hours
+ * @property Carbon|null $published_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExamAttempt> $attempts
+ * @property-read int|null $attempts_count
+ * @property-read \App\Models\Course $course
+ * @property-read \App\Models\User $creator
+ * @property-read string $status_badge
+ * @property-read float $total_points
+ * @property-read int $total_questions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $questions
+ * @property-read int|null $questions_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam active()
+ * @method static \Database\Factories\ExamFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam published()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereAccessToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereAllowTokenAccess($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereCourseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereCurrentTokenUses($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereDetectTabSwitch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereDurationMinutes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereEndTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereInstructions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereIsPublished($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereMaxAttempts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereMaxTabSwitches($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereMaxTokenUses($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereOfflineCacheDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereOfflineEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam wherePassScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam wherePublishedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereRequireFullscreen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereRequireGuestEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereRequireGuestName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereShowCorrectAnswers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereShowResultsImmediately($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereShuffleOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereShuffleQuestions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Exam whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Exam extends Model
 {
     use HasFactory;

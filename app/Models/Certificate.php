@@ -6,6 +6,68 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property int $enrollment_id
+ * @property int $user_id
+ * @property int $course_id
+ * @property string $certificate_number
+ * @property string $student_name
+ * @property string $course_title
+ * @property string|null $course_description
+ * @property \Illuminate\Support\Carbon $issue_date
+ * @property \Illuminate\Support\Carbon $completion_date
+ * @property int|null $final_score
+ * @property string|null $grade
+ * @property string|null $instructor_name
+ * @property string|null $signature
+ * @property array<array-key, mixed>|null $metadata
+ * @property bool $is_valid
+ * @property \Illuminate\Support\Carbon|null $revoked_at
+ * @property string|null $revoke_reason
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Course $course
+ * @property-read \App\Models\Enrollment $enrollment
+ * @property-read string $download_url
+ * @property-read string $grade_color
+ * @property-read string $status_color
+ * @property-read string $status_display
+ * @property-read string $verification_url
+ * @property-read string $view_url
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate byCertificateNumber(string $number)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate byCourse(int $courseId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate byUser(int $userId)
+ * @method static \Database\Factories\CertificateFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate recentlyIssued(int $days = 30)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate revoked()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate valid()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereCertificateNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereCompletionDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereCourseDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereCourseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereCourseTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereEnrollmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereFinalScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereGrade($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereInstructorName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereIsValid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereIssueDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereMetadata($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereRevokeReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereRevokedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereSignature($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereStudentName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Certificate whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Certificate extends Model
 {
     use HasFactory;

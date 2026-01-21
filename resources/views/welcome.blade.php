@@ -7,11 +7,11 @@
             $currentSchool = $school;
         } else {
             // Try to detect from authenticated user's school or default to first active school
-            if (auth()->check() && auth()->user()->school_id) {
-                $currentSchool = \App\Models\School::find(auth()->user()->school_id);
-            } else {
-                // You can implement domain detection here
-                $currentSchool = \App\Models\School::where('is_active', true)->first();
+        if (auth()->check() && auth()->user()->school_id) {
+            $currentSchool = \App\Models\School::find(auth()->user()->school_id);
+        } else {
+            // You can implement domain detection here
+            $currentSchool = \App\Models\School::where('is_active', true)->first();
             }
         }
     } catch (\Exception $e) {
@@ -118,7 +118,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="max-w-3xl mx-auto text-center">
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                        {{ $currentSchool->hero_title ?? __('Welcome to :name', ['name' => $currentSchool->name]) }}
+                        {{ $currentSchool->hero_title ?? __('Welcome to :name', ['name' => 'Koneksi']) }}
                     </h1>
                     @if ($currentSchool->hero_subtitle)
                         <p class="text-xl md:text-2xl mb-6 text-blue-100 font-medium">
@@ -286,44 +286,59 @@
         @endif
 
         <!-- Footer -->
-        <footer class="bg-gray-900 text-white py-12">
+        <footer class="bg-[#0F172A] text-slate-200 py-12 border-t border-slate-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
                     <!-- School Info -->
-                    <div>
+                    <div class="space-y-4">
                         @if ($currentSchool->logo)
                             <img src="{{ asset('storage/' . $currentSchool->logo) }}"
-                                alt="{{ $currentSchool->name }}" class="h-10 mb-4">
+                                alt="{{ $currentSchool->name }}" class="h-10 mb-2">
                         @else
-                            <h3 class="text-xl font-bold mb-4">{{ $currentSchool->name }}</h3>
+                            <h3 class="text-2xl font-bold text-white tracking-tight">{{ $currentSchool->name }}</h3>
                         @endif
                         @if ($currentSchool->about_content)
-                            <p class="text-sm text-gray-400 leading-relaxed">
-                                {{ Str::limit($currentSchool->about_content, 120) }}
+                            <p class="text-sm text-slate-300 leading-relaxed max-w-sm">
+                                {{ Str::limit($currentSchool->about_content, 140) }}
                             </p>
                         @endif
                     </div>
 
                     <!-- Quick Links -->
                     <div>
-                        <h4 class="text-base font-semibold mb-4">@lang('Quick Links')</h4>
-                        <ul class="space-y-2">
+                        <h4 class="text-lg font-semibold text-white mb-5 relative inline-block">
+                            @lang('Quick Links')
+                            <span class="absolute bottom-0 left-0 w-1/2 h-0.5 bg-blue-500 rounded-full"></span>
+                        </h4>
+                        <ul class="space-y-3">
                             <li>
                                 <a href="{{ route('login') }}"
-                                    class="text-sm text-gray-400 hover:text-white transition-colors">
-                                    <i class="fas fa-sign-in-alt mr-2"></i>@lang('Login')
+                                    class="group flex items-center text-sm text-slate-300 hover:text-white transition-all duration-200">
+                                    <span
+                                        class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center mr-3 group-hover:bg-blue-600 transition-colors">
+                                        <i class="fas fa-sign-in-alt text-xs"></i>
+                                    </span>
+                                    @lang('Login')
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('guest.exams.index') }}"
-                                    class="text-sm text-gray-400 hover:text-white transition-colors">
-                                    <i class="fas fa-clipboard-list mr-2"></i>@lang('Guest Exam')
+                                    class="group flex items-center text-sm text-slate-300 hover:text-white transition-all duration-200">
+                                    <span
+                                        class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center mr-3 group-hover:bg-blue-600 transition-colors">
+                                        <i class="fas fa-clipboard-list text-xs"></i>
+                                    </span>
+                                    @lang('Guest Exam')
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('forum.index') }}"
-                                    class="text-sm text-gray-400 hover:text-white transition-colors">
-                                    <i class="fas fa-comments mr-2"></i>@lang('Forum')
+                                    class="group flex items-center text-sm text-slate-300 hover:text-white transition-all duration-200">
+                                    <span
+                                        class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center mr-3 group-hover:bg-blue-600 transition-colors">
+                                        <i class="fas fa-comments text-xs"></i>
+                                    </span>
+                                    @lang('Forum')
                                 </a>
                             </li>
                         </ul>
@@ -336,42 +351,57 @@
                             $currentSchool->social_twitter ||
                             $currentSchool->social_youtube)
                         <div>
-                            <h4 class="text-base font-semibold mb-4">@lang('Follow Us')</h4>
-                            <div class="flex space-x-4">
+                            <h4 class="text-lg font-semibold text-white mb-5 relative inline-block">
+                                @lang('Follow Us')
+                                <span class="absolute bottom-0 left-0 w-1/2 h-0.5 bg-blue-500 rounded-full"></span>
+                            </h4>
+                            <div class="flex flex-wrap gap-3">
                                 @if ($currentSchool->social_facebook)
                                     <a href="{{ $currentSchool->social_facebook }}" target="_blank"
-                                        class="text-xl text-gray-400 hover:text-blue-500 transition-colors">
-                                        <i class="fab fa-facebook"></i>
+                                        class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-[#1877F2] hover:text-white transition-all duration-300 shadow-sm hover:shadow-blue-500/30"
+                                        aria-label="Facebook">
+                                        <i class="fab fa-facebook-f"></i>
                                     </a>
                                 @endif
                                 @if ($currentSchool->social_instagram)
                                     <a href="{{ $currentSchool->social_instagram }}" target="_blank"
-                                        class="text-xl text-gray-400 hover:text-pink-500 transition-colors">
+                                        class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-pink-500/30"
+                                        aria-label="Instagram">
                                         <i class="fab fa-instagram"></i>
                                     </a>
                                 @endif
                                 @if ($currentSchool->social_twitter)
                                     <a href="{{ $currentSchool->social_twitter }}" target="_blank"
-                                        class="text-xl text-gray-400 hover:text-blue-400 transition-colors">
+                                        class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-[#1DA1F2] hover:text-white transition-all duration-300 shadow-sm hover:shadow-blue-400/30"
+                                        aria-label="Twitter">
                                         <i class="fab fa-twitter"></i>
                                     </a>
                                 @endif
                                 @if ($currentSchool->social_youtube)
                                     <a href="{{ $currentSchool->social_youtube }}" target="_blank"
-                                        class="text-xl text-gray-400 hover:text-red-500 transition-colors">
+                                        class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 hover:bg-[#FF0000] hover:text-white transition-all duration-300 shadow-sm hover:shadow-red-500/30"
+                                        aria-label="YouTube">
                                         <i class="fab fa-youtube"></i>
                                     </a>
                                 @endif
                             </div>
+                            <p class="mt-6 text-sm text-slate-400">
+                                @lang('Stay connected with us for the latest updates and educational resources.')
+                            </p>
                         </div>
                     @endif
                 </div>
 
-                <div class="border-t border-gray-800 pt-8 text-center">
-                    <p class="text-sm text-gray-400">
-                        &copy; {{ date('Y') }} {{ $currentSchool->name }}. @lang('All rights reserved.')
+                <div
+                    class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-sm text-slate-400 text-center md:text-left">
+                        &copy; {{ date('Y') }} <span
+                            class="text-slate-200 font-medium">{{ $currentSchool->name }}</span>. @lang('All rights reserved.')
                     </p>
-                    <p class="text-xs text-gray-500 mt-2">@lang('Powered by :name', ['name' => config('app.name')])</p>
+                    <p class="text-xs text-slate-500 flex items-center gap-1">
+                        <span>@lang('Powered by')</span>
+                        <span class="font-semibold text-blue-500">{{ config('app.name') }}</span>
+                    </p>
                 </div>
             </div>
         </footer>
@@ -387,60 +417,74 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>Koneksi (Kolaborasi Online Edukasi dan Komunikasi Siswa)</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
         <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body
-        class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
-        <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6">
-            @if (Route::has('login'))
-                <nav class="flex items-center justify-end gap-4">
-                    @auth
-                        <a href="{{ url('/dashboard') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                            @lang('Dashboard')
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal">
-                            @lang('Log in')
-                        </a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}"
-                                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                @lang('Register')
-                            </a>
+    <body class="antialiased font-sans text-gray-900 bg-gray-50">
+        <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+            <div
+                class="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
+                <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
+                    <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
+                        <div class="flex lg:justify-center lg:col-start-2">
+                            <div class="flex flex-col items-center">
+                                <span class="text-4xl font-bold text-blue-600 mb-2">Koneksi</span>
+                                <span class="text-sm font-medium text-gray-600 text-center">Kolaborasi Online Edukasi
+                                    dan Komunikasi Siswa</span>
+                            </div>
+                        </div>
+                        @if (Route::has('login'))
+                            <nav class="flex items-center justify-end gap-4">
+                                @auth
+                                    <a href="{{ url('/dashboard') }}"
+                                        class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
+                                        @lang('Dashboard')
+                                    </a>
+                                @else
+                                    <a href="{{ route('login') }}"
+                                        class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal">
+                                        @lang('Log in')
+                                    </a>
+                                    @if (Route::has('register'))
+                                        <a href="{{ route('register') }}"
+                                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
+                                            @lang('Register')
+                                        </a>
+                                    @endif
+                                @endauth
+                            </nav>
                         @endif
-                    @endauth
-                </nav>
-            @endif
-        </header>
-        <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow">
-            <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row text-center">
-                <div
-                    class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
-                    <h1 class="mb-1 font-medium text-2xl">{{ __('Welcome to :name', ['name' => config('app.name')]) }}
-                    </h1>
-                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
-                        @lang('A modern Learning Management System built with Laravel')
-                    </p>
-                    <p class="text-sm text-gray-500 mt-4">
-                        @if (auth()->check() && auth()->user()->isAdmin())
-                            <a href="{{ route('admin.schools.index') }}" class="text-blue-600 hover:underline">
-                                @lang('Configure landing page in School Settings')
-                            </a>
-                        @endif
-                    </p>
-                </div>
-            </main>
-        </div>
+                    </header>
+                    <div
+                        class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow">
+                        <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row text-center">
+                            <div
+                                class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
+                                <h1 class="mb-1 font-medium text-2xl">
+                                    {{ __('Welcome to :name', ['name' => config('app.name')]) }}
+                                </h1>
+                                <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
+                                    @lang('A modern Learning Management System built with Laravel')
+                                </p>
+                                <p class="text-sm text-gray-500 mt-4">
+                                    @if (auth()->check() && auth()->user()->isAdmin())
+                                        <a href="{{ route('admin.schools.index') }}"
+                                            class="text-blue-600 hover:underline">
+                                            @lang('Configure landing page in School Settings')
+                                        </a>
+                                    @endif
+                                </p>
+                            </div>
+                        </main>
+                    </div>
     </body>
 
     </html>

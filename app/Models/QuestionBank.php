@@ -7,6 +7,84 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int|null $category_id
+ * @property int $created_by
+ * @property string $type
+ * @property string $question_text
+ * @property string|null $question_image
+ * @property string $difficulty
+ * @property array<array-key, mixed>|null $tags
+ * @property numeric $default_points
+ * @property array<array-key, mixed>|null $options
+ * @property string|null $correct_answer
+ * @property array<array-key, mixed>|null $correct_answer_multiple
+ * @property array<array-key, mixed>|null $pairs
+ * @property string $essay_grading_mode
+ * @property array<array-key, mixed>|null $essay_keywords
+ * @property string|null $essay_model_answer
+ * @property numeric|null $essay_min_similarity
+ * @property numeric|null $essay_similarity_penalty
+ * @property bool $essay_case_sensitive
+ * @property string|null $explanation
+ * @property string|null $teacher_notes
+ * @property int $times_used
+ * @property numeric|null $average_score
+ * @property int $times_correct
+ * @property int $times_incorrect
+ * @property bool $is_active
+ * @property bool $is_verified
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\QuestionBankCategory|null $category
+ * @property-read \App\Models\User $creator
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Question> $examQuestions
+ * @property-read int|null $exam_questions_count
+ * @property-read string $difficulty_badge
+ * @property-read float $success_rate
+ * @property-read string $type_badge
+ * @property-read string $verification_badge
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank inCategory(int $categoryId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank ofDifficulty(string $difficulty)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank ofType(string $type)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank search(string $search)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank verified()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereAverageScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereCorrectAnswer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereCorrectAnswerMultiple($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereDefaultPoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereDifficulty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereEssayCaseSensitive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereEssayGradingMode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereEssayKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereEssayMinSimilarity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereEssayModelAnswer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereEssaySimilarityPenalty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereExplanation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereIsVerified($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank wherePairs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereQuestionImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereQuestionText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereTags($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereTeacherNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereTimesCorrect($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereTimesIncorrect($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereTimesUsed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBank whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class QuestionBank extends Model
 {
     use HasFactory;

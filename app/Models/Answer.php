@@ -6,6 +6,38 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $attempt_id
+ * @property int $question_id
+ * @property array<array-key, mixed>|null $answer
+ * @property bool|null $is_correct
+ * @property numeric|null $points_earned
+ * @property string|null $feedback
+ * @property array<array-key, mixed>|null $shuffled_options
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property string|null $saved_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ExamAttempt $attempt
+ * @property-read string $formatted_answer
+ * @property-read string $formatted_correct_answer
+ * @property-read \App\Models\Question $question
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereAnswer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereAttemptId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereFeedback($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereIsCorrect($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer wherePointsEarned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereQuestionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereSavedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereShuffledOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Answer whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Answer extends Model
 {
     use HasFactory;

@@ -8,6 +8,38 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property int $id
+ * @property int $thread_id
+ * @property int|null $parent_id
+ * @property int $user_id
+ * @property string $content
+ * @property-read int|null $likes_count
+ * @property bool $is_solution
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ForumReply> $children
+ * @property-read int|null $children_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForumLike> $likes
+ * @property-read ForumReply|null $parent
+ * @property-read \App\Models\ForumThread $thread
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply parents()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereIsSolution($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereLikesCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereThreadId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumReply withUser()
+ * @mixin \Eloquent
+ */
 class ForumReply extends Model
 {
     use HasFactory;

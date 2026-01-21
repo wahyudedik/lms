@@ -5,6 +5,35 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $activity_type
+ * @property string|null $activity_name
+ * @property string|null $description
+ * @property array<array-key, mixed>|null $metadata
+ * @property string|null $ip_address
+ * @property string|null $user_agent
+ * @property int|null $duration_seconds
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereActivityName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereActivityType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereDurationSeconds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereIpAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereMetadata($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereUserAgent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserActivityLog whereUserId($value)
+ * @mixin \Eloquent
+ */
 class UserActivityLog extends Model
 {
     use HasFactory;

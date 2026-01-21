@@ -14,8 +14,8 @@ class SettingSeeder extends Seeder
     {
         $settings = [
             // General Settings
-            ['key' => 'app_name', 'value' => 'Laravel LMS', 'type' => 'text', 'group' => 'general'],
-            ['key' => 'app_description', 'value' => 'Platform Pembelajaran Online', 'type' => 'textarea', 'group' => 'general'],
+            ['key' => 'app_name', 'value' => 'Koneksi', 'type' => 'text', 'group' => 'general'],
+            ['key' => 'app_description', 'value' => 'Kolaborasi Online Edukasi dan Komunikasi Siswa', 'type' => 'textarea', 'group' => 'general'],
             ['key' => 'school_name', 'value' => 'Sekolah Digital', 'type' => 'text', 'group' => 'general'],
             ['key' => 'school_address', 'value' => 'Jl. Pendidikan No. 123', 'type' => 'textarea', 'group' => 'general'],
             ['key' => 'school_phone', 'value' => '021-12345678', 'type' => 'text', 'group' => 'general'],
@@ -26,8 +26,8 @@ class SettingSeeder extends Seeder
             ['key' => 'app_locale', 'value' => config('app.locale', 'en'), 'type' => 'select', 'group' => 'localization'],
 
             // Appearance Settings
-            ['key' => 'primary_color', 'value' => '#3B82F6', 'type' => 'color', 'group' => 'appearance'],
-            ['key' => 'secondary_color', 'value' => '#10B981', 'type' => 'color', 'group' => 'appearance'],
+            ['key' => 'primary_color', 'value' => '#2563EB', 'type' => 'color', 'group' => 'appearance'],
+            ['key' => 'secondary_color', 'value' => '#64748B', 'type' => 'color', 'group' => 'appearance'],
             ['key' => 'app_logo', 'value' => null, 'type' => 'file', 'group' => 'appearance'],
             ['key' => 'app_favicon', 'value' => null, 'type' => 'file', 'group' => 'appearance'],
 
@@ -45,9 +45,9 @@ class SettingSeeder extends Seeder
             ['key' => 'certificate_template', 'value' => 'default', 'type' => 'text', 'group' => 'certificate'],
             ['key' => 'certificate_institution_name', 'value' => 'Sekolah Digital', 'type' => 'text', 'group' => 'certificate'],
             ['key' => 'certificate_director_name', 'value' => 'Dr. John Smith', 'type' => 'text', 'group' => 'certificate'],
-            ['key' => 'certificate_primary_color', 'value' => '#3b82f6', 'type' => 'color', 'group' => 'certificate'],
-            ['key' => 'certificate_secondary_color', 'value' => '#8b5cf6', 'type' => 'color', 'group' => 'certificate'],
-            ['key' => 'certificate_accent_color', 'value' => '#ec4899', 'type' => 'color', 'group' => 'certificate'],
+            ['key' => 'certificate_primary_color', 'value' => '#2563EB', 'type' => 'color', 'group' => 'certificate'],
+            ['key' => 'certificate_secondary_color', 'value' => '#64748B', 'type' => 'color', 'group' => 'certificate'],
+            ['key' => 'certificate_accent_color', 'value' => '#0EA5E9', 'type' => 'color', 'group' => 'certificate'],
 
             // AI Settings
             ['key' => 'ai_enabled', 'value' => '0', 'type' => 'boolean', 'group' => 'ai'],

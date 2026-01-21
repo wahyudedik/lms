@@ -15,23 +15,23 @@ class SchoolSeeder extends Seeder
     {
         // Create Main School
         $mainSchool = School::create([
-            'name' => 'Main School LMS',
-            'slug' => 'main-school',
-            'email' => 'admin@mainschool.edu',
+            'name' => 'Koneksi',
+            'slug' => 'koneksi',
+            'email' => 'admin@koneksi.edu',
             'phone' => '+62 21 1234 5678',
             'address' => 'Jl. Pendidikan No. 123, Jakarta, Indonesia',
             'is_active' => true,
 
             // Landing Page Settings
             'show_landing_page' => true,
-            'hero_title' => 'Welcome to Main School LMS',
-            'hero_subtitle' => 'Empowering Education Through Technology',
-            'hero_description' => 'Join thousands of students and teachers in our innovative learning management system designed for success.',
+            'hero_title' => 'Welcome to Koneksi',
+            'hero_subtitle' => 'Kolaborasi Online Edukasi dan Komunikasi Siswa',
+            'hero_description' => 'Bergabunglah dengan ribuan siswa dan guru dalam sistem manajemen pembelajaran inovatif kami yang dirancang untuk kesuksesan.',
             'hero_cta_text' => 'Get Started',
             'hero_cta_link' => '/register',
 
-            'about_title' => 'About Our School',
-            'about_content' => "Main School LMS is a leading educational institution committed to providing quality education through modern technology. We believe in empowering students with the tools and knowledge they need to succeed in today's digital world.\n\nOur experienced teachers and state-of-the-art platform ensure that every student receives personalized attention and engaging learning experiences.",
+            'about_title' => 'About Koneksi',
+            'about_content' => "Koneksi adalah institusi pendidikan terkemuka yang berkomitmen untuk menyediakan pendidikan berkualitas melalui teknologi modern. Kami percaya dalam memberdayakan siswa dengan alat dan pengetahuan yang mereka butuhkan untuk sukses di dunia digital saat ini.\n\nGuru-guru berpengalaman kami dan platform canggih memastikan setiap siswa menerima perhatian personal dan pengalaman belajar yang menarik.",
 
             'features' => json_encode([
                 [
@@ -73,40 +73,40 @@ class SchoolSeeder extends Seeder
                 ['label' => 'Success Rate', 'value' => '96%']
             ]),
 
-            'contact_email' => 'admin@mainschool.edu',
+            'contact_email' => 'admin@koneksi.edu',
             'contact_phone' => '+62 21 1234 5678',
             'contact_whatsapp' => '+62 812 3456 7890',
             'contact_address' => 'Jl. Pendidikan No. 123, Jakarta, Indonesia',
 
-            'social_facebook' => 'https://facebook.com/mainschoolms',
-            'social_instagram' => 'https://instagram.com/mainschoolms',
-            'social_twitter' => 'https://twitter.com/mainschoolms',
-            'social_youtube' => 'https://youtube.com/@mainschoolms',
+            'social_facebook' => 'https://facebook.com/koneksi',
+            'social_instagram' => 'https://instagram.com/koneksi',
+            'social_twitter' => 'https://twitter.com/koneksi',
+            'social_youtube' => 'https://youtube.com/@koneksi',
 
-            'meta_title' => 'Main School LMS - Quality Education For Everyone',
-            'meta_description' => 'Join Main School LMS for quality online education. Expert teachers, interactive courses, and flexible learning designed for your success.',
-            'meta_keywords' => 'online learning, education, LMS, courses, elearning, main school',
+            'meta_title' => 'Koneksi - Kolaborasi Online Edukasi dan Komunikasi Siswa',
+            'meta_description' => 'Bergabunglah dengan Koneksi untuk pendidikan online berkualitas. Guru ahli, kursus interaktif, dan pembelajaran fleksibel yang dirancang untuk kesuksesan Anda.',
+            'meta_keywords' => 'online learning, education, LMS, courses, elearning, koneksi',
         ]);
 
-        // Create default theme (blue)
+        // Create default theme (Modern Blue)
         $mainSchool->theme()->create([
-            'primary_color' => '#3B82F6',
-            'secondary_color' => '#8B5CF6',
-            'accent_color' => '#10B981',
-            'success_color' => '#10B981',
-            'warning_color' => '#F59E0B',
-            'danger_color' => '#EF4444',
-            'info_color' => '#3B82F6',
-            'dark_color' => '#1F2937',
-            'text_primary' => '#1F2937',
-            'text_secondary' => '#6B7280',
-            'text_muted' => '#9CA3AF',
-            'background_color' => '#F9FAFB',
+            'primary_color' => '#2563EB', // Modern Blue
+            'secondary_color' => '#64748B', // Slate
+            'accent_color' => '#0EA5E9', // Sky
+            'success_color' => '#10B981', // Emerald
+            'warning_color' => '#F59E0B', // Amber
+            'danger_color' => '#EF4444', // Red
+            'info_color' => '#3B82F6', // Blue
+            'dark_color' => '#0F172A', // Slate 900
+            'text_primary' => '#0F172A',
+            'text_secondary' => '#475569',
+            'text_muted' => '#94A3B8',
+            'background_color' => '#F8FAFC', // Very light slate
             'card_background' => '#FFFFFF',
             'navbar_background' => '#FFFFFF',
-            'sidebar_background' => '#1F2937',
+            'sidebar_background' => '#1E293B', // Dark Slate for professional look
             'font_family' => 'Inter, sans-serif',
-            'font_size' => 16,
+            'font_size' => 15,
             'border_radius' => '0.5rem',
             'box_shadow' => '0 1px 3px 0 rgb(0 0 0 / 0.1)',
             'is_active' => true,

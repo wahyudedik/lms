@@ -7,6 +7,53 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property int $id
+ * @property int $course_id
+ * @property int $created_by
+ * @property string $title
+ * @property string|null $description
+ * @property string $type
+ * @property string|null $file_path
+ * @property string|null $file_name
+ * @property int|null $file_size
+ * @property string|null $url
+ * @property int $order
+ * @property bool $is_published
+ * @property \Illuminate\Support\Carbon|null $published_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MaterialComment> $allComments
+ * @property-read int|null $all_comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MaterialComment> $comments
+ * @property-read int|null $comments_count
+ * @property-read \App\Models\Course $course
+ * @property-read \App\Models\User $creator
+ * @property-read string $type_display
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material byCourse($courseId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material byType($type)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material ordered()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material published()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereCourseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereFileName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereFilePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereFileSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereIsPublished($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material wherePublishedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Material whereUrl($value)
+ * @mixin \Eloquent
+ */
 class Material extends Model
 {
     protected $fillable = [

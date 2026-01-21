@@ -20,9 +20,10 @@
     <body class="font-sans text-gray-900 antialiased bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 px-4">
             <div class="mb-6">
-                <a href="/" class="flex items-center space-x-3">
-                    <x-application-logo class="w-12 h-12 fill-current text-blue-600" />
-                    <span class="text-2xl font-bold text-gray-900">{{ config('app.name', 'LMS') }}</span>
+                <a href="/" class="flex flex-col items-center space-y-2">
+                    {{-- <x-application-logo class="w-16 h-16 fill-current text-blue-600" /> --}}
+                    <span class="text-3xl font-bold text-gray-900">Koneksi</span> 
+                    <span class="text-sm font-medium text-gray-600">Kolaborasi Online Edukasi dan Komunikasi Siswa</span>
                 </a>
             </div>
 

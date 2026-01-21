@@ -29,14 +29,14 @@ class LandingPageController extends Controller
             'hero_title' => 'nullable|string|max:255',
             'hero_subtitle' => 'nullable|string|max:255',
             'hero_description' => 'nullable|string',
-            'hero_image' => 'nullable|image|max:2048',
+            'hero_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'hero_cta_text' => 'nullable|string|max:100',
             'hero_cta_link' => 'nullable|string|max:255',
 
             // About Section
             'about_title' => 'nullable|string',
             'about_content' => 'nullable|string',
-            'about_image' => 'nullable|image|max:2048',
+            'about_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
             // Features (will be handled separately)
             'features' => 'nullable|array',

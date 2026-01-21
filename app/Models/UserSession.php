@@ -6,6 +6,37 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Jenssegers\Agent\Agent;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $session_id
+ * @property \Illuminate\Support\Carbon $login_at
+ * @property \Illuminate\Support\Carbon|null $logout_at
+ * @property int|null $duration_seconds
+ * @property string|null $ip_address
+ * @property string|null $user_agent
+ * @property string|null $device_type
+ * @property string|null $browser
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereBrowser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereDeviceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereDurationSeconds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereIpAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereLoginAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereLogoutAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereSessionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereUserAgent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSession whereUserId($value)
+ * @mixin \Eloquent
+ */
 class UserSession extends Model
 {
     use HasFactory;

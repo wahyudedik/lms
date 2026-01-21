@@ -5,6 +5,50 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $filename
+ * @property string|null $file_path
+ * @property int|null $file_size
+ * @property string $status
+ * @property int $total_rows
+ * @property int $imported_count
+ * @property int $skipped_count
+ * @property int $error_count
+ * @property array<array-key, mixed>|null $errors
+ * @property array<array-key, mixed>|null $summary
+ * @property \Illuminate\Support\Carbon|null $started_at
+ * @property \Illuminate\Support\Carbon|null $completed_at
+ * @property int|null $processing_time
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $formatted_file_size
+ * @property-read mixed $status_badge
+ * @property-read mixed $success_rate
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereCompletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereErrorCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereErrors($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereFilePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereFileSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereFilename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereImportedCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereProcessingTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereSkippedCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereStartedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereSummary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereTotalRows($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|QuestionBankImportHistory whereUserId($value)
+ * @mixin \Eloquent
+ */
 class QuestionBankImportHistory extends Model
 {
     use HasFactory;

@@ -7,6 +7,62 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int $exam_id
+ * @property int|null $question_bank_id
+ * @property bool $is_from_bank
+ * @property string $type
+ * @property string $question_text
+ * @property string|null $question_image
+ * @property array<array-key, mixed>|null $options
+ * @property array<array-key, mixed>|null $pairs
+ * @property array<array-key, mixed>|null $correct_answer
+ * @property numeric $points
+ * @property int $order
+ * @property string|null $explanation
+ * @property string $essay_grading_mode Mode penilaian essay: manual, keyword matching, atau similarity
+ * @property array<array-key, mixed>|null $essay_keywords Array kata kunci untuk keyword matching
+ * @property array<array-key, mixed>|null $essay_keyword_points Bobot poin per kata kunci
+ * @property string|null $essay_model_answer Jawaban model/referensi untuk similarity matching
+ * @property int $essay_min_similarity Minimal % similarity untuk lulus (0-100)
+ * @property bool $essay_case_sensitive Apakah penilaian case-sensitive
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Answer> $answers
+ * @property-read int|null $answers_count
+ * @property-read \App\Models\Exam $exam
+ * @property-read string $essay_grading_mode_display
+ * @property-read string $type_display
+ * @property-read string $type_icon
+ * @property-read \App\Models\QuestionBank|null $questionBank
+ * @method static \Database\Factories\QuestionFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereCorrectAnswer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereEssayCaseSensitive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereEssayGradingMode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereEssayKeywordPoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereEssayKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereEssayMinSimilarity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereEssayModelAnswer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereExamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereExplanation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereIsFromBank($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question wherePairs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question wherePoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereQuestionBankId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereQuestionImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereQuestionText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Question whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Question extends Model
 {
     use HasFactory;

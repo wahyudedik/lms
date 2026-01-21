@@ -9,6 +9,54 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property int $category_id
+ * @property int $user_id
+ * @property string $title
+ * @property string $slug
+ * @property string $content
+ * @property bool $is_pinned
+ * @property bool $is_locked
+ * @property int $views_count
+ * @property-read int|null $replies_count
+ * @property-read int|null $likes_count
+ * @property \Illuminate\Support\Carbon|null $last_activity_at
+ * @property int|null $last_reply_user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ForumCategory $category
+ * @property-read string $excerpt
+ * @property-read string $status_badge
+ * @property-read \App\Models\User|null $lastReplyUser
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForumLike> $likes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForumReply> $replies
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread latestActivity()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread notLocked()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread pinned()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread popular()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread search($search)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereIsLocked($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereIsPinned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereLastActivityAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereLastReplyUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereLikesCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereRepliesCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumThread whereViewsCount($value)
+ * @mixin \Eloquent
+ */
 class ForumThread extends Model
 {
     use HasFactory;

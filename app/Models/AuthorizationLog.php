@@ -7,6 +7,49 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property int $id
+ * @property int|null $user_id
+ * @property string $resource_type
+ * @property int|null $resource_id
+ * @property string $action
+ * @property string $ability
+ * @property string $result
+ * @property string|null $reason
+ * @property string|null $ip_address
+ * @property string|null $user_agent
+ * @property string|null $route
+ * @property string|null $method
+ * @property array<array-key, mixed>|null $metadata
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Model|\Eloquent|null $resource
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog allowed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog denied()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog forResource(string $resourceType)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog forUser(int $userId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog recent(int $days = 30)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereAbility($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereIpAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereMetadata($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereResourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereResourceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereResult($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereRoute($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereUserAgent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AuthorizationLog whereUserId($value)
+ * @mixin \Eloquent
+ */
 class AuthorizationLog extends Model
 {
     use HasFactory;

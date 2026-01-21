@@ -8,6 +8,41 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $description
+ * @property string $icon
+ * @property string $color
+ * @property int $order
+ * @property bool $is_active
+ * @property int $created_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $creator
+ * @property-read string $color_badge
+ * @property-read int $replies_count
+ * @property-read int|null $threads_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ForumThread> $threads
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory ordered()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereColor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereIcon($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ForumCategory whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class ForumCategory extends Model
 {
     use HasFactory;

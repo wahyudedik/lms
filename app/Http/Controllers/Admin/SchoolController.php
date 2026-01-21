@@ -49,8 +49,8 @@ class SchoolController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'favicon' => 'nullable|image|mimes:ico,png|max:512',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'favicon' => 'nullable|image|mimes:ico,png,svg|max:512',
             'domain' => 'nullable|string|max:255|unique:schools',
             'is_active' => 'boolean',
         ]);
@@ -117,8 +117,8 @@ class SchoolController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'favicon' => 'nullable|image|mimes:ico,png|max:512',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'favicon' => 'nullable|image|mimes:ico,png,svg|max:512',
             'domain' => 'nullable|string|max:255|unique:schools,domain,' . $school->id,
             'is_active' => 'boolean',
         ]);

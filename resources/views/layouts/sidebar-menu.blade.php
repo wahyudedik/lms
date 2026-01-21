@@ -2,340 +2,305 @@
     $user = Auth::user();
 @endphp
 
-@if (!$user)
-    <div class="flex h-full flex-col">
-        <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-            <a href="{{ url('/') }}" class="flex items-center gap-3">
-                <x-application-logo class="h-10 w-auto" />
-                <div>
-                    <p class="text-base font-semibold text-gray-900">{{ config('app.name', 'LMS') }}</p>
-                    <p class="text-xs text-gray-500">{{ __('Guest Mode') }}</p>
-                </div>
-            </a>
-        </div>
-
-        <div class="flex-1 flex flex-col items-center justify-center px-6 text-center space-y-3">
-            <p class="text-sm text-gray-600">
-                {{ __('Anda sedang mengakses ujian tamu. Login untuk membuka menu lengkap.') }}
-            </p>
-            <a href="{{ route('login') }}"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                <i class="fas fa-sign-in-alt text-sm"></i>
-                <span>{{ __('Log In') }}</span>
-            </a>
-        </div>
-    </div>
-@else
-<div class="flex h-full flex-col">
-    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-            <x-application-logo class="h-10 w-auto" />
-            <div>
-                <p class="text-base font-semibold text-gray-900">{{ config('app.name', 'LMS') }}</p>
-                <p class="text-xs text-gray-500">{{ $user->role_display }}</p>
+<div class="flex h-full flex-col bg-white">
+    <!-- Header -->
+    <div
+        class="px-6 py-6 flex items-center gap-3 border-b border-gray-100/50 sticky top-0 bg-white/95 backdrop-blur z-10">
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+            {{-- <x-application-logo
+                class="h-9 w-9 text-indigo-600 shrink-0 group-hover:scale-105 transition-transform duration-200" /> --}}
+            <div class="flex flex-col min-w-0">
+                <h1
+                    class="text-lg font-bold text-gray-900 leading-none truncate font-display tracking-tight group-hover:text-indigo-600 transition-colors">
+                    Koneksi
+                </h1>
+                <p
+                    class="text-[10px] font-medium text-gray-500 leading-tight mt-1 truncate group-hover:text-gray-600 transition-colors">
+                    Kolaborasi Online Edukasi dan Komunikasi Siswa
+                </p>
             </div>
         </a>
-
         @if (($isMobile ?? false) === true)
-            <button @click="sidebarOpen = false" class="rounded-full p-2 text-gray-500 hover:bg-gray-100 transition">
-                <i class="fas fa-times"></i>
+            <button @click="sidebarOpen = false" class="ml-auto lg:hidden text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-lg"></i>
             </button>
         @endif
     </div>
 
-    <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
-        <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ __('Main') }}</p>
-            <div class="mt-3 space-y-1">
-                <x-sidebar-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    <i class="fas fa-home text-sm"></i>
-                    <span>{{ __('Dashboard') }}</span>
-                </x-sidebar-link>
-
-                <x-sidebar-link :href="route('forum.index')" :active="request()->routeIs('forum.*')">
-                    <i class="fas fa-comments text-sm"></i>
-                    <span>{{ __('Forum') }}</span>
-                </x-sidebar-link>
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto py-6 custom-scrollbar">
+        @if (!$user)
+            <!-- Guest View -->
+            <div class="px-4 text-center space-y-4">
+                <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
+                    <p class="text-sm text-indigo-900 font-medium">
+                        {{ __('Mode Tamu') }}
+                    </p>
+                    <p class="text-xs text-indigo-700 mt-1">
+                        {{ __('Silakan login untuk akses penuh.') }}
+                    </p>
+                </div>
+                <a href="{{ route('login') }}"
+                    class="flex w-full items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-medium shadow-sm shadow-indigo-200">
+                    <i class="fas fa-sign-in-alt text-sm"></i>
+                    <span>{{ __('Log In') }}</span>
+                </a>
             </div>
-        </div>
+        @else
+            <!-- Authenticated View -->
+            <nav class="space-y-6">
+                <!-- Main Section -->
+                <div class="space-y-1">
+                    <p class="px-6 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 font-display">
+                        {{ __('Menu Utama') }}
+                    </p>
 
-        @if ($user->isAdmin())
-            @php
-                $adminManagementActive = request()->routeIs('admin.users.*', 'admin.courses.*', 'admin.exams.*', 'admin.questions.*', 'admin.question-bank.*', 'admin.forum-categories.*', 'admin.authorization-logs.*', 'admin.cheating-incidents.*');
-                $adminReportsActive = request()->routeIs('admin.analytics.*');
-                $adminSettingsActive = request()->routeIs('admin.certificate-settings.*', 'admin.ai-settings.*');
-                $adminPlatformActive = request()->routeIs('admin.schools.*', 'admin.settings.*', 'admin.documentation.*');
-            @endphp
-            <div class="pt-2 border-t border-gray-100">
-                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ __('Administration') }}</p>
-                <div class="mt-4 space-y-3">
-                    <div x-data="{ open: {{ $adminManagementActive ? 'true' : 'false' }} }" class="space-y-2">
-                        <button type="button"
-                            class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-semibold transition {{ $adminManagementActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:bg-gray-50' }}"
-                            @click="open = !open">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-cog text-sm"></i>{{ __('Management') }}
-                            </span>
-                            <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div x-show="open" x-transition class="space-y-1 ps-3">
+                    <x-sidebar-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <div class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-home text-sm"></i>
+                        </div>
+                        <span>{{ __('Dashboard') }}</span>
+                    </x-sidebar-link>
+
+                    <x-sidebar-link :href="route('forum.index')" :active="request()->routeIs('forum.*')">
+                        <div class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-comments text-sm"></i>
+                        </div>
+                        <span>{{ __('Forum Diskusi') }}</span>
+                    </x-sidebar-link>
+                </div>
+
+                <!-- Admin Section -->
+                @if ($user->isAdmin())
+                    @php
+                        $adminManagementActive = request()->routeIs(
+                            'admin.users.*',
+                            'admin.courses.*',
+                            'admin.exams.*',
+                            'admin.questions.*',
+                            'admin.question-bank.*',
+                            'admin.forum-categories.*',
+                            'admin.authorization-logs.*',
+                            'admin.cheating-incidents.*',
+                        );
+                        $adminReportsActive = request()->routeIs('admin.analytics.*');
+                        $adminSettingsActive = request()->routeIs(
+                            'admin.certificate-settings.*',
+                            'admin.ai-settings.*',
+                        );
+                        $adminPlatformActive = request()->routeIs(
+                            'admin.schools.*',
+                            'admin.settings.*',
+                            'admin.documentation.*',
+                        );
+                    @endphp
+
+                    <div class="space-y-1">
+                        <p class="px-6 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 font-display">
+                            {{ __('Administrasi') }}
+                        </p>
+
+                        <!-- Management Group -->
+                        <x-sidebar-group :label="__('Manajemen')" icon="fas fa-tasks" :active="$adminManagementActive">
                             <x-sidebar-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                                <i class="fas fa-users text-sm"></i>
-                                <span>{{ __('Users') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-users text-sm"></i>
+                                </div>
+                                <span>{{ __('Pengguna') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('admin.courses.index')" :active="request()->routeIs('admin.courses.*')">
-                                <i class="fas fa-book text-sm"></i>
-                                <span>{{ __('Courses') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-book text-sm"></i>
+                                </div>
+                                <span>{{ __('Kursus') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('admin.exams.index')" :active="request()->routeIs('admin.exams.*') || request()->routeIs('admin.questions.*')">
-                                <i class="fas fa-clipboard-list text-sm"></i>
-                                <span>{{ __('Exams') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-clipboard-list text-sm"></i>
+                                </div>
+                                <span>{{ __('Ujian') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('admin.question-bank.index')" :active="request()->routeIs('admin.question-bank.*')">
-                                <i class="fas fa-database text-sm"></i>
-                                <span>{{ __('Question Bank') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-database text-sm"></i>
+                                </div>
+                                <span>{{ __('Bank Soal') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('admin.forum-categories.index')" :active="request()->routeIs('admin.forum-categories.*')">
-                                <i class="fas fa-tags text-sm"></i>
-                                <span>{{ __('Forum Categories') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-tags text-sm"></i>
+                                </div>
+                                <span>{{ __('Kategori Forum') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('admin.authorization-logs.index')" :active="request()->routeIs('admin.authorization-logs.*')">
-                                <i class="fas fa-shield-alt text-sm"></i>
-                                <span>{{ __('Authorization Logs') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-sm"></i>
+                                </div>
+                                <span>{{ __('Log Akses') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('admin.cheating-incidents.index')" :active="request()->routeIs('admin.cheating-incidents.*')">
-                                <i class="fas fa-user-slash text-sm"></i>
-                                <span>{{ __('Cheating Incidents') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-user-slash text-sm"></i>
+                                </div>
+                                <span>{{ __('Pelanggaran') }}</span>
                             </x-sidebar-link>
-                        </div>
-                    </div>
+                        </x-sidebar-group>
 
-                    <div x-data="{ open: {{ $adminReportsActive ? 'true' : 'false' }} }" class="space-y-2">
-                        <button type="button"
-                            class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-semibold transition {{ $adminReportsActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:bg-gray-50' }}"
-                            @click="open = !open">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-chart-bar text-sm"></i>{{ __('Reports') }}
-                            </span>
-                            <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div x-show="open" x-transition class="space-y-1 ps-3">
+                        <!-- Reports Group -->
+                        <x-sidebar-group :label="__('Laporan')" icon="fas fa-chart-bar" :active="$adminReportsActive">
                             <x-sidebar-link :href="route('admin.analytics.index')" :active="request()->routeIs('admin.analytics.*')">
-                                <i class="fas fa-chart-area text-sm"></i>
-                                <span>{{ __('Analytics') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-chart-area text-sm"></i>
+                                </div>
+                                <span>{{ __('Analitik') }}</span>
                             </x-sidebar-link>
-                        </div>
-                    </div>
+                        </x-sidebar-group>
 
-                    <div x-data="{ open: {{ $adminSettingsActive ? 'true' : 'false' }} }" class="space-y-2">
-                        <button type="button"
-                            class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-semibold transition {{ $adminSettingsActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:bg-gray-50' }}"
-                            @click="open = !open">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-tools text-sm"></i>{{ __('Settings') }}
-                            </span>
-                            <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div x-show="open" x-transition class="space-y-1 ps-3">
-                            <x-sidebar-link :href="route('admin.certificate-settings.index')" :active="request()->routeIs('admin.certificate-settings.*')">
-                                <i class="fas fa-certificate text-sm"></i>
-                                <span>{{ __('Certificates') }}</span>
-                            </x-sidebar-link>
-                            <x-sidebar-link :href="route('admin.ai-settings.index')" :active="request()->routeIs('admin.ai-settings.*')">
-                                <i class="fas fa-robot text-sm"></i>
-                                <span>{{ __('AI Settings') }}</span>
-                            </x-sidebar-link>
-                        </div>
-                    </div>
-
-                    <div x-data="{ open: {{ $adminPlatformActive ? 'true' : 'false' }} }" class="space-y-2">
-                        <button type="button"
-                            class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-semibold transition {{ $adminPlatformActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:bg-gray-50' }}"
-                            @click="open = !open">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-building text-sm"></i>{{ __('Platform') }}
-                            </span>
-                            <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div x-show="open" x-transition class="space-y-1 ps-3">
+                        <!-- Platform Group -->
+                        <x-sidebar-group :label="__('Platform')" icon="fas fa-server" :active="$adminPlatformActive">
                             <x-sidebar-link :href="route('admin.schools.index')" :active="request()->routeIs('admin.schools.*')">
-                                <i class="fas fa-school text-sm"></i>
-                                <span>{{ __('Schools') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-school text-sm"></i>
+                                </div>
+                                <span>{{ __('Sekolah') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('admin.settings.index')" :active="request()->routeIs('admin.settings.*')">
-                                <i class="fas fa-sliders-h text-sm"></i>
-                                <span>{{ __('Settings') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-sliders-h text-sm"></i>
+                                </div>
+                                <span>{{ __('Pengaturan Umum') }}</span>
                             </x-sidebar-link>
+
+                            <x-sidebar-link :href="route('admin.certificate-settings.index')" :active="request()->routeIs('admin.certificate-settings.*')">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-certificate text-sm"></i>
+                                </div>
+                                <span>{{ __('Sertifikat') }}</span>
+                            </x-sidebar-link>
+
+                            <x-sidebar-link :href="route('admin.ai-settings.index')" :active="request()->routeIs('admin.ai-settings.*')">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-robot text-sm"></i>
+                                </div>
+                                <span>{{ __('Pengaturan AI') }}</span>
+                            </x-sidebar-link>
+
                             <x-sidebar-link :href="route('admin.documentation.index')" :active="request()->routeIs('admin.documentation.*')">
-                                <i class="fas fa-book text-sm"></i>
-                                <span>{{ __('Documentation') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-book-reader text-sm"></i>
+                                </div>
+                                <span>{{ __('Dokumentasi') }}</span>
                             </x-sidebar-link>
-                        </div>
+                        </x-sidebar-group>
                     </div>
-                </div>
-            </div>
-        @elseif($user->isGuru())
-            @php
-                $guruContentActive = request()->routeIs('guru.courses.*', 'guru.exams.*', 'guru.questions.*');
-                $guruAnalyticsActive = request()->routeIs('guru.analytics.*');
-                $guruReportsActive = request()->routeIs('guru.reports.*');
-            @endphp
-            <div class="pt-2 border-t border-gray-100">
-                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ __('My Teaching') }}</p>
-                <div class="mt-4 space-y-3">
-                    <div x-data="{ open: {{ $guruContentActive ? 'true' : 'false' }} }" class="space-y-2">
-                        <button type="button"
-                            class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-semibold transition {{ $guruContentActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:bg-gray-50' }}"
-                            @click="open = !open">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-book text-sm"></i>{{ __('My Content') }}
-                            </span>
-                            <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div x-show="open" x-transition class="space-y-1 ps-3">
+                @elseif($user->isGuru())
+                    @php
+                        $guruContentActive = request()->routeIs('guru.courses.*', 'guru.exams.*', 'guru.questions.*');
+                        $guruAnalyticsActive = request()->routeIs('guru.analytics.*');
+                        $guruReportsActive = request()->routeIs('guru.reports.*');
+                    @endphp
+
+                    <div class="space-y-1">
+                        <p class="px-6 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 font-display">
+                            {{ __('Area Pengajar') }}
+                        </p>
+
+                        <x-sidebar-group :label="__('Konten Saya')" icon="fas fa-chalkboard-teacher" :active="$guruContentActive">
                             <x-sidebar-link :href="route('guru.courses.index')" :active="request()->routeIs('guru.courses.*')">
-                                <i class="fas fa-book-open text-sm"></i>
-                                <span>{{ __('My Courses') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-book-open text-sm"></i>
+                                </div>
+                                <span>{{ __('Kursus Saya') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('guru.exams.index')" :active="request()->routeIs('guru.exams.*') || request()->routeIs('guru.questions.*')">
-                                <i class="fas fa-clipboard-list text-sm"></i>
-                                <span>{{ __('My Exams') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-file-alt text-sm"></i>
+                                </div>
+                                <span>{{ __('Ujian Saya') }}</span>
                             </x-sidebar-link>
-                        </div>
+                        </x-sidebar-group>
+
+                        <x-sidebar-link :href="route('guru.analytics.index')" :active="$guruAnalyticsActive">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="fas fa-chart-line text-sm"></i>
+                            </div>
+                            <span>{{ __('Analitik Siswa') }}</span>
+                        </x-sidebar-link>
+
+                        <x-sidebar-link :href="route('guru.reports.index')" :active="$guruReportsActive">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="fas fa-file-contract text-sm"></i>
+                            </div>
+                            <span>{{ __('Laporan Nilai') }}</span>
+                        </x-sidebar-link>
                     </div>
+                @elseif($user->isSiswa())
+                    @php
+                        $studentCoursesActive = request()->routeIs('siswa.courses.*');
+                        $studentExamsActive = request()->routeIs('siswa.exams.*', 'siswa.reports.*');
+                        $studentAnalyticsActive = request()->routeIs('siswa.analytics.*');
+                    @endphp
 
-                    <x-sidebar-link :href="route('guru.analytics.index')" :active="$guruAnalyticsActive">
-                        <i class="fas fa-chart-area text-sm"></i>
-                        <span>{{ __('Analytics') }}</span>
-                    </x-sidebar-link>
+                    <div class="space-y-1">
+                        <p class="px-6 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 font-display">
+                            {{ __('Pembelajaran') }}
+                        </p>
 
-                    <x-sidebar-link :href="route('guru.reports.index')" :active="$guruReportsActive">
-                        <i class="fas fa-file-alt text-sm"></i>
-                        <span>{{ __('Reports') }}</span>
-                    </x-sidebar-link>
-                </div>
-            </div>
-        @elseif($user->isSiswa())
-            @php
-                $studentCoursesActive = request()->routeIs('siswa.courses.*');
-                $studentExamsActive = request()->routeIs('siswa.exams.*', 'siswa.reports.*');
-                $studentAnalyticsActive = request()->routeIs('siswa.analytics.*');
-                $studentAiActive = request()->routeIs('ai.*');
-            @endphp
-            <div class="pt-2 border-t border-gray-100">
-                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ __('Learning') }}</p>
-                <div class="mt-4 space-y-3">
-                    <div x-data="{ open: {{ $studentCoursesActive ? 'true' : 'false' }} }" class="space-y-2">
-                        <button type="button"
-                            class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-semibold transition {{ $studentCoursesActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:bg-gray-50' }}"
-                            @click="open = !open">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-book text-sm"></i>{{ __('Courses') }}
-                            </span>
-                            <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div x-show="open" x-transition class="space-y-1 ps-3">
+                        <x-sidebar-group :label="__('Kursus')" icon="fas fa-graduation-cap" :active="$studentCoursesActive">
                             <x-sidebar-link :href="route('siswa.courses.index')" :active="request()->routeIs('siswa.courses.index')">
-                                <i class="fas fa-search text-sm"></i>
-                                <span>{{ __('Browse Courses') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-search text-sm"></i>
+                                </div>
+                                <span>{{ __('Jelajahi Kursus') }}</span>
                             </x-sidebar-link>
+
                             <x-sidebar-link :href="route('siswa.courses.my-courses')" :active="request()->routeIs('siswa.courses.my-courses')">
-                                <i class="fas fa-book-open text-sm"></i>
-                                <span>{{ __('My Courses') }}</span>
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-book-reader text-sm"></i>
+                                </div>
+                                <span>{{ __('Kursus Saya') }}</span>
                             </x-sidebar-link>
-                        </div>
+                        </x-sidebar-group>
+
+                        <x-sidebar-group :label="__('Ujian & Nilai')" icon="fas fa-pen-alt" :active="$studentExamsActive">
+                            <x-sidebar-link :href="route('siswa.exams.index')" :active="request()->routeIs('siswa.exams.*')">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-edit text-sm"></i>
+                                </div>
+                                <span>{{ __('Daftar Ujian') }}</span>
+                            </x-sidebar-link>
+
+                            <x-sidebar-link :href="route('siswa.reports.index')" :active="request()->routeIs('siswa.reports.*')">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-certificate text-sm"></i>
+                                </div>
+                                <span>{{ __('Transkrip Nilai') }}</span>
+                            </x-sidebar-link>
+                        </x-sidebar-group>
+
+                        <x-sidebar-link :href="route('siswa.analytics.index')" :active="$studentAnalyticsActive">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="fas fa-chart-pie text-sm"></i>
+                            </div>
+                            <span>{{ __('Progres Belajar') }}</span>
+                        </x-sidebar-link>
                     </div>
-
-                    <div x-data="{ open: {{ $studentExamsActive ? 'true' : 'false' }} }" class="space-y-2">
-                        <button type="button"
-                            class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-semibold transition {{ $studentExamsActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600 hover:bg-gray-50' }}"
-                            @click="open = !open">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-clipboard-list text-sm"></i>{{ __('Exams') }}
-                            </span>
-                            <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': open }"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        <div x-show="open" x-transition class="space-y-1 ps-3">
-                            <x-sidebar-link :href="route('siswa.exams.index')" :active="request()->routeIs('siswa.exams.index') || request()->routeIs('siswa.exams.show')">
-                                <i class="fas fa-list text-sm"></i>
-                                <span>{{ __('Available Exams') }}</span>
-                            </x-sidebar-link>
-                            <x-sidebar-link :href="route('siswa.exams.my-attempts')" :active="request()->routeIs('siswa.exams.my-attempts')">
-                                <i class="fas fa-check-circle text-sm"></i>
-                                <span>{{ __('My Results') }}</span>
-                            </x-sidebar-link>
-                            <x-sidebar-link :href="route('siswa.reports.my-transcript')" :active="request()->routeIs('siswa.reports.*')">
-                                <i class="fas fa-file-alt text-sm"></i>
-                                <span>{{ __('My Transcript') }}</span>
-                            </x-sidebar-link>
-                        </div>
-                    </div>
-
-                    <x-sidebar-link :href="route('siswa.analytics.index')" :active="$studentAnalyticsActive">
-                        <i class="fas fa-chart-line text-sm"></i>
-                        <span>{{ __('Analytics') }}</span>
-                    </x-sidebar-link>
-
-                    <x-sidebar-link :href="route('ai.index')" :active="$studentAiActive">
-                        <i class="fas fa-robot text-sm"></i>
-                        <span>{{ __('AI Assistant') }}</span>
-                    </x-sidebar-link>
-                </div>
-            </div>
+                @endif
+            </nav>
         @endif
-    </div>
 
-    <div class="border-t border-gray-100 px-4 py-5 space-y-3">
-        <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-50">
-            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-gray-200" src="{{ $user->profile_photo_url }}"
-                alt="{{ $user->name }}">
-            <div>
-                <p class="font-semibold text-gray-900 text-sm">{{ $user->name }}</p>
-                <p class="text-xs text-gray-500">{{ $user->email }}</p>
-            </div>
+        <!-- Footer Info -->
+        <div class="mt-auto px-6 py-4 text-[10px] text-gray-400 text-center">
+            <p>&copy; {{ date('Y') }} Koneksi LMS</p>
+            <p>v1.0.0</p>
         </div>
-
-        <x-sidebar-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
-            <i class="fas fa-user text-sm"></i>
-            <span>{{ __('Profile') }}</span>
-        </x-sidebar-link>
-
-        <form method="POST" action="{{ route('logout') }}" class="space-y-0">
-            @csrf
-            <button type="submit"
-                class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 rounded-lg border border-transparent hover:bg-red-50 hover:border-red-200 transition">
-                <i class="fas fa-sign-out-alt text-sm"></i>
-                <span>{{ __('Log Out') }}</span>
-            </button>
-        </form>
     </div>
 </div>
-@endif
