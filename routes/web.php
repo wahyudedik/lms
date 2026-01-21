@@ -12,11 +12,21 @@ Route::get('/', function () {
 // ==================================================
 Route::prefix('exam')->name('guest.exams.')->group(function () {
     Route::get('/', [App\Http\Controllers\GuestExamController::class, 'index'])->name('index');
-    Route::post('/verify-token', [App\Http\Controllers\GuestExamController::class, 'verifyToken'])->name('verify-token');
+    
+    // Rate limited endpoints to prevent brute-force
+    Route::post('/verify-token', [App\Http\Controllers\GuestExamController::class, 'verifyToken'])
+        ->middleware('throttle:5,1')
+        ->name('verify-token');
+        
     Route::get('/{exam}/info', [App\Http\Controllers\GuestExamController::class, 'showInfo'])->name('info');
     Route::post('/{exam}/start', [App\Http\Controllers\GuestExamController::class, 'start'])->name('start');
     Route::get('/attempt/{attempt}/take', [App\Http\Controllers\GuestExamController::class, 'take'])->name('take');
-    Route::post('/attempt/{attempt}/answer', [App\Http\Controllers\GuestExamController::class, 'saveAnswer'])->name('save-answer');
+    
+    // Rate limited answer submission to prevent spam
+    Route::post('/attempt/{attempt}/answer', [App\Http\Controllers\GuestExamController::class, 'saveAnswer'])
+        ->middleware('throttle:60,1')
+        ->name('save-answer');
+        
     Route::post('/attempt/{attempt}/submit', [App\Http\Controllers\GuestExamController::class, 'submit'])->name('submit');
     Route::get('/attempt/{attempt}/review', [App\Http\Controllers\GuestExamController::class, 'review'])->name('review');
     Route::post('/attempt/{attempt}/violation', [App\Http\Controllers\GuestExamController::class, 'logViolation'])->name('log-violation');

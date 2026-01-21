@@ -142,12 +142,14 @@
                 </header>
 
                 <main class="flex-1">
-                    <div class="px-4 sm:px-6 lg:px-8 py-6">
+                    <div class="page-shell">
+                        <div class="page-section">
                         @isset($slot)
                             {{ $slot }}
                         @else
                             @yield('content')
                         @endisset
+                        </div>
                     </div>
                 </main>
             </div>

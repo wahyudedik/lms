@@ -1,23 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto px-4 py-8">
+    <div class="page-section">
         <!-- Header -->
         <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">
-                    <i class="fas fa-chart-line text-purple-600 mr-2"></i>{{ __('Laporan Hasil Belajar') }}
+                <h1 class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-chart-line text-purple-600"></i>{{ __('Laporan Hasil Belajar') }}
                 </h1>
                 <p class="text-gray-600">{{ __('Ringkasan performa dan nilai ujian Anda') }}</p>
             </div>
-            <a href="{{ route('siswa.reports.my-transcript') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow flex items-center">
-                <i class="fas fa-file-alt mr-2"></i>{{ __('Lihat Transkrip Resmi') }}
+            <a href="{{ route('siswa.reports.my-transcript') }}" class="btn-primary">
+                <i class="fas fa-file-alt"></i>{{ __('Lihat Transkrip Resmi') }}
             </a>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+            <div class="card p-6 border-l-4 border-blue-500">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-500 font-semibold uppercase">{{ __('Total Ujian') }}</p>
@@ -30,7 +30,7 @@
                 <p class="text-xs text-gray-500 mt-2">{{ $statistics['completed'] }} selesai</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+            <div class="card p-6 border-l-4 border-green-500">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-500 font-semibold uppercase">{{ __('Lulus') }}</p>
@@ -43,7 +43,7 @@
                 <p class="text-xs text-gray-500 mt-2">Rate: {{ number_format($statistics['pass_rate'], 1) }}%</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
+            <div class="card p-6 border-l-4 border-red-500">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-500 font-semibold uppercase">{{ __('Gagal') }}</p>
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+            <div class="card p-6 border-l-4 border-purple-500">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-500 font-semibold uppercase">{{ __('Rata-rata Nilai') }}</p>
@@ -73,47 +73,47 @@
         </div>
 
         <!-- Recent Attempts -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="card overflow-hidden mb-8">
             <div class="px-6 py-4 bg-gray-50 border-b flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-800">
                     <i class="fas fa-history text-indigo-600 mr-2"></i>{{ __('Riwayat Ujian Terakhir') }}
                 </h3>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="table-base">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Kursus') }}</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Ujian') }}</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Nilai') }}</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Tanggal') }}</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Aksi') }}</th>
+                            <th class="table-th">{{ __('Kursus') }}</th>
+                            <th class="table-th">{{ __('Ujian') }}</th>
+                            <th class="table-th text-center">{{ __('Nilai') }}</th>
+                            <th class="table-th text-center">{{ __('Status') }}</th>
+                            <th class="table-th text-center">{{ __('Tanggal') }}</th>
+                            <th class="table-th text-center">{{ __('Aksi') }}</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($attempts->take(5) as $attempt)
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="table-td whitespace-nowrap text-gray-900">
                                     {{ $attempt->exam->course->title }}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">
+                                <td class="table-td text-gray-900">
                                     <div class="font-semibold">{{ $attempt->exam->title }}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <td class="table-td whitespace-nowrap text-center">
                                     <span class="text-lg font-bold {{ $attempt->passed ? 'text-green-600' : 'text-red-600' }}">
                                         {{ number_format($attempt->score, 2) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <td class="table-td whitespace-nowrap text-center">
                                     <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $attempt->passed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                         {{ $attempt->passed ? 'LULUS' : 'GAGAL' }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-700">
+                                <td class="table-td whitespace-nowrap text-center text-gray-700">
                                     {{ $attempt->submitted_at ? $attempt->submitted_at->format('d/m/Y H:i') : '-' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                <td class="table-td whitespace-nowrap text-center">
                                     <a href="{{ route('siswa.exams.review-attempt', $attempt->id) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
                                         {{ __('Review') }}
                                     </a>
@@ -132,15 +132,15 @@
         </div>
         
         <!-- Course Performance -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="card overflow-hidden">
             <div class="px-6 py-4 bg-gray-50 border-b">
                 <h3 class="text-lg font-semibold text-gray-800">
                     <i class="fas fa-book text-indigo-600 mr-2"></i>{{ __('Performa per Kursus') }}
                 </h3>
             </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="p-6 page-grid">
                 @forelse($attemptsByCourse as $courseStats)
-                    <div class="border rounded-lg p-4 hover:shadow-md transition">
+                    <div class="card p-4 hover:shadow-md transition">
                         <h4 class="font-bold text-gray-800 mb-2 truncate" title="{{ $courseStats['course']->title }}">
                             {{ $courseStats['course']->title }}
                         </h4>

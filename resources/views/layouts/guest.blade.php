@@ -17,8 +17,8 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 px-4">
+    <body class="font-sans text-gray-900 antialiased bg-gray-50">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-10 sm:pt-0 px-4">
             <div class="mb-6">
                 <a href="/" class="flex flex-col items-center space-y-2">
                     {{-- <x-application-logo class="w-16 h-16 fill-current text-blue-600" /> --}}
@@ -27,7 +27,7 @@
                 </a>
             </div>
 
-            <div class="w-full sm:max-w-md bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
+            <div class="w-full sm:max-w-md bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
                 <div class="px-6 py-8 sm:px-8">
                     {{ $slot }}
                 </div>

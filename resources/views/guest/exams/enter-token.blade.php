@@ -25,11 +25,11 @@
 <body class="font-sans antialiased bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen">
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
         <!-- Logo -->
-        <div>
+        {{-- <div>
             <a href="/">
                 <x-application-logo class="w-20 h-20 fill-current text-white drop-shadow-lg" />
             </a>
-        </div>
+        </div> --}}
 
         <!-- Card -->
         <div class="w-full sm:max-w-md mt-6 px-6 py-8 bg-white shadow-2xl overflow-hidden sm:rounded-2xl">

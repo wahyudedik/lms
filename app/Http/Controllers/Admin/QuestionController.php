@@ -347,14 +347,12 @@ class QuestionController extends Controller
         $nextOrder = $exam->questions()->max('order') + 1;
         $imported = 0;
 
-        foreach ($validated['question_ids'] as $bankQuestionId) {
-            $bankQuestion = \App\Models\QuestionBank::find($bankQuestionId);
+        $bankQuestions = \App\Models\QuestionBank::whereIn('id', $validated['question_ids'])->get();
 
-            if ($bankQuestion) {
-                $bankQuestion->cloneToExam($exam->id, $nextOrder);
-                $nextOrder++;
-                $imported++;
-            }
+        foreach ($bankQuestions as $bankQuestion) {
+            $bankQuestion->cloneToExam($exam->id, $nextOrder);
+            $nextOrder++;
+            $imported++;
         }
 
         return response()->json([

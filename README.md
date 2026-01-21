@@ -22,7 +22,7 @@ Laravel LMS adalah platform pembelajaran digital yang dirancang untuk memudahkan
 
 ### Teknologi yang Digunakan
 
-- **Backend:** Laravel 12.x, PHP 8.2+
+- **Backend:** Laravel 11.x, PHP 8.2+
 - **Frontend:** Tailwind CSS, Alpine.js, Vite
 - **Database:** MySQL 8.0 / SQLite (testing)
 - **PWA:** Service Worker, IndexedDB, Offline Support
@@ -155,12 +155,14 @@ Laravel LMS adalah platform pembelajaran digital yang dirancang untuk memudahkan
 
 ## 🚀 Instalasi di VPS Ubuntu
 
-### Persyaratan Sistem
+### Persyaratan Sistem (Production)
 
-- **OS:** Ubuntu 20.04 atau 22.04 LTS
-- **RAM:** Minimum 2GB (disarankan 4GB)
+- **OS:** Ubuntu 20.04 / 22.04 / 24.04 LTS
+- **PHP:** 8.2+ (disarankan 8.3)
+- **Node.js:** 18+ (disarankan 20 LTS)
+- **RAM:** Minimum 2GB (disarankan 4GB+)
 - **Storage:** Minimum 20GB
-- **Domain:** Untuk SSL certificate (opsional)
+- **Domain:** Disarankan untuk SSL
 
 ### Langkah 1: Update Sistem
 
@@ -216,7 +218,16 @@ EXIT;
 sudo apt install -y nginx
 ```
 
-### Langkah 6: Clone & Setup Aplikasi
+### Langkah 6: Install Node.js (Production Build)
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+node -v
+npm -v
+```
+
+### Langkah 7: Clone & Setup Aplikasi
 
 ```bash
 cd /var/www
@@ -225,15 +236,15 @@ sudo chown -R www-data:www-data lms
 cd lms
 ```
 
-Install dependencies:
+Install dependencies (production):
 
 ```bash
 composer install --optimize-autoloader --no-dev
-npm install
+npm ci
 npm run build
 ```
 
-### Langkah 7: Konfigurasi Environment
+### Langkah 8: Konfigurasi Environment
 
 ```bash
 cp .env.example .env
@@ -256,7 +267,7 @@ DB_USERNAME=lms_user
 DB_PASSWORD=your_strong_password
 ```
 
-### Langkah 8: Setup Database
+### Langkah 9: Setup Database
 
 ```bash
 php artisan migrate --force
@@ -264,7 +275,7 @@ php artisan db:seed --force
 php artisan storage:link
 ```
 
-### Langkah 9: Konfigurasi Nginx
+### Langkah 10: Konfigurasi Nginx
 
 Buat file konfigurasi:
 
@@ -316,14 +327,14 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-### Langkah 10: Install SSL dengan Let's Encrypt
+### Langkah 11: Install SSL dengan Let's Encrypt
 
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 ```
 
-### Langkah 11: Setup Queue Worker
+### Langkah 12: Setup Queue Worker
 
 Buat systemd service:
 
@@ -356,7 +367,7 @@ sudo systemctl enable lms-queue
 sudo systemctl start lms-queue
 ```
 
-### Langkah 12: Setup Scheduler (Cron)
+### Langkah 13: Setup Scheduler (Cron)
 
 ```bash
 sudo crontab -e -u www-data
@@ -368,7 +379,7 @@ Tambahkan:
 * * * * * cd /var/www/lms && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-### Langkah 13: Optimasi & Security
+### Langkah 14: Optimasi & Security
 
 Set permissions:
 
@@ -385,9 +396,10 @@ Optimasi:
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+php artisan event:cache
 ```
 
-### Langkah 14: Firewall Setup
+### Langkah 15: Firewall Setup
 
 ```bash
 sudo ufw allow 'Nginx Full'
