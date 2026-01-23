@@ -186,7 +186,7 @@ class School extends Model
         if ($this->logo) {
             return asset('storage/' . $this->logo);
         }
-        return asset('images/default-logo.png');
+        return asset('images/icons/icon-192x192.png');
     }
 
     /**
