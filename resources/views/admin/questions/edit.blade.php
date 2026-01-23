@@ -276,6 +276,19 @@
     </div>
 
     @push('scripts')
+        @php
+            $typeLabels = [
+                'mcq_single' => __('MCQ Single'),
+                'mcq_multiple' => __('MCQ Multiple'),
+                'matching' => __('Matching'),
+                'essay' => __('Essay'),
+            ];
+            $difficultyLabels = [
+                'easy' => __('Mudah'),
+                'medium' => __('Sedang'),
+                'hard' => __('Sulit'),
+            ];
+        @endphp
         <script>
             let optionIndex = 0;
             let pairIndex = 0;
@@ -293,17 +306,8 @@
                 validationSingle: @json(__('Pilih jawaban benar untuk pilihan ganda!')),
                 validationMultiple: @json(__('Pilih minimal satu jawaban benar untuk pilihan ganda multiple!')),
                 validationMatching: @json(__('Semua pasangan harus diisi untuk soal menjodohkan!')),
-                typeLabels: @json([
-                    'mcq_single' => __('MCQ Single'),
-                    'mcq_multiple' => __('MCQ Multiple'),
-                    'matching' => __('Matching'),
-                    'essay' => __('Essay'),
-                ]),
-                difficultyLabels: @json([
-                    'easy' => __('Mudah'),
-                    'medium' => __('Sedang'),
-                    'hard' => __('Sulit'),
-                ]),
+                typeLabels: @json($typeLabels),
+                difficultyLabels: @json($difficultyLabels),
             };
 
             // Existing question data
