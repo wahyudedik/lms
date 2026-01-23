@@ -1,6 +1,7 @@
-<div {{ $attributes->merge(['class' => 'flex flex-col items-start space-y-1']) }}>
-    <!-- Logo Text -->
-    <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-tight">
-        Koneksi
-    </span>
-</div>
+@php
+    $school = \App\Models\School::active()->first();
+    $logoUrl = $school ? $school->logo_url : asset('images/icons/icon-192x192.png');
+    $appName = $school ? $school->name : config('app.name');
+@endphp
+
+<img src="{{ $logoUrl }}" alt="{{ $appName }}" {{ $attributes->merge(['class' => 'h-10 w-auto']) }}>

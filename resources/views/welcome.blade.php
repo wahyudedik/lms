@@ -427,12 +427,13 @@
                 <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                     <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                         <div class="flex lg:justify-center lg:col-start-2">
-                            <div class="flex flex-col items-center">
-                                <span class="text-4xl font-bold text-blue-600 mb-2">Koneksi</span>
-                                <span class="text-sm font-medium text-gray-600 text-center">Kolaborasi Online Edukasi
-                                    dan Komunikasi Siswa</span>
-                            </div>
+                        <div class="flex flex-col items-center">
+                            <x-application-logo class="h-20 w-20 mb-4" />
+                            <span class="text-4xl font-bold text-blue-600 mb-2">Koneksi</span>
+                            <span class="text-sm font-medium text-gray-600 text-center">Kolaborasi Online Edukasi
+                                dan Komunikasi Siswa</span>
                         </div>
+                    </div>
                         @if (Route::has('login'))
                             <nav class="flex items-center justify-end gap-4">
                                 @auth

@@ -97,7 +97,8 @@
                             <div id="correct-answer-multiple"
                                 class="mt-4 {{ $question->type === 'mcq_multiple' ? '' : 'hidden' }}">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Jawaban Benar (Pilih Semua yang Benar)') }} <span class="text-red-500">*</span>
+                                    {{ __('Jawaban Benar (Pilih Semua yang Benar)') }} <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <div id="correct-checkboxes" class="space-y-2">
                                     <!-- Checkboxes will be added by JavaScript -->
@@ -158,11 +159,12 @@
 
                             <!-- Case Sensitive -->
                             <div class="mb-4">
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="essay_case_sensitive" id="essay_case_sensitive"
-                                            {{ old('essay_case_sensitive', $question->essay_case_sensitive) ? 'checked' : '' }}
-                                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                        <span class="ml-2 text-sm text-gray-700">{{ __('Case Sensitive (huruf besar/kecil berpengaruh)') }}</span>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="essay_case_sensitive" id="essay_case_sensitive"
+                                        {{ old('essay_case_sensitive', $question->essay_case_sensitive) ? 'checked' : '' }}
+                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span
+                                        class="ml-2 text-sm text-gray-700">{{ __('Case Sensitive (huruf besar/kecil berpengaruh)') }}</span>
                                 </label>
                             </div>
 
@@ -243,7 +245,8 @@
                             </label>
                             <textarea name="explanation" id="explanation" rows="3"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('explanation', $question->explanation) }}</textarea>
-                            <p class="text-sm text-gray-500 mt-1">{{ __('Penjelasan akan ditampilkan setelah siswa selesai mengerjakan') }}</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                {{ __('Penjelasan akan ditampilkan setelah siswa selesai mengerjakan') }}</p>
                         </div>
 
                         <!-- Submit -->
@@ -372,7 +375,7 @@
                 div.innerHTML = `
                 <span class="font-bold text-gray-700 w-8">${letter}.</span>
                 <input type="hidden" name="options[${optionIndex}][id]" value="${letter}">
-                <input type="text" name="options[${optionIndex}][text]" required 
+                <input type="text" name="options[${optionIndex}][text]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="${editLocale.optionPlaceholder.replace(':letter', letter)}">
                 <button type="button" class="text-red-600 hover:text-red-900 remove-option">
                     <i class="fas fa-times-circle"></i>
@@ -392,7 +395,7 @@
                 const checkbox = document.createElement('label');
                 checkbox.className = 'flex items-center';
                 checkbox.innerHTML = `
-                <input type="checkbox" name="correct_answer_multiple[]" value="${letter}" 
+                <input type="checkbox" name="correct_answer_multiple[]" value="${letter}"
                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                 <span class="ml-2 text-sm text-gray-700">${letter}</span>
             `;
@@ -414,10 +417,10 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                <input type="text" name="pairs[${pairIndex}][left]" required 
+                <input type="text" name="pairs[${pairIndex}][left]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="${editLocale.leftPlaceholder}">
                 <i class="fas fa-arrows-alt-h text-gray-400"></i>
-                <input type="text" name="pairs[${pairIndex}][right]" required 
+                <input type="text" name="pairs[${pairIndex}][right]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="${editLocale.rightPlaceholder}">
                 <button type="button" class="text-red-600 hover:text-red-900 remove-pair">
                     <i class="fas fa-times-circle"></i>
@@ -452,7 +455,7 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                <input type="text" name="essay_keywords[]" 
+                <input type="text" name="essay_keywords[]"
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="${editLocale.keywordPlaceholder}">
                 <input type="number" name="essay_keyword_points[]" min="0" step="0.1" value="2"
                     class="w-24 rounded-md border-gray-300 shadow-sm" placeholder="${editLocale.keywordPointPlaceholder}">

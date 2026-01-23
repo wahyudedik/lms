@@ -1,5 +1,7 @@
 @php
     $user = Auth::user();
+    $school = \App\Models\School::active()->first();
+    $appName = $school ? $school->name : 'Koneksi';
 @endphp
 
 <div class="flex h-full flex-col bg-white">
@@ -7,12 +9,12 @@
     <div
         class="px-6 py-6 flex items-center gap-3 border-b border-gray-100/50 sticky top-0 bg-white/95 backdrop-blur z-10">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
-            {{-- <x-application-logo
-                class="h-9 w-9 text-indigo-600 shrink-0 group-hover:scale-105 transition-transform duration-200" /> --}}
+            <x-application-logo
+                class="h-9 w-9 shrink-0 group-hover:scale-105 transition-transform duration-200" />
             <div class="flex flex-col min-w-0">
                 <h1
                     class="text-lg font-bold text-gray-900 leading-none truncate font-display tracking-tight group-hover:text-indigo-600 transition-colors">
-                    Koneksi
+                    {{ $appName }}
                 </h1>
                 <p
                     class="text-[10px] font-medium text-gray-500 leading-tight mt-1 truncate group-hover:text-gray-600 transition-colors">

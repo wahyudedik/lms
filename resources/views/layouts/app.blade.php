@@ -19,9 +19,15 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
 
+    @php
+        $school = \App\Models\School::active()->first();
+        $faviconUrl = $school ? $school->favicon_url : asset('favicon.ico');
+        $logoUrl = $school ? $school->logo_url : asset('images/icons/icon-192x192.png');
+    @endphp
+
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/icon-192x192.png">
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $logoUrl }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
