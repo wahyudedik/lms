@@ -82,6 +82,17 @@ class ExamController extends Controller
             'offline_cache_duration' => 'nullable|integer|min:1|max:168',
         ]);
 
+        // Explicitly handle boolean checkboxes
+        $validated['shuffle_questions'] = $request->boolean('shuffle_questions');
+        $validated['shuffle_options'] = $request->boolean('shuffle_options');
+        $validated['show_results_immediately'] = $request->boolean('show_results_immediately');
+        $validated['show_correct_answers'] = $request->boolean('show_correct_answers');
+        $validated['require_fullscreen'] = $request->boolean('require_fullscreen');
+        $validated['detect_tab_switch'] = $request->boolean('detect_tab_switch');
+        $validated['allow_token_access'] = $request->boolean('allow_token_access');
+        $validated['require_guest_name'] = $request->boolean('require_guest_name');
+        $validated['require_guest_email'] = $request->boolean('require_guest_email');
+
         $validated['created_by'] = auth()->id();
         $validated['start_time'] = $this->normalizeDateTime($request->input('start_time'));
         $validated['end_time'] = $this->normalizeDateTime($request->input('end_time'));
@@ -155,6 +166,17 @@ class ExamController extends Controller
             'offline_enabled' => 'boolean',
             'offline_cache_duration' => 'nullable|integer|min:1|max:168',
         ]);
+
+        // Explicitly handle boolean checkboxes that might be missing from request when unchecked
+        $validated['shuffle_questions'] = $request->boolean('shuffle_questions');
+        $validated['shuffle_options'] = $request->boolean('shuffle_options');
+        $validated['show_results_immediately'] = $request->boolean('show_results_immediately');
+        $validated['show_correct_answers'] = $request->boolean('show_correct_answers');
+        $validated['require_fullscreen'] = $request->boolean('require_fullscreen');
+        $validated['detect_tab_switch'] = $request->boolean('detect_tab_switch');
+
+        // Log for debugging (temporary)
+        \Log::info('Validated data after boolean handling:', $validated);
 
         $validated['start_time'] = $this->normalizeDateTime($request->input('start_time'));
         $validated['end_time'] = $this->normalizeDateTime($request->input('end_time'));
