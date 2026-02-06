@@ -80,7 +80,7 @@ use App\Notifications\CustomResetPassword;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable 
+class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -96,6 +96,7 @@ class User extends Authenticatable
         'password',
         'role',
         'school_id',
+        'school_class_id',
         'phone',
         'birth_date',
         'gender',
@@ -362,6 +363,11 @@ class User extends Authenticatable
     public function school()
     {
         return $this->belongsTo(School::class);
+    }
+
+    public function schoolClass()
+    {
+        return $this->belongsTo(SchoolClass::class, 'school_class_id');
     }
 
     /**

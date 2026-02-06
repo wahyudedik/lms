@@ -12,21 +12,21 @@ Route::get('/', function () {
 // ==================================================
 Route::prefix('exam')->name('guest.exams.')->group(function () {
     Route::get('/', [App\Http\Controllers\GuestExamController::class, 'index'])->name('index');
-    
+
     // Rate limited endpoints to prevent brute-force
     Route::post('/verify-token', [App\Http\Controllers\GuestExamController::class, 'verifyToken'])
         ->middleware('throttle:5,1')
         ->name('verify-token');
-        
+
     Route::get('/{exam}/info', [App\Http\Controllers\GuestExamController::class, 'showInfo'])->name('info');
     Route::post('/{exam}/start', [App\Http\Controllers\GuestExamController::class, 'start'])->name('start');
     Route::get('/attempt/{attempt}/take', [App\Http\Controllers\GuestExamController::class, 'take'])->name('take');
-    
+
     // Rate limited answer submission to prevent spam
     Route::post('/attempt/{attempt}/answer', [App\Http\Controllers\GuestExamController::class, 'saveAnswer'])
         ->middleware('throttle:60,1')
         ->name('save-answer');
-        
+
     Route::post('/attempt/{attempt}/submit', [App\Http\Controllers\GuestExamController::class, 'submit'])->name('submit');
     Route::get('/attempt/{attempt}/review', [App\Http\Controllers\GuestExamController::class, 'review'])->name('review');
     Route::get('/result/{token}', [App\Http\Controllers\GuestExamController::class, 'reviewByToken'])
@@ -38,7 +38,7 @@ Route::prefix('exam')->name('guest.exams.')->group(function () {
 // Default dashboard (fallback)
 Route::get('/dashboard', function () {
     $user = auth()->user();
-    
+
     // ✅ FIX BUG #13: Add safety check for dashboard route
     try {
         $dashboardRoute = $user->dashboard_route;
@@ -71,6 +71,9 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     Route::post('users/{user}/toggle-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::post('users/{user}/reset-login', [App\Http\Controllers\Admin\UserController::class, 'resetLogin'])->name('users.reset-login');
     Route::patch('users/{user}/password', [App\Http\Controllers\Admin\UserController::class, 'updatePassword'])->name('users.update-password');
+
+    // Class Management
+    Route::resource('classes', App\Http\Controllers\Admin\SchoolClassController::class)->except(['show']);
 
     // Cheating incidents
     Route::resource('cheating-incidents', App\Http\Controllers\Admin\CheatingIncidentController::class)->only(['index', 'show']);

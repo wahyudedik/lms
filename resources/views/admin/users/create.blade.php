@@ -42,11 +42,30 @@
                                     class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
                                     required>
                                     <option value="">{{ __('Select Role') }}</option>
-                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>{{ __('Admin') }}</option>
-                                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>{{ __('Guru') }}</option>
-                                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>{{ __('Siswa') }}</option>
+                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>
+                                        {{ __('Admin') }}</option>
+                                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>
+                                        {{ __('Guru') }}</option>
+                                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>
+                                        {{ __('Siswa') }}</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('role')" class="mt-2" />
+                            </div>
+
+                            <!-- Class -->
+                            <div>
+                                <x-input-label for="school_class_id" :value="__('Class')" />
+                                <select id="school_class_id" name="school_class_id"
+                                    class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+                                    <option value="">{{ __('Select Class') }}</option>
+                                    @foreach ($classes as $class)
+                                        <option value="{{ $class->id }}"
+                                            {{ (string) old('school_class_id') === (string) $class->id ? 'selected' : '' }}>
+                                            {{ $class->name }} ({{ $class->education_level_label }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('school_class_id')" class="mt-2" />
                             </div>
 
                             <!-- Phone -->

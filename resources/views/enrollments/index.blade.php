@@ -21,17 +21,44 @@
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Add Students') }}</h3>
 
+                    <form method="GET"
+                        action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments', $course) : route('guru.courses.enrollments', $course) }}"
+                        class="mb-4">
+                        <div class="flex flex-col md:flex-row md:items-end gap-3">
+                            <div class="w-full md:w-80">
+                                <label for="school_class_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                    {{ __('Filter Class') }}
+                                </label>
+                                <select id="school_class_id" name="school_class_id" onchange="this.form.submit()"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">{{ __('All Classes') }}</option>
+                                    @foreach ($schoolClasses as $class)
+                                        <option value="{{ $class->id }}"
+                                            {{ (string) $selectedSchoolClassId === (string) $class->id ? 'selected' : '' }}>
+                                            {{ $class->name }} ({{ $class->education_level_label }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
                     @if ($availableStudents->count() > 0)
                         <form
                             action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments.store', $course) : route('guru.courses.enrollments.store', $course) }}"
-                            method="POST"
-                            x-data="{
+                            method="POST" x-data="{
                                 open: false,
-                                students: @js($availableStudents->map(fn ($student) => [
-                                    'id' => $student->id,
-                                    'name' => $student->name,
-                                    'email' => $student->email,
-                                ])->values()),
+                                students: @js(
+    $availableStudents
+        ->map(
+            fn($student) => [
+                'id' => $student->id,
+                'name' => $student->name,
+                'email' => $student->email,
+            ],
+        )
+        ->values(),
+),
                                 selected: @js(old('user_ids', [])),
                                 toggleAll(event) {
                                     if (event.target.checked) {
@@ -40,20 +67,19 @@
                                         this.selected = [];
                                     }
                                 }
-                            }"
-                            class="space-y-4">
+                            }" class="space-y-4">
                             @csrf
 
                             <div class="flex flex-col md:flex-row md:items-center gap-4">
                                 <div class="flex-1">
                                     <button type="button" @click="open = !open"
                                         class="w-full md:w-auto flex items-center justify-between px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <span class="font-medium" x-text="selected.length
+                                        <span class="font-medium"
+                                            x-text="selected.length
                                             ? `${selected.length} ${@js(__('students selected'))}`
                                             : @js(__('Select students'))"></span>
-                                        <svg class="w-4 h-4 ml-2 transform transition"
-                                            :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 ml-2 transform transition" :class="open ? 'rotate-180' : ''"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M19 9l-7 7-7-7"></path>
                                         </svg>
@@ -63,8 +89,10 @@
                                         class="mt-3 border rounded-lg p-4 bg-gray-50 max-h-72 overflow-y-auto space-y-3">
                                         <label class="flex items-center gap-2">
                                             <input type="checkbox" class="rounded border-gray-300"
-                                                @change="toggleAll($event)" :checked="selected.length === students.length && students.length > 0">
-                                            <span class="text-sm font-medium">{{ __('Select All (:count)', ['count' => $availableStudents->count()]) }}</span>
+                                                @change="toggleAll($event)"
+                                                :checked="selected.length === students.length && students.length > 0">
+                                            <span
+                                                class="text-sm font-medium">{{ __('Select All (:count)', ['count' => $availableStudents->count()]) }}</span>
                                         </label>
 
                                         <div class="divide-y divide-gray-200">
@@ -90,9 +118,9 @@
                                     </span>
                                 </div>
 
-                                <button type="submit"
-                                    :disabled="selected.length === 0"
-                                    :class="selected.length === 0 ? 'opacity-50 cursor-not-allowed bg-green-400' : 'bg-green-500 hover:bg-green-600'"
+                                <button type="submit" :disabled="selected.length === 0"
+                                    :class="selected.length === 0 ? 'opacity-50 cursor-not-allowed bg-green-400' :
+                                        'bg-green-500 hover:bg-green-600'"
                                     class="text-white font-bold py-2 px-6 rounded inline-flex items-center justify-center">
                                     <i class="fas fa-user-plus mr-2"></i>{{ __('Add') }}
                                 </button>
@@ -190,11 +218,14 @@
                                                             @if ($enrollment->status == 'active') bg-green-100 text-green-800
                                                             @elseif($enrollment->status == 'completed') bg-blue-100 text-blue-800
                                                             @else bg-red-100 text-red-800 @endif">
-                                                        <option value="active" {{ $enrollment->status == 'active' ? 'selected' : '' }}>
+                                                        <option value="active"
+                                                            {{ $enrollment->status == 'active' ? 'selected' : '' }}>
                                                             {{ __('Active') }}</option>
-                                                        <option value="completed" {{ $enrollment->status == 'completed' ? 'selected' : '' }}>
+                                                        <option value="completed"
+                                                            {{ $enrollment->status == 'completed' ? 'selected' : '' }}>
                                                             {{ __('Completed') }}</option>
-                                                        <option value="dropped" {{ $enrollment->status == 'dropped' ? 'selected' : '' }}>
+                                                        <option value="dropped"
+                                                            {{ $enrollment->status == 'dropped' ? 'selected' : '' }}>
                                                             {{ __('Dropped') }}</option>
                                                     </select>
                                                 </form>
@@ -216,7 +247,8 @@
                                                     <div class="flex gap-1">
                                                         <input type="number" name="progress"
                                                             value="{{ $enrollment->progress }}" min="0"
-                                                            max="100" class="w-16 text-xs rounded border-gray-300">
+                                                            max="100"
+                                                            class="w-16 text-xs rounded border-gray-300">
                                                         <button type="submit"
                                                             class="text-xs text-blue-600 hover:text-blue-900">
                                                             <i class="fas fa-check"></i>
@@ -250,11 +282,11 @@
                             {{ $enrollments->links() }}
                         </div>
                     @else
-                        <p class="text-gray-500 text-center py-8">{{ __('No students enrolled in this course yet.') }}</p>
+                        <p class="text-gray-500 text-center py-8">{{ __('No students enrolled in this course yet.') }}
+                        </p>
                     @endif
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
-

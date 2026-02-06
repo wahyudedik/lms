@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents; 
+    use WithoutModelEvents;
 
     /**
      * Seed the application's database.
@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            SchoolClassSeeder::class,        // 0. Create school classes
             UserSeeder::class,              // 1. Create users first
             SchoolSeeder::class,            // 2. Create schools & assign users to schools
             CourseSeeder::class,            // 3. Create courses

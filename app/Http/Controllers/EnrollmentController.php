@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\SchoolClass;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -22,13 +23,44 @@ class EnrollmentController extends Controller
             ->latest()
             ->paginate(20);
 
-        $availableStudents = User::where('role', 'siswa')
-            ->where('is_active', true)
-            ->whereNotIn('id', $course->students->pluck('id'))
+        $schoolClasses = SchoolClass::query()
+            ->orderByDesc('is_general')
+            ->orderBy('education_level')
             ->orderBy('name')
             ->get();
 
-        return view('enrollments.index', compact('course', 'enrollments', 'availableStudents'));
+        $selectedSchoolClassId = request()->input('school_class_id');
+
+        $enrolledStudentIds = $course->enrollments()->pluck('user_id');
+
+        $availableStudentsQuery = User::query()
+            ->where('role', 'siswa')
+            ->where('is_active', true)
+            ->whereNotIn('id', $enrolledStudentIds);
+
+        if ($selectedSchoolClassId) {
+            $generalClass = SchoolClass::general();
+
+            if ((string) $selectedSchoolClassId === (string) $generalClass->id) {
+                $availableStudentsQuery->where(function ($query) use ($generalClass) {
+                    $query->whereNull('school_class_id')->orWhere('school_class_id', $generalClass->id);
+                });
+            } else {
+                $availableStudentsQuery->where('school_class_id', $selectedSchoolClassId);
+            }
+        }
+
+        $availableStudents = $availableStudentsQuery
+            ->orderBy('name')
+            ->get();
+
+        return view('enrollments.index', compact(
+            'course',
+            'enrollments',
+            'availableStudents',
+            'schoolClasses',
+            'selectedSchoolClassId'
+        ));
     }
 
     /**
@@ -85,7 +117,18 @@ class EnrollmentController extends Controller
                 break;
             }
 
-            $student->enrollInCourse($course->id);
+            try {
+                $enrolled = $student->enrollInCourse($course->id);
+            } catch (\Throwable $e) {
+                $skipped[] = "{$student->name} gagal didaftarkan.";
+                continue;
+            }
+
+            if (!$enrolled) {
+                $skipped[] = "{$student->name} sudah terdaftar.";
+                continue;
+            }
+
             $added[] = $student->name;
         }
 

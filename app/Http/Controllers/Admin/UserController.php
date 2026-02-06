@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\SchoolClass;
 use App\Models\User;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
@@ -49,7 +50,13 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        $classes = SchoolClass::query()
+            ->orderByDesc('is_general')
+            ->orderBy('education_level')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.users.create', compact('classes'));
     }
 
     /**
@@ -57,7 +64,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -66,18 +73,25 @@ class UserController extends Controller
             'birth_date' => ['nullable', 'date', 'before:today'],
             'gender' => ['nullable', 'in:laki-laki,perempuan'],
             'address' => ['nullable', 'string', 'max:500'],
+            'school_class_id' => ['nullable', 'exists:school_classes,id'],
             'is_active' => ['boolean'],
         ]);
 
+        $schoolClassId = $validated['school_class_id'] ?? null;
+        if ($validated['role'] === 'siswa' && !$schoolClassId) {
+            $schoolClassId = SchoolClass::general()->id;
+        }
+
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
             'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'phone' => $request->phone,
-            'birth_date' => $request->birth_date,
-            'gender' => $request->gender,
-            'address' => $request->address,
+            'role' => $validated['role'],
+            'phone' => $validated['phone'] ?? null,
+            'birth_date' => $validated['birth_date'] ?? null,
+            'gender' => $validated['gender'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'school_class_id' => $schoolClassId,
             'is_active' => $request->boolean('is_active', true),
             'email_verified_at' => now(),
         ]);
@@ -102,7 +116,13 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        $classes = SchoolClass::query()
+            ->orderByDesc('is_general')
+            ->orderBy('education_level')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.users.edit', compact('user', 'classes'));
     }
 
     /**
@@ -110,7 +130,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'role' => ['required', 'in:admin,guru,siswa'],
@@ -118,17 +138,24 @@ class UserController extends Controller
             'birth_date' => ['nullable', 'date', 'before:today'],
             'gender' => ['nullable', 'in:laki-laki,perempuan'],
             'address' => ['nullable', 'string', 'max:500'],
+            'school_class_id' => ['nullable', 'exists:school_classes,id'],
             'is_active' => ['boolean'],
         ]);
 
+        $schoolClassId = $validated['school_class_id'] ?? null;
+        if ($validated['role'] === 'siswa' && !$schoolClassId) {
+            $schoolClassId = SchoolClass::general()->id;
+        }
+
         $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-            'phone' => $request->phone,
-            'birth_date' => $request->birth_date,
-            'gender' => $request->gender,
-            'address' => $request->address,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'role' => $validated['role'],
+            'phone' => $validated['phone'] ?? null,
+            'birth_date' => $validated['birth_date'] ?? null,
+            'gender' => $validated['gender'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'school_class_id' => $schoolClassId,
             'is_active' => $request->boolean('is_active'),
         ]);
 

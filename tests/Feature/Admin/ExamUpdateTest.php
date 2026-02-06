@@ -9,7 +9,7 @@ uses(RefreshDatabase::class);
 
 test('checkbox fields are updated to false when unchecked', function () {
     // 1. Create a user (admin)
-    $user = User::factory()->create(['role' => 'admin']);
+    $user = User::factory()->create(['role' => 'admin', 'email_verified_at' => now()]);
     $this->actingAs($user);
 
     // 2. Create a course

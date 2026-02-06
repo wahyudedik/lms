@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SchoolClass;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +14,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $generalClassId = SchoolClass::general()->id;
+
         // Create default admin user dengan password fixed
         User::create([
             'name' => 'Administrator',
@@ -47,6 +50,7 @@ class UserSeeder extends Seeder
             'email' => 'siswa@lms.com',
             'password' => Hash::make('password'),
             'role' => 'siswa',
+            'school_class_id' => $generalClassId,
             'phone' => '081234567892',
             'birth_date' => '2000-08-20',
             'gender' => 'laki-laki',
@@ -89,6 +93,7 @@ class UserSeeder extends Seeder
                 'email' => 'siswa' . $i . '@lms.com',
                 'password' => Hash::make('password'),
                 'role' => 'siswa',
+                'school_class_id' => $generalClassId,
                 'phone' => '08123456789' . $i,
                 'birth_date' => '200' . ($i % 5) . '-0' . ($i % 9 + 1) . '-' . (10 + $i),
                 'gender' => ($i % 2 == 0) ? 'perempuan' : 'laki-laki',

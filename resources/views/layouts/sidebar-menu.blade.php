@@ -9,8 +9,7 @@
     <div
         class="px-6 py-6 flex items-center gap-3 border-b border-gray-100/50 sticky top-0 bg-white/95 backdrop-blur z-10">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
-            <x-application-logo
-                class="h-9 w-9 shrink-0 group-hover:scale-105 transition-transform duration-200" />
+            <x-application-logo class="h-9 w-9 shrink-0 group-hover:scale-105 transition-transform duration-200" />
             <div class="flex flex-col min-w-0">
                 <h1
                     class="text-lg font-bold text-gray-900 leading-none truncate font-display tracking-tight group-hover:text-indigo-600 transition-colors">
@@ -77,6 +76,7 @@
                     @php
                         $adminManagementActive = request()->routeIs(
                             'admin.users.*',
+                            'admin.classes.*',
                             'admin.courses.*',
                             'admin.exams.*',
                             'admin.questions.*',
@@ -109,6 +109,13 @@
                                     <i class="fas fa-users text-sm"></i>
                                 </div>
                                 <span>{{ __('Pengguna') }}</span>
+                            </x-sidebar-link>
+
+                            <x-sidebar-link :href="route('admin.classes.index')" :active="request()->routeIs('admin.classes.*')">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="fas fa-chalkboard text-sm"></i>
+                                </div>
+                                <span>{{ __('Kelas') }}</span>
                             </x-sidebar-link>
 
                             <x-sidebar-link :href="route('admin.courses.index')" :active="request()->routeIs('admin.courses.*')">

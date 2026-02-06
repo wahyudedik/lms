@@ -56,6 +56,22 @@
                                 <x-input-error :messages="$errors->get('role')" class="mt-2" />
                             </div>
 
+                            <!-- Class -->
+                            <div>
+                                <x-input-label for="school_class_id" :value="__('Class')" />
+                                <select id="school_class_id" name="school_class_id"
+                                    class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+                                    <option value="">{{ __('Select Class') }}</option>
+                                    @foreach ($classes as $class)
+                                        <option value="{{ $class->id }}"
+                                            {{ (string) old('school_class_id', $user->school_class_id) === (string) $class->id ? 'selected' : '' }}>
+                                            {{ $class->name }} ({{ $class->education_level_label }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('school_class_id')" class="mt-2" />
+                            </div>
+
                             <!-- Phone -->
                             <div>
                                 <x-input-label for="phone" :value="__('Phone Number')" />
@@ -79,10 +95,12 @@
                                     class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
                                     <option value="">{{ __('Select Gender') }}</option>
                                     <option value="laki-laki"
-                                        {{ old('gender', $user->gender) == 'laki-laki' ? 'selected' : '' }}>{{ __('Male') }}
+                                        {{ old('gender', $user->gender) == 'laki-laki' ? 'selected' : '' }}>
+                                        {{ __('Male') }}
                                     </option>
                                     <option value="perempuan"
-                                        {{ old('gender', $user->gender) == 'perempuan' ? 'selected' : '' }}>{{ __('Female') }}
+                                        {{ old('gender', $user->gender) == 'perempuan' ? 'selected' : '' }}>
+                                        {{ __('Female') }}
                                     </option>
                                 </select>
                                 <x-input-error :messages="$errors->get('gender')" class="mt-2" />
