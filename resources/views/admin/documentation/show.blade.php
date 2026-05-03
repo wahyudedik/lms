@@ -23,14 +23,16 @@
             <div class="flex gap-2">
                 <!-- Print Button -->
                 <button onclick="window.print()"
-                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-print mr-2"></i>{{ __('Print') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all duration-200 shadow-sm">
+                    <i class="fas fa-print"></i>
+                    <span>{{ __('Print') }}</span>
                 </button>
 
                 <!-- Download Button -->
                 <a href="{{ asset('docs/' . $doc['filename']) }}" download="{{ $doc['filename'] }}"
-                    class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
-                    <i class="fas fa-download mr-2"></i>{{ __('Download') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-download"></i>
+                    <span>{{ __('Download') }}</span>
                 </a>
             </div>
         </div>

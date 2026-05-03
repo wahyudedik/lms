@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Landing page (public, no authentication required)
+Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
 // ==================================================
 // GUEST EXAM ACCESS (Public - No Authentication)
@@ -56,6 +56,13 @@ Route::get('/dashboard', function () {
 Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:admin'])
     ->name('admin.dashboard');
+
+// ==================================================
+// BACKWARD COMPATIBILITY REDIRECTS (301 Permanent)
+// ==================================================
+Route::redirect('/admin/schools', '/admin/settings?tab=school', 301);
+Route::redirect('/admin/schools/{id}/theme', '/admin/settings?tab=theme', 301);
+Route::redirect('/admin/schools/{id}/landing-page', '/admin/settings?tab=landing', 301);
 
 // Admin User Management & Course Management
 Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -114,6 +121,13 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     // Settings & Backup (admin only)
     Route::get('settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
+
+    // Settings — School Profile, Theme, Landing Page (unified)
+    Route::post('settings/school', [App\Http\Controllers\Admin\SettingsController::class, 'updateSchool'])->name('settings.school.update');
+    Route::post('settings/theme', [App\Http\Controllers\Admin\SettingsController::class, 'updateTheme'])->name('settings.theme.update');
+    Route::post('settings/theme/palette', [App\Http\Controllers\Admin\SettingsController::class, 'applyPalette'])->name('settings.theme.palette');
+    Route::post('settings/theme/reset', [App\Http\Controllers\Admin\SettingsController::class, 'resetTheme'])->name('settings.theme.reset');
+    Route::post('settings/landing-page', [App\Http\Controllers\Admin\SettingsController::class, 'updateLandingPage'])->name('settings.landing.update');
 
     // Certificate Settings
     Route::get('certificate-settings', [App\Http\Controllers\Admin\CertificateSettingsController::class, 'index'])->name('certificate-settings.index');
@@ -189,24 +203,6 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
 
     // Forum Category Management (Admin only)
     Route::resource('forum-categories', App\Http\Controllers\Admin\ForumCategoryController::class);
-
-    // School Management
-    Route::resource('schools', App\Http\Controllers\Admin\SchoolController::class);
-    Route::post('schools/{school}/toggle-active', [App\Http\Controllers\Admin\SchoolController::class, 'toggleActive'])->name('schools.toggle-active');
-
-    // Theme Management
-    Route::get('schools/{school}/theme', [App\Http\Controllers\Admin\ThemeController::class, 'edit'])->name('schools.theme.edit');
-    Route::put('schools/{school}/theme', [App\Http\Controllers\Admin\ThemeController::class, 'update'])->name('schools.theme.update');
-    Route::post('theme/preview', [App\Http\Controllers\Admin\ThemeController::class, 'preview'])->name('theme.preview');
-    Route::post('schools/{school}/theme/apply-palette', [App\Http\Controllers\Admin\ThemeController::class, 'applyPalette'])->name('schools.theme.apply-palette');
-    Route::post('schools/{school}/theme/reset', [App\Http\Controllers\Admin\ThemeController::class, 'reset'])->name('schools.theme.reset');
-    Route::get('schools/{school}/theme/export', [App\Http\Controllers\Admin\ThemeController::class, 'export'])->name('schools.theme.export');
-    Route::post('schools/{school}/theme/import', [App\Http\Controllers\Admin\ThemeController::class, 'import'])->name('schools.theme.import');
-
-    // Landing Page Management
-    Route::get('schools/{school}/landing-page', [App\Http\Controllers\Admin\LandingPageController::class, 'edit'])->name('landing-page.edit');
-    Route::put('schools/{school}/landing-page', [App\Http\Controllers\Admin\LandingPageController::class, 'update'])->name('landing-page.update');
-    Route::get('schools/{school}/landing-page/preview', [App\Http\Controllers\Admin\LandingPageController::class, 'preview'])->name('landing-page.preview');
 });
 
 // Guru Dashboard & Course Management
@@ -292,6 +288,22 @@ Route::middleware(['auth', 'verified', 'role:siswa'])->prefix('siswa')->name('si
     Route::post('attempts/{attempt}/track-tab-switch', [App\Http\Controllers\ExamAttemptController::class, 'trackTabSwitch'])->name('exams.track-tab-switch');
     Route::post('attempts/{attempt}/track-fullscreen-exit', [App\Http\Controllers\ExamAttemptController::class, 'trackFullscreenExit'])->name('exams.track-fullscreen-exit');
     Route::get('attempts/{attempt}/time-remaining', [App\Http\Controllers\ExamAttemptController::class, 'getTimeRemaining'])->name('exams.time-remaining');
+
+    // Material Routes (Siswa)
+    Route::get('materials', [App\Http\Controllers\Siswa\MaterialController::class, 'index'])->name('materials.index');
+    Route::get('materials/{material}', [App\Http\Controllers\Siswa\MaterialController::class, 'show'])->name('materials.show');
+    Route::post('materials/{material}/comment', [App\Http\Controllers\Siswa\MaterialController::class, 'comment'])
+        ->middleware('throttle:20,1')
+        ->name('materials.comment');
+
+    // Certificate Routes (Siswa)
+    Route::get('certificates', [App\Http\Controllers\Siswa\CertificateController::class, 'index'])->name('certificates.index');
+    Route::get('certificates/{certificate}', [App\Http\Controllers\Siswa\CertificateController::class, 'show'])->name('certificates.show');
+    Route::get('certificates/{certificate}/download', [App\Http\Controllers\Siswa\CertificateController::class, 'download'])->name('certificates.download');
+
+    // Grade Routes (Siswa)
+    Route::get('grades', [App\Http\Controllers\Siswa\GradeController::class, 'index'])->name('grades.index');
+    Route::get('grades/{enrollment}', [App\Http\Controllers\Siswa\GradeController::class, 'show'])->name('grades.show');
 
     // Report Routes (Siswa)
     Route::get('reports', [App\Http\Controllers\Siswa\ReportController::class, 'index'])->name('reports.index');

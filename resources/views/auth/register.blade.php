@@ -1,7 +1,14 @@
 <x-guest-layout>
+    <!-- Header -->
     <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ __('Create Account') }}</h2>
-        <p class="text-gray-600">{{ __('Sign up to get started') }}</p>
+        <div
+            class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg mb-4">
+            <i class="fas fa-user-plus text-white text-2xl"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">
+            Buat Akun Baru
+        </h2>
+        <p class="text-gray-600">Daftar untuk memulai pembelajaran Anda</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-5">
@@ -9,134 +16,137 @@
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Full Name')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-user text-gray-400 mr-1"></i>
+                Nama Lengkap
+            </label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fas fa-user text-gray-400"></i>
                 </div>
-                <x-text-input id="name" class="block w-full pl-10" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="{{ __('John Doe') }}" />
+                <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus
+                    autocomplete="name" placeholder="John Doe"
+                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors" />
             </div>
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            @error('name')
+                <p class="mt-1 text-sm text-red-600">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
 
-        <!-- Email Address -->
+        <!-- Email -->
         <div>
-            <x-input-label for="email" :value="__('Email Address')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-envelope text-gray-400 mr-1"></i>
+                Alamat Email
+            </label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fas fa-envelope text-gray-400"></i>
                 </div>
-                <x-text-input id="email" class="block w-full pl-10" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="{{ __('you@example.com') }}" />
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                    autocomplete="username" placeholder="anda@example.com"
+                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors" />
             </div>
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            @error('email')
+                <p class="mt-1 text-sm text-red-600">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
 
         <!-- Role Selection -->
         <div>
-            <x-input-label for="role" :value="__('Register As')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-user-tag text-gray-400 mr-1"></i>
+                Daftar Sebagai
+            </label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fas fa-user-tag text-gray-400"></i>
                 </div>
-                <select id="role" name="role" class="block w-full pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" required>
-                    <option value="">{{ __('Select your role') }}</option>
-                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>{{ __('Student') }}</option>
-                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>{{ __('Teacher') }}</option>
+                <select id="role" name="role" required
+                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors">
+                    <option value="">Pilih peran Anda</option>
+                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Mahasiswa</option>
+                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Dosen</option>
                 </select>
             </div>
-            <x-input-error :messages="$errors->get('role')" class="mt-2" />
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <!-- Phone -->
-            <div>
-                <x-input-label for="phone" :value="__('Phone Number')" />
-                <div class="relative mt-1">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-phone text-gray-400"></i>
-                    </div>
-                    <x-text-input id="phone" class="block w-full pl-10" type="tel" name="phone" :value="old('phone')" autocomplete="tel" placeholder="{{ __('+62xxx') }}" />
-                </div>
-                <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-            </div>
-
-            <!-- Birth Date -->
-            <div>
-                <x-input-label for="birth_date" :value="__('Birth Date')" />
-                <div class="relative mt-1">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-calendar text-gray-400"></i>
-                    </div>
-                    <x-text-input id="birth_date" class="block w-full pl-10" type="date" name="birth_date" :value="old('birth_date')" />
-                </div>
-                <x-input-error :messages="$errors->get('birth_date')" class="mt-2" />
-            </div>
-        </div>
-
-        <!-- Gender -->
-        <div>
-            <x-input-label for="gender" :value="__('Gender')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-venus-mars text-gray-400"></i>
-                </div>
-                <select id="gender" name="gender" class="block w-full pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
-                    <option value="">{{ __('Select gender') }}</option>
-                    <option value="laki-laki" {{ old('gender') == 'laki-laki' ? 'selected' : '' }}>{{ __('Male') }}</option>
-                    <option value="perempuan" {{ old('gender') == 'perempuan' ? 'selected' : '' }}>{{ __('Female') }}</option>
-                </select>
-            </div>
-            <x-input-error :messages="$errors->get('gender')" class="mt-2" />
-        </div>
-
-        <!-- Address -->
-        <div>
-            <x-input-label for="address" :value="__('Address')" />
-            <div class="relative mt-1">
-                <div class="absolute top-3 left-3">
-                    <i class="fas fa-map-marker-alt text-gray-400"></i>
-                </div>
-                <textarea id="address" name="address" rows="3" class="block w-full pl-10 pt-2 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm" placeholder="{{ __('Enter your full address') }}">{{ old('address') }}</textarea>
-            </div>
-            <x-input-error :messages="$errors->get('address')" class="mt-2" />
+            @error('role')
+                <p class="mt-1 text-sm text-red-600">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
 
         <!-- Password -->
         <div>
-            <x-input-label for="password" :value="__('Password')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-lock text-gray-400 mr-1"></i>
+                Password
+            </label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fas fa-lock text-gray-400"></i>
                 </div>
-                <x-text-input id="password" class="block w-full pl-10" type="password" name="password" required autocomplete="new-password" placeholder="••••••••" />
+                <input id="password" type="password" name="password" required autocomplete="new-password"
+                    placeholder="••••••••"
+                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors" />
             </div>
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            @error('password')
+                <p class="mt-1 text-sm text-red-600">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
+            @enderror
+            <p class="mt-1 text-xs text-gray-500">
+                <i class="fas fa-info-circle"></i>
+                Minimal 8 karakter, kombinasi huruf dan angka
+            </p>
         </div>
 
         <!-- Confirm Password -->
         <div>
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-lock text-gray-400"></i>
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-check-circle text-gray-400 mr-1"></i>
+                Konfirmasi Password
+            </label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-check-circle text-gray-400"></i>
                 </div>
-                <x-text-input id="password_confirmation" class="block w-full pl-10" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••" />
+                <input id="password_confirmation" type="password" name="password_confirmation" required
+                    autocomplete="new-password" placeholder="••••••••"
+                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors" />
             </div>
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+            @error('password_confirmation')
+                <p class="mt-1 text-sm text-red-600">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
 
-        <div>
-            <x-primary-button class="w-full justify-center py-3 text-base font-semibold">
-                <i class="fas fa-user-plus mr-2"></i>{{ __('Register') }}
-            </x-primary-button>
+        <!-- Register Button -->
+        <div class="pt-2">
+            <button type="submit"
+                class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium">
+                <i class="fas fa-user-plus"></i>
+                <span>Daftar Sekarang</span>
+            </button>
         </div>
 
-        <div class="text-center text-sm text-gray-600">
-            <span>{{ __('Already have an account?') }} </span>
-            <a class="text-blue-600 hover:text-blue-800 font-medium transition-colors" href="{{ route('login') }}">
-                {{ __('Login here') }}
+        <!-- Login Link -->
+        <div class="text-center pt-4 border-t border-gray-200">
+            <span class="text-sm text-gray-600">Sudah punya akun? </span>
+            <a href="{{ route('login') }}"
+                class="text-sm text-green-600 hover:text-green-700 font-semibold transition-colors">
+                Masuk di sini
             </a>
         </div>
     </form>
 </x-guest-layout>
-

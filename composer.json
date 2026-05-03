@@ -2,10 +2,13 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Learning Management System - Platform Pembelajaran Digital untuk Dosen dan Mahasiswa",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "lms",
+        "learning",
+        "education"
     ],
     "license": "MIT",
     "require": {

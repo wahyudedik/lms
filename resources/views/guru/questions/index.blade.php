@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Kelola Soal: {{ $exam->title }}
+                    <i class="fas fa-list-alt mr-2"></i>Kelola Soal: {{ $exam->title }}
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">
                     Total: {{ $questions->count() }} soal | {{ $exam->total_points }} poin
@@ -11,12 +11,14 @@
             </div>
             <div class="flex gap-2">
                 <a href="{{ route('guru.exams.questions.create', $exam) }}"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-plus mr-2"></i>{{ __('Add Question') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-plus"></i>
+                    {{ __('Add Question') }}
                 </a>
                 <a href="{{ route('guru.exams.show', $exam) }}"
-                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -26,11 +28,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if ($questions->count() > 0)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-md rounded-lg">
                     <div class="p-6">
                         <div id="questions-list" class="space-y-4">
                             @foreach ($questions as $question)
-                                <div class="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition"
+                                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
                                     data-question-id="{{ $question->id }}">
                                     <div class="flex items-start gap-4">
                                         <!-- Drag Handle -->
@@ -44,34 +46,36 @@
                                             <div class="flex items-start justify-between mb-3">
                                                 <div class="flex items-center gap-2 flex-wrap">
                                                     <span
-                                                        class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded">
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-800">
                                                         #{{ $question->order }}
                                                     </span>
                                                     <span
-                                                        class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded">
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
                                                         <i class="{{ $question->type_icon }} mr-1"></i>
                                                         {{ $question->type_display }}
                                                     </span>
                                                     <span
-                                                        class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded">
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                                                         <i class="fas fa-star mr-1"></i>{{ $question->points }} poin
                                                     </span>
                                                 </div>
 
                                                 <!-- Actions -->
-                                                <div class="flex gap-2">
+                                                <div class="flex gap-3">
                                                     <a href="{{ route('guru.exams.questions.edit', [$exam, $question]) }}"
-                                                        class="text-yellow-600 hover:text-yellow-900" title="Edit">
-                                                        <i class="fas fa-edit"></i>
+                                                        class="text-green-600 hover:text-green-800 font-semibold"
+                                                        title="Edit">
+                                                        Edit
                                                     </a>
 
                                                     <form
                                                         action="{{ route('guru.exams.questions.duplicate', [$exam, $question]) }}"
                                                         method="POST" class="inline">
                                                         @csrf
-                                                        <button type="submit" class="text-blue-600 hover:text-blue-900"
+                                                        <button type="submit"
+                                                            class="text-blue-600 hover:text-blue-800 font-semibold"
                                                             title="Duplikat">
-                                                            <i class="fas fa-copy"></i>
+                                                            Duplikat
                                                         </button>
                                                     </form>
 
@@ -81,9 +85,10 @@
                                                         onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this question?') }}')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="text-red-600 hover:text-red-900"
+                                                        <button type="submit"
+                                                            class="text-red-600 hover:text-red-800 font-semibold"
                                                             title="{{ __('Delete') }}">
-                                                            <i class="fas fa-trash"></i>
+                                                            Hapus
                                                         </button>
                                                     </form>
                                                 </div>
@@ -91,10 +96,12 @@
 
                                             <!-- Question Text -->
                                             <div class="mb-3">
-                                                <p class="text-gray-900 font-medium">{{ $question->question_text }}</p>
+                                                <p class="text-gray-900 font-semibold">{{ $question->question_text }}
+                                                </p>
                                                 @if ($question->question_image)
                                                     <img src="{{ Storage::url($question->question_image) }}"
-                                                        alt="Question Image" class="mt-2 max-w-sm rounded">
+                                                        alt="Question Image"
+                                                        class="mt-2 max-w-sm rounded-lg border border-gray-200">
                                                 @endif
                                             </div>
 
@@ -178,14 +185,18 @@
                     </div>
                 </div>
             @else
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-md rounded-lg">
                     <div class="p-6">
                         <div class="text-center py-8">
-                            <i class="fas fa-clipboard-question text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500 text-lg mb-4">{{ __('No questions added yet.') }}</p>
+                            <div
+                                class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-clipboard-question text-3xl text-gray-400"></i>
+                            </div>
+                            <p class="text-gray-500 text-sm font-semibold mb-4">{{ __('No questions added yet.') }}</p>
                             <a href="{{ route('guru.exams.questions.create', $exam) }}"
-                                class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-plus mr-2"></i>{{ __('Add First Question') }}
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-plus"></i>
+                                {{ __('Add First Question') }}
                             </a>
                         </div>
                     </div>

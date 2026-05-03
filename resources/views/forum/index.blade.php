@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    <i class="fas fa-comments text-indigo-600 mr-2"></i>
+                    <i class="fas fa-comments text-purple-600 mr-2"></i>
                     Forum Diskusi
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">
@@ -11,8 +11,9 @@
                 </p>
             </div>
             <a href="{{ route('forum.create') }}"
-                class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-plus mr-2"></i>New Thread
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                <i class="fas fa-plus"></i>
+                <span>New Thread</span>
             </a>
         </div>
     </x-slot>
@@ -21,19 +22,21 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <!-- Search Bar -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
                     <form action="{{ route('forum.search') }}" method="GET" class="flex gap-3">
                         <input type="text" name="q" value="{{ request('q') }}" placeholder="Search forum..."
-                            class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-150">
                         <button type="submit"
-                            class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded">
-                            <i class="fas fa-search mr-2"></i>Search
+                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
                         </button>
                         @if (request('q'))
                             <a href="{{ route('forum.index') }}"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded flex items-center">
-                                <i class="fas fa-times mr-2"></i>Reset
+                                class="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                                <i class="fas fa-times"></i>
+                                <span>Reset</span>
                             </a>
                         @endif
                     </form>
@@ -41,9 +44,13 @@
             </div>
 
             <!-- Categories -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-900">
+                        <i class="fas fa-folder text-blue-600 mr-2"></i>Categories
+                    </h3>
+                </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Categories</h3>
 
                     @if ($categories->count() > 0)
                         <div class="space-y-3">
@@ -72,9 +79,12 @@
                             @endforeach
                         </div>
                     @else
-                        <div class="text-center py-8 text-gray-500">
-                            <i class="fas fa-inbox text-4xl mb-2"></i>
-                            <p>No categories yet</p>
+                        <div class="text-center py-12">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                                <i class="fas fa-inbox text-gray-400 text-3xl"></i>
+                            </div>
+                            <p class="text-gray-900 font-semibold mb-2">No categories yet</p>
+                            <p class="text-sm text-gray-500">Categories will appear here when created</p>
                         </div>
                     @endif
                 </div>
@@ -82,12 +92,14 @@
 
             <!-- Latest Threads -->
             @if ($latestThreads->count() > 0)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4">
-                            <i class="fas fa-fire text-orange-500 mr-2"></i>
+                <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-900">
+                            <i class="fas fa-fire text-orange-600 mr-2"></i>
                             Latest Threads
                         </h3>
+                    </div>
+                    <div class="p-6">
                         <div class="space-y-3">
                             @foreach ($latestThreads as $thread)
                                 <a href="{{ route('forum.thread', [$thread->category->slug, $thread->slug]) }}"
@@ -127,12 +139,14 @@
 
             <!-- Popular Threads -->
             @if ($popularThreads->count() > 0)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4">
-                            <i class="fas fa-star text-yellow-500 mr-2"></i>
+                <div class="bg-white overflow-hidden shadow-md rounded-lg">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-900">
+                            <i class="fas fa-star text-yellow-600 mr-2"></i>
                             Popular Threads
                         </h3>
+                    </div>
+                    <div class="p-6">
                         <div class="space-y-3">
                             @foreach ($popularThreads as $thread)
                                 <a href="{{ route('forum.thread', [$thread->category->slug, $thread->slug]) }}"

@@ -1,10 +1,12 @@
 <x-guest-layout>
+    <!-- Header -->
     <div class="text-center mb-8">
-        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-            <i class="fas fa-lock text-green-600 text-2xl"></i>
+        <div
+            class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg mb-4">
+            <i class="fas fa-lock text-white text-2xl"></i>
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ __('Reset Password') }}</h2>
-        <p class="text-gray-600">{{ __('Enter your new password below') }}</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Reset Password</h2>
+        <p class="text-gray-600">Masukkan password baru Anda di bawah ini</p>
     </div>
 
     <form method="POST" action="{{ route('password.store') }}" class="space-y-6">
@@ -15,44 +17,81 @@
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email Address')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-envelope text-gray-400 mr-1"></i>
+                Alamat Email
+            </label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fas fa-envelope text-gray-400"></i>
                 </div>
-                <x-text-input id="email" class="block w-full pl-10" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" placeholder="{{ __('you@example.com') }}" />
+                <input id="email" type="email" name="email" value="{{ old('email', $request->email) }}" required
+                    autofocus autocomplete="username" placeholder="anda@example.com"
+                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors" />
             </div>
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            @error('email')
+                <p class="mt-1 text-sm text-red-600">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
 
         <!-- Password -->
         <div>
-            <x-input-label for="password" :value="__('New Password')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-lock text-gray-400 mr-1"></i>
+                Password Baru
+            </label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="fas fa-lock text-gray-400"></i>
                 </div>
-                <x-text-input id="password" class="block w-full pl-10" type="password" name="password" required autocomplete="new-password" placeholder="••••••••" />
+                <input id="password" type="password" name="password" required autocomplete="new-password"
+                    placeholder="••••••••"
+                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors" />
             </div>
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            @error('password')
+                <p class="mt-1 text-sm text-red-600">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
+            @enderror
+            <p class="mt-1 text-xs text-gray-500">
+                <i class="fas fa-info-circle"></i>
+                Minimal 8 karakter, kombinasi huruf dan angka
+            </p>
         </div>
 
         <!-- Confirm Password -->
         <div>
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-            <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-lock text-gray-400"></i>
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-check-circle text-gray-400 mr-1"></i>
+                Konfirmasi Password
+            </label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-check-circle text-gray-400"></i>
                 </div>
-                <x-text-input id="password_confirmation" class="block w-full pl-10" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••" />
+                <input id="password_confirmation" type="password" name="password_confirmation" required
+                    autocomplete="new-password" placeholder="••••••••"
+                    class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors" />
             </div>
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+            @error('password_confirmation')
+                <p class="mt-1 text-sm text-red-600">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
 
+        <!-- Reset Button -->
         <div>
-            <x-primary-button class="w-full justify-center py-3 text-base font-semibold">
-                <i class="fas fa-check-circle mr-2"></i>{{ __('Reset Password') }}
-            </x-primary-button>
+            <button type="submit"
+                class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium">
+                <i class="fas fa-check-circle"></i>
+                <span>Reset Password</span>
+            </button>
         </div>
     </form>
 </x-guest-layout>

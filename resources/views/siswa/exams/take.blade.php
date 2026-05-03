@@ -18,41 +18,49 @@
 </head>
 
 @php
-    $initialAnsweredCount = $attempt->answers->filter(function ($answer) {
-        $value = $answer->answer;
-        if (is_null($value)) {
-            return false;
-        }
-        if (is_string($value)) {
-            return trim($value) !== '';
-        }
-        if (is_array($value)) {
-            return collect($value)->filter(function ($item) {
-                if (is_array($item)) {
-                    return collect($item)->filter(fn ($v) => $v !== null && $v !== '')->isNotEmpty();
-                }
-                return $item !== null && $item !== '';
-            })->isNotEmpty();
-        }
-        return true;
-    })->count();
+    $initialAnsweredCount = $attempt->answers
+        ->filter(function ($answer) {
+            $value = $answer->answer;
+            if (is_null($value)) {
+                return false;
+            }
+            if (is_string($value)) {
+                return trim($value) !== '';
+            }
+            if (is_array($value)) {
+                return collect($value)
+                    ->filter(function ($item) {
+                        if (is_array($item)) {
+                            return collect($item)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
+                        }
+                        return $item !== null && $item !== '';
+                    })
+                    ->isNotEmpty();
+            }
+            return true;
+        })
+        ->count();
 @endphp
 
 <body class="font-sans antialiased bg-gray-100">
     <div id="exam-container" class="min-h-screen">
         <!-- Header -->
-        <div class="bg-blue-600 text-white py-4 px-6 shadow-lg">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 shadow-lg">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
                 <div>
-                    <h1 class="text-xl font-bold">{{ $exam->title }}</h1>
-                    <p class="text-sm text-blue-100">{{ $exam->course->title }}</p>
+                    <h1 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-file-alt"></i>{{ $exam->title }}
+                    </h1>
+                    <p class="text-sm text-blue-100 mt-1">
+                        <i class="fas fa-book mr-1"></i>{{ $exam->course->title }}
+                    </p>
                 </div>
                 <div class="text-right">
-                    <div class="text-2xl font-bold" id="timer">
-                        <i class="fas fa-clock mr-2"></i>
+                    <div class="text-2xl font-bold flex items-center justify-end gap-2" id="timer">
+                        <i class="fas fa-clock"></i>
                         <span id="timer-display">{{ $exam->duration_minutes }}:00</span>
                     </div>
-                    <p class="text-xs text-blue-100">Waktu tersisa</p>
+                    <p class="text-xs text-blue-100 mt-1">Waktu tersisa</p>
                 </div>
             </div>
         </div>
@@ -78,7 +86,8 @@
                                 <!-- Question Header -->
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
-                                        <span class="text-sm text-gray-500">{{ __('Question :num of', ['num' => $index + 1]) }}
+                                        <span
+                                            class="text-sm text-gray-500">{{ __('Question :num of', ['num' => $index + 1]) }}
                                             {{ $questions->count() }}</span>
                                         <h3 class="text-lg font-semibold text-gray-900 mt-1">
                                             {{ $question->question_text }}
@@ -92,8 +101,8 @@
                                 <!-- Question Image -->
                                 @if ($question->question_image)
                                     <div class="mb-4">
-                                        <img src="{{ Storage::url($question->question_image) }}"
-                                            alt="Question Image" class="max-w-full h-auto rounded-lg">
+                                        <img src="{{ Storage::url($question->question_image) }}" alt="Question Image"
+                                            class="max-w-full h-auto rounded-lg">
                                     </div>
                                 @endif
 
@@ -116,7 +125,8 @@
                                                 @php
                                                     // Handle both string and array format
                                                     if (is_array($option)) {
-                                                        $optionValue = $option['text'] ?? $option['id'] ?? json_encode($option);
+                                                        $optionValue =
+                                                            $option['text'] ?? ($option['id'] ?? json_encode($option));
                                                         $optionId = $option['id'] ?? $optionValue;
                                                     } else {
                                                         $optionValue = $option;
@@ -138,7 +148,11 @@
                                         <!-- MCQ Multiple Answers -->
                                         <div class="space-y-3">
                                             @php
-                                                $savedAnswers = $savedAnswer ? (is_array($savedAnswer->answer) ? $savedAnswer->answer : json_decode($savedAnswer->answer, true)) : [];
+                                                $savedAnswers = $savedAnswer
+                                                    ? (is_array($savedAnswer->answer)
+                                                        ? $savedAnswer->answer
+                                                        : json_decode($savedAnswer->answer, true))
+                                                    : [];
                                                 $savedAnswers = $savedAnswers ?? [];
                                                 $options = $question->options ?? [];
                                                 if ($exam->shuffle_options) {
@@ -149,7 +163,8 @@
                                                 @php
                                                     // Handle both string and array format
                                                     if (is_array($option)) {
-                                                        $optionValue = $option['text'] ?? $option['id'] ?? json_encode($option);
+                                                        $optionValue =
+                                                            $option['text'] ?? ($option['id'] ?? json_encode($option));
                                                         $optionId = $option['id'] ?? $optionValue;
                                                     } else {
                                                         $optionValue = $option;
@@ -171,7 +186,11 @@
                                         <!-- Matching Question -->
                                         <div class="space-y-3">
                                             @php
-                                                $savedMatches = $savedAnswer ? (is_array($savedAnswer->answer) ? $savedAnswer->answer : json_decode($savedAnswer->answer, true)) : [];
+                                                $savedMatches = $savedAnswer
+                                                    ? (is_array($savedAnswer->answer)
+                                                        ? $savedAnswer->answer
+                                                        : json_decode($savedAnswer->answer, true))
+                                                    : [];
                                                 $savedMatches = $savedMatches ?? [];
                                                 $pairs = $question->pairs ?? [];
                                                 $rightOptions = collect($pairs)->pluck('right')->shuffle()->values();
@@ -184,7 +203,8 @@
                                                     </div>
                                                     <i class="fas fa-arrow-right text-gray-400"></i>
                                                     <div class="flex-1">
-                                                        <select name="question_{{ $question->id }}[{{ $pairIndex }}]"
+                                                        <select
+                                                            name="question_{{ $question->id }}[{{ $pairIndex }}]"
                                                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                                             onchange="saveAnswer({{ $question->id }})">
                                                             <option value="">Pilih jawaban...</option>
@@ -212,19 +232,19 @@
                                 <!-- Navigation Buttons -->
                                 <div class="flex justify-between mt-8 pt-6 border-t">
                                     <button type="button" onclick="previousQuestion()"
-                                        class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 {{ $index === 0 ? 'invisible' : '' }}">
-                                        <i class="fas fa-arrow-left mr-2"></i>Sebelumnya
+                                        class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold shadow-sm transition {{ $index === 0 ? 'invisible' : '' }}">
+                                        <i class="fas fa-arrow-left"></i>Sebelumnya
                                     </button>
 
                                     @if ($index < $questions->count() - 1)
                                         <button type="button" onclick="nextQuestion()"
-                                            class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                            Selanjutnya<i class="fas fa-arrow-right ml-2"></i>
+                                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm transition">
+                                            Selanjutnya<i class="fas fa-arrow-right"></i>
                                         </button>
                                     @else
                                         <button type="button" onclick="confirmSubmit()"
-                                            class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
-                                            <i class="fas fa-check mr-2"></i>Selesai & Kumpulkan
+                                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold shadow-sm transition">
+                                            <i class="fas fa-check"></i>Selesai & Kumpulkan
                                         </button>
                                     @endif
                                 </div>
@@ -235,8 +255,10 @@
 
                 <!-- Question Navigation Sidebar -->
                 <div class="lg:col-span-1">
-                    <div class="bg-white rounded-lg shadow-lg p-4 sticky top-4">
-                        <h3 class="font-semibold text-gray-900 mb-4">{{ __('Question Navigation') }}</h3>
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 sticky top-4">
+                        <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-th text-indigo-600"></i>{{ __('Question Navigation') }}
+                        </h3>
                         <div class="grid grid-cols-5 gap-2">
                             @foreach ($questions as $index => $question)
                                 @php
@@ -252,7 +274,9 @@
 
                         <div class="mt-6 pt-4 border-t space-y-2 text-sm">
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-600">Terjawab:</span>
+                                <span class="text-gray-600">
+                                    <i class="fas fa-check-circle text-green-500 mr-1"></i>Terjawab:
+                                </span>
                                 <span class="font-semibold text-green-600" id="answered-count">
                                     {{ $initialAnsweredCount }}/{{ $questions->count() }}
                                 </span>
@@ -260,8 +284,8 @@
                         </div>
 
                         <button type="button" onclick="confirmSubmit()"
-                            class="w-full mt-6 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold">
-                            <i class="fas fa-check mr-2"></i>{{ __('Submit Exam') }}
+                            class="w-full mt-6 inline-flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold shadow-sm transition">
+                            <i class="fas fa-check"></i>{{ __('Submit Exam') }}
                         </button>
                     </div>
                 </div>
@@ -522,7 +546,8 @@
                     allowOutsideClick: false
                 }).then(() => {
                     requestFullscreen().catch(() => {
-                        showWarning('Browser menolak mode layar penuh. Klik tombol di atas untuk mencoba lagi.');
+                        showWarning(
+                            'Browser menolak mode layar penuh. Klik tombol di atas untuk mencoba lagi.');
                         setTimeout(() => promptFullscreen('Klik tombol untuk mencoba lagi.'), 500);
                     });
                 });
@@ -566,7 +591,8 @@
                         autoSubmit('Batas perpindahan tab tercapai!');
                     } else {
                         showWarning(
-                            `Peringatan! Jangan keluar dari halaman ujian. (${tabSwitchCount}/${maxTabSwitches})`);
+                            `Peringatan! Jangan keluar dari halaman ujian. (${tabSwitchCount}/${maxTabSwitches})`
+                        );
                     }
                 }
             });
@@ -594,4 +620,3 @@
 </body>
 
 </html>
-

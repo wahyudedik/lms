@@ -13,7 +13,7 @@
                         @if ($conversation->course)
                             <i class="fas fa-book mr-1"></i>{{ $conversation->course->title }}
                         @else
-                            <i class="fas fa-robot mr-1"></i>General conversation
+                            <i class="fas fa-robot mr-1"></i>Percakapan umum
                         @endif
                     </p>
                 </div>
@@ -21,11 +21,11 @@
             <div class="flex gap-2">
                 <button onclick="archiveConversation()"
                     class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-                    <i class="fas fa-archive mr-2"></i>Archive
+                    <i class="fas fa-archive mr-2"></i>Arsipkan
                 </button>
                 <button onclick="deleteConversation()"
                     class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                    <i class="fas fa-trash mr-2"></i>Delete
+                    <i class="fas fa-trash mr-2"></i>Hapus
                 </button>
             </div>
         </div>
@@ -39,8 +39,9 @@
                     <div class="flex items-center gap-3">
                         <i class="fas fa-exclamation-triangle text-yellow-600 text-3xl"></i>
                         <div>
-                            <h3 class="text-lg font-semibold text-yellow-900">AI Assistant is Currently Unavailable</h3>
-                            <p class="text-sm text-yellow-700">Please contact your administrator to enable this feature.
+                            <h3 class="text-lg font-semibold text-yellow-900">Asisten AI Saat Ini Tidak Tersedia</h3>
+                            <p class="text-sm text-yellow-700">Silakan hubungi administrator untuk mengaktifkan fitur
+                                ini.
                             </p>
                         </div>
                     </div>
@@ -77,7 +78,7 @@
                                     <div class="flex-1">
                                         <div
                                             class="text-xs text-gray-500 mb-1 {{ $message->role === 'user' ? 'text-right' : '' }}">
-                                            {{ $message->role === 'user' ? 'You' : 'AI Assistant' }} ·
+                                            {{ $message->role === 'user' ? 'Anda' : 'Asisten AI' }} ·
                                             {{ $message->created_at->diffForHumans() }}
                                         </div>
                                         <div
@@ -119,17 +120,17 @@
                     <!-- Input Area -->
                     <div class="border-t border-gray-200 p-4 bg-gray-50">
                         <form id="messageForm" class="flex gap-3">
-                            <input type="text" id="messageInput" placeholder="Type your message..."
+                            <input type="text" id="messageInput" placeholder="Ketik pesan Anda..."
                                 class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required>
                             <button type="submit"
                                 class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">
-                                <i class="fas fa-paper-plane mr-2"></i>Send
+                                <i class="fas fa-paper-plane mr-2"></i>Kirim
                             </button>
                         </form>
                         <p class="text-xs text-gray-500 mt-2 text-center">
                             <i class="fas fa-info-circle mr-1"></i>
-                            AI can make mistakes. Please verify important information.
+                            AI dapat membuat kesalahan. Harap verifikasi informasi penting.
                         </p>
                     </div>
 
@@ -139,15 +140,15 @@
                 <div class="mt-4 flex items-center justify-between text-sm text-gray-600">
                     <span>
                         <i class="fas fa-message mr-1"></i>
-                        {{ $conversation->message_count }} messages
+                        {{ $conversation->message_count }} pesan
                     </span>
                     <span>
                         <i class="fas fa-coins mr-1"></i>
-                        {{ number_format($conversation->tokens_used) }} tokens used
+                        {{ number_format($conversation->tokens_used) }} token digunakan
                     </span>
                     <span>
                         <i class="fas fa-clock mr-1"></i>
-                        Last activity: {{ $conversation->last_message_at->diffForHumans() }}
+                        Aktivitas terakhir: {{ $conversation->last_message_at->diffForHumans() }}
                     </span>
                 </div>
             @endif
@@ -206,7 +207,7 @@
                         // Add assistant message to UI
                         addMessageToUI('assistant', data.message.content);
                     } else {
-                        throw new Error(data.error || 'Failed to send message');
+                        throw new Error(data.error || 'Gagal mengirim pesan');
                     }
                 } catch (error) {
                     console.error('Error:', error);
@@ -215,7 +216,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: error.message || 'Failed to send message. Please try again.'
+                        text: error.message || 'Gagal mengirim pesan. Silakan coba lagi.'
                     });
                 } finally {
                     // Re-enable form
@@ -235,18 +236,18 @@
                 messageDiv.innerHTML = `
                 <div class="flex gap-3 max-w-3xl ${isUser ? 'flex-row-reverse' : ''}">
                     <div class="flex-shrink-0">
-                        ${isUser 
+                        ${isUser
                             ? `<div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-                                        ${('{{ substr(auth()->user()->name, 0, 1) }}')}
-                                       </div>`
+                                                                                                                ${('{{ substr(auth()->user()->name, 0, 1) }}')}
+                                                                                                               </div>`
                             : `<div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white flex items-center justify-center">
-                                        <i class="fas fa-robot"></i>
-                                       </div>`
+                                                                                                                <i class="fas fa-robot"></i>
+                                                                                                               </div>`
                         }
                     </div>
                     <div class="flex-1">
                         <div class="text-xs text-gray-500 mb-1 ${isUser ? 'text-right' : ''}">
-                            ${isUser ? 'You' : 'AI Assistant'} · just now
+                            ${isUser ? 'Anda' : 'Asisten AI'} · baru saja
                         </div>
                         <div class="p-4 rounded-2xl ${isUser ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}">
                             <div class="prose prose-sm max-w-none ${isUser ? 'prose-invert' : ''}">
@@ -277,12 +278,12 @@
 
             async function archiveConversation() {
                 const result = await Swal.fire({
-                    title: 'Archive Conversation?',
-                    text: 'You can still access archived conversations later.',
+                    title: 'Arsipkan Percakapan?',
+                    text: 'Anda masih dapat mengakses percakapan yang diarsipkan nanti.',
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonText: 'Yes, archive it',
-                    cancelButtonText: 'Cancel'
+                    confirmButtonText: 'Ya, arsipkan',
+                    cancelButtonText: 'Batal'
                 });
 
                 if (result.isConfirmed) {
@@ -299,8 +300,8 @@
                         if (data.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Archived!',
-                                text: 'Conversation has been archived.',
+                                title: 'Diarsipkan!',
+                                text: 'Percakapan telah diarsipkan.',
                                 timer: 1500
                             }).then(() => {
                                 window.location.href = '{{ route('ai.index') }}';
@@ -310,7 +311,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'Failed to archive conversation.'
+                            text: 'Gagal mengarsipkan percakapan.'
                         });
                     }
                 }
@@ -318,13 +319,13 @@
 
             async function deleteConversation() {
                 const result = await Swal.fire({
-                    title: 'Delete Conversation?',
-                    text: 'This action cannot be undone.',
+                    title: 'Hapus Percakapan?',
+                    text: 'Tindakan ini tidak dapat dibatalkan.',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#dc2626',
-                    confirmButtonText: 'Yes, delete it',
-                    cancelButtonText: 'Cancel'
+                    confirmButtonText: 'Ya, hapus',
+                    cancelButtonText: 'Batal'
                 });
 
                 if (result.isConfirmed) {
@@ -341,8 +342,8 @@
                         if (data.success) {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Deleted!',
-                                text: 'Conversation has been deleted.',
+                                title: 'Dihapus!',
+                                text: 'Percakapan telah dihapus.',
                                 timer: 1500
                             }).then(() => {
                                 window.location.href = '{{ route('ai.index') }}';
@@ -352,7 +353,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'Failed to delete conversation.'
+                            text: 'Gagal menghapus percakapan.'
                         });
                     }
                 }

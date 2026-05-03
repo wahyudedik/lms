@@ -3,7 +3,7 @@
         <!-- Reply Header -->
         <div class="flex items-start gap-4 mb-3">
             <div
-                class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold">
                 {{ substr($reply->user->name, 0, 1) }}
             </div>
             <div class="flex-1">
@@ -24,15 +24,15 @@
                 <!-- Reply Actions -->
                 <div class="flex items-center gap-3">
                     <button onclick="toggleLike('reply', {{ $reply->id }})" id="like-reply-{{ $reply->id }}"
-                        class="text-sm flex items-center gap-1 px-2 py-1 rounded {{ $reply->isLikedBy(auth()->user()) ? 'text-red-600' : 'text-gray-600' }} hover:text-red-600">
+                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-semibold {{ $reply->isLikedBy(auth()->user()) ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600' }} hover:bg-red-100 hover:text-red-600 transition-all duration-200">
                         <i class="fas fa-heart"></i>
                         <span id="likes-count-reply-{{ $reply->id }}">{{ $reply->likes_count }}</span>
                     </button>
 
                     @if (!$thread->is_locked || auth()->user()->isAdmin())
                         <button onclick="replyTo({{ $reply->id }}, '{{ $reply->user->name }}')"
-                            class="text-sm text-gray-600 hover:text-indigo-600">
-                            <i class="fas fa-reply mr-1"></i>Reply
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-semibold bg-gray-100 text-gray-600 hover:bg-purple-100 hover:text-purple-600 transition-all duration-200">
+                            <i class="fas fa-reply"></i>Reply
                         </button>
                     @endif
 
@@ -41,8 +41,8 @@
                             ($thread->user_id === auth()->id() || auth()->user()->isAdmin() || auth()->user()->isGuru()))
                         <form action="{{ route('forum.solution', $reply->id) }}" method="POST" class="inline">
                             @csrf
-                            <button type="submit" class="text-sm text-gray-600 hover:text-green-600">
-                                <i class="fas fa-check mr-1"></i>Mark Solution
+                            <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-semibold bg-gray-100 text-gray-600 hover:bg-green-100 hover:text-green-600 transition-all duration-200">
+                                <i class="fas fa-check"></i>Mark Solution
                             </button>
                         </form>
                     @endif
@@ -50,8 +50,8 @@
                     @if ($reply->user_id === auth()->id() || auth()->user()->isAdmin())
                         <button type="button"
                             onclick="deleteReply({{ $reply->id }}, '{{ route('forum.reply.destroy', $reply->id) }}')"
-                            class="text-sm text-gray-600 hover:text-red-600">
-                            <i class="fas fa-trash mr-1"></i>Delete
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-semibold bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-600 transition-all duration-200">
+                            <i class="fas fa-trash"></i>Delete
                         </button>
                     @endif
                 </div>

@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $exam->title }}
+                <i class="fas fa-file-alt text-blue-600 mr-2"></i>{{ $exam->title }}
             </h2>
             <a href="{{ route('siswa.exams.index') }}"
-                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-sm transition">
+                <i class="fas fa-arrow-left"></i>{{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -24,7 +24,7 @@
             @endphp
 
             @if ($hasInProgressAttempt)
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
@@ -38,15 +38,15 @@
                             </div>
                             <div class="mt-4">
                                 <a href="{{ route('siswa.exams.take', $latestAttempt) }}"
-                                    class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                                    <i class="fas fa-play mr-2"></i>{{ __('Resume Exam') }}
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-sm transition">
+                                    <i class="fas fa-play"></i>{{ __('Resume Exam') }}
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
             @elseif (!$canTakeExam)
-                <div class="bg-red-50 border-l-4 border-red-400 p-4">
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <i class="fas fa-times-circle text-red-400 text-xl"></i>
@@ -62,46 +62,60 @@
             @endif
 
             <!-- Exam Information -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Exam Information') }}</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">
+                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>{{ __('Exam Information') }}
+                    </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Kursus</label>
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-book text-gray-400 mr-1"></i>Kursus
+                            </label>
                             <p class="mt-1 text-sm text-gray-900">{{ $exam->course->title }}</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Durasi</label>
-                            <p class="mt-1 text-sm text-gray-900">
-                                <i class="fas fa-clock mr-1"></i>{{ $exam->duration_minutes }} menit
-                            </p>
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-clock text-gray-400 mr-1"></i>Durasi
+                            </label>
+                            <p class="mt-1 text-sm text-gray-900">{{ $exam->duration_minutes }} menit</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">{{ __('Number of Questions') }}</label>
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-list-ol text-gray-400 mr-1"></i>{{ __('Number of Questions') }}
+                            </label>
                             <p class="mt-1 text-sm text-gray-900">{{ $exam->total_questions }} soal</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">{{ __('Pass Score') }}</label>
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-check-circle text-gray-400 mr-1"></i>{{ __('Pass Score') }}
+                            </label>
                             <p class="mt-1 text-sm text-gray-900">{{ $exam->pass_score }}%</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Maksimal Percobaan</label>
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-redo text-gray-400 mr-1"></i>Maksimal Percobaan
+                            </label>
                             <p class="mt-1 text-sm text-gray-900">{{ $exam->max_attempts }}x</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Percobaan Anda</label>
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-user-check text-gray-400 mr-1"></i>Percobaan Anda
+                            </label>
                             <p class="mt-1 text-sm text-gray-900">{{ $attemptCount }}/{{ $exam->max_attempts }}</p>
                         </div>
 
                         @if ($exam->start_time)
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Waktu Mulai</label>
+                                <label class="block text-sm font-semibold text-gray-700">
+                                    <i class="fas fa-calendar-alt text-gray-400 mr-1"></i>Waktu Mulai
+                                </label>
                                 <p class="mt-1 text-sm text-gray-900">
                                     {{ $exam->start_time->format('d M Y, H:i') }}
                                 </p>
@@ -110,7 +124,9 @@
 
                         @if ($exam->end_time)
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Deadline</label>
+                                <label class="block text-sm font-semibold text-gray-700">
+                                    <i class="fas fa-calendar-times text-gray-400 mr-1"></i>Deadline
+                                </label>
                                 <p class="mt-1 text-sm text-gray-900">
                                     {{ $exam->end_time->format('d M Y, H:i') }}
                                 </p>
@@ -120,15 +136,20 @@
 
                     @if ($exam->description)
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                            <p class="mt-1 text-sm text-gray-900">{{ $exam->description }}</p>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-align-left text-gray-400 mr-1"></i>Deskripsi
+                            </label>
+                            <p class="text-sm text-gray-900">{{ $exam->description }}</p>
                         </div>
                     @endif
 
                     @if ($exam->instructions)
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">{{ __('Instructions') }}</label>
-                            <div class="mt-1 text-sm text-gray-900 bg-blue-50 p-4 rounded-lg whitespace-pre-line">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-clipboard-list text-gray-400 mr-1"></i>{{ __('Instructions') }}
+                            </label>
+                            <div
+                                class="text-sm text-gray-900 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg whitespace-pre-line">
                                 {{ $exam->instructions }}
                             </div>
                         </div>
@@ -137,9 +158,11 @@
             </div>
 
             <!-- Exam Rules -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Exam Rules') }}</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">
+                        <i class="fas fa-gavel text-purple-600 mr-2"></i>{{ __('Exam Rules') }}
+                    </h3>
 
                     <div class="space-y-2 text-sm text-gray-700">
                         <div class="flex items-start">
@@ -186,32 +209,40 @@
 
             <!-- Previous Attempts -->
             @if ($attemptCount > 0)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Riwayat Percobaan</h3>
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">
+                            <i class="fas fa-history text-indigo-600 mr-2"></i>Riwayat Percobaan
+                        </h3>
 
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                            <table class="min-w-full border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase border-b">
                                             Percobaan</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase border-b">
                                             Waktu
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase border-b">
                                             {{ __('Score') }}
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase border-b">
                                             Status
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase border-b">
+                                            Aksi
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach ($userAttempts->sortByDesc('created_at') as $index => $attempt)
-                                        <tr>
+                                        <tr class="hover:bg-gray-50 transition">
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 #{{ $attemptCount - $index }}
                                             </td>
@@ -234,12 +265,12 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                 @if ($attempt->status === 'completed')
                                                     <a href="{{ route('siswa.exams.review-attempt', $attempt) }}"
-                                                        class="text-blue-600 hover:text-blue-900">
+                                                        class="text-blue-600 hover:text-blue-900 font-medium">
                                                         <i class="fas fa-eye mr-1"></i>Review
                                                     </a>
                                                 @elseif ($attempt->status === 'in_progress')
                                                     <a href="{{ route('siswa.exams.take', $attempt) }}"
-                                                        class="text-yellow-600 hover:text-yellow-900">
+                                                        class="text-yellow-600 hover:text-yellow-900 font-medium">
                                                         <i class="fas fa-play mr-1"></i>Lanjutkan
                                                     </a>
                                                 @endif
@@ -255,12 +286,14 @@
 
             <!-- Start Exam Button -->
             @if ($canTakeExam && !$hasInProgressAttempt)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
                     <div class="p-6">
                         <form action="{{ route('siswa.exams.start', $exam) }}" method="POST">
                             @csrf
-                            <div class="bg-blue-50 p-4 rounded-lg mb-4">
-                                <h4 class="font-semibold text-gray-900 mb-2">Siap untuk memulai ujian?</h4>
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">
+                                    <i class="fas fa-info-circle text-blue-600 mr-2"></i>Siap untuk memulai ujian?
+                                </h4>
                                 <p class="text-sm text-gray-700">
                                     Pastikan Anda telah membaca semua instruksi dengan seksama. Timer akan dimulai
                                     segera
@@ -270,12 +303,12 @@
 
                             <div class="flex gap-4">
                                 <button type="submit"
-                                    class="flex-1 bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded text-lg">
-                                    <i class="fas fa-pencil mr-2"></i>{{ __('Start Exam') }}
+                                    class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-sm transition text-lg">
+                                    <i class="fas fa-pencil-alt"></i>{{ __('Start Exam') }}
                                 </button>
                                 <a href="{{ route('siswa.exams.index') }}"
-                                    class="flex-1 bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded text-lg text-center">
-                                    Batal
+                                    class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-sm transition text-lg">
+                                    <i class="fas fa-times"></i>Batal
                                 </a>
                             </div>
                         </form>

@@ -3,28 +3,40 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\School;
 use App\Models\Setting;
-use App\Support\AppPreferences;
+use App\Services\ThemeService;
+use App\Support\AppPreferences as AppPreferencesSupport;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+use Illuminate\Support\Str;
 
 class SettingsController extends Controller
 {
+    protected ThemeService $themeService;
+
+    public function __construct(ThemeService $themeService)
+    {
+        $this->themeService = $themeService;
+    }
+
     /**
-     * Display settings page
+     * Display settings page — loads system settings + school profile + theme + landing page
      */
     public function index()
     {
-        $settings = Setting::getAllGrouped();
-        $timezoneOptions = AppPreferences::timezoneOptions();
-        $languageOptions = AppPreferences::languageOptions();
+        $settings        = Setting::getAllGrouped();
+        $timezoneOptions = AppPreferencesSupport::timezoneOptions();
+        $languageOptions = AppPreferencesSupport::languageOptions();
+
+        // Load the single school (first/only school in the system)
+        $school  = School::with('theme')->firstOrFail();
+        $theme   = $school->getActiveTheme();
+        $palettes = $this->themeService->getColorPalettes();
 
         return view(
             'admin.settings.index',
-            compact('settings', 'timezoneOptions', 'languageOptions')
+            compact('settings', 'timezoneOptions', 'languageOptions', 'school', 'theme', 'palettes')
         );
     }
 
@@ -119,7 +131,7 @@ class SettingsController extends Controller
             // Use mysqldump command
             // Try to find mysqldump in common paths
             $mysqldumpPath = $this->findMysqldumpPath();
-            
+
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                 // Windows - escape path and password
                 $escapedPassword = escapeshellarg($dbPassword);
@@ -155,7 +167,7 @@ class SettingsController extends Controller
             if ($returnVar !== 0 || !file_exists($filepath) || filesize($filepath) === 0) {
                 // Fallback: Use Laravel's DB export
                 $this->fallbackBackup($filepath);
-                
+
                 // Log error if backup failed
                 if (!file_exists($filepath) || filesize($filepath) === 0) {
                     \Log::error('Database backup failed', [
@@ -290,7 +302,7 @@ class SettingsController extends Controller
         // Check if mysqldump is in PATH
         $whichCommand = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'where' : 'which';
         $path = @shell_exec(escapeshellcmd($whichCommand) . ' mysqldump 2>&1');
-        
+
         if ($path && file_exists(trim($path))) {
             $trimmedPath = trim($path);
             // Security: Only allow paths that exist and are executable
@@ -308,5 +320,221 @@ class SettingsController extends Controller
 
         // Fallback to just 'mysqldump' (assume it's in PATH)
         return 'mysqldump';
+    }
+
+    // =========================================================================
+    // SCHOOL PROFILE
+    // =========================================================================
+
+    /**
+     * Update school profile (name, logo, favicon, contact info)
+     */
+    public function updateSchool(Request $request)
+    {
+        $school = School::firstOrFail();
+
+        $validated = $request->validate([
+            'name'    => 'required|string|max:255',
+            'email'   => 'nullable|email|max:255',
+            'phone'   => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'logo'    => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'favicon' => 'nullable|image|mimes:ico,png,svg|max:512',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            if ($school->logo) {
+                Storage::disk('public')->delete($school->logo);
+            }
+            $validated['logo'] = $request->file('logo')->store('schools/logos', 'public');
+        }
+
+        if ($request->hasFile('favicon')) {
+            if ($school->favicon) {
+                Storage::disk('public')->delete($school->favicon);
+            }
+            $validated['favicon'] = $request->file('favicon')->store('schools/favicons', 'public');
+        }
+
+        if (empty($school->slug)) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
+
+        $school->update($validated);
+
+        return redirect()->route('admin.settings.index', ['tab' => 'school'])
+            ->with('success', __('Profil sekolah berhasil diperbarui'));
+    }
+
+    // =========================================================================
+    // THEME
+    // =========================================================================
+
+    /**
+     * Update school theme
+     */
+    public function updateTheme(Request $request)
+    {
+        $school = School::firstOrFail();
+        $theme  = $school->getActiveTheme();
+
+        $validated = $request->validate([
+            'primary_color'      => 'required|string|max:7',
+            'secondary_color'    => 'required|string|max:7',
+            'accent_color'       => 'required|string|max:7',
+            'success_color'      => 'required|string|max:7',
+            'warning_color'      => 'required|string|max:7',
+            'danger_color'       => 'required|string|max:7',
+            'info_color'         => 'required|string|max:7',
+            'dark_color'         => 'required|string|max:7',
+            'text_primary'       => 'required|string|max:7',
+            'text_secondary'     => 'required|string|max:7',
+            'text_muted'         => 'required|string|max:7',
+            'background_color'   => 'required|string|max:7',
+            'card_background'    => 'required|string|max:7',
+            'navbar_background'  => 'required|string|max:7',
+            'sidebar_background' => 'required|string|max:7',
+            'font_family'        => 'nullable|string|max:255',
+            'heading_font'       => 'nullable|string|max:255',
+            'font_size'          => 'required|integer|min:10|max:24',
+            'custom_css'         => 'nullable|string',
+            'login_background'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'dashboard_hero'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'border_radius'      => 'nullable|string|max:20',
+            'box_shadow'         => 'nullable|string|max:100',
+            'dark_mode'          => 'boolean',
+        ]);
+
+        if ($request->hasFile('login_background')) {
+            if ($theme->login_background) {
+                Storage::disk('public')->delete($theme->login_background);
+            }
+            $validated['login_background'] = $request->file('login_background')
+                ->store('themes/backgrounds', 'public');
+        }
+
+        if ($request->hasFile('dashboard_hero')) {
+            if ($theme->dashboard_hero) {
+                Storage::disk('public')->delete($theme->dashboard_hero);
+            }
+            $validated['dashboard_hero'] = $request->file('dashboard_hero')
+                ->store('themes/heroes', 'public');
+        }
+
+        $theme->update($validated);
+        $this->themeService->clearCache($school->id);
+
+        return redirect()->route('admin.settings.index', ['tab' => 'theme'])
+            ->with('success', __('Tema berhasil diperbarui'));
+    }
+
+    /**
+     * Apply a quick color palette to the theme
+     */
+    public function applyPalette(Request $request)
+    {
+        $school      = School::firstOrFail();
+        $palettes    = $this->themeService->getColorPalettes();
+        $paletteName = $request->input('palette');
+
+        if (!isset($palettes[$paletteName])) {
+            return back()->with('error', 'Palette tidak ditemukan!');
+        }
+
+        $theme = $school->getActiveTheme();
+        $theme->update([
+            'primary_color'   => $palettes[$paletteName]['primary_color'],
+            'secondary_color' => $palettes[$paletteName]['secondary_color'],
+            'accent_color'    => $palettes[$paletteName]['accent_color'],
+        ]);
+
+        $this->themeService->clearCache($school->id);
+
+        return redirect()->route('admin.settings.index', ['tab' => 'theme'])
+            ->with('success', __('Palette berhasil diterapkan'));
+    }
+
+    /**
+     * Reset theme to default
+     */
+    public function resetTheme()
+    {
+        $school       = School::firstOrFail();
+        $theme        = $school->getActiveTheme();
+        $defaultTheme = $this->themeService->getDefaultTheme();
+
+        $theme->update($defaultTheme->toArray());
+        $this->themeService->clearCache($school->id);
+
+        return redirect()->route('admin.settings.index', ['tab' => 'theme'])
+            ->with('success', __('Tema berhasil direset ke default'));
+    }
+
+    // =========================================================================
+    // LANDING PAGE
+    // =========================================================================
+
+    /**
+     * Update landing page content
+     */
+    public function updateLandingPage(Request $request)
+    {
+        $school = School::firstOrFail();
+
+        $validated = $request->validate([
+            'show_landing_page'      => 'nullable|boolean',
+            'hero_title'             => 'nullable|string|max:255',
+            'hero_subtitle'          => 'nullable|string|max:255',
+            'hero_description'       => 'nullable|string',
+            'hero_image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'hero_cta_text'          => 'nullable|string|max:100',
+            'hero_cta_link'          => 'nullable|string|max:255',
+            'about_title'            => 'nullable|string',
+            'about_content'          => 'nullable|string',
+            'about_image'            => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'features'               => 'nullable|array',
+            'features.*.icon'        => 'nullable|string|max:100',
+            'features.*.title'       => 'nullable|string|max:255',
+            'features.*.description' => 'nullable|string',
+            'statistics'             => 'nullable|array',
+            'statistics.*.label'     => 'nullable|string|max:100',
+            'statistics.*.value'     => 'nullable|string|max:100',
+            'contact_address'        => 'nullable|string',
+            'contact_phone'          => 'nullable|string|max:20',
+            'contact_email'          => 'nullable|email|max:255',
+            'contact_whatsapp'       => 'nullable|string|max:20',
+            'social_facebook'        => 'nullable|url|max:255',
+            'social_instagram'       => 'nullable|url|max:255',
+            'social_twitter'         => 'nullable|url|max:255',
+            'social_youtube'         => 'nullable|url|max:255',
+            'meta_title'             => 'nullable|string|max:255',
+            'meta_description'       => 'nullable|string',
+            'meta_keywords'          => 'nullable|string',
+        ]);
+
+        if ($request->hasFile('hero_image')) {
+            if ($school->hero_image) {
+                Storage::disk('public')->delete($school->hero_image);
+            }
+            $validated['hero_image'] = $request->file('hero_image')
+                ->store('landing-pages/heroes', 'public');
+        }
+
+        if ($request->hasFile('about_image')) {
+            if ($school->about_image) {
+                Storage::disk('public')->delete($school->about_image);
+            }
+            $validated['about_image'] = $request->file('about_image')
+                ->store('landing-pages/about', 'public');
+        }
+
+        $validated['show_landing_page'] = $request->has('show_landing_page');
+
+        \Cache::forget(\App\Models\School::CACHE_KEY_ACTIVE_LANDING);
+
+        $school->update($validated);
+
+        return redirect()->route('admin.settings.index', ['tab' => 'landing'])
+            ->with('success', __('Landing page berhasil diperbarui'));
     }
 }

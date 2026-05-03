@@ -2,18 +2,19 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Edit Soal - {{ $exam->title }}
+                <i class="fas fa-edit mr-2"></i>Edit Soal - {{ $exam->title }}
             </h2>
             <a href="{{ route('guru.exams.questions.index', $exam) }}"
-                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                ← {{ __('Back') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                <i class="fas fa-arrow-left"></i>
+                {{ __('Back') }}
             </a>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6 text-gray-900">
                     <form action="{{ route('guru.exams.questions.update', [$exam, $question]) }}" method="POST"
                         enctype="multipart/form-data">
@@ -252,15 +253,17 @@
                         </div>
 
                         <!-- Submit -->
-                        <div class="flex gap-4">
-                            <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-save mr-2"></i>Update Soal
-                            </button>
+                        <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
                             <a href="{{ route('guru.exams.questions.index', $exam) }}"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                                <i class="fas fa-times"></i>
                                 Batal
                             </a>
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-save"></i>
+                                Update Soal
+                            </button>
                         </div>
                     </form>
 
@@ -348,7 +351,7 @@
                 div.innerHTML = `
                 <span class="font-bold text-gray-700 w-8">${letter}.</span>
                 <input type="hidden" name="options[${optionIndex}][id]" value="${letter}">
-                <input type="text" name="options[${optionIndex}][text]" required 
+                <input type="text" name="options[${optionIndex}][text]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="Teks opsi ${letter}">
                 <button type="button" class="text-red-600 hover:text-red-900 remove-option">
                     <i class="fas fa-times-circle"></i>
@@ -368,7 +371,7 @@
                 const checkbox = document.createElement('label');
                 checkbox.className = 'flex items-center';
                 checkbox.innerHTML = `
-                <input type="checkbox" name="correct_answer_multiple[]" value="${letter}" 
+                <input type="checkbox" name="correct_answer_multiple[]" value="${letter}"
                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                 <span class="ml-2 text-sm text-gray-700">${letter}</span>
             `;
@@ -390,10 +393,10 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                <input type="text" name="pairs[${pairIndex}][left]" required 
+                <input type="text" name="pairs[${pairIndex}][left]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="Item kiri">
                 <i class="fas fa-arrows-alt-h text-gray-400"></i>
-                <input type="text" name="pairs[${pairIndex}][right]" required 
+                <input type="text" name="pairs[${pairIndex}][right]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="Item kanan">
                 <button type="button" class="text-red-600 hover:text-red-900 remove-pair">
                     <i class="fas fa-times-circle"></i>
@@ -428,7 +431,7 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                <input type="text" name="essay_keywords[]" 
+                <input type="text" name="essay_keywords[]"
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="Kata kunci (contoh: fotosintesis)">
                 <input type="number" name="essay_keyword_points[]" min="0" step="0.1" value="2"
                     class="w-24 rounded-md border-gray-300 shadow-sm" placeholder="Poin">

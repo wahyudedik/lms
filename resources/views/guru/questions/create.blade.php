@@ -2,18 +2,19 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Add Question - :title', ['title' => $exam->title]) }}
+                <i class="fas fa-plus-circle mr-2"></i>{{ __('Add Question - :title', ['title' => $exam->title]) }}
             </h2>
             <a href="{{ route('guru.exams.questions.index', $exam) }}"
-                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                <i class="fas fa-arrow-left"></i>
+                {{ __('Back') }}
             </a>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
                     <form action="{{ route('guru.exams.questions.store', $exam) }}" method="POST"
                         enctype="multipart/form-data">
@@ -21,11 +22,12 @@
 
                         <!-- Question Type -->
                         <div class="mb-6">
-                            <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Question Type') }} <span class="text-red-500">*</span>
+                            <label for="type" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-layer-group text-gray-400 mr-1"></i>{{ __('Question Type') }} <span
+                                    class="text-red-500">*</span>
                             </label>
                             <select name="type" id="type" required
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                                 <option value="mcq_single" {{ old('type') == 'mcq_single' ? 'selected' : '' }}>
                                     Pilihan Ganda (Single Answer)
                                 </option>
@@ -43,27 +45,29 @@
 
                         <!-- Question Text -->
                         <div class="mb-6">
-                            <label for="question_text" class="block text-sm font-medium text-gray-700 mb-2">
-                                Pertanyaan <span class="text-red-500">*</span>
+                            <label for="question_text" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-question-circle text-gray-400 mr-1"></i>Pertanyaan <span
+                                    class="text-red-500">*</span>
                             </label>
-                            <textarea name="question_text" id="question_text" rows="3" required
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('question_text') }}</textarea>
+                            <textarea name="question_text" id="question_text" rows="3" required placeholder="Masukkan pertanyaan..."
+                                class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('question_text') }}</textarea>
                         </div>
 
                         <!-- Question Image -->
                         <div class="mb-6">
-                            <label for="question_image" class="block text-sm font-medium text-gray-700 mb-2">
-                                Gambar (Opsional)
+                            <label for="question_image" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-image text-gray-400 mr-1"></i>Gambar (Opsional)
                             </label>
                             <input type="file" name="question_image" id="question_image" accept="image/*"
-                                class="w-full">
+                                class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                             <p class="text-sm text-gray-500 mt-1">Maksimal 2MB (JPG, PNG, GIF)</p>
                         </div>
 
                         <!-- MCQ Options Section -->
                         <div id="mcq-section" class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Answer Options') }} <span class="text-red-500">*</span>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-list-ul text-gray-400 mr-1"></i>{{ __('Answer Options') }} <span
+                                    class="text-red-500">*</span>
                             </label>
                             <div id="options-container" class="space-y-3">
                                 <!-- Options will be added by JavaScript -->
@@ -83,7 +87,8 @@
 
                             <div id="correct-answer-multiple" class="mt-4 hidden">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Correct Answers (Select all that apply)') }} <span class="text-red-500">*</span>
+                                    {{ __('Correct Answers (Select all that apply)') }} <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <div id="correct-checkboxes" class="space-y-2">
                                     <!-- Checkboxes will be added by JavaScript -->
@@ -224,15 +229,17 @@
                         </div>
 
                         <!-- Submit -->
-                        <div class="flex gap-4">
-                            <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-save mr-2"></i>{{ __('Save Question') }}
-                            </button>
+                        <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
                             <a href="{{ route('guru.exams.questions.index', $exam) }}"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                                <i class="fas fa-times"></i>
                                 Batal
                             </a>
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-save"></i>
+                                {{ __('Save Question') }}
+                            </button>
                         </div>
                     </form>
 
@@ -343,7 +350,7 @@
                 div.innerHTML = `
                 <span class="font-bold text-gray-700 w-8">${letter}.</span>
                 <input type="hidden" name="options[${optionIndex}][id]" value="${letter}">
-                <input type="text" name="options[${optionIndex}][text]" required 
+                <input type="text" name="options[${optionIndex}][text]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="Teks opsi ${letter}">
                 <button type="button" class="text-red-600 hover:text-red-900 remove-option">
                     <i class="fas fa-times-circle"></i>
@@ -394,10 +401,10 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                <input type="text" name="pairs[${pairIndex}][left]" required 
+                <input type="text" name="pairs[${pairIndex}][left]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="Item kiri">
                 <i class="fas fa-arrows-alt-h text-gray-400"></i>
-                <input type="text" name="pairs[${pairIndex}][right]" required 
+                <input type="text" name="pairs[${pairIndex}][right]" required
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="Item kanan">
                 <button type="button" class="text-red-600 hover:text-red-900 remove-pair">
                     <i class="fas fa-times-circle"></i>
@@ -440,7 +447,7 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                <input type="text" name="essay_keywords[]" 
+                <input type="text" name="essay_keywords[]"
                     class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="Kata kunci (contoh: fotosintesis)">
                 <input type="number" name="essay_keyword_points[]" min="0" step="0.1" value="2"
                     class="w-24 rounded-md border-gray-300 shadow-sm" placeholder="Poin">

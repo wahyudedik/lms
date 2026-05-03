@@ -1,99 +1,172 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-purple-100 rounded-lg">
+                    <i class="fas fa-user-circle text-purple-600 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Profil Saya</h2>
+                    <p class="text-sm text-gray-600">Kelola informasi profil dan keamanan akun Anda</p>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <!-- Profile Photo Section -->
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-photo-form')
-                </div>
-            </div>
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Sidebar Profile Card -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                        <div class="text-center">
+                            <div class="relative inline-block">
+                                <img class="h-32 w-32 rounded-full object-cover border-4 border-purple-100"
+                                    src="{{ auth()->user()->profile_photo_url }}" alt="{{ auth()->user()->name }}"
+                                    id="sidebar-photo">
+                                <div
+                                    class="absolute bottom-0 right-0 bg-purple-600 rounded-full p-2 border-4 border-white">
+                                    <i class="fas fa-camera text-white text-sm"></i>
+                                </div>
+                            </div>
+                            <h3 class="mt-4 text-xl font-bold text-gray-900">{{ auth()->user()->name }}</h3>
+                            <p class="text-sm text-gray-600">{{ auth()->user()->email }}</p>
+                            <div class="mt-3">
+                                @if (auth()->user()->role === 'admin')
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                                        <i class="fas fa-shield-alt"></i>
+                                        Administrator
+                                    </span>
+                                @elseif(auth()->user()->role === 'guru')
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                        Dosen
+                                    </span>
+                                @else
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                                        <i class="fas fa-user-graduate"></i>
+                                        Mahasiswa
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Status Email</span>
+                                    @if (auth()->user()->hasVerifiedEmail())
+                                        <span class="inline-flex items-center gap-1 text-green-600 font-medium">
+                                            <i class="fas fa-check-circle"></i>
+                                            Terverifikasi
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 text-yellow-600 font-medium">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            Belum Terverifikasi
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Bergabung</span>
+                                    <span
+                                        class="text-gray-900 font-medium">{{ auth()->user()->created_at->format('d M Y') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Profile Photo Section -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                        @include('profile.partials.update-profile-photo-form')
+                    </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
+                    <!-- Profile Information Section -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                        @include('profile.partials.update-profile-information-form')
+                    </div>
+
+                    <!-- Update Password Section -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                        @include('profile.partials.update-password-form')
+                    </div>
+
+                    <!-- Delete Account Section -->
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                        @include('profile.partials.delete-user-form')
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     @push('scripts')
-    <script>
-        // Profile Update Success
-        @if (session('status') === 'profile-updated')
-            Swal.fire({
-                icon: 'success',
-                title: 'Profile Updated!',
-                text: 'Your profile information has been saved successfully.',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-        @endif
+        <script>
+            // Profile Update Success
+            @if (session('status') === 'profile-updated')
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Informasi profil Anda berhasil diperbarui.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            @endif
 
-        // Password Update Success
-        @if (session('status') === 'password-updated')
-            Swal.fire({
-                icon: 'success',
-                title: 'Password Updated!',
-                text: 'Your password has been changed successfully.',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-        @endif
+            // Password Update Success
+            @if (session('status') === 'password-updated')
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Password Anda berhasil diubah.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            @endif
 
-        // Email Verification Link Sent
-        @if (session('status') === 'verification-link-sent')
-            Swal.fire({
-                icon: 'success',
-                title: 'Verification Link Sent!',
-                text: 'A new verification link has been sent to your email address.',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true
-            });
-        @endif
+            // Email Verification Link Sent
+            @if (session('status') === 'verification-link-sent')
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Link verifikasi baru telah dikirim ke alamat email Anda.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true
+                });
+            @endif
 
-        // Show account deletion errors (only for critical errors)
-        @if ($errors->userDeletion->any())
-            @php
-                $deletionErrors = [];
-                foreach ($errors->userDeletion->all() as $error) {
-                    $deletionErrors[] = $error;
-                }
-                $deletionErrorText = implode('<br>', $deletionErrors);
-            @endphp
-            Swal.fire({
-                icon: 'error',
-                title: 'Account Deletion Failed!',
-                html: '{!! $deletionErrorText !!}',
-                confirmButtonText: 'OK'
-            });
-        @endif
-    </script>
+            // Show account deletion errors
+            @if ($errors->userDeletion->any())
+                @php
+                    $deletionErrors = [];
+                    foreach ($errors->userDeletion->all() as $error) {
+                        $deletionErrors[] = $error;
+                    }
+                    $deletionErrorText = implode('<br>', $deletionErrors);
+                @endphp
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Menghapus Akun!',
+                    html: '{!! $deletionErrorText !!}',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#EF4444'
+                });
+            @endif
+        </script>
     @endpush
 </x-app-layout>

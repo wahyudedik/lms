@@ -2,13 +2,14 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="text-2xl font-bold text-gray-800">
-                🎓 {{ __('Certificate Settings') }}
+                <i class="fas fa-certificate text-indigo-600 mr-2"></i>{{ __('Certificate Settings') }}
             </h2>
             <form action="{{ route('admin.certificate-settings.reset') }}" method="POST"
                 onsubmit="return confirm('{{ __('Are you sure you want to reset to default settings?') }}')">
                 @csrf
-                <button type="submit" class="btn btn-outline">
-                    <i class="fas fa-undo mr-2"></i>{{ __('Reset to Default') }}
+                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-undo"></i>
+                    <span>{{ __('Reset to Default') }}</span>
                 </button>
             </form>
         </div>
@@ -55,23 +56,8 @@
 
                                         <!-- Template Preview -->
                                         <div
-                                            class="aspect-video bg-gradient-to-br 
-                                            {{ $key === 'default' ? 'from-purple-100 to-pink-100' : '' }}
-                                            {{ $key === 'modern' ? 'from-blue-100 to-purple-100' : '' }}
-                                            {{ $key === 'elegant' ? 'from-amber-50 to-yellow-50' : '' }}
-                                            {{ $key === 'minimalist' ? 'from-gray-100 to-gray-200' : '' }}
-                                            rounded-lg mb-3 flex items-center justify-center border">
-                                            <span class="text-4xl">
-                                                @if ($key === 'default')
-                                                    🏆
-                                                @elseif($key === 'modern')
-                                                    💎
-                                                @elseif($key === 'elegant')
-                                                    🎖️
-                                                @else
-                                                    ✨
-                                                @endif
-                                            </span>
+                                            class="aspect-video bg-purple-50 rounded-lg mb-3 flex items-center justify-center border border-purple-200">
+                                            <i class="fas fa-trophy text-purple-600 text-5xl"></i>
                                         </div>
 
                                         <!-- Template Info -->
@@ -270,12 +256,14 @@
                 <!-- Save Button -->
                 <div class="flex justify-end gap-3">
                     <a href="{{ route('admin.dashboard') }}"
-                        class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
-                        {{ __('Cancel') }}
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                        <i class="fas fa-times"></i>
+                        <span>{{ __('Cancel') }}</span>
                     </a>
                     <button type="submit"
-                        class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors">
-                        <i class="fas fa-save mr-2"></i>{{ __('Save Settings') }}
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-save"></i>
+                        <span>{{ __('Save Settings') }}</span>
                     </button>
                 </div>
             </form>

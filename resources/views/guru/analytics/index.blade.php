@@ -2,9 +2,10 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <i class="fas fa-chart-area text-green-600 mr-2"></i>My Teaching Analytics
+                <i class="fas fa-chart-area mr-2"></i>My Teaching Analytics
             </h2>
-            <select id="course_filter" class="rounded-md border-gray-300 shadow-sm text-sm"
+            <select id="course_filter"
+                class="px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150 text-sm"
                 onchange="refreshCourseCharts()">
                 <option value="">All Courses</option>
                 @foreach ($courses as $course)
@@ -19,50 +20,54 @@
 
             <!-- Overview Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-green-100 text-sm">My Courses</p>
-                            <p class="text-3xl font-bold mt-2">{{ number_format($stats['total_courses']) }}</p>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-green-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg mr-3">
+                            <i class="fas fa-book text-green-600 text-2xl"></i>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <i class="fas fa-book text-2xl"></i>
+                        <div>
+                            <div class="text-green-600 text-xs font-semibold mb-1">My Courses</div>
+                            <div class="text-2xl font-bold text-green-900">{{ number_format($stats['total_courses']) }}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100 text-sm">Total Students</p>
-                            <p class="text-3xl font-bold mt-2">{{ number_format($stats['total_students']) }}</p>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-blue-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg mr-3">
+                            <i class="fas fa-users text-blue-600 text-2xl"></i>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <i class="fas fa-users text-2xl"></i>
+                        <div>
+                            <div class="text-blue-600 text-xs font-semibold mb-1">Total Students</div>
+                            <div class="text-2xl font-bold text-blue-900">{{ number_format($stats['total_students']) }}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-purple-100 text-sm">Exam Attempts</p>
-                            <p class="text-3xl font-bold mt-2">{{ number_format($stats['total_attempts']) }}</p>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-purple-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg mr-3">
+                            <i class="fas fa-clipboard-check text-purple-600 text-2xl"></i>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <i class="fas fa-clipboard-check text-2xl"></i>
+                        <div>
+                            <div class="text-purple-600 text-xs font-semibold mb-1">Exam Attempts</div>
+                            <div class="text-2xl font-bold text-purple-900">
+                                {{ number_format($stats['total_attempts']) }}</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-6 text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-orange-100 text-sm">Avg Score</p>
-                            <p class="text-3xl font-bold mt-2">{{ number_format($stats['avg_score'], 1) }}%</p>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-orange-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-orange-100 rounded-lg mr-3">
+                            <i class="fas fa-star text-orange-600 text-2xl"></i>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <i class="fas fa-star text-2xl"></i>
+                        <div>
+                            <div class="text-orange-600 text-xs font-semibold mb-1">Avg Score</div>
+                            <div class="text-2xl font-bold text-orange-900">{{ number_format($stats['avg_score'], 1) }}%
+                            </div>
                         </div>
                     </div>
                 </div>

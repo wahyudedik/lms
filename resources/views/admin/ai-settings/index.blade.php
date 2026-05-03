@@ -42,50 +42,58 @@
 
             <!-- Statistics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-xl shadow-lg text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100 text-sm">{{ __('Total Conversations') }}</p>
-                            <p class="text-3xl font-bold mt-1">{{ number_format($stats['total_conversations']) }}</p>
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg mr-3">
+                            <i class="fas fa-comments text-blue-600 text-2xl"></i>
                         </div>
-                        <i class="fas fa-comments text-4xl opacity-50"></i>
+                        <div>
+                            <div class="text-blue-600 text-xs font-semibold mb-1">{{ __('Total Conversations') }}</div>
+                            <div class="text-2xl font-bold text-blue-900">{{ number_format($stats['total_conversations']) }}</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-6 rounded-xl shadow-lg text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-purple-100 text-sm">{{ __('Total Messages') }}</p>
-                            <p class="text-3xl font-bold mt-1">{{ number_format($stats['total_messages']) }}</p>
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg mr-3">
+                            <i class="fas fa-message text-purple-600 text-2xl"></i>
                         </div>
-                        <i class="fas fa-message text-4xl opacity-50"></i>
+                        <div>
+                            <div class="text-purple-600 text-xs font-semibold mb-1">{{ __('Total Messages') }}</div>
+                            <div class="text-2xl font-bold text-purple-900">{{ number_format($stats['total_messages']) }}</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-xl shadow-lg text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-green-100 text-sm">{{ __('Tokens Used') }}</p>
-                            <p class="text-3xl font-bold mt-1">{{ number_format($stats['total_tokens_used']) }}</p>
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg mr-3">
+                            <i class="fas fa-coins text-green-600 text-2xl"></i>
                         </div>
-                        <i class="fas fa-coins text-4xl opacity-50"></i>
+                        <div>
+                            <div class="text-green-600 text-xs font-semibold mb-1">{{ __('Tokens Used') }}</div>
+                            <div class="text-2xl font-bold text-green-900">{{ number_format($stats['total_tokens_used']) }}</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 rounded-xl shadow-lg text-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-orange-100 text-sm">{{ __('Active Chats') }}</p>
-                            <p class="text-3xl font-bold mt-1">{{ number_format($stats['active_conversations']) }}</p>
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-orange-100 rounded-lg mr-3">
+                            <i class="fas fa-bolt text-orange-600 text-2xl"></i>
                         </div>
-                        <i class="fas fa-bolt text-4xl opacity-50"></i>
+                        <div>
+                            <div class="text-orange-600 text-xs font-semibold mb-1">{{ __('Active Chats') }}</div>
+                            <div class="text-2xl font-bold text-orange-900">{{ number_format($stats['active_conversations']) }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Status Banner -->
             <div
-                class="mb-8 p-6 rounded-xl shadow-md {{ $status['enabled'] ? 'bg-green-50 border-2 border-green-200' : 'bg-yellow-50 border-2 border-yellow-200' }}">
+                class="mb-8 p-6 rounded-lg shadow-md {{ $status['enabled'] ? 'bg-green-50 border-2 border-green-200' : 'bg-yellow-50 border-2 border-yellow-200' }}">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="p-3 rounded-full {{ $status['enabled'] ? 'bg-green-100' : 'bg-yellow-100' }}">
@@ -120,9 +128,9 @@
                 @csrf
 
                 <!-- Basic Configuration -->
-                <div class="bg-white p-8 rounded-xl shadow-md">
+                <div class="bg-white p-8 rounded-lg shadow-md">
                     <h3 class="text-xl font-bold mb-6 text-gray-900 flex items-center">
-                        <i class="fas fa-cog mr-3 text-blue-600"></i>
+                        <i class="fas fa-cog text-blue-600 mr-3"></i>
                         {{ __('Basic Configuration') }}
                     </h3>
 
@@ -199,9 +207,9 @@
                 </div>
 
                 <!-- Advanced Settings -->
-                <div class="bg-white p-8 rounded-xl shadow-md">
+                <div class="bg-white p-8 rounded-lg shadow-md">
                     <h3 class="text-xl font-bold mb-6 text-gray-900 flex items-center">
-                        <i class="fas fa-sliders-h mr-3 text-purple-600"></i>
+                        <i class="fas fa-sliders-h text-purple-600 mr-3"></i>
                         {{ __('Advanced Settings') }}
                     </h3>
 
@@ -278,19 +286,21 @@
                 <!-- Save Button -->
                 <div class="flex justify-end gap-3">
                     <a href="{{ route('admin.dashboard') }}"
-                        class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-                        <i class="fas fa-times mr-2"></i>{{ __('Cancel') }}
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                        <i class="fas fa-times"></i>
+                        <span>{{ __('Cancel') }}</span>
                     </a>
-                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                        <i class="fas fa-save mr-2"></i>{{ __('Save Settings') }}
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-save"></i>
+                        <span>{{ __('Save Settings') }}</span>
                     </button>
                 </div>
             </form>
 
             <!-- Help Section -->
-            <div class="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-xl border border-blue-200">
+            <div class="mt-8 bg-blue-50 p-8 rounded-lg border border-blue-200 shadow-md">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">
-                    <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
+                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
                     {{ __('Getting Started with AI Assistant') }}
                 </h3>
                 <div class="space-y-3 text-sm text-gray-700">

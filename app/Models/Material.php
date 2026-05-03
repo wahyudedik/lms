@@ -66,13 +66,17 @@ class Material extends Model
         'file_name',
         'file_size',
         'url',
+        'youtube_id',
+        'external_link',
         'order',
         'is_published',
+        'allow_comments',
         'published_at',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'allow_comments' => 'boolean',
         'published_at' => 'datetime',
         'file_size' => 'integer',
         'order' => 'integer',

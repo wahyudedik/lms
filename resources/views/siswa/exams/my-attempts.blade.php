@@ -2,11 +2,12 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                📋 {{ __('My Exam History') }}
+                <i class="fas fa-history mr-2"></i>{{ __('My Exam History') }}
             </h2>
             <a href="{{ route('siswa.exams.index') }}"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-list mr-2"></i>{{ __('Browse Exams') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                <i class="fas fa-list"></i>
+                {{ __('Browse Exams') }}
             </a>
         </div>
     </x-slot>
@@ -15,47 +16,48 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if ($attempts->count() > 0)
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-md rounded-lg">
                     <div class="p-6">
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                            <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             {{ __('Exam') }}
                                         </th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             Waktu
                                         </th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             Durasi
                                         </th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             {{ __('Score') }}
                                         </th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             Status
                                         </th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             Aksi
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach ($attempts as $attempt)
-                                        <tr class="hover:bg-gray-50">
+                                        <tr class="hover:bg-gray-50 transition-colors">
                                             <!-- Exam Info -->
                                             <td class="px-6 py-4">
-                                                <div class="text-sm font-medium text-gray-900">
+                                                <div class="text-sm font-semibold text-gray-900">
                                                     {{ $attempt->exam->title }}
                                                 </div>
-                                                <div class="text-sm text-gray-500">
+                                                <div class="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                                                    <i class="fas fa-book text-blue-500"></i>
                                                     {{ $attempt->exam->course->title }}
                                                 </div>
                                             </td>
@@ -182,46 +184,77 @@
                             ->avg('score');
                     @endphp
 
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-center">
-                            <div class="text-3xl font-bold text-gray-900">{{ $totalAttempts }}</div>
-                            <div class="text-sm text-gray-600 mt-1">Total Percobaan</div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-center">
-                            <div class="text-3xl font-bold text-blue-600">{{ $completedAttempts }}</div>
-                            <div class="text-sm text-gray-600 mt-1">Selesai</div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-center">
-                            <div class="text-3xl font-bold text-green-600">{{ $passedAttempts }}</div>
-                            <div class="text-sm text-gray-600 mt-1">Lulus</div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6 text-center">
-                            <div class="text-3xl font-bold text-purple-600">
-                                {{ $avgScore ? number_format($avgScore, 1) . '%' : '-' }}
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg border-l-4 border-gray-600">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-gray-100 rounded-lg mr-4">
+                                    <i class="fas fa-clipboard-list text-gray-600 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600 mb-1">Total Percobaan</div>
+                                    <div class="text-2xl font-bold text-gray-900">{{ $totalAttempts }}</div>
+                                </div>
                             </div>
-                            <div class="text-sm text-gray-600 mt-1">{{ __('Average Score') }}</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg border-l-4 border-blue-600">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-blue-100 rounded-lg mr-4">
+                                    <i class="fas fa-check-circle text-blue-600 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600 mb-1">Selesai</div>
+                                    <div class="text-2xl font-bold text-gray-900">{{ $completedAttempts }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg border-l-4 border-green-600">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-green-100 rounded-lg mr-4">
+                                    <i class="fas fa-trophy text-green-600 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600 mb-1">Lulus</div>
+                                    <div class="text-2xl font-bold text-gray-900">{{ $passedAttempts }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg border-l-4 border-purple-600">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-purple-100 rounded-lg mr-4">
+                                    <i class="fas fa-star text-purple-600 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600 mb-1">{{ __('Average Score') }}</div>
+                                    <div class="text-2xl font-bold text-gray-900">
+                                        {{ $avgScore ? number_format($avgScore, 1) . '%' : '-' }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             @else
                 <!-- Empty State -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-md rounded-lg">
                     <div class="p-12 text-center">
-                        <i class="fas fa-clipboard-list text-6xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500 text-lg mb-2">{{ __('No exam history yet.') }}</p>
-                        <p class="text-gray-400 text-sm mb-6">Mulai kerjakan ujian untuk melihat riwayat di sini.</p>
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-clipboard-list text-3xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ __('No exam history yet.') }}</h3>
+                        <p class="text-gray-500 text-sm mb-6">Mulai kerjakan ujian untuk melihat riwayat di sini.</p>
                         <a href="{{ route('siswa.exams.index') }}"
-                            class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            <i class="fas fa-list mr-2"></i>{{ __('Browse Exams') }}
+                            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                            <i class="fas fa-list"></i>
+                            {{ __('Browse Exams') }}
                         </a>
                     </div>
                 </div>

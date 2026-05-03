@@ -2,10 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Edit User') }}
+                <i class="fas fa-user-edit mr-2"></i>{{ __('Edit User') }}
             </h2>
             <a href="{{ route('admin.users.index') }}"
-                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                <i class="fas fa-arrow-left"></i>
                 {{ __('Back to Users') }}
             </a>
         </div>
@@ -13,11 +14,8 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6 text-gray-900">
-
-                    <!-- Success/Error Messages will be shown via SweetAlert -->
-
                     <form method="POST" action="{{ route('admin.users.update', $user) }}">
                         @csrf
                         @method('PATCH')
@@ -25,25 +23,31 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Name -->
                             <div>
-                                <x-input-label for="name" :value="__('Full Name')" />
-                                <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
+                                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-user text-gray-400 mr-1"></i>{{ __('Full Name') }}
+                                </label>
+                                <x-text-input id="name" class="block w-full" type="text" name="name"
                                     :value="old('name', $user->name)" required autofocus />
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
 
                             <!-- Email -->
                             <div>
-                                <x-input-label for="email" :value="__('Email')" />
-                                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-envelope text-gray-400 mr-1"></i>{{ __('Email') }}
+                                </label>
+                                <x-text-input id="email" class="block w-full" type="email" name="email"
                                     :value="old('email', $user->email)" required />
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
 
                             <!-- Role -->
                             <div>
-                                <x-input-label for="role" :value="__('Role')" />
+                                <label for="role" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-user-tag text-gray-400 mr-1"></i>{{ __('Role') }}
+                                </label>
                                 <select id="role" name="role"
-                                    class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150"
                                     required>
                                     <option value="">{{ __('Select Role') }}</option>
                                     <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>
@@ -58,9 +62,11 @@
 
                             <!-- Class -->
                             <div>
-                                <x-input-label for="school_class_id" :value="__('Class')" />
+                                <label for="school_class_id" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-school text-gray-400 mr-1"></i>{{ __('Class') }}
+                                </label>
                                 <select id="school_class_id" name="school_class_id"
-                                    class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">{{ __('Select Class') }}</option>
                                     @foreach ($classes as $class)
                                         <option value="{{ $class->id }}"
@@ -74,25 +80,31 @@
 
                             <!-- Phone -->
                             <div>
-                                <x-input-label for="phone" :value="__('Phone Number')" />
-                                <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone"
+                                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-phone text-gray-400 mr-1"></i>{{ __('Phone Number') }}
+                                </label>
+                                <x-text-input id="phone" class="block w-full" type="tel" name="phone"
                                     :value="old('phone', $user->phone)" />
                                 <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                             </div>
 
                             <!-- Birth Date -->
                             <div>
-                                <x-input-label for="birth_date" :value="__('Birth Date')" />
-                                <x-text-input id="birth_date" class="block mt-1 w-full" type="date" name="birth_date"
+                                <label for="birth_date" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-calendar text-gray-400 mr-1"></i>{{ __('Birth Date') }}
+                                </label>
+                                <x-text-input id="birth_date" class="block w-full" type="date" name="birth_date"
                                     :value="old('birth_date', $user->birth_date?->format('Y-m-d'))" />
                                 <x-input-error :messages="$errors->get('birth_date')" class="mt-2" />
                             </div>
 
                             <!-- Gender -->
                             <div>
-                                <x-input-label for="gender" :value="__('Gender')" />
+                                <label for="gender" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-venus-mars text-gray-400 mr-1"></i>{{ __('Gender') }}
+                                </label>
                                 <select id="gender" name="gender"
-                                    class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm">
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">{{ __('Select Gender') }}</option>
                                     <option value="laki-laki"
                                         {{ old('gender', $user->gender) == 'laki-laki' ? 'selected' : '' }}>
@@ -109,9 +121,11 @@
 
                         <!-- Address -->
                         <div class="mt-6">
-                            <x-input-label for="address" :value="__('Address')" />
+                            <label for="address" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-map-marker-alt text-gray-400 mr-1"></i>{{ __('Address') }}
+                            </label>
                             <textarea id="address" name="address" rows="3"
-                                class="block mt-1 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
+                                class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150"
                                 placeholder="{{ __('Enter full address') }}">{{ old('address', $user->address) }}</textarea>
                             <x-input-error :messages="$errors->get('address')" class="mt-2" />
                         </div>
@@ -122,49 +136,60 @@
                                 <input type="checkbox" name="is_active" value="1"
                                     {{ old('is_active', $user->is_active) ? 'checked' : '' }}
                                     class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                <span class="ml-2 text-sm text-gray-600">{{ __('Active User') }}</span>
+                                <span class="ml-2 text-sm font-semibold text-gray-700">{{ __('Active User') }}</span>
                             </label>
                         </div>
 
                         <!-- Submit Button -->
-                        <div class="flex items-center justify-end mt-6">
+                        <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
                             <a href="{{ route('admin.users.index') }}"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-4">
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                                <i class="fas fa-times"></i>
                                 {{ __('Cancel') }}
                             </a>
-                            <x-primary-button id="updateUserBtn">
+                            <button type="submit" id="updateUserBtn"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-save"></i>
                                 {{ __('Update User') }}
-                            </x-primary-button>
+                            </button>
                         </div>
                     </form>
 
                     <!-- Password Update Section -->
                     <div class="mt-8 pt-8 border-t border-gray-200">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Update Password') }}</h3>
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">
+                            <i class="fas fa-key text-orange-600 mr-2"></i>{{ __('Update Password') }}
+                        </h3>
                         <form method="POST" action="{{ route('admin.users.update-password', $user) }}">
                             @csrf
                             @method('PATCH')
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <x-input-label for="new_password" :value="__('New Password')" />
-                                    <x-text-input id="new_password" class="block mt-1 w-full" type="password"
+                                    <label for="new_password" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-lock text-gray-400 mr-1"></i>{{ __('New Password') }}
+                                    </label>
+                                    <x-text-input id="new_password" class="block w-full" type="password"
                                         name="password" required />
                                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <x-input-label for="new_password_confirmation" :value="__('Confirm New Password')" />
-                                    <x-text-input id="new_password_confirmation" class="block mt-1 w-full"
+                                    <label for="new_password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-lock text-gray-400 mr-1"></i>{{ __('Confirm New Password') }}
+                                    </label>
+                                    <x-text-input id="new_password_confirmation" class="block w-full"
                                         type="password" name="password_confirmation" required />
                                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                 </div>
                             </div>
 
                             <div class="flex items-center justify-end mt-6">
-                                <x-primary-button id="updatePasswordBtn">
+                                <button type="submit" id="updatePasswordBtn"
+                                    class="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-key"></i>
                                     {{ __('Update Password') }}
-                                </x-primary-button>
+                                </button>
                             </div>
                         </form>
                     </div>

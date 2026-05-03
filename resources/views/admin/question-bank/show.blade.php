@@ -2,17 +2,18 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <i class="fas fa-database text-indigo-600 mr-2"></i>
-                {{ __('Question Details') }}
+                <i class="fas fa-database mr-2"></i>{{ __('Question Details') }}
             </h2>
             <div class="flex gap-2">
                 <a href="{{ route('admin.question-bank.edit', $questionBank) }}"
-                    class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-edit mr-2"></i>{{ __('Edit') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-edit"></i>
+                    {{ __('Edit') }}
                 </a>
                 <a href="{{ route('admin.question-bank.index') }}"
-                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -23,42 +24,72 @@
 
             <!-- Quick Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-blue-50 rounded-lg p-4">
-                    <div class="text-blue-600 text-sm font-medium mb-1">{{ __('Times Used') }}</div>
-                    <div class="text-3xl font-bold text-blue-900">{{ $questionBank->times_used }}</div>
-                </div>
-                <div class="bg-green-50 rounded-lg p-4">
-                    <div class="text-green-600 text-sm font-medium mb-1">{{ __('Avg Score') }}</div>
-                    <div class="text-3xl font-bold text-green-900">
-                        {{ $questionBank->average_score !== null ? number_format($questionBank->average_score, 1) . '%' : __('N/A') }}
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-blue-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg mr-3">
+                            <i class="fas fa-chart-line text-blue-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-blue-600 text-xs font-semibold mb-1">{{ __('Times Used') }}</div>
+                            <div class="text-2xl font-bold text-blue-900">{{ $questionBank->times_used }}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-purple-50 rounded-lg p-4">
-                    <div class="text-purple-600 text-sm font-medium mb-1">{{ __('Success Rate') }}</div>
-                    <div class="text-3xl font-bold text-purple-900">
-                        {{ $questionBank->times_used > 0 ? number_format($questionBank->success_rate, 1) . '%' : __('N/A') }}
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-green-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg mr-3">
+                            <i class="fas fa-percentage text-green-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-green-600 text-xs font-semibold mb-1">{{ __('Avg Score') }}</div>
+                            <div class="text-2xl font-bold text-green-900">
+                                {{ $questionBank->average_score !== null ? number_format($questionBank->average_score, 1) . '%' : __('N/A') }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-yellow-50 rounded-lg p-4">
-                    <div class="text-yellow-600 text-sm font-medium mb-1">{{ __('Default Points') }}</div>
-                    <div class="text-3xl font-bold text-yellow-900">{{ $questionBank->default_points }}</div>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-purple-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg mr-3">
+                            <i class="fas fa-check-circle text-purple-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-purple-600 text-xs font-semibold mb-1">{{ __('Success Rate') }}</div>
+                            <div class="text-2xl font-bold text-purple-900">
+                                {{ $questionBank->times_used > 0 ? number_format($questionBank->success_rate, 1) . '%' : __('N/A') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-yellow-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-yellow-100 rounded-lg mr-3">
+                            <i class="fas fa-star text-yellow-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-yellow-600 text-xs font-semibold mb-1">{{ __('Default Points') }}</div>
+                            <div class="text-2xl font-bold text-yellow-900">{{ $questionBank->default_points }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Question Content -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-2xl font-bold text-gray-900">{{ __('Question Content') }}</h3>
-                        <div class="flex gap-2">
-                            {!! $questionBank->type_badge !!}
-                            {!! $questionBank->difficulty_badge !!}
-                            {!! $questionBank->verification_badge !!}
-                            @if (!$questionBank->is_active)
-                                <span class="px-2 py-1 text-xs font-semibold rounded bg-red-100 text-red-800">
-                                    <i class="fas fa-eye-slash mr-1"></i>{{ __('Inactive') }}
-                                </span>
-                            @endif
+                    <div class="flex justify-between items-start mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ __('Question Content') }}</h3>
+                            <div class="flex flex-wrap gap-2">
+                                {!! $questionBank->type_badge !!}
+                                {!! $questionBank->difficulty_badge !!}
+                                {!! $questionBank->verification_badge !!}
+                                @if (!$questionBank->is_active)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                        <i class="fas fa-eye-slash mr-1"></i>{{ __('Inactive') }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
 
@@ -135,13 +166,15 @@
             </div>
 
             <!-- Metadata -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">{{ __('Metadata') }}</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">
+                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>{{ __('Metadata') }}
+                    </h3>
                     <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">{{ __('Category') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900">
+                        <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                            <dt class="text-xs font-semibold text-blue-700 mb-1">{{ __('Category') }}</dt>
+                            <dd class="text-sm font-semibold text-gray-900">
                                 @if ($questionBank->category)
                                     {!! $questionBank->category->color_badge !!}
                                     {{ $questionBank->category->full_path }}
@@ -150,17 +183,17 @@
                                 @endif
                             </dd>
                         </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">{{ __('Created By') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $questionBank->creator->name }}</dd>
+                        <div class="p-3 bg-green-50 rounded-lg border border-green-100">
+                            <dt class="text-xs font-semibold text-green-700 mb-1">{{ __('Created By') }}</dt>
+                            <dd class="text-sm font-semibold text-gray-900">{{ $questionBank->creator->name }}</dd>
                         </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">{{ __('Tags') }}</dt>
-                            <dd class="mt-1">
+                        <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                            <dt class="text-xs font-semibold text-purple-700 mb-1">{{ __('Tags') }}</dt>
+                            <dd>
                                 @if ($questionBank->tags)
                                     @foreach ($questionBank->tags as $tag)
                                         <span
-                                            class="inline-block px-2 py-1 text-xs rounded bg-gray-100 text-gray-800 mr-1">
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 mr-1">
                                             {{ $tag }}
                                         </span>
                                     @endforeach
@@ -169,9 +202,9 @@
                                 @endif
                             </dd>
                         </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">{{ __('Created At') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900">
+                        <div class="p-3 bg-orange-50 rounded-lg border border-orange-100">
+                            <dt class="text-xs font-semibold text-orange-700 mb-1">{{ __('Created At') }}</dt>
+                            <dd class="text-sm font-semibold text-gray-900">
                                 {{ $questionBank->created_at->format('M d, Y H:i') }}</dd>
                         </div>
                     </dl>
@@ -209,16 +242,18 @@
             @endif
 
             <!-- Actions -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">{{ __('Quick Actions') }}</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">
+                        <i class="fas fa-bolt text-orange-600 mr-2"></i>{{ __('Quick Actions') }}
+                    </h3>
                     <div class="flex flex-wrap gap-3">
                         <form action="{{ route('admin.question-bank.toggle-verification', $questionBank) }}"
                             method="POST" class="inline">
                             @csrf
                             <button type="submit"
-                                class="bg-{{ $questionBank->is_verified ? 'gray' : 'green' }}-500 hover:bg-{{ $questionBank->is_verified ? 'gray' : 'green' }}-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-{{ $questionBank->is_verified ? 'times' : 'check' }}-circle mr-2"></i>
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-{{ $questionBank->is_verified ? 'gray' : 'green' }}-600 text-white font-semibold rounded-lg hover:bg-{{ $questionBank->is_verified ? 'gray' : 'green' }}-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-{{ $questionBank->is_verified ? 'times' : 'check' }}-circle"></i>
                                 {{ $questionBank->is_verified ? __('Unverify') : __('Mark as Verified') }}
                             </button>
                         </form>
@@ -227,8 +262,8 @@
                             class="inline">
                             @csrf
                             <button type="submit"
-                                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-copy mr-2"></i>{{ __('Duplicate') }}
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-copy"></i>{{ __('Duplicate') }}
                             </button>
                         </form>
 
@@ -237,8 +272,8 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit"
-                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-trash mr-2"></i>{{ __('Delete') }}
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-trash"></i>{{ __('Delete') }}
                             </button>
                         </form>
                     </div>

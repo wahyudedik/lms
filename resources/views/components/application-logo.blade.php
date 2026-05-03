@@ -1,6 +1,6 @@
 @php
     $school = \App\Models\School::active()->first();
-    $logoUrl = $school ? $school->logo_url : asset('images/icons/icon-192x192.png');
+    $logoUrl = $school ? $school->logo_url : asset('logo.png');
     $appName = $school ? $school->name : config('app.name');
 @endphp
 

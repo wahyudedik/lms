@@ -10,8 +10,9 @@
                 <p class="text-gray-600 mt-1">{{ __('Manage database backups for data security') }}</p>
             </div>
             <a href="{{ route('admin.settings.index') }}"
-                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
-                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                <i class="fas fa-arrow-left"></i>
+                <span>{{ __('Back') }}</span>
             </a>
         </div>
 
@@ -25,8 +26,9 @@
                 <form action="{{ route('admin.settings.backup.create') }}" method="POST">
                     @csrf
                     <button type="submit"
-                        class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                        <i class="fas fa-plus-circle mr-2"></i>{{ __('Create Backup Now') }}
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>{{ __('Create Backup Now') }}</span>
                     </button>
                 </form>
             </div>
@@ -58,8 +60,9 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <a href="{{ route('admin.settings.backup.download', $backup['filename']) }}"
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
-                                    <i class="fas fa-download mr-1"></i>{{ __('Download') }}
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md text-sm">
+                                    <i class="fas fa-download"></i>
+                                    <span>{{ __('Download') }}</span>
                                 </a>
                                 <form action="{{ route('admin.settings.backup.delete', $backup['filename']) }}"
                                     method="POST"
@@ -67,8 +70,9 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm">
-                                        <i class="fas fa-trash mr-1"></i>{{ __('Delete') }}
+                                        class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md text-sm">
+                                        <i class="fas fa-trash"></i>
+                                        <span>{{ __('Delete') }}</span>
                                     </button>
                                 </form>
                             </div>
@@ -77,9 +81,11 @@
                 </div>
             @else
                 <div class="p-12 text-center text-gray-500">
-                    <i class="fas fa-inbox text-6xl mb-4"></i>
-                    <h3 class="text-lg font-semibold mb-2">{{ __('No Backups Yet') }}</h3>
-                    <p class="text-sm">{{ __('Click "Create Backup Now" to create your first backup') }}</p>
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                        <i class="fas fa-inbox text-gray-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ __('No Backups Yet') }}</h3>
+                    <p class="text-sm text-gray-500">{{ __('Click "Create Backup Now" to create your first backup') }}</p>
                 </div>
             @endif
         </div>

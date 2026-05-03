@@ -21,8 +21,8 @@
 
     @php
         $school = \App\Models\School::active()->first();
-        $faviconUrl = $school ? $school->favicon_url : asset('favicon.ico');
-        $logoUrl = $school ? $school->logo_url : asset('images/icons/icon-192x192.png');
+        $faviconUrl = $school ? $school->favicon_url : asset('favicon.png');
+        $logoUrl = $school ? $school->logo_url : asset('logo.png');
     @endphp
 
     <!-- Favicon -->
@@ -56,23 +56,25 @@
             @endif
 
             <div class="flex-1 flex flex-col min-h-screen">
-                <header class="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-gray-200 shadow-sm">
+                <header class="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
                     <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
                         <div class="flex items-center gap-3">
                             @if ($authUser)
-                                <button class="lg:hidden rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50"
+                                <button
+                                    class="lg:hidden rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50"
                                     @click="sidebarOpen = true">
-                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M4 6h16M4 12h16M4 18h16" />
                                     </svg>
                                 </button>
                             @endif
 
                             <div>
-                                <p class="text-xs uppercase tracking-wider text-gray-500">
+                                <p class="text-xs uppercase tracking-wider font-medium text-gray-500">
                                     {{ $authUser ? __('Welcome back,') : __('Guest Access') }}</p>
-                                <p class="text-lg font-semibold text-gray-900">
+                                <p class="text-base font-semibold text-gray-900">
                                     {{ $authUser ? $authUser->name : __('Guest User') }}</p>
                             </div>
                         </div>
@@ -84,14 +86,15 @@
                                 <x-dropdown align="right" width="56">
                                     <x-slot name="trigger">
                                         <button
-                                            class="inline-flex items-center gap-2 px-3 py-2 border border-gray-200 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-150 shadow-sm">
-                                            <img class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-100"
+                                            class="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-150 shadow-sm">
+                                            <img class="h-8 w-8 rounded-full object-cover ring-2 ring-gray-200"
                                                 src="{{ $authUser->profile_photo_url }}" alt="{{ $authUser->name }}">
                                             <div class="text-left hidden sm:block">
-                                                <div class="text-sm font-semibold text-gray-900">{{ $authUser->name }}</div>
+                                                <div class="text-sm font-semibold text-gray-900">{{ $authUser->name }}
+                                                </div>
                                                 <div class="text-xs text-gray-500">{{ $authUser->role_display }}</div>
                                             </div>
-                                            <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                                            <svg class="h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -106,10 +109,6 @@
                                         </x-dropdown-link>
 
                                         @if ($authUser->isAdmin())
-                                            <x-dropdown-link :href="route('admin.schools.index')">
-                                                <i class="fas fa-school mr-2"></i>{{ __('Schools') }}
-                                            </x-dropdown-link>
-
                                             <x-dropdown-link :href="route('admin.settings.index')">
                                                 <i class="fas fa-cog mr-2"></i>{{ __('Settings') }}
                                             </x-dropdown-link>
@@ -132,7 +131,7 @@
                                 </x-dropdown>
                             @else
                                 <a href="{{ route('login') }}"
-                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                                    class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all shadow-sm hover:shadow-md">
                                     <i class="fas fa-sign-in-alt"></i>
                                     {{ __('Log In') }}
                                 </a>
@@ -150,11 +149,11 @@
                 <main class="flex-1">
                     <div class="page-shell">
                         <div class="page-section">
-                        @isset($slot)
-                            {{ $slot }}
-                        @else
-                            @yield('content')
-                        @endisset
+                            @isset($slot)
+                                {{ $slot }}
+                            @else
+                                @yield('content')
+                            @endisset
                         </div>
                     </div>
                 </main>
@@ -268,7 +267,8 @@
                     // Show SweetAlert with stored message
                     const result = await Swal.fire({
                         title: localeTexts.confirmTitle,
-                        text: form.dataset.confirmMessage || localeTexts.confirmDefaultMessage,
+                        text: form.dataset.confirmMessage || localeTexts
+                            .confirmDefaultMessage,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',

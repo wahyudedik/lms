@@ -2,11 +2,12 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $course->title }}
+                <i class="fas fa-graduation-cap mr-2"></i>{{ $course->title }}
             </h2>
             <a href="{{ route('siswa.courses.index') }}"
-                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md">
+                <i class="fas fa-arrow-left"></i>
+                {{ __('Back') }}
             </a>
         </div>
     </x-slot>
@@ -16,14 +17,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Main Content -->
                 <div class="lg:col-span-2">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg">
                         <div class="p-6">
                             @if ($course->cover_image)
                                 <img src="{{ Storage::url($course->cover_image) }}" alt="Cover"
-                                    class="w-full h-64 object-cover rounded mb-6">
+                                    class="w-full h-64 object-cover rounded-lg mb-6 shadow-sm">
                             @else
                                 <div
-                                    class="w-full h-64 bg-gradient-to-br from-blue-500 to-purple-600 rounded flex items-center justify-center mb-6">
+                                    class="w-full h-64 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-6 shadow-sm">
                                     <i class="fas fa-graduation-cap text-white text-8xl"></i>
                                 </div>
                             @endif
@@ -31,42 +32,53 @@
                             <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ $course->title }}</h1>
 
                             <div class="flex flex-wrap gap-3 mb-6">
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
-                                    <i class="fas fa-code mr-1"></i>{{ $course->code }}
+                                <span
+                                    class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold bg-blue-100 text-blue-800 border border-blue-200">
+                                    <i class="fas fa-code mr-2"></i>{{ $course->code }}
                                 </span>
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                                    <i class="fas fa-check-circle mr-1"></i>{{ $course->status_display }}
+                                <span
+                                    class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold bg-green-100 text-green-800 border border-green-200">
+                                    <i class="fas fa-check-circle mr-2"></i>{{ $course->status_display }}
                                 </span>
                             </div>
 
                             <div class="prose max-w-none">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-3">{{ __('About This Course') }}</h3>
-                                <p class="text-gray-700 whitespace-pre-wrap">
+                                <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-info-circle text-blue-600"></i>
+                                    {{ __('About This Course') }}
+                                </h3>
+                                <p class="text-gray-700 whitespace-pre-wrap leading-relaxed">
                                     {{ $course->description ?: __('No description') }}</p>
                             </div>
 
                             @if ($isEnrolled)
-                                <div class="mt-8 p-6 bg-blue-50 rounded-lg">
-                                    <h3 class="text-lg font-semibold text-blue-900 mb-3">Progress Anda</h3>
+                                <div
+                                    class="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-blue-500 shadow-sm">
+                                    <h3 class="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+                                        <i class="fas fa-chart-line text-blue-600"></i>
+                                        Progress Anda
+                                    </h3>
 
-                                    <div class="flex items-center mb-3">
-                                        <div class="flex-1 bg-blue-200 rounded-full h-4 mr-3">
-                                            <div class="bg-blue-600 h-4 rounded-full"
+                                    <div class="flex items-center mb-4">
+                                        <div class="flex-1 bg-blue-200 rounded-full h-4 mr-4">
+                                            <div class="bg-blue-600 h-4 rounded-full transition-all duration-300"
                                                 style="width: {{ $enrollment->progress }}%"></div>
                                         </div>
                                         <span
-                                            class="text-lg font-bold text-blue-900">{{ $enrollment->progress }}%</span>
+                                            class="text-xl font-bold text-blue-900">{{ $enrollment->progress }}%</span>
                                     </div>
 
                                     <div class="flex items-center justify-between">
                                         <span
-                                            class="px-3 py-1 text-sm font-semibold rounded-full
-                                            @if ($enrollment->status == 'active') bg-green-100 text-green-800
-                                            @elseif($enrollment->status == 'completed') bg-blue-100 text-blue-800
-                                            @else bg-red-100 text-red-800 @endif">
+                                            class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-semibold
+                                            @if ($enrollment->status == 'active') bg-green-100 text-green-800 border border-green-200
+                                            @elseif($enrollment->status == 'completed') bg-blue-100 text-blue-800 border border-blue-200
+                                            @else bg-red-100 text-red-800 border border-red-200 @endif">
+                                            <i class="fas fa-circle mr-2 text-xs"></i>
                                             Status: {{ $enrollment->status_display }}
                                         </span>
-                                        <span class="text-sm text-gray-600">
+                                        <span class="text-sm text-gray-700 flex items-center gap-2">
+                                            <i class="fas fa-calendar text-gray-500"></i>
                                             Bergabung: {{ $enrollment->enrolled_at->format('d M Y') }}
                                         </span>
                                     </div>
@@ -79,7 +91,8 @@
                     @if ($isEnrolled && $course->materials()->published()->count() > 0)
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 {{ __('Learning Materials') }}</h3>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 {{ __('Learning Materials') }}
+                                </h3>
 
                                 <div class="space-y-3">
                                     @foreach ($course->materials()->published()->ordered()->get() as $material)
@@ -191,7 +204,8 @@
                                 </div>
                             @else
                                 <div class="text-center">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Enroll in this Course') }}</h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                                        {{ __('Enroll in this Course') }}</h3>
 
                                     @if ($course->isFull())
                                         <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded">

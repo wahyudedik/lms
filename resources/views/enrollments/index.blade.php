@@ -1,15 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ __('Manage Students - :title', ['title' => $course->title]) }}
-                </h2>
-                <p class="text-sm text-gray-600 mt-1">{{ __('Code: :code', ['code' => $course->code]) }}</p>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-users text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                        Kelola Mahasiswa - {{ $course->title }}
+                    </h2>
+                    <p class="text-sm text-gray-600 mt-1">Kode: {{ $course->code }}</p>
+                </div>
             </div>
             <a href="{{ auth()->user()->isAdmin() ? route('admin.courses.show', $course) : route('guru.courses.show', $course) }}"
-                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                <i class="fas fa-arrow-left"></i>
+                <span>Kembali</span>
             </a>
         </div>
     </x-slot>
@@ -17,21 +23,25 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Add Student Form -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-900">
+                        <i class="fas fa-user-plus text-blue-600 mr-2"></i>Tambah Mahasiswa
+                    </h3>
+                </div>
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Add Students') }}</h3>
 
                     <form method="GET"
                         action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments', $course) : route('guru.courses.enrollments', $course) }}"
                         class="mb-4">
                         <div class="flex flex-col md:flex-row md:items-end gap-3">
                             <div class="w-full md:w-80">
-                                <label for="school_class_id" class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Filter Class') }}
+                                <label for="school_class_id" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-filter text-gray-400 mr-1"></i>Filter Kelas
                                 </label>
                                 <select id="school_class_id" name="school_class_id" onchange="this.form.submit()"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="">{{ __('All Classes') }}</option>
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                    <option value="">Semua Kelas</option>
                                     @foreach ($schoolClasses as $class)
                                         <option value="{{ $class->id }}"
                                             {{ (string) $selectedSchoolClassId === (string) $class->id ? 'selected' : '' }}>
@@ -113,16 +123,17 @@
 
                                 <div class="flex items-center gap-3">
                                     <span class="text-sm text-gray-600">
-                                        {{ __('Selected:') }}
+                                        Dipilih:
                                         <span class="font-semibold text-blue-600" x-text="selected.length"></span>
                                     </span>
                                 </div>
 
                                 <button type="submit" :disabled="selected.length === 0"
                                     :class="selected.length === 0 ? 'opacity-50 cursor-not-allowed bg-green-400' :
-                                        'bg-green-500 hover:bg-green-600'"
-                                    class="text-white font-bold py-2 px-6 rounded inline-flex items-center justify-center">
-                                    <i class="fas fa-user-plus mr-2"></i>{{ __('Add') }}
+                                        'bg-green-600 hover:bg-green-700'"
+                                    class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Tambah</span>
                                 </button>
                             </div>
 
@@ -131,67 +142,91 @@
                             @enderror
                         </form>
                     @else
-                        <p class="text-gray-500">{{ __('All students are already enrolled in this course.') }}</p>
+                        <p class="text-gray-500">Semua mahasiswa sudah terdaftar di mata kuliah ini.</p>
                     @endif
                 </div>
             </div>
 
             <!-- Statistics -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="text-sm text-gray-500 mb-1">Total Siswa</div>
-                        <div class="text-3xl font-bold text-gray-900">{{ $enrollments->total() }}</div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-blue-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg mr-3">
+                            <i class="fas fa-users text-blue-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-blue-600 text-xs font-semibold mb-1">Total Mahasiswa</div>
+                            <div class="text-2xl font-bold text-blue-900">{{ $enrollments->total() }}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="text-sm text-gray-500 mb-1">Aktif</div>
-                        <div class="text-3xl font-bold text-green-600">
-                            {{ $enrollments->where('status', 'active')->count() }}</div>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-green-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg mr-3">
+                            <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-green-600 text-xs font-semibold mb-1">Aktif</div>
+                            <div class="text-2xl font-bold text-green-900">
+                                {{ $enrollments->where('status', 'active')->count() }}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="text-sm text-gray-500 mb-1">Selesai</div>
-                        <div class="text-3xl font-bold text-blue-600">
-                            {{ $enrollments->where('status', 'completed')->count() }}</div>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-purple-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg mr-3">
+                            <i class="fas fa-graduation-cap text-purple-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-purple-600 text-xs font-semibold mb-1">Selesai</div>
+                            <div class="text-2xl font-bold text-purple-900">
+                                {{ $enrollments->where('status', 'completed')->count() }}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="text-sm text-gray-500 mb-1">Berhenti</div>
-                        <div class="text-3xl font-bold text-red-600">
-                            {{ $enrollments->where('status', 'dropped')->count() }}</div>
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-red-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-red-100 rounded-lg mr-3">
+                            <i class="fas fa-times-circle text-red-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-red-600 text-xs font-semibold mb-1">Berhenti</div>
+                            <div class="text-2xl font-bold text-red-900">
+                                {{ $enrollments->where('status', 'dropped')->count() }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Enrollments Table -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-900">
+                        <i class="fas fa-list text-green-600 mr-2"></i>Daftar Mahasiswa
+                    </h3>
+                </div>
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Student List') }}</h3>
 
                     @if ($enrollments->count() > 0)
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto border border-gray-200 rounded-lg">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Student') }}</th>
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                            Mahasiswa</th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Status') }}</th>
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                            Status</th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Progress') }}</th>
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                            Progress</th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Enrolled') }}</th>
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                            Terdaftar</th>
                                         <th
-                                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Actions') }}</th>
+                                            class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                            Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -214,30 +249,30 @@
                                                     @csrf
                                                     @method('PATCH')
                                                     <select name="status" onchange="this.form.submit()"
-                                                        class="text-xs rounded-full border-0
+                                                        class="text-xs font-semibold rounded-full border-0 px-3 py-1
                                                             @if ($enrollment->status == 'active') bg-green-100 text-green-800
-                                                            @elseif($enrollment->status == 'completed') bg-blue-100 text-blue-800
+                                                            @elseif($enrollment->status == 'completed') bg-purple-100 text-purple-800
                                                             @else bg-red-100 text-red-800 @endif">
                                                         <option value="active"
                                                             {{ $enrollment->status == 'active' ? 'selected' : '' }}>
-                                                            {{ __('Active') }}</option>
+                                                            Aktif</option>
                                                         <option value="completed"
                                                             {{ $enrollment->status == 'completed' ? 'selected' : '' }}>
-                                                            {{ __('Completed') }}</option>
+                                                            Selesai</option>
                                                         <option value="dropped"
                                                             {{ $enrollment->status == 'dropped' ? 'selected' : '' }}>
-                                                            {{ __('Dropped') }}</option>
+                                                            Berhenti</option>
                                                     </select>
                                                 </form>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="flex items-center">
-                                                    <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
-                                                        <div class="bg-{{ $enrollment->progress_color }}-600 h-2 rounded-full"
+                                                    <div class="w-24 bg-gray-200 rounded-full h-2.5 mr-2">
+                                                        <div class="bg-{{ $enrollment->progress_color }}-600 h-2.5 rounded-full"
                                                             style="width: {{ $enrollment->progress }}%"></div>
                                                     </div>
                                                     <span
-                                                        class="text-sm text-gray-600">{{ $enrollment->progress }}%</span>
+                                                        class="text-sm font-semibold text-gray-700">{{ $enrollment->progress }}%</span>
                                                 </div>
                                                 <form
                                                     action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments.update-progress', [$course, $enrollment]) : route('guru.courses.enrollments.update-progress', [$course, $enrollment]) }}"
@@ -248,9 +283,9 @@
                                                         <input type="number" name="progress"
                                                             value="{{ $enrollment->progress }}" min="0"
                                                             max="100"
-                                                            class="w-16 text-xs rounded border-gray-300">
+                                                            class="w-16 text-xs rounded-lg border-gray-300 px-2 py-1">
                                                         <button type="submit"
-                                                            class="text-xs text-blue-600 hover:text-blue-900">
+                                                            class="text-xs text-blue-600 hover:text-blue-800 font-semibold">
                                                             <i class="fas fa-check"></i>
                                                         </button>
                                                     </div>
@@ -266,7 +301,8 @@
                                                     onsubmit="return confirmDelete('{{ __('Are you sure you want to remove this student from the class?') }}');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900">
+                                                    <button type="submit"
+                                                        class="text-red-600 hover:text-red-800 font-semibold">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -282,8 +318,14 @@
                             {{ $enrollments->links() }}
                         </div>
                     @else
-                        <p class="text-gray-500 text-center py-8">{{ __('No students enrolled in this course yet.') }}
-                        </p>
+                        <div class="text-center py-12">
+                            <div
+                                class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                                <i class="fas fa-user-slash text-gray-400 text-3xl"></i>
+                            </div>
+                            <p class="text-gray-900 font-semibold mb-2">Belum ada mahasiswa terdaftar</p>
+                            <p class="text-sm text-gray-500">Tambahkan mahasiswa menggunakan form di atas</p>
+                        </div>
                     @endif
                 </div>
             </div>

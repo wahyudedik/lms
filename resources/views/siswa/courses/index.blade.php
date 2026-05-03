@@ -2,11 +2,12 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Browse Courses') }}
+                <i class="fas fa-search mr-2"></i>{{ __('Browse Courses') }}
             </h2>
             <a href="{{ route('siswa.courses.my-courses') }}"
-                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-book mr-2"></i>{{ __('My Courses') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                <i class="fas fa-book"></i>
+                {{ __('My Courses') }}
             </a>
         </div>
     </x-slot>
@@ -14,36 +15,42 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Enroll by Code -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold mb-4">{{ __('Enroll with Course Code') }}</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fas fa-key text-indigo-600"></i>
+                        {{ __('Enroll with Course Code') }}
+                    </h3>
                     <form method="POST" action="{{ route('siswa.courses.enroll-by-code') }}" class="flex gap-4">
                         @csrf
                         <input type="text" name="code" placeholder="Masukkan kode kelas (contoh: MTK001)" required
-                            class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150">
                         <button type="submit"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
-                            <i class="fas fa-sign-in-alt mr-2"></i>{{ __('Enroll') }}
+                            class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                            <i class="fas fa-sign-in-alt"></i>
+                            {{ __('Enroll') }}
                         </button>
                     </form>
                 </div>
             </div>
 
             <!-- Search -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
                     <form method="GET" action="{{ route('siswa.courses.index') }}">
                         <div class="flex gap-4">
                             <input type="text" name="search" value="{{ request('search') }}"
                                 placeholder="Cari kelas berdasarkan nama, deskripsi, atau pengajar..."
-                                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                             <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
-                                <i class="fas fa-search mr-2"></i>Cari
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-search"></i>
+                                Cari
                             </button>
                             @if (request('search'))
                                 <a href="{{ route('siswa.courses.index') }}"
-                                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-times"></i>
                                     Reset
                                 </a>
                             @endif
@@ -55,7 +62,8 @@
             <!-- Courses Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($courses as $course)
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-lg transition">
+                    <div
+                        class="bg-white overflow-hidden shadow-md rounded-lg hover:shadow-xl transition-all duration-200">
                         @if ($course->cover_image)
                             <img src="{{ Storage::url($course->cover_image) }}" alt="Cover"
                                 class="w-full h-48 object-cover">
@@ -70,37 +78,45 @@
                             <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-2">{{ $course->title }}</h3>
 
                             <div class="flex items-center text-sm text-gray-600 mb-3">
-                                <i class="fas fa-user-tie mr-2"></i>
+                                <i class="fas fa-user-tie text-blue-500 mr-2"></i>
                                 <span>{{ $course->instructor->name }}</span>
                             </div>
 
                             <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ $course->description }}</p>
 
                             <div class="flex items-center justify-between mb-4">
-                                <span class="text-sm text-gray-500">
-                                    <i class="fas fa-users mr-1"></i>
-                                    {{ $course->activeEnrollmentsCount() }} siswa
+                                <span class="text-sm text-gray-500 flex items-center gap-1">
+                                    <i class="fas fa-users text-purple-500"></i>
+                                    {{ $course->activeEnrollmentsCount() }} mahasiswa
                                 </span>
-                                <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-100 text-blue-800">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                    <i class="fas fa-code mr-1"></i>
                                     {{ $course->code }}
                                 </span>
                             </div>
 
                             <a href="{{ route('siswa.courses.show', $course) }}"
-                                class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">
-                                <i class="fas fa-arrow-right mr-2"></i>{{ __('View Details') }}
+                                class="block w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md text-center">
+                                <i class="fas fa-arrow-right"></i>
+                                {{ __('View Details') }}
                             </a>
                         </div>
                     </div>
                 @empty
                     <div class="col-span-full">
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="bg-white overflow-hidden shadow-md rounded-lg">
                             <div class="p-12 text-center">
-                                <i class="fas fa-inbox text-gray-400 text-6xl mb-4"></i>
-                                <p class="text-gray-500 text-lg">{{ __('No courses found') }}</p>
+                                <div
+                                    class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-inbox text-3xl text-gray-400"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ __('No courses found') }}</h3>
+                                <p class="text-gray-500 text-sm mb-4">Tidak ada kelas yang ditemukan</p>
                                 @if (request('search'))
                                     <a href="{{ route('siswa.courses.index') }}"
-                                        class="text-blue-600 hover:text-blue-800 mt-2 inline-block">
+                                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                        <i class="fas fa-list"></i>
                                         Tampilkan semua kelas
                                     </a>
                                 @endif

@@ -2,29 +2,22 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('User Management') }}
+                <i class="fas fa-users mr-2"></i>{{ __('User Management') }}
             </h2>
-            <div class="flex space-x-2">
+            <div class="flex gap-2">
                 <a href="{{ route('admin.users.export', request()->query()) }}"
-                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-download"></i>
                     {{ __('Export') }}
                 </a>
                 <a href="{{ route('admin.users.import') }}"
-                    class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10">
-                        </path>
-                    </svg>
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-upload"></i>
                     {{ __('Import Users') }}
                 </a>
                 <a href="{{ route('admin.users.create') }}"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-user-plus"></i>
                     {{ __('Add New User') }}
                 </a>
             </div>
@@ -33,7 +26,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6 text-gray-900">
 
                     <!-- Search and Filter -->
@@ -42,16 +35,20 @@
                             class="flex flex-wrap gap-4 items-end">
                             <div class="flex-1 min-w-64">
                                 <label for="search"
-                                    class="block text-sm font-medium text-gray-700 mb-1">{{ __('Search') }}</label>
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-search text-gray-400 mr-1"></i>{{ __('Search') }}
+                                </label>
                                 <input type="text" id="search" name="search" value="{{ request('search') }}"
                                     placeholder="{{ __('Search by name or email...') }}"
-                                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                             </div>
 
                             <div class="min-w-32">
-                                <label for="role" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Role') }}</label>
+                                <label for="role" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-user-tag text-gray-400 mr-1"></i>{{ __('Role') }}
+                                </label>
                                 <select id="role" name="role"
-                                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">{{ __('All Roles') }}</option>
                                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>{{ __('Admin') }}
                                     </option>
@@ -64,9 +61,11 @@
 
                             <div class="min-w-32">
                                 <label for="status"
-                                    class="block text-sm font-medium text-gray-700 mb-1">{{ __('Status') }}</label>
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-toggle-on text-gray-400 mr-1"></i>{{ __('Status') }}
+                                </label>
                                 <select id="status" name="status"
-                                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">{{ __('All Status') }}</option>
                                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>{{ __('Active') }}
                                     </option>
@@ -77,11 +76,13 @@
 
                             <div class="flex gap-2">
                                 <button type="submit"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-filter"></i>
                                     {{ __('Filter') }}
                                 </button>
                                 <a href="{{ route('admin.users.index') }}"
-                                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                    class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                                    <i class="fas fa-times"></i>
                                     {{ __('Clear') }}
                                 </a>
                             </div>
@@ -91,33 +92,33 @@
                     <!-- Success/Error Messages will be shown via SweetAlert -->
 
                     <!-- Users Table -->
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto border border-gray-200 rounded-lg">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         {{ __('User') }}</th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         {{ __('Role') }}</th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         {{ __('Status') }}</th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         {{ __('Login Access') }}</th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         {{ __('Created') }}</th>
                                     <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         {{ __('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse($users as $user)
-                                    <tr class="hover:bg-gray-50">
+                                    <tr class="hover:bg-gray-50 transition-colors">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <div class="flex-shrink-0 h-10 w-10">
@@ -126,7 +127,7 @@
                                                         alt="{{ $user->name }}">
                                                 </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">{{ $user->name }}
+                                                    <div class="text-sm font-semibold text-gray-900">{{ $user->name }}
                                                     </div>
                                                     <div class="text-sm text-gray-500">{{ $user->email }}</div>
                                                 </div>
@@ -134,7 +135,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
                                                 {{ $user->role === 'admin'
                                                     ? 'bg-red-100 text-red-800'
                                                     : ($user->role === 'guru'
@@ -145,7 +146,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
                                                 {{ $user->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                                 {{ $user->is_active ? __('Active') : __('Inactive') }}
                                             </span>
@@ -154,8 +155,8 @@
                                             @if ($user->is_login_blocked)
                                                 <div class="space-y-1">
                                                     <span
-                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                        {{ __('Blocked') }}
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                                        <i class="fas fa-ban mr-1"></i>{{ __('Blocked') }}
                                                     </span>
                                                     <p class="text-xs text-red-600">
                                                         {{ $user->login_blocked_reason ?? __('Cheating detected') }}
@@ -166,7 +167,7 @@
                                                     @if ($user->active_cheating_incidents_count ?? 0)
                                                         <p class="text-xs">
                                                             <a href="{{ route('admin.cheating-incidents.index', ['search' => $user->email]) }}"
-                                                                class="text-indigo-600 hover:text-indigo-900 font-semibold">
+                                                                class="text-blue-600 hover:text-blue-800 font-semibold">
                                                                 {{ trans_choice(':count active incident|:count active incidents', $user->active_cheating_incidents_count, ['count' => $user->active_cheating_incidents_count]) }}
                                                             </a>
                                                         </p>
@@ -174,8 +175,8 @@
                                                 </div>
                                             @else
                                                 <span
-                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                    {{ __('Allowed') }}
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                    <i class="fas fa-check mr-1"></i>{{ __('Allowed') }}
                                                 </span>
                                                 @if ($user->active_cheating_incidents_count ?? 0)
                                                     <p class="text-xs text-yellow-600 mt-1">
@@ -187,15 +188,15 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $user->created_at->translatedFormat('d M Y') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <div class="flex space-x-2">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
+                                            <div class="flex flex-wrap gap-2">
                                                 <a href="{{ route('admin.users.show', $user) }}"
-                                                    class="text-blue-600 hover:text-blue-900">{{ __('View') }}</a>
+                                                    class="text-blue-600 hover:text-blue-800">{{ __('View') }}</a>
                                                 <a href="{{ route('admin.users.edit', $user) }}"
-                                                    class="text-indigo-600 hover:text-indigo-900">{{ __('Edit') }}</a>
+                                                    class="text-green-600 hover:text-green-800">{{ __('Edit') }}</a>
                                                 @if ($user->active_cheating_incidents_count ?? 0)
                                                     <a href="{{ route('admin.cheating-incidents.index', ['search' => $user->email]) }}"
-                                                        class="text-red-600 hover:text-red-900">{{ __('Incidents') }}</a>
+                                                        class="text-orange-600 hover:text-orange-800">{{ __('Incidents') }}</a>
                                                 @endif
 
                                                 @if ($user->id !== auth()->id())
@@ -204,7 +205,7 @@
                                                         class="inline toggle-status-form">
                                                         @csrf
                                                         <button type="submit"
-                                                            class="text-yellow-600 hover:text-yellow-900"
+                                                            class="text-yellow-600 hover:text-yellow-800"
                                                             data-user-name="{{ $user->name }}"
                                                             data-is-active="{{ $user->is_active ? 'true' : 'false' }}">
                                                             {{ $user->is_active ? __('Deactivate') : __('Activate') }}
@@ -216,7 +217,7 @@
                                                         class="inline delete-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="text-red-600 hover:text-red-900"
+                                                        <button type="submit" class="text-red-600 hover:text-red-800"
                                                             data-user-name="{{ $user->name }}">
                                                             {{ __('Delete') }}
                                                         </button>
@@ -229,7 +230,7 @@
                                                         class="inline reset-login-form">
                                                         @csrf
                                                         <button type="submit"
-                                                            class="text-teal-600 hover:text-teal-900 font-semibold"
+                                                            class="text-teal-600 hover:text-teal-800 font-semibold"
                                                             data-user-name="{{ $user->name }}">
                                                             {{ __('Reset Login') }}
                                                         </button>
@@ -240,8 +241,11 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                            {{ __('No users found.') }}
+                                        <td colspan="6" class="px-6 py-8 text-center">
+                                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                                <i class="fas fa-users text-4xl text-gray-300 mb-3"></i>
+                                                <p class="text-sm font-semibold">{{ __('No users found.') }}</p>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforelse

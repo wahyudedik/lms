@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-2xl font-bold text-gray-800">
-            <i class="fas fa-book mr-2 text-indigo-600"></i>📚 {{ __('System Documentation') }}
+            <i class="fas fa-book text-indigo-600 mr-2"></i>{{ __('System Documentation') }}
         </h2>
         <p class="text-sm text-gray-600 mt-1">
             {{ __('Complete guides and documentation for optimizing the Laravel LMS application') }}</p>
@@ -12,56 +12,56 @@
 
             <!-- Stats Overview -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white rounded-lg shadow p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-indigo-100 rounded-full p-3">
-                            <i class="fas fa-file-alt text-indigo-600 text-xl"></i>
+                <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-indigo-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-indigo-100 rounded-lg mr-3">
+                            <i class="fas fa-file-alt text-indigo-600 text-2xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">{{ __('Total Docs') }}</p>
-                            <p class="text-2xl font-bold text-gray-800">{{ count($docs) }}</p>
+                            <div class="text-indigo-600 text-xs font-semibold mb-1">{{ __('Total Docs') }}</div>
+                            <div class="text-2xl font-bold text-indigo-900">{{ count($docs) }}</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-green-100 rounded-full p-3">
-                            <i class="fas fa-certificate text-green-600 text-xl"></i>
+                <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg mr-3">
+                            <i class="fas fa-certificate text-green-600 text-2xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">{{ __('Certificates') }}</p>
-                            <p class="text-2xl font-bold text-gray-800">
+                            <div class="text-green-600 text-xs font-semibold mb-1">{{ __('Certificates') }}</div>
+                            <div class="text-2xl font-bold text-green-900">
                                 {{ collect($docs)->where('category', 'Certificates')->count() }}
-                            </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-purple-100 rounded-full p-3">
-                            <i class="fas fa-wifi-slash text-purple-600 text-xl"></i>
+                <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-purple-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg mr-3">
+                            <i class="fas fa-wifi-slash text-purple-600 text-2xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">{{ __('Offline Mode') }}</p>
-                            <p class="text-2xl font-bold text-gray-800">
+                            <div class="text-purple-600 text-xs font-semibold mb-1">{{ __('Offline Mode') }}</div>
+                            <div class="text-2xl font-bold text-purple-900">
                                 {{ collect($docs)->where('category', 'Offline Mode')->count() }}
-                            </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-yellow-100 rounded-full p-3">
-                            <i class="fas fa-star text-yellow-600 text-xl"></i>
+                <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-yellow-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-yellow-100 rounded-lg mr-3">
+                            <i class="fas fa-star text-yellow-600 text-2xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">{{ __('Categories') }}</p>
-                            <p class="text-2xl font-bold text-gray-800">
+                            <div class="text-yellow-600 text-xs font-semibold mb-1">{{ __('Categories') }}</div>
+                            <div class="text-2xl font-bold text-yellow-900">
                                 {{ collect($docs)->pluck('category')->unique()->count() }}
-                            </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
 
             @foreach ($groupedDocs as $category => $categoryDocs)
                 <div class="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
-                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6">
+                    <div class="bg-indigo-600 p-6 border-b border-indigo-700">
                         <h3 class="text-xl font-bold text-white flex items-center gap-2">
                             <i class="fas {{ $categoryDocs->first()['icon'] }}"></i>
                             {{ $category }}
@@ -121,8 +121,9 @@
                                     </div>
                                     <div class="ml-4">
                                         <div
-                                            class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium text-sm group-hover:bg-indigo-700 transition-colors">
-                                            <i class="fas fa-arrow-right mr-2"></i>{{ __('Read') }}
+                                            class="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2.5 rounded-lg font-semibold text-sm group-hover:bg-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                            <i class="fas fa-arrow-right"></i>
+                                            <span>{{ __('Read') }}</span>
                                         </div>
                                     </div>
                                 </div>

@@ -2,16 +2,17 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <i class="fas fa-chart-line text-blue-600 mr-2"></i>{{ __('Advanced Analytics') }}
+                <i class="fas fa-chart-line mr-2"></i>{{ __('Advanced Analytics') }}
             </h2>
             <div class="flex gap-2">
                 <input type="date" id="start_date" value="{{ $startDate }}"
-                    class="rounded-md border-gray-300 shadow-sm text-sm">
+                    class="px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
                 <input type="date" id="end_date" value="{{ $endDate }}"
-                    class="rounded-md border-gray-300 shadow-sm text-sm">
+                    class="px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
                 <button onclick="refreshCharts()"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-sync-alt mr-1"></i>{{ __('Refresh') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-sync-alt"></i>
+                    {{ __('Refresh') }}
                 </button>
             </div>
         </div>

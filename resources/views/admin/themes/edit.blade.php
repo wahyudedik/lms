@@ -6,8 +6,9 @@
                 {{ __('Theme Editor: :name', ['name' => $school->name]) }}
             </h2>
             <a href="{{ route('admin.schools.show', $school) }}"
-                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                <i class="fas fa-arrow-left"></i>
+                <span>{{ __('Back') }}</span>
             </a>
         </div>
     </x-slot>
@@ -333,20 +334,23 @@
                                     onsubmit="return confirmDelete('{{ __('This will reset all theme settings to default. Are you sure?') }}')">
                                     @csrf
                                     <button type="submit"
-                                        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                        <i class="fas fa-undo mr-2"></i>{{ __('Reset to Default') }}
+                                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                        <i class="fas fa-undo"></i>
+                                        <span>{{ __('Reset to Default') }}</span>
                                     </button>
                                 </form>
 
                                 <a href="{{ route('admin.schools.theme.export', $school) }}"
-                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                    <i class="fas fa-download mr-2"></i>{{ __('Export JSON') }}
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-download"></i>
+                                    <span>{{ __('Export JSON') }}</span>
                                 </a>
                             </div>
 
                             <button type="submit"
-                                class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded">
-                                <i class="fas fa-save mr-2"></i>{{ __('Save Theme') }}
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-save"></i>
+                                <span>{{ __('Save Theme') }}</span>
                             </button>
                         </div>
                     </div>

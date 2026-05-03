@@ -2,16 +2,18 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $material->title }}
+                <i class="fas fa-file-alt mr-2"></i>{{ $material->title }}
             </h2>
             <div class="flex gap-2">
                 <a href="{{ route('guru.courses.materials.edit', [$course, $material]) }}"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-edit mr-2"></i>Edit
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-edit"></i>
+                    Edit
                 </a>
                 <a href="{{ route('guru.courses.materials.index', $course) }}"
-                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ __('Back') }}
                 </a>
             </div>
         </div>
@@ -23,7 +25,7 @@
                 <!-- Main Content -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Material Content -->
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg">
                         <div class="p-6">
                             <div class="flex items-center mb-4">
                                 <i
@@ -36,7 +38,9 @@
 
                             @if ($material->description)
                                 <div class="mb-6">
-                                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Deskripsi</h4>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">
+                                        <i class="fas fa-align-left text-blue-600 mr-2"></i>Deskripsi
+                                    </h4>
                                     <p class="text-gray-700 whitespace-pre-wrap">{{ $material->description }}</p>
                                 </div>
                             @endif
@@ -46,8 +50,8 @@
                                 <div class="mb-6">
                                     @if ($material->getFileUrl())
                                         <a href="{{ $material->getFileUrl() }}" download
-                                            class="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
-                                            <i class="fas fa-download mr-2"></i>
+                                            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                            <i class="fas fa-download"></i>
                                             Download {{ $material->file_name }}
                                             @if ($material->getFormattedFileSize())
                                                 ({{ $material->getFormattedFileSize() }})
@@ -61,15 +65,15 @@
                                         <div class="aspect-w-16 aspect-h-9">
                                             <iframe src="{{ $material->getEmbedUrl() }}" frameborder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen class="w-full h-96 rounded"></iframe>
+                                                allowfullscreen class="w-full h-96 rounded-lg"></iframe>
                                         </div>
                                     </div>
                                 @endif
                             @elseif($material->type === 'link')
                                 <div class="mb-6">
                                     <a href="{{ $material->url }}" target="_blank" rel="noopener noreferrer"
-                                        class="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">
-                                        <i class="fas fa-external-link-alt mr-2"></i>
+                                        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                        <i class="fas fa-external-link-alt"></i>
                                         Buka Link
                                     </a>
                                     <p class="mt-2 text-sm text-gray-500">{{ $material->url }}</p>
@@ -79,10 +83,11 @@
                     </div>
 
                     <!-- Comments Section -->
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                                Diskusi ({{ $material->allComments->count() }} komentar)
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-comments text-purple-600 mr-2"></i>Diskusi
+                                ({{ $material->allComments->count() }} komentar)
                             </h3>
 
                             <!-- Comment Form -->
@@ -90,10 +95,11 @@
                                 class="mb-6">
                                 @csrf
                                 <textarea name="comment" rows="3" required placeholder="Tulis komentar..."
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150"></textarea>
                                 <button type="submit"
-                                    class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    <i class="fas fa-comment mr-2"></i>{{ __('Post Comment') }}
+                                    class="mt-2 inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-comment"></i>
+                                    {{ __('Post Comment') }}
                                 </button>
                             </form>
 
@@ -122,7 +128,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="text-red-600 hover:text-red-900 text-sm">
+                                                        class="text-red-600 hover:text-red-800 text-sm font-semibold">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -154,7 +160,7 @@
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit"
-                                                                    class="text-red-600 hover:text-red-900 text-sm">
+                                                                    class="text-red-600 hover:text-red-800 text-sm font-semibold">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
                                                             </form>
@@ -172,17 +178,24 @@
                                             <div class="flex gap-2">
                                                 <input type="text" name="comment" required
                                                     placeholder="{{ __('Write a reply...') }}"
-                                                    class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                                                    class="flex-1 px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150 text-sm">
                                                 <button type="submit"
-                                                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded text-sm">
-                                                    <i class="fas fa-reply mr-1"></i>{{ __('Reply') }}
+                                                    class="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-sm text-sm">
+                                                    <i class="fas fa-reply"></i>
+                                                    {{ __('Reply') }}
                                                 </button>
                                             </div>
                                         </form>
                                     </div>
                                 @empty
-                                    <p class="text-gray-500 text-center py-4">{{ __('No comments yet. Be the first to comment!') }}
-                                        berkomentar!</p>
+                                    <div class="flex flex-col items-center justify-center text-gray-500 py-8">
+                                        <div
+                                            class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                            <i class="fas fa-comments text-3xl text-gray-400"></i>
+                                        </div>
+                                        <p class="text-sm font-semibold">
+                                            {{ __('No comments yet. Be the first to comment!') }}</p>
+                                    </div>
                                 @endforelse
                             </div>
                         </div>
@@ -192,38 +205,43 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <!-- Material Info -->
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Informasi</h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-info-circle text-blue-600 mr-2"></i>Informasi
+                            </h3>
                             <dl class="space-y-3">
-                                <div>
-                                    <dt class="text-sm text-gray-500">{{ __('Course') }}</dt>
-                                    <dd class="text-sm font-medium text-gray-900">{{ $course->title }}</dd>
+                                <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                    <dt class="text-xs font-semibold text-blue-700 mb-1">{{ __('Course') }}</dt>
+                                    <dd class="text-sm font-semibold text-gray-900">{{ $course->title }}</dd>
                                 </div>
-                                <div>
-                                    <dt class="text-sm text-gray-500">Dibuat oleh</dt>
-                                    <dd class="text-sm font-medium text-gray-900">{{ $material->creator->name }}</dd>
+                                <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                                    <dt class="text-xs font-semibold text-purple-700 mb-1">Dibuat oleh</dt>
+                                    <dd class="text-sm font-semibold text-gray-900">{{ $material->creator->name }}
+                                    </dd>
                                 </div>
-                                <div>
-                                    <dt class="text-sm text-gray-500">Status</dt>
+                                <div class="p-3 bg-green-50 rounded-lg border border-green-100">
+                                    <dt class="text-xs font-semibold text-green-700 mb-1">Status</dt>
                                     <dd>
                                         <span
-                                            class="px-2 py-1 text-xs font-semibold rounded-full 
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
                                             {{ $material->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                            <i
+                                                class="fas fa-{{ $material->is_published ? 'check' : 'clock' }} mr-1"></i>
                                             {{ $material->is_published ? 'Published' : 'Draft' }}
                                         </span>
                                     </dd>
                                 </div>
                                 @if ($material->published_at)
-                                    <div>
-                                        <dt class="text-sm text-gray-500">Dipublikasikan</dt>
-                                        <dd class="text-sm font-medium text-gray-900">
+                                    <div class="p-3 bg-orange-50 rounded-lg border border-orange-100">
+                                        <dt class="text-xs font-semibold text-orange-700 mb-1">Dipublikasikan</dt>
+                                        <dd class="text-sm font-semibold text-gray-900">
                                             {{ $material->published_at->format('d M Y H:i') }}</dd>
                                     </div>
                                 @endif
-                                <div>
-                                    <dt class="text-sm text-gray-500">Dibuat</dt>
-                                    <dd class="text-sm font-medium text-gray-900">
+                                <div class="p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                                    <dt class="text-xs font-semibold text-indigo-700 mb-1">Dibuat</dt>
+                                    <dd class="text-sm font-semibold text-gray-900">
                                         {{ $material->created_at->format('d M Y H:i') }}</dd>
                                 </div>
                             </dl>
@@ -231,20 +249,24 @@
                     </div>
 
                     <!-- Actions -->
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Aksi</h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-cog text-gray-600 mr-2"></i>Aksi
+                            </h3>
                             <div class="space-y-2">
                                 <form
                                     action="{{ route('guru.courses.materials.toggle-status', [$course, $material]) }}"
                                     method="POST">
                                     @csrf
                                     <button type="submit"
-                                        class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                         @if ($material->is_published)
-                                            <i class="fas fa-eye-slash mr-2"></i>Unpublish
+                                            <i class="fas fa-eye-slash"></i>
+                                            Unpublish
                                         @else
-                                            <i class="fas fa-check mr-2"></i>Publish
+                                            <i class="fas fa-check"></i>
+                                            Publish
                                         @endif
                                     </button>
                                 </form>
@@ -255,8 +277,9 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                        <i class="fas fa-trash mr-2"></i>{{ __('Delete Material') }}
+                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                        <i class="fas fa-trash"></i>
+                                        {{ __('Delete Material') }}
                                     </button>
                                 </form>
                             </div>

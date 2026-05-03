@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
 
-class SettingSeeder extends Seeder
+class SettingSeeder extends Seeder 
 {
     /**
      * Run the database seeds.
@@ -14,9 +14,9 @@ class SettingSeeder extends Seeder
     {
         $settings = [
             // General Settings
-            ['key' => 'app_name', 'value' => 'Koneksi', 'type' => 'text', 'group' => 'general'],
-            ['key' => 'app_description', 'value' => 'Kolaborasi Online Edukasi dan Komunikasi Siswa', 'type' => 'textarea', 'group' => 'general'],
-            ['key' => 'school_name', 'value' => 'Sekolah Digital', 'type' => 'text', 'group' => 'general'],
+            ['key' => 'app_name', 'value' => 'Learning Management System', 'type' => 'text', 'group' => 'general'],
+            ['key' => 'app_description', 'value' => 'Platform Pembelajaran Digital untuk Dosen dan Mahasiswa', 'type' => 'textarea', 'group' => 'general'],
+            ['key' => 'school_name', 'value' => 'Universitas Digital', 'type' => 'text', 'group' => 'general'],
             ['key' => 'school_address', 'value' => 'Jl. Pendidikan No. 123', 'type' => 'textarea', 'group' => 'general'],
             ['key' => 'school_phone', 'value' => '021-12345678', 'type' => 'text', 'group' => 'general'],
             ['key' => 'school_email', 'value' => 'info@sekolah.com', 'type' => 'text', 'group' => 'general'],
@@ -43,7 +43,7 @@ class SettingSeeder extends Seeder
 
             // Certificate Settings
             ['key' => 'certificate_template', 'value' => 'default', 'type' => 'text', 'group' => 'certificate'],
-            ['key' => 'certificate_institution_name', 'value' => 'Sekolah Digital', 'type' => 'text', 'group' => 'certificate'],
+            ['key' => 'certificate_institution_name', 'value' => 'Universitas Digital', 'type' => 'text', 'group' => 'certificate'],
             ['key' => 'certificate_director_name', 'value' => 'Dr. John Smith', 'type' => 'text', 'group' => 'certificate'],
             ['key' => 'certificate_primary_color', 'value' => '#2563EB', 'type' => 'color', 'group' => 'certificate'],
             ['key' => 'certificate_secondary_color', 'value' => '#64748B', 'type' => 'color', 'group' => 'certificate'],

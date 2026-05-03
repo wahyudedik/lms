@@ -2,24 +2,25 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <i class="fas fa-database text-indigo-600 mr-2"></i>
-                {{ __('Question Bank') }}
+                <i class="fas fa-database mr-2"></i>{{ __('Question Bank') }}
             </h2>
             <div class="flex gap-2">
                 <a href="{{ route('admin.question-bank.statistics') }}"
-                    class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-chart-bar mr-2"></i>{{ __('Statistics') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-chart-bar"></i>
+                    {{ __('Statistics') }}
                 </a>
                 <div class="relative inline-block">
                     <button onclick="toggleExportMenu()"
-                        class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                        <i class="fas fa-file-export mr-2"></i>{{ __('Export') }}
-                        <i class="fas fa-chevron-down ml-2"></i>
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-file-export"></i>
+                        {{ __('Export') }}
+                        <i class="fas fa-chevron-down"></i>
                     </button>
                     <div id="exportMenu"
-                        class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                        class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 border border-gray-200">
                         <a href="{{ route('admin.question-bank.export', array_merge(request()->all(), ['format' => 'excel'])) }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg">
                             <i class="fas fa-file-excel text-green-600 mr-2"></i>{{ __('Excel') }}
                         </a>
                         <a href="{{ route('admin.question-bank.export', array_merge(request()->all(), ['format' => 'pdf'])) }}"
@@ -27,22 +28,25 @@
                             <i class="fas fa-file-pdf text-red-600 mr-2"></i>{{ __('PDF') }}
                         </a>
                         <a href="{{ route('admin.question-bank.export', array_merge(request()->all(), ['format' => 'json'])) }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
                             <i class="fas fa-code text-blue-600 mr-2"></i>{{ __('JSON') }}
                         </a>
                     </div>
                 </div>
                 <button onclick="openImportModal()"
-                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-file-import mr-2"></i>{{ __('Import') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-file-import"></i>
+                    {{ __('Import') }}
                 </button>
                 <a href="{{ route('admin.question-bank.import-history') }}"
-                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-history mr-2"></i>{{ __('History') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                    <i class="fas fa-history"></i>
+                    {{ __('History') }}
                 </a>
                 <a href="{{ route('admin.question-bank.create') }}"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-plus mr-2"></i>{{ __('Add Question') }}
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-plus"></i>
+                    {{ __('Add Question') }}
                 </a>
             </div>
         </div>
@@ -52,7 +56,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <!-- Filters -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
                     <form method="GET" action="{{ route('admin.question-bank.index') }}" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -60,13 +64,13 @@
                             <div class="md:col-span-2">
                                 <input type="text" name="search" value="{{ request('search') }}"
                                     placeholder="{{ __('Search questions...') }}"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150">
                             </div>
 
                             <!-- Category -->
                             <div>
                                 <select name="category_id"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">{{ __('All Categories') }}</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
@@ -80,7 +84,7 @@
                             <!-- Type -->
                             <div>
                                 <select name="type"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">{{ __('All Types') }}</option>
                                     <option value="mcq_single" {{ request('type') == 'mcq_single' ? 'selected' : '' }}>
                                         MCQ Single</option>
@@ -96,7 +100,7 @@
                             <!-- Difficulty -->
                             <div>
                                 <select name="difficulty"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">All Difficulties</option>
                                     <option value="easy" {{ request('difficulty') == 'easy' ? 'selected' : '' }}>{{ __('Easy') }}</option>
                                     <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>{{ __('Medium') }}</option>
@@ -107,12 +111,14 @@
 
                         <div class="flex gap-2">
                             <button type="submit"
-                                class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-search mr-2"></i>{{ __('Filter') }}
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-filter"></i>
+                                {{ __('Filter') }}
                             </button>
                             <a href="{{ route('admin.question-bank.index') }}"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-redo mr-2"></i>{{ __('Reset') }}
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                                <i class="fas fa-times"></i>
+                                {{ __('Reset') }}
                             </a>
                         </div>
                     </form>
@@ -120,20 +126,20 @@
             </div>
 
             <!-- Questions List -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
                     @if ($questions->count() > 0)
                         <div class="space-y-4">
                             @foreach ($questions as $question)
                                 <div
-                                    class="border rounded-lg p-4 hover:shadow-lg transition-all duration-200 {{ !$question->is_active ? 'bg-gray-50 opacity-75' : '' }}">
+                                    class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 {{ !$question->is_active ? 'bg-gray-50 opacity-75' : '' }}">
                                     <div class="flex justify-between items-start">
                                         <div class="flex-1">
                                             <!-- Question Text -->
                                             <div class="flex items-start gap-3">
                                                 @if ($question->question_image)
                                                     <img src="{{ Storage::url($question->question_image) }}"
-                                                        alt="Question" class="w-16 h-16 object-cover rounded">
+                                                        alt="Question" class="w-16 h-16 object-cover rounded-lg">
                                                 @endif
                                                 <div class="flex-1">
                                                     <h3 class="font-semibold text-lg text-gray-900 mb-2">

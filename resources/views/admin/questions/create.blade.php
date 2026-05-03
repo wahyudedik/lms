@@ -2,88 +2,142 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Add Question - :title', ['title' => $exam->title]) }}
+                <i class="fas fa-plus mr-2"></i>{{ __('Add Question - :title', ['title' => $exam->title]) }}
             </h2>
             <a href="{{ route('admin.exams.questions.index', $exam) }}"
-                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i>{{ __('Back') }}
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                <i class="fas fa-arrow-left"></i>
+                {{ __('Back') }}
             </a>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
                     <form action="{{ route('admin.exams.questions.store', $exam) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
 
-                        <!-- Question Type -->
-                        <div class="mb-6">
-                            <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Tipe Soal') }} <span class="text-red-500">*</span>
-                            </label>
-                            <select name="type" id="type" required
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option value="mcq_single" {{ old('type') == 'mcq_single' ? 'selected' : '' }}>
-                                    {{ __('Pilihan Ganda (Single Answer)') }}
-                                </option>
-                                <option value="mcq_multiple" {{ old('type') == 'mcq_multiple' ? 'selected' : '' }}>
-                                    {{ __('Pilihan Ganda (Multiple Answers)') }}
-                                </option>
-                                <option value="matching" {{ old('type') == 'matching' ? 'selected' : '' }}>
-                                    {{ __('Menjodohkan') }}
-                                </option>
-                                <option value="essay" {{ old('type') == 'essay' ? 'selected' : '' }}>
-                                    {{ __('Essay') }}
-                                </option>
-                            </select>
-                        </div>
+                        <!-- Basic Information -->
+                        <div class="mb-8 pb-8 border-b border-gray-200">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-info-circle text-blue-600 mr-2"></i>{{ __('Informasi Dasar') }}
+                            </h3>
 
-                        <!-- Question Text -->
-                        <div class="mb-6">
-                            <label for="question_text" class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Pertanyaan') }} <span class="text-red-500">*</span>
-                            </label>
-                            <textarea name="question_text" id="question_text" rows="3" required
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('question_text') }}</textarea>
-                        </div>
+                            <!-- Difficulty, Points & Order Row -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <!-- Difficulty -->
+                                <div>
+                                    <label for="difficulty" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-signal text-gray-400 mr-1"></i>{{ __('Difficulty') }} <span class="text-red-500">*</span>
+                                    </label>
+                                    <select name="difficulty" id="difficulty" required
+                                        class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                        <option value="easy" {{ old('difficulty') == 'easy' ? 'selected' : '' }}>{{ __('Easy') }}</option>
+                                        <option value="medium" {{ old('difficulty', 'medium') == 'medium' ? 'selected' : '' }}>{{ __('Medium') }}</option>
+                                        <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>{{ __('Hard') }}</option>
+                                    </select>
+                                </div>
 
-                        <!-- Question Image -->
-                        <div class="mb-6">
-                            <label for="question_image" class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Gambar (Opsional)') }}
-                            </label>
-                            <input type="file" name="question_image" id="question_image" accept="image/*"
-                                class="w-full">
-                            <p class="text-sm text-gray-500 mt-1">{{ __('Maksimal 2MB (JPG, PNG, GIF)') }}</p>
-                        </div>
+                                <!-- Points -->
+                                <div>
+                                    <label for="points" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-star text-gray-400 mr-1"></i>{{ __('Poin') }} <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="number" name="points" id="points" value="{{ old('points', 10) }}"
+                                        min="0" step="0.01" required
+                                        class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                </div>
 
-                        <!-- MCQ Options Section -->
-                        <div id="mcq-section" class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Opsi Jawaban') }} <span class="text-red-500">*</span>
-                            </label>
-                            <div id="options-container" class="space-y-3">
-                                <!-- Options will be added by JavaScript -->
+                                <!-- Order -->
+                                <div>
+                                    <label for="order" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-sort-numeric-down text-gray-400 mr-1"></i>{{ __('Urutan') }}
+                                    </label>
+                                    <input type="number" name="order" id="order" value="{{ old('order') }}"
+                                        min="0"
+                                        class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                    <p class="text-sm text-gray-500 mt-1">{{ __('Kosongkan untuk urutan otomatis') }}</p>
+                                </div>
                             </div>
-                            <button type="button" id="add-option" class="mt-3 text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Option') }}
-                            </button>
+                        </div>
 
-                            <div id="correct-answer-single" class="mt-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Jawaban Benar') }} <span class="text-red-500">*</span>
+                        <!-- Question Content -->
+                        <div class="mb-8 pb-8 border-b border-gray-200">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-question-circle text-green-600 mr-2"></i>{{ __('Konten Soal') }}
+                            </h3>
+
+                            <!-- Question Type -->
+                            <div class="mb-6">
+                                <label for="type" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-list text-gray-400 mr-1"></i>Tipe Soal <span class="text-red-500">*</span>
                                 </label>
-                                <select name="correct_answer_single" class="w-full rounded-md border-gray-300">
-                                    <option value="">{{ __('Pilih Jawaban Benar') }}</option>
+                                <select name="type" id="type" required
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                    <option value="mcq_single" {{ old('type') == 'mcq_single' ? 'selected' : '' }}>
+                                        Pilihan Ganda (Single Answer)
+                                    </option>
+                                    <option value="mcq_multiple" {{ old('type') == 'mcq_multiple' ? 'selected' : '' }}>
+                                        Pilihan Ganda (Multiple Answers)
+                                    </option>
+                                    <option value="matching" {{ old('type') == 'matching' ? 'selected' : '' }}>
+                                        Menjodohkan
+                                    </option>
+                                    <option value="essay" {{ old('type') == 'essay' ? 'selected' : '' }}>
+                                        Essay
+                                    </option>
                                 </select>
                             </div>
 
-                            <div id="correct-answer-multiple" class="mt-4 hidden">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Jawaban Benar (Pilih Semua yang Benar)') }} <span class="text-red-500">*</span>
+                            <!-- Question Text -->
+                            <div class="mb-6">
+                                <label for="question_text" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-align-left text-gray-400 mr-1"></i>Pertanyaan <span class="text-red-500">*</span>
+                                </label>
+                                <textarea name="question_text" id="question_text" rows="3" required
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('question_text') }}</textarea>
+                            </div>
+
+                            <!-- Question Image -->
+                            <div class="mb-6">
+                                <label for="question_image" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-image text-gray-400 mr-1"></i>Gambar (Opsional)
+                                </label>
+                                <input type="file" name="question_image" id="question_image" accept="image/*"
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                <p class="text-sm text-gray-500 mt-1">Maksimal 2MB (JPG, PNG, GIF)</p>
+                            </div>
+                        </div>
+
+                        <!-- MCQ Options Section -->
+                        <div id="mcq-section" class="mb-8 pb-8 border-b border-gray-200">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-list-ul text-purple-600 mr-2"></i>{{ __('Opsi Jawaban') }}
+                            </h3>
+                            <div id="options-container" class="space-y-3 mb-4">
+                                <!-- Options will be added by JavaScript -->
+                            </div>
+                            <button type="button" id="add-option"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-plus-circle"></i>{{ __('Add Option') }}
+                            </button>
+
+                            <div id="correct-answer-single" class="mt-6">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-check-circle text-gray-400 mr-1"></i>Jawaban Benar <span class="text-red-500">*</span>
+                                </label>
+                                <select name="correct_answer_single"
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                    <option value="">Pilih Jawaban Benar</option>
+                                </select>
+                            </div>
+
+                            <div id="correct-answer-multiple" class="mt-6 hidden">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-check-double text-gray-400 mr-1"></i>Jawaban Benar (Pilih Semua yang Benar) <span class="text-red-500">*</span>
                                 </label>
                                 <div id="correct-checkboxes" class="space-y-2">
                                     <!-- Checkboxes will be added by JavaScript -->
@@ -92,69 +146,79 @@
                         </div>
 
                         <!-- Matching Pairs Section -->
-                        <div id="matching-section" class="mb-6 hidden">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Pasangan') }} <span class="text-red-500">*</span>
-                            </label>
-                            <div id="pairs-container" class="space-y-3">
+                        <div id="matching-section" class="mb-8 pb-8 border-b border-gray-200 hidden">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-exchange-alt text-orange-600 mr-2"></i>{{ __('Pasangan') }}
+                            </h3>
+                            <div id="pairs-container" class="space-y-3 mb-4">
                                 <!-- Pairs will be added by JavaScript -->
                             </div>
-                            <button type="button" id="add-pair" class="mt-3 text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Pair') }}
+                            <button type="button" id="add-pair"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-plus-circle"></i>{{ __('Add Pair') }}
                             </button>
                         </div>
 
                         <!-- Essay Configuration Section -->
-                        <div id="essay-section" class="mb-6 hidden">
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <div id="essay-section" class="mb-8 pb-8 border-b border-gray-200 hidden">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-pen text-indigo-600 mr-2"></i>{{ __('Konfigurasi Essay') }}
+                            </h3>
+
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                                 <h4 class="font-semibold text-blue-900 mb-2">
-                                    <i class="fas fa-robot mr-2"></i>{{ __('Sistem Penilaian Essay') }}
+                                    <i class="fas fa-robot mr-2"></i>Sistem Penilaian Essay
                                 </h4>
                                 <p class="text-sm text-blue-700">
-                                    {{ __('Pilih mode penilaian untuk soal essay. Anda bisa gunakan auto-grading atau manual review.') }}
+                                    Pilih mode penilaian untuk soal essay. Anda bisa gunakan auto-grading atau manual
+                                    review.
                                 </p>
                             </div>
 
                             <!-- Essay Grading Mode -->
-                            <div class="mb-4">
-                                <label for="essay_grading_mode" class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Mode Penilaian') }} <span class="text-red-500">*</span>
+                            <div class="mb-6">
+                                <label for="essay_grading_mode" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-cog text-gray-400 mr-1"></i>Mode Penilaian <span class="text-red-500">*</span>
                                 </label>
                                 <select name="essay_grading_mode" id="essay_grading_mode"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="manual">{{ __('Manual (Guru Review)') }}</option>
-                                    <option value="keyword">{{ __('Keyword Matching (Auto-Grade)') }}</option>
-                                    <option value="similarity">{{ __('Similarity Matching (Auto-Grade)') }}</option>
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                    <option value="manual">Manual (Guru Review)</option>
+                                    <option value="keyword">Keyword Matching (Auto-Grade)</option>
+                                    <option value="similarity">Similarity Matching (Auto-Grade)</option>
                                 </select>
                                 <p class="text-xs text-gray-500 mt-1">
-                                    <b>{{ __('Manual:') }}</b> {{ __('Guru harus review semua jawaban') }} |
-                                    <b>{{ __('Keyword:') }}</b> {{ __('Sistem cek kata kunci') }} |
-                                    <b>{{ __('Similarity:') }}</b> {{ __('Sistem bandingkan dengan jawaban model') }}
+                                    <b>Manual:</b> Guru harus review semua jawaban |
+                                    <b>Keyword:</b> Sistem cek kata kunci |
+                                    <b>Similarity:</b> Sistem bandingkan dengan jawaban model
                                 </p>
                             </div>
 
                             <!-- Case Sensitive -->
-                            <div class="mb-4">
-                                <label class="flex items-center">
+                            <div class="mb-6">
+                                <label class="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                                     <input type="checkbox" name="essay_case_sensitive" id="essay_case_sensitive"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-2 text-sm text-gray-700">{{ __('Case Sensitive (huruf besar/kecil berpengaruh)') }}</span>
+                                    <span class="ml-2 text-sm font-semibold text-gray-700">Case Sensitive (huruf besar/kecil
+                                        berpengaruh)</span>
                                 </label>
                             </div>
 
                             <!-- Keyword Matching Fields -->
                             <div id="keyword-fields" class="hidden">
                                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                                    <h5 class="font-medium text-yellow-900 mb-2">{{ __('Kata Kunci & Poin') }}</h5>
+                                    <h5 class="font-semibold text-yellow-900 mb-2">
+                                        <i class="fas fa-key text-yellow-700 mr-2"></i>Kata Kunci & Poin
+                                    </h5>
                                     <p class="text-sm text-yellow-700 mb-3">
-                                        {{ __('Add keywords that must appear in the student answer. The system will award points based on keywords found.') }}
+                                        Tambahkan kata kunci yang harus ada dalam jawaban siswa. Sistem akan menghitung
+                                        poin berdasarkan kata kunci yang ditemukan.
                                     </p>
-                                    <div id="keywords-container" class="space-y-2">
+                                    <div id="keywords-container" class="space-y-2 mb-3">
                                         <!-- Keywords will be added by JavaScript -->
                                     </div>
                                     <button type="button" id="add-keyword"
-                                        class="mt-3 text-yellow-600 hover:text-yellow-900">
-                                        <i class="fas fa-plus-circle mr-1"></i>{{ __('Add Keyword') }}
+                                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                        <i class="fas fa-plus-circle"></i>{{ __('Add Keyword') }}
                                     </button>
                                 </div>
                             </div>
@@ -162,79 +226,80 @@
                             <!-- Similarity Matching Fields -->
                             <div id="similarity-fields" class="hidden">
                                 <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                                    <h5 class="font-medium text-green-900 mb-2">{{ __('Jawaban Model') }}</h5>
+                                    <h5 class="font-semibold text-green-900 mb-2">
+                                        <i class="fas fa-check-double text-green-700 mr-2"></i>Jawaban Model
+                                    </h5>
                                     <p class="text-sm text-green-700 mb-3">
-                                        {{ __('Berikan jawaban yang benar/ideal. Sistem akan membandingkan jawaban siswa dengan jawaban model ini.') }}
+                                        Berikan jawaban yang benar/ideal. Sistem akan membandingkan jawaban siswa dengan
+                                        jawaban model ini.
                                     </p>
                                     <textarea name="essay_model_answer" id="essay_model_answer" rows="4"
-                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
-                                        placeholder="{{ __('Contoh: Fotosintesis adalah proses tumbuhan membuat makanan menggunakan cahaya matahari...') }}"></textarea>
+                                        class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-150"
+                                        placeholder="Contoh: Fotosintesis adalah proses tumbuhan membuat makanan menggunakan cahaya matahari..."></textarea>
                                 </div>
 
                                 <div class="mb-4">
                                     <label for="essay_min_similarity"
-                                        class="block text-sm font-medium text-gray-700 mb-2">
-                                        {{ __('Minimal Similarity (%)') }}
+                                        class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-percentage text-gray-400 mr-1"></i>Minimal Similarity (%)
                                     </label>
                                     <input type="number" name="essay_min_similarity" id="essay_min_similarity"
                                         value="70" min="0" max="100"
-                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                                        class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-150">
                                     <p class="text-xs text-gray-500 mt-1">
-                                        {{ __('Jika similarity di bawah nilai ini, poin akan dikurangi 50%') }}
+                                        Jika similarity di bawah nilai ini, poin akan dikurangi 50%
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Points & Order -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <label for="points" class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Poin') }} <span class="text-red-500">*</span>
+                        <!-- Additional Information -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                <i class="fas fa-info text-teal-600 mr-2"></i>{{ __('Informasi Tambahan') }}
+                            </h3>
+
+                            <!-- Explanation -->
+                            <div class="mb-6">
+                                <label for="explanation" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-lightbulb text-gray-400 mr-1"></i>Explanation (Optional)
                                 </label>
-                                <input type="number" name="points" id="points" value="{{ old('points', 10) }}"
-                                    min="0" step="0.01" required
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <textarea name="explanation" id="explanation" rows="3"
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('explanation') }}</textarea>
+                                <p class="text-sm text-gray-500 mt-1">Explanation shown to students after answering</p>
                             </div>
 
-                            <div>
-                                <label for="order" class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('Urutan') }}
+                            <!-- Teacher Notes -->
+                            <div class="mb-6">
+                                <label for="teacher_notes" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-sticky-note text-gray-400 mr-1"></i>Teacher Notes (Optional - Private)
                                 </label>
-                                <input type="number" name="order" id="order" value="{{ old('order') }}"
-                                    min="0"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <p class="text-sm text-gray-500 mt-1">{{ __('Kosongkan untuk urutan otomatis') }}</p>
+                                <textarea name="teacher_notes" id="teacher_notes" rows="3"
+                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('teacher_notes') }}</textarea>
+                                <p class="text-sm text-gray-500 mt-1">Private notes for teachers only, not visible to
+                                    students</p>
                             </div>
-                        </div>
-
-                        <!-- Explanation -->
-                        <div class="mb-6">
-                            <label for="explanation" class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('Penjelasan (Opsional)') }}
-                            </label>
-                            <textarea name="explanation" id="explanation" rows="3"
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('explanation') }}</textarea>
-                            <p class="text-sm text-gray-500 mt-1">{{ __('Penjelasan akan ditampilkan setelah siswa selesai mengerjakan') }}</p>
                         </div>
 
                         <!-- Submit -->
-                        <div class="flex gap-4">
-                            <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <i class="fas fa-save mr-2"></i>{{ __('Simpan Soal') }}
-                            </button>
+                        <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
                             <a href="{{ route('admin.exams.questions.index', $exam) }}"
-                                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                                {{ __('Batal') }}
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                                <i class="fas fa-times"></i>
+                                {{ __('Cancel') }}
                             </a>
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fas fa-save"></i>
+                                {{ __('Add Question') }}
+                            </button>
                         </div>
                     </form>
 
                     <!-- Debug Info -->
                     @if ($errors->any())
                         <div class="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                            <strong>{{ __('Validation Errors:') }}</strong>
+                            <strong>Validation Errors:</strong>
                             <ul class="list-disc list-inside mt-2">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
@@ -249,23 +314,6 @@
 
     @push('scripts')
         <script>
-            const createLocale = {
-                maxLimitTitle: @json(__('Batas Maksimal')),
-                maxLimitText: @json(__('Maksimal :count opsi')),
-                optionPlaceholder: @json(__('Teks opsi :letter')),
-                leftPlaceholder: @json(__('Item kiri')),
-                rightPlaceholder: @json(__('Item kanan')),
-                addOptionLabel: @json(__('Add Option')),
-                addPairLabel: @json(__('Add Pair')),
-                keywordPlaceholder: @json(__('Kata kunci (contoh: fotosintesis)')),
-                keywordPointPlaceholder: @json(__('Poin')),
-                modelPlaceholder: @json(__('Contoh: Fotosintesis adalah proses tumbuhan membuat makanan menggunakan cahaya matahari...')),
-                validationTitle: @json(__('Validasi Gagal')),
-                validationSingle: @json(__('Pilih jawaban benar untuk pilihan ganda!')),
-                validationMultiple: @json(__('Pilih minimal satu jawaban benar untuk pilihan ganda multiple!')),
-                validationMatching: @json(__('Semua pasangan harus diisi untuk soal menjodohkan!')),
-            };
-
             let optionIndex = 0;
             let pairIndex = 0;
             const optionLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
@@ -341,8 +389,8 @@
                 if (optionIndex >= optionLetters.length) {
                     Swal.fire({
                         icon: 'warning',
-                        title: createLocale.maxLimitTitle,
-                        text: createLocale.maxLimitText.replace(':count', optionLetters.length),
+                        title: 'Batas Maksimal',
+                        text: 'Maksimal ' + optionLetters.length + ' opsi',
                         confirmButtonColor: '#3085d6'
                     });
                     return;
@@ -352,14 +400,13 @@
                 const container = document.getElementById('options-container');
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
-                const optionPlaceholder = createLocale.optionPlaceholder.replace(':letter', letter);
                 div.innerHTML = `
                     <span class="font-bold text-gray-700 w-8">${letter}.</span>
                     <input type="hidden" name="options[${optionIndex}][id]" value="${letter}">
                     <input type="text" name="options[${optionIndex}][text]" required 
-                        class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="${optionPlaceholder}">
-                    <button type="button" class="text-red-600 hover:text-red-900 remove-option">
-                        <i class="fas fa-times-circle"></i>
+                        class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Teks opsi ${letter}">
+                    <button type="button" class="text-red-600 hover:text-red-800 remove-option">
+                        <i class="fas fa-times-circle text-xl"></i>
                     </button>
                 `;
                 container.appendChild(div);
@@ -408,12 +455,12 @@
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
                     <input type="text" name="pairs[${pairIndex}][left]" required 
-                        class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="${createLocale.leftPlaceholder}">
+                        class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Item kiri">
                     <i class="fas fa-arrows-alt-h text-gray-400"></i>
                     <input type="text" name="pairs[${pairIndex}][right]" required 
-                        class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="${createLocale.rightPlaceholder}">
-                    <button type="button" class="text-red-600 hover:text-red-900 remove-pair">
-                        <i class="fas fa-times-circle"></i>
+                        class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Item kanan">
+                    <button type="button" class="text-red-600 hover:text-red-800 remove-pair">
+                        <i class="fas fa-times-circle text-xl"></i>
                     </button>
                 `;
                 container.appendChild(div);
@@ -453,14 +500,14 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                <input type="text" name="essay_keywords[]" 
-                    class="flex-1 rounded-md border-gray-300 shadow-sm" placeholder="${createLocale.keywordPlaceholder}">
-                <input type="number" name="essay_keyword_points[]" min="0" step="0.1" value="2"
-                    class="w-24 rounded-md border-gray-300 shadow-sm" placeholder="${createLocale.keywordPointPlaceholder}">
-                <button type="button" class="text-red-600 hover:text-red-900 remove-keyword">
-                    <i class="fas fa-times-circle"></i>
-                </button>
-            `;
+                    <input type="text" name="essay_keywords[]" 
+                        class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Kata kunci (contoh: fotosintesis)">
+                    <input type="number" name="essay_keyword_points[]" min="0" step="0.1" value="2"
+                        class="w-24 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Poin">
+                    <button type="button" class="text-red-600 hover:text-red-800 remove-keyword">
+                        <i class="fas fa-times-circle text-xl"></i>
+                    </button>
+                `;
                 container.appendChild(div);
                 keywordIndex++;
             });
@@ -476,7 +523,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Form submission validation
                 document.querySelector('form').addEventListener('submit', function(e) {
-                const type = document.getElementById('type').value;
+                    const type = document.getElementById('type').value;
 
                     // Check MCQ Single
                     if (type === 'mcq_single') {
@@ -486,8 +533,8 @@
                             e.preventDefault();
                             Swal.fire({
                                 icon: 'error',
-                                title: createLocale.validationTitle,
-                                text: createLocale.validationSingle,
+                                title: 'Validasi Gagal',
+                                text: 'Pilih jawaban benar untuk pilihan ganda!',
                                 confirmButtonColor: '#3085d6'
                             });
                             return false;
@@ -502,8 +549,8 @@
                             e.preventDefault();
                             Swal.fire({
                                 icon: 'error',
-                                title: createLocale.validationTitle,
-                                text: createLocale.validationMultiple,
+                                title: 'Validasi Gagal',
+                                text: 'Pilih minimal satu jawaban benar untuk pilihan ganda multiple!',
                                 confirmButtonColor: '#3085d6'
                             });
                             return false;
@@ -523,8 +570,8 @@
                             e.preventDefault();
                             Swal.fire({
                                 icon: 'error',
-                                title: createLocale.validationTitle,
-                                text: createLocale.validationMatching,
+                                title: 'Validasi Gagal',
+                                text: 'Semua pasangan harus diisi untuk soal menjodohkan!',
                                 confirmButtonColor: '#3085d6'
                             });
                             return false;

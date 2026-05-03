@@ -94,6 +94,10 @@ class School extends Model
 {
     use HasFactory;
 
+    // Cache constants for landing page
+    const CACHE_KEY_ACTIVE_LANDING = 'landing_page_active_school';
+    const CACHE_TTL_LANDING = 3600; // 60 minutes
+
     protected $fillable = [
         'name',
         'slug',
@@ -106,6 +110,7 @@ class School extends Model
         'is_active',
         // Landing Page Fields
         'show_landing_page',
+        'is_landing_active',
         'hero_title',
         'hero_subtitle',
         'hero_description',
@@ -133,6 +138,7 @@ class School extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'show_landing_page' => 'boolean',
+        'is_landing_active' => 'boolean',
         // Removed 'features' and 'statistics' from casts - using custom accessors instead
     ];
 
@@ -206,6 +212,74 @@ class School extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope: Get schools with landing page active
+     */
+    public function scopeLandingActive($query)
+    {
+        return $query->where('is_landing_active', true);
+    }
+
+    /**
+     * Activate this school for landing page display
+     * Deactivates all other schools atomically
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function activateForLanding(): bool
+    {
+        return \DB::transaction(function () {
+            // Deactivate all schools
+            School::query()->update(['is_landing_active' => false]);
+
+            // Activate this school
+            $this->update(['is_landing_active' => true]);
+
+            // Clear cache
+            \Cache::forget(self::CACHE_KEY_ACTIVE_LANDING);
+
+            return true;
+        });
+    }
+
+    /**
+     * Deactivate this school from landing page display
+     *
+     * @return bool
+     */
+    public function deactivateForLanding(): bool
+    {
+        $result = $this->update(['is_landing_active' => false]);
+
+        // Clear cache
+        \Cache::forget(self::CACHE_KEY_ACTIVE_LANDING);
+
+        return $result;
+    }
+
+    /**
+     * Get the currently active landing page school
+     * Returns first school if none active
+     *
+     * @return School|null
+     */
+    public static function getActiveLandingSchool(): ?School
+    {
+        return \Cache::remember(self::CACHE_KEY_ACTIVE_LANDING, self::CACHE_TTL_LANDING, function () {
+            $school = School::where('is_landing_active', true)
+                ->with(['theme'])
+                ->first();
+
+            // Fallback to first school if none active
+            if (!$school) {
+                $school = School::with(['theme'])->first();
+            }
+
+            return $school;
+        });
     }
 
     /**

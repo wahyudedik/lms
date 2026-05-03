@@ -8,7 +8,7 @@
 
     @php
         $school = \App\Models\School::active()->first();
-        $faviconUrl = $school ? $school->favicon_url : asset('favicon.ico');
+        $faviconUrl = $school ? $school->favicon_url : asset('favicon.png');
         $appName = $school ? $school->name : config('app.name');
     @endphp
 
@@ -28,22 +28,15 @@
 
 <body class="font-sans text-gray-900 antialiased bg-gray-50">
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-10 sm:pt-0 px-4">
-        <div class="mb-6">
-            <a href="/" class="flex flex-col items-center space-y-2">
-                <x-application-logo class="w-20 h-20" />
-                <span class="text-3xl font-bold text-gray-900">{{ $appName }}</span>
-                <span class="text-sm font-medium text-gray-600">Kolaborasi Online Edukasi dan Komunikasi Siswa</span>
-            </a>
-        </div>
 
-        <div class="w-full sm:max-w-md bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
-            <div class="px-6 py-8 sm:px-8">
+        <div class="w-full sm:max-w-md bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+            <div class="px-8 py-8 sm:px-10">
                 {{ $slot }}
             </div>
         </div>
 
         <div class="mt-6 text-center text-sm text-gray-600">
-            <p>&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('All rights reserved.') }}</p>
+            <p>&copy; {{ date('Y') }} Learning Management System. {{ __('All rights reserved.') }}</p>
         </div>
     </div>
 </body>

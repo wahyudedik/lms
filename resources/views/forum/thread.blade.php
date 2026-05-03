@@ -17,7 +17,7 @@
             <div class="flex gap-2">
                 @if (auth()->id() === $thread->user_id || auth()->user()->isAdmin())
                     <a href="{{ route('forum.edit', [$thread->category->slug, $thread->slug]) }}"
-                        class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-200 shadow-sm hover:shadow-md">
                         <i class="fas fa-edit"></i>
                     </a>
                 @endif
@@ -26,7 +26,7 @@
                         class="inline">
                         @csrf
                         <button type="submit"
-                            class="bg-{{ $thread->is_pinned ? 'gray' : 'purple' }}-500 hover:bg-{{ $thread->is_pinned ? 'gray' : 'purple' }}-700 text-white font-bold py-2 px-4 rounded">
+                            class="inline-flex items-center gap-2 px-4 py-2.5 {{ $thread->is_pinned ? 'bg-gray-600' : 'bg-purple-600' }} text-white font-semibold rounded-lg hover:{{ $thread->is_pinned ? 'bg-gray-700' : 'bg-purple-700' }} transition-all duration-200 shadow-sm hover:shadow-md">
                             <i class="fas fa-thumbtack"></i>
                         </button>
                     </form>
@@ -34,7 +34,7 @@
                         class="inline">
                         @csrf
                         <button type="submit"
-                            class="bg-{{ $thread->is_locked ? 'gray' : 'red' }}-500 hover:bg-{{ $thread->is_locked ? 'gray' : 'red' }}-700 text-white font-bold py-2 px-4 rounded">
+                            class="inline-flex items-center gap-2 px-4 py-2.5 {{ $thread->is_locked ? 'bg-gray-600' : 'bg-red-600' }} text-white font-semibold rounded-lg hover:{{ $thread->is_locked ? 'bg-gray-700' : 'bg-red-700' }} transition-all duration-200 shadow-sm hover:shadow-md">
                             <i class="fas fa-lock"></i>
                         </button>
                     </form>
@@ -47,18 +47,18 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <!-- Thread Content -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
                     <!-- Author Info -->
                     <div class="flex gap-4 mb-6">
                         <div
-                            class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center text-white font-bold text-2xl">
+                            class="w-16 h-16 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-2xl">
                             {{ substr($thread->user->name, 0, 1) }}
                         </div>
                         <div>
                             <div class="font-bold text-lg">{{ $thread->user->name }}</div>
                             <div class="text-sm text-gray-600">
-                                {{ $thread->created_at->format('M d, Y H:i') }}
+                                <i class="fas fa-clock mr-1"></i>{{ $thread->created_at->format('M d, Y H:i') }}
                                 <span class="mx-2">•</span>
                                 <i class="fas fa-eye mr-1"></i>{{ $thread->views_count }} views
                             </div>
@@ -74,26 +74,28 @@
                     <div class="flex items-center gap-4 pt-4 border-t">
                         <button onclick="toggleLike('thread', {{ $thread->id }})"
                             id="like-thread-{{ $thread->id }}"
-                            class="flex items-center gap-2 px-4 py-2 rounded {{ $thread->isLikedBy(auth()->user()) ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600' }} hover:bg-red-100 hover:text-red-600 transition">
+                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold {{ $thread->isLikedBy(auth()->user()) ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600' }} hover:bg-red-100 hover:text-red-600 transition-all duration-200">
                             <i class="fas fa-heart"></i>
                             <span id="likes-count-thread-{{ $thread->id }}">{{ $thread->likes_count }}</span>
                         </button>
                         <a href="#reply-form"
-                            class="flex items-center gap-2 px-4 py-2 rounded bg-gray-100 text-gray-600 hover:bg-indigo-100 hover:text-indigo-600 transition">
+                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold bg-gray-100 text-gray-600 hover:bg-purple-100 hover:text-purple-600 transition-all duration-200">
                             <i class="fas fa-reply"></i>
-                            Reply
+                            <span>Reply</span>
                         </a>
                     </div>
                 </div>
             </div>
 
             <!-- Replies -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">
-                        <i class="fas fa-comments mr-2"></i>
+            <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-900">
+                        <i class="fas fa-comments text-green-600 mr-2"></i>
                         {{ $thread->replies_count }} Replies
                     </h3>
+                </div>
+                <div class="p-6">
 
                     @if ($replies->count() > 0)
                         <div class="space-y-4">
@@ -107,9 +109,12 @@
                             {{ $replies->links() }}
                         </div>
                     @else
-                        <div class="text-center py-8 text-gray-500">
-                            <i class="fas fa-comment-slash text-4xl mb-2"></i>
-                            <p>No replies yet. Be the first to respond!</p>
+                        <div class="text-center py-12">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                                <i class="fas fa-comment-slash text-gray-400 text-3xl"></i>
+                            </div>
+                            <p class="text-gray-900 font-semibold mb-2">No replies yet</p>
+                            <p class="text-sm text-gray-500">Be the first to respond!</p>
                         </div>
                     @endif
                 </div>
@@ -117,9 +122,13 @@
 
             <!-- Reply Form -->
             @if (!$thread->is_locked || auth()->user()->isAdmin())
-                <div id="reply-form" class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div id="reply-form" class="bg-white overflow-hidden shadow-md rounded-lg">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-900">
+                            <i class="fas fa-reply text-blue-600 mr-2"></i>Post a Reply
+                        </h3>
+                    </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4">Post a Reply</h3>
                         <form action="{{ route('forum.reply', [$thread->category->slug, $thread->slug]) }}"
                             method="POST">
                             @csrf
@@ -138,20 +147,24 @@
                                 </div>
                             </div>
                             <textarea name="content" id="reply-content" rows="4" required placeholder="Write your reply..."
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                                class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-150"></textarea>
                             <div class="flex justify-end mt-4">
                                 <button type="submit"
-                                    class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded">
-                                    <i class="fas fa-paper-plane mr-2"></i>Post Reply
+                                    class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span>Post Reply</span>
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
             @else
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                    <i class="fas fa-lock text-4xl text-yellow-600 mb-2"></i>
-                    <p class="text-yellow-800 font-medium">This thread is locked. No more replies allowed.</p>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center shadow-md">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-yellow-100 rounded-full mb-4">
+                        <i class="fas fa-lock text-yellow-600 text-3xl"></i>
+                    </div>
+                    <p class="text-yellow-900 font-bold text-lg mb-2">Thread Locked</p>
+                    <p class="text-yellow-700 text-sm">This thread is locked. No more replies allowed.</p>
                 </div>
             @endif
         </div>
