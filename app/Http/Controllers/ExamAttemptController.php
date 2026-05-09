@@ -52,7 +52,8 @@ class ExamAttemptController extends Controller
                 ->first();
 
             if ($inProgressAttempt) {
-                return redirect()->route('siswa.exams.take', $inProgressAttempt);
+                $prefix = auth()->user()->getRolePrefix();
+                return redirect()->route("{$prefix}.exams.take", $inProgressAttempt);
             }
 
             // Create new attempt
@@ -61,9 +62,10 @@ class ExamAttemptController extends Controller
                 'user_id' => auth()->id(),
             ]);
 
-        $attempt->start();
+            $attempt->start();
 
-            return redirect()->route('siswa.exams.take', $attempt);
+            $prefix = auth()->user()->getRolePrefix();
+            return redirect()->route("{$prefix}.exams.take", $attempt);
         });
     }
 
@@ -79,14 +81,16 @@ class ExamAttemptController extends Controller
 
         // Check if attempt is still in progress
         if ($attempt->status !== 'in_progress') {
-            return redirect()->route('siswa.exams.review-attempt', $attempt);
+            $prefix = auth()->user()->getRolePrefix();
+            return redirect()->route("{$prefix}.exams.review-attempt", $attempt);
         }
 
         // Check if time is up
         if ($attempt->isTimeUp()) {
             $attempt->submit();
+            $prefix = auth()->user()->getRolePrefix();
             return redirect()
-                ->route('siswa.exams.review-attempt', $attempt)
+                ->route("{$prefix}.exams.review-attempt", $attempt)
                 ->with('info', 'Time is up! Your exam has been automatically submitted.');
         }
 
@@ -201,23 +205,25 @@ class ExamAttemptController extends Controller
 
         if (!$updated) {
             // Already submitted or not in progress
-            return redirect()->route('siswa.exams.review-attempt', $attempt)
+            $prefix = auth()->user()->getRolePrefix();
+            return redirect()->route("{$prefix}.exams.review-attempt", $attempt)
                 ->with('info', 'Exam has already been submitted.');
         }
 
         // Reload and auto-grade
         $attempt->refresh();
-        
+
         // Calculate time spent
         if ($attempt->started_at) {
             $attempt->time_spent = $attempt->started_at->diffInSeconds($attempt->submitted_at);
             $attempt->save();
         }
-        
+
         $attempt->autoGrade();
 
+        $prefix = auth()->user()->getRolePrefix();
         return redirect()
-            ->route('siswa.exams.review-attempt', $attempt)
+            ->route("{$prefix}.exams.review-attempt", $attempt)
             ->with('success', 'Ujian berhasil dikumpulkan!');
     }
 

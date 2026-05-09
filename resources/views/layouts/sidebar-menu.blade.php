@@ -85,6 +85,7 @@
                             'admin.exams.*',
                             'admin.questions.*',
                             'admin.question-bank.*',
+                            'admin.question-bank-categories.*',
                             'admin.forum-categories.*',
                             'admin.authorization-logs.*',
                             'admin.cheating-incidents.*',
@@ -137,6 +138,13 @@
                                     <i class="fas fa-database text-sm"></i>
                                 </div>
                                 <span class="truncate">{{ __('Bank Soal') }}</span>
+                            </x-sidebar-link>
+
+                            <x-sidebar-link :href="route('admin.question-bank-categories.index')" :active="request()->routeIs('admin.question-bank-categories.*')">
+                                <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-folder-open text-sm"></i>
+                                </div>
+                                <span class="truncate">{{ __('Kategori Bank Soal') }}</span>
                             </x-sidebar-link>
 
                             <x-sidebar-link :href="route('admin.forum-categories.index')" :active="request()->routeIs('admin.forum-categories.*')">
@@ -205,11 +213,16 @@
                             </x-sidebar-link>
                         </x-sidebar-group>
                     </div>
-                @elseif($user->isGuru())
+                @elseif($user->isGuru() || $user->isDosen())
                     @php
-                        $guruContentActive = request()->routeIs('guru.courses.*', 'guru.exams.*', 'guru.questions.*');
-                        $guruAnalyticsActive = request()->routeIs('guru.analytics.*');
-                        $guruReportsActive = request()->routeIs('guru.reports.*');
+                        $rolePrefix = $user->isDosen() ? 'dosen' : 'guru';
+                        $guruContentActive = request()->routeIs(
+                            "{$rolePrefix}.courses.*",
+                            "{$rolePrefix}.exams.*",
+                            "{$rolePrefix}.questions.*",
+                        );
+                        $guruAnalyticsActive = request()->routeIs("{$rolePrefix}.analytics.*");
+                        $guruReportsActive = request()->routeIs("{$rolePrefix}.reports.*");
                     @endphp
 
                     <div class="space-y-1">
@@ -218,14 +231,15 @@
                         </p>
 
                         <x-sidebar-group :label="__('Konten Saya')" icon="fas fa-chalkboard-teacher" :active="$guruContentActive">
-                            <x-sidebar-link :href="route('guru.courses.index')" :active="request()->routeIs('guru.courses.*')">
+                            <x-sidebar-link :href="route($rolePrefix . '.courses.index')" :active="request()->routeIs($rolePrefix . '.courses.*')">
                                 <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-book-open text-sm"></i>
                                 </div>
                                 <span class="truncate">{{ __('Kursus Saya') }}</span>
                             </x-sidebar-link>
 
-                            <x-sidebar-link :href="route('guru.exams.index')" :active="request()->routeIs('guru.exams.*') || request()->routeIs('guru.questions.*')">
+                            <x-sidebar-link :href="route($rolePrefix . '.exams.index')" :active="request()->routeIs($rolePrefix . '.exams.*') ||
+                                request()->routeIs($rolePrefix . '.questions.*')">
                                 <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-file-alt text-sm"></i>
                                 </div>
@@ -233,25 +247,26 @@
                             </x-sidebar-link>
                         </x-sidebar-group>
 
-                        <x-sidebar-link :href="route('guru.analytics.index')" :active="$guruAnalyticsActive">
+                        <x-sidebar-link :href="route($rolePrefix . '.analytics.index')" :active="$guruAnalyticsActive">
                             <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-chart-line text-sm"></i>
                             </div>
                             <span class="truncate">{{ __('Analitik Siswa') }}</span>
                         </x-sidebar-link>
 
-                        <x-sidebar-link :href="route('guru.reports.index')" :active="$guruReportsActive">
+                        <x-sidebar-link :href="route($rolePrefix . '.reports.index')" :active="$guruReportsActive">
                             <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-file-contract text-sm"></i>
                             </div>
                             <span class="truncate">{{ __('Laporan Nilai') }}</span>
                         </x-sidebar-link>
                     </div>
-                @elseif($user->isSiswa())
+                @elseif($user->isSiswa() || $user->isMahasiswa())
                     @php
-                        $studentCoursesActive = request()->routeIs('siswa.courses.*');
-                        $studentExamsActive = request()->routeIs('siswa.exams.*', 'siswa.reports.*');
-                        $studentAnalyticsActive = request()->routeIs('siswa.analytics.*');
+                        $rolePrefix = $user->isMahasiswa() ? 'mahasiswa' : 'siswa';
+                        $studentCoursesActive = request()->routeIs("{$rolePrefix}.courses.*");
+                        $studentExamsActive = request()->routeIs("{$rolePrefix}.exams.*", "{$rolePrefix}.reports.*");
+                        $studentAnalyticsActive = request()->routeIs("{$rolePrefix}.analytics.*");
                     @endphp
 
                     <div class="space-y-1">
@@ -260,14 +275,14 @@
                         </p>
 
                         <x-sidebar-group :label="__('Kursus')" icon="fas fa-graduation-cap" :active="$studentCoursesActive">
-                            <x-sidebar-link :href="route('siswa.courses.index')" :active="request()->routeIs('siswa.courses.index')">
+                            <x-sidebar-link :href="route($rolePrefix . '.courses.index')" :active="request()->routeIs($rolePrefix . '.courses.index')">
                                 <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-search text-sm"></i>
                                 </div>
                                 <span class="truncate">{{ __('Jelajahi Kursus') }}</span>
                             </x-sidebar-link>
 
-                            <x-sidebar-link :href="route('siswa.courses.my-courses')" :active="request()->routeIs('siswa.courses.my-courses')">
+                            <x-sidebar-link :href="route($rolePrefix . '.courses.my-courses')" :active="request()->routeIs($rolePrefix . '.courses.my-courses')">
                                 <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-book-reader text-sm"></i>
                                 </div>
@@ -276,14 +291,14 @@
                         </x-sidebar-group>
 
                         <x-sidebar-group :label="__('Ujian & Nilai')" icon="fas fa-pen-alt" :active="$studentExamsActive">
-                            <x-sidebar-link :href="route('siswa.exams.index')" :active="request()->routeIs('siswa.exams.*')">
+                            <x-sidebar-link :href="route($rolePrefix . '.exams.index')" :active="request()->routeIs($rolePrefix . '.exams.*')">
                                 <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-edit text-sm"></i>
                                 </div>
                                 <span class="truncate">{{ __('Daftar Ujian') }}</span>
                             </x-sidebar-link>
 
-                            <x-sidebar-link :href="route('siswa.reports.index')" :active="request()->routeIs('siswa.reports.*')">
+                            <x-sidebar-link :href="route($rolePrefix . '.reports.index')" :active="request()->routeIs($rolePrefix . '.reports.*')">
                                 <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-certificate text-sm"></i>
                                 </div>
@@ -291,7 +306,7 @@
                             </x-sidebar-link>
                         </x-sidebar-group>
 
-                        <x-sidebar-link :href="route('siswa.analytics.index')" :active="$studentAnalyticsActive">
+                        <x-sidebar-link :href="route($rolePrefix . '.analytics.index')" :active="$studentAnalyticsActive">
                             <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-chart-pie text-sm"></i>
                             </div>

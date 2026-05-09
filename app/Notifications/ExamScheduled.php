@@ -3,12 +3,13 @@
 namespace App\Notifications;
 
 use App\Models\Exam;
+use App\Models\NotificationPreference;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ExamScheduled extends Notification
+class ExamScheduled extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -29,7 +30,33 @@ class ExamScheduled extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = [];
+        $pref = NotificationPreference::getForUser($notifiable->id, 'exam_scheduled');
+        if ($pref->via_database) {
+            $channels[] = 'database';
+        }
+        if ($pref->via_push && Setting::get('push_notifications_enabled')) {
+            $channels[] = 'push';
+        }
+
+        return $channels ?: ['database'];
+    }
+
+    /**
+     * Get the push notification representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toPush(object $notifiable): array
+    {
+        $data = $this->toArray($notifiable);
+
+        return [
+            'title' => 'Ujian Baru Tersedia',
+            'body' => 'Ujian ' . $this->exam->title . ' tersedia di kursus ' . $this->exam->course->title,
+            'icon' => 'fas fa-clipboard-list',
+            'action_url' => $data['action_url'],
+        ];
     }
 
     /**
@@ -50,7 +77,7 @@ class ExamScheduled extends Notification
             'icon' => 'fas fa-clipboard-list',
             'color' => 'green',
             'message' => 'Ujian "' . $this->exam->title . '" tersedia di kursus "' . $this->exam->course->title . '"',
-            'action_url' => route('siswa.exams.show', $this->exam),
+            'action_url' => $notifiable->getNotificationUrl('exam', $this->exam->id),
             'action_text' => 'Lihat Ujian',
         ];
     }

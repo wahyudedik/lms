@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
 // ==================================================
+// PUBLIC API (No Authentication)
+// ==================================================
+Route::get('/api/vapid-public-key', [App\Http\Controllers\VapidController::class, 'publicKey'])
+    ->name('api.vapid-public-key');
+
+// ==================================================
 // GUEST EXAM ACCESS (Public - No Authentication)
 // ==================================================
 Route::prefix('exam')->name('guest.exams.')->group(function () {
@@ -83,6 +89,8 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     Route::resource('classes', App\Http\Controllers\Admin\SchoolClassController::class)->except(['show']);
 
     // Cheating incidents
+    Route::get('cheating-incidents/export', [App\Http\Controllers\Admin\CheatingIncidentController::class, 'export'])->name('cheating-incidents.export');
+    Route::post('cheating-incidents/bulk-resolve', [App\Http\Controllers\Admin\CheatingIncidentController::class, 'bulkResolve'])->name('cheating-incidents.bulk-resolve');
     Route::resource('cheating-incidents', App\Http\Controllers\Admin\CheatingIncidentController::class)->only(['index', 'show']);
     Route::post('cheating-incidents/{cheatingIncident}/resolve', [App\Http\Controllers\Admin\CheatingIncidentController::class, 'resolve'])->name('cheating-incidents.resolve');
 
@@ -129,6 +137,11 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     Route::post('settings/theme/reset', [App\Http\Controllers\Admin\SettingsController::class, 'resetTheme'])->name('settings.theme.reset');
     Route::post('settings/landing-page', [App\Http\Controllers\Admin\SettingsController::class, 'updateLandingPage'])->name('settings.landing.update');
 
+    // VAPID & Push Notification Settings
+    Route::post('settings/vapid/generate', [App\Http\Controllers\Admin\SettingsController::class, 'generateVapid'])->name('settings.vapid.generate');
+    Route::post('settings/vapid/toggle-push', [App\Http\Controllers\Admin\SettingsController::class, 'togglePush'])->name('settings.vapid.toggle-push');
+    Route::post('settings/vapid/manual', [App\Http\Controllers\Admin\SettingsController::class, 'saveManualVapid'])->name('settings.vapid.manual');
+
     // Certificate Settings
     Route::get('certificate-settings', [App\Http\Controllers\Admin\CertificateSettingsController::class, 'index'])->name('certificate-settings.index');
     Route::post('certificate-settings', [App\Http\Controllers\Admin\CertificateSettingsController::class, 'update'])->name('certificate-settings.update');
@@ -159,6 +172,9 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     Route::get('analytics/exam-performance-stats', [App\Http\Controllers\Admin\AnalyticsController::class, 'examPerformanceStats'])->name('analytics.exam-performance-stats');
     Route::get('analytics/user-role-distribution', [App\Http\Controllers\Admin\AnalyticsController::class, 'userRoleDistribution'])->name('analytics.user-role-distribution');
     Route::get('analytics/monthly-activity-stats', [App\Http\Controllers\Admin\AnalyticsController::class, 'monthlyActivityStats'])->name('analytics.monthly-activity-stats');
+
+    // Question Bank Category Management
+    Route::resource('question-bank-categories', App\Http\Controllers\Admin\QuestionBankCategoryController::class)->except(['show']);
 
     // Question Bank Management
     Route::prefix('question-bank')->name('question-bank.')->group(function () {
@@ -203,6 +219,30 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
 
     // Forum Category Management (Admin only)
     Route::resource('forum-categories', App\Http\Controllers\Admin\ForumCategoryController::class);
+
+    // Assignment Management
+    Route::resource('courses.assignments', App\Http\Controllers\Admin\AssignmentController::class);
+    Route::post('courses/{course}/assignments/{assignment}/toggle-status', [App\Http\Controllers\Admin\AssignmentController::class, 'toggleStatus'])->name('courses.assignments.toggle-status');
+
+    // Submission Management (Admin can grade like Guru)
+    Route::get('assignments/{assignment}/submissions', [App\Http\Controllers\Guru\SubmissionController::class, 'index'])->name('assignments.submissions.index');
+    Route::get('assignments/{assignment}/submissions/{submission}', [App\Http\Controllers\Guru\SubmissionController::class, 'show'])->name('assignments.submissions.show');
+    Route::post('assignments/{assignment}/submissions/{submission}/grade', [App\Http\Controllers\Guru\SubmissionController::class, 'grade'])->name('assignments.submissions.grade');
+    Route::get('assignments/{assignment}/submissions/{submission}/download', [App\Http\Controllers\Guru\SubmissionController::class, 'download'])->name('assignments.submissions.download');
+
+    // Essay Grading (Admin can grade essays like Guru)
+    Route::get('exams/{exam}/review-essays', [App\Http\Controllers\Guru\ExamController::class, 'reviewEssays'])->name('exams.review-essays');
+    Route::post('exams/{exam}/answers/{answer}/grade', [App\Http\Controllers\Guru\ExamController::class, 'gradeEssay'])->name('exams.grade-essay');
+
+    // Reports & Export (Admin can export grades)
+    Route::get('reports', [App\Http\Controllers\Guru\ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/exams/{exam}/export-excel', [App\Http\Controllers\Guru\ReportController::class, 'exportGradesExcel'])->name('reports.export-grades-excel');
+    Route::get('reports/exams/{exam}/export-pdf', [App\Http\Controllers\Guru\ReportController::class, 'exportGradesPdf'])->name('reports.export-grades-pdf');
+    Route::get('reports/courses/{course}/students/{student}/transcript-pdf', [App\Http\Controllers\Guru\ReportController::class, 'exportStudentTranscriptPdf'])->name('reports.student-transcript-pdf');
+
+    // Grade Weights
+    Route::get('courses/{course}/grade-weights', [App\Http\Controllers\Admin\AssignmentController::class, 'gradeWeights'])->name('courses.grade-weights');
+    Route::post('courses/{course}/grade-weights', [App\Http\Controllers\Admin\AssignmentController::class, 'updateGradeWeights'])->name('courses.grade-weights.update');
 });
 
 // Guru Dashboard & Course Management
@@ -252,6 +292,87 @@ Route::middleware(['auth', 'verified', 'role:guru'])->prefix('guru')->name('guru
     Route::get('analytics/exam-completion-rate', [App\Http\Controllers\Guru\AnalyticsController::class, 'examCompletionRate'])->name('analytics.exam-completion-rate');
     Route::get('analytics/grade-distribution', [App\Http\Controllers\Guru\AnalyticsController::class, 'gradeDistribution'])->name('analytics.grade-distribution');
     Route::get('analytics/student-engagement-metrics', [App\Http\Controllers\Guru\AnalyticsController::class, 'studentEngagementMetrics'])->name('analytics.student-engagement-metrics');
+    Route::get('analytics/assignment-score-by-course', [App\Http\Controllers\Guru\AnalyticsController::class, 'assignmentScoreByCourse'])->name('analytics.assignment-score-by-course');
+    Route::get('analytics/assignment-completion-rate', [App\Http\Controllers\Guru\AnalyticsController::class, 'assignmentCompletionRate'])->name('analytics.assignment-completion-rate');
+
+    // Assignment Management
+    Route::resource('courses.assignments', App\Http\Controllers\Guru\AssignmentController::class);
+    Route::post('courses/{course}/assignments/{assignment}/toggle-status', [App\Http\Controllers\Guru\AssignmentController::class, 'toggleStatus'])->name('courses.assignments.toggle-status');
+
+    // Submission Management
+    Route::get('assignments/{assignment}/submissions', [App\Http\Controllers\Guru\SubmissionController::class, 'index'])->name('assignments.submissions.index');
+    Route::get('assignments/{assignment}/submissions/{submission}', [App\Http\Controllers\Guru\SubmissionController::class, 'show'])->name('assignments.submissions.show');
+    Route::post('assignments/{assignment}/submissions/{submission}/grade', [App\Http\Controllers\Guru\SubmissionController::class, 'grade'])->name('assignments.submissions.grade');
+    Route::get('assignments/{assignment}/submissions/{submission}/download', [App\Http\Controllers\Guru\SubmissionController::class, 'download'])->name('assignments.submissions.download');
+
+    // Grade Weights
+    Route::get('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'gradeWeights'])->name('courses.grade-weights');
+    Route::post('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'updateGradeWeights'])->name('courses.grade-weights.update');
+});
+
+// Dosen Dashboard & Course Management
+Route::get('/dosen/dashboard', [App\Http\Controllers\Guru\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:dosen'])
+    ->name('dosen.dashboard');
+
+Route::middleware(['auth', 'verified', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
+    // Course Management
+    Route::resource('courses', App\Http\Controllers\Guru\CourseController::class);
+    Route::post('courses/{course}/toggle-status', [App\Http\Controllers\Guru\CourseController::class, 'toggleStatus'])->name('courses.toggle-status');
+
+    // Enrollment Management
+    Route::get('courses/{course}/enrollments', [App\Http\Controllers\EnrollmentController::class, 'index'])->name('courses.enrollments');
+    Route::post('courses/{course}/enrollments', [App\Http\Controllers\EnrollmentController::class, 'store'])->name('courses.enrollments.store');
+    Route::delete('courses/{course}/enrollments/{enrollment}', [App\Http\Controllers\EnrollmentController::class, 'destroy'])->name('courses.enrollments.destroy');
+    Route::patch('courses/{course}/enrollments/{enrollment}/status', [App\Http\Controllers\EnrollmentController::class, 'updateStatus'])->name('courses.enrollments.update-status');
+    Route::patch('courses/{course}/enrollments/{enrollment}/progress', [App\Http\Controllers\EnrollmentController::class, 'updateProgress'])->name('courses.enrollments.update-progress');
+
+    // Material Management
+    Route::resource('courses.materials', App\Http\Controllers\Guru\MaterialController::class);
+    Route::post('courses/{course}/materials/{material}/toggle-status', [App\Http\Controllers\Guru\MaterialController::class, 'toggleStatus'])->name('courses.materials.toggle-status');
+    Route::post('courses/{course}/materials/reorder', [App\Http\Controllers\Guru\MaterialController::class, 'reorder'])->name('courses.materials.reorder');
+
+    // Exam Management
+    Route::resource('exams', App\Http\Controllers\Guru\ExamController::class);
+    Route::post('exams/{exam}/toggle-status', [App\Http\Controllers\Guru\ExamController::class, 'toggleStatus'])->name('exams.toggle-status');
+    Route::post('exams/{exam}/duplicate', [App\Http\Controllers\Guru\ExamController::class, 'duplicate'])->name('exams.duplicate');
+    Route::get('exams/{exam}/results', [App\Http\Controllers\Guru\ExamController::class, 'results'])->name('exams.results');
+    Route::get('exams/{exam}/review-essays', [App\Http\Controllers\Guru\ExamController::class, 'reviewEssays'])->name('exams.review-essays');
+    Route::post('exams/{exam}/answers/{answer}/grade', [App\Http\Controllers\Guru\ExamController::class, 'gradeEssay'])->name('exams.grade-essay');
+
+    // Question Management
+    Route::resource('exams.questions', App\Http\Controllers\Guru\QuestionController::class);
+    Route::post('exams/{exam}/questions/reorder', [App\Http\Controllers\Guru\QuestionController::class, 'reorder'])->name('exams.questions.reorder');
+    Route::post('exams/{exam}/questions/{question}/duplicate', [App\Http\Controllers\Guru\QuestionController::class, 'duplicate'])->name('exams.questions.duplicate');
+
+    // Report Routes (Dosen)
+    Route::get('reports', [App\Http\Controllers\Guru\ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/exams/{exam}/export-excel', [App\Http\Controllers\Guru\ReportController::class, 'exportGradesExcel'])->name('reports.export-grades-excel');
+    Route::get('reports/exams/{exam}/export-pdf', [App\Http\Controllers\Guru\ReportController::class, 'exportGradesPdf'])->name('reports.export-grades-pdf');
+    Route::get('reports/courses/{course}/students/{student}/transcript-pdf', [App\Http\Controllers\Guru\ReportController::class, 'exportStudentTranscriptPdf'])->name('reports.student-transcript-pdf');
+
+    // Analytics Routes (Dosen)
+    Route::get('analytics', [App\Http\Controllers\Guru\AnalyticsController::class, 'index'])->name('analytics.index');
+    Route::get('analytics/student-performance-by-course', [App\Http\Controllers\Guru\AnalyticsController::class, 'studentPerformanceByCourse'])->name('analytics.student-performance-by-course');
+    Route::get('analytics/exam-completion-rate', [App\Http\Controllers\Guru\AnalyticsController::class, 'examCompletionRate'])->name('analytics.exam-completion-rate');
+    Route::get('analytics/grade-distribution', [App\Http\Controllers\Guru\AnalyticsController::class, 'gradeDistribution'])->name('analytics.grade-distribution');
+    Route::get('analytics/student-engagement-metrics', [App\Http\Controllers\Guru\AnalyticsController::class, 'studentEngagementMetrics'])->name('analytics.student-engagement-metrics');
+    Route::get('analytics/assignment-score-by-course', [App\Http\Controllers\Guru\AnalyticsController::class, 'assignmentScoreByCourse'])->name('analytics.assignment-score-by-course');
+    Route::get('analytics/assignment-completion-rate', [App\Http\Controllers\Guru\AnalyticsController::class, 'assignmentCompletionRate'])->name('analytics.assignment-completion-rate');
+
+    // Assignment Management
+    Route::resource('courses.assignments', App\Http\Controllers\Guru\AssignmentController::class);
+    Route::post('courses/{course}/assignments/{assignment}/toggle-status', [App\Http\Controllers\Guru\AssignmentController::class, 'toggleStatus'])->name('courses.assignments.toggle-status');
+
+    // Submission Management
+    Route::get('assignments/{assignment}/submissions', [App\Http\Controllers\Guru\SubmissionController::class, 'index'])->name('assignments.submissions.index');
+    Route::get('assignments/{assignment}/submissions/{submission}', [App\Http\Controllers\Guru\SubmissionController::class, 'show'])->name('assignments.submissions.show');
+    Route::post('assignments/{assignment}/submissions/{submission}/grade', [App\Http\Controllers\Guru\SubmissionController::class, 'grade'])->name('assignments.submissions.grade');
+    Route::get('assignments/{assignment}/submissions/{submission}/download', [App\Http\Controllers\Guru\SubmissionController::class, 'download'])->name('assignments.submissions.download');
+
+    // Grade Weights
+    Route::get('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'gradeWeights'])->name('courses.grade-weights');
+    Route::post('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'updateGradeWeights'])->name('courses.grade-weights.update');
 });
 
 // Siswa Dashboard & Course Browsing
@@ -285,8 +406,8 @@ Route::middleware(['auth', 'verified', 'role:siswa'])->prefix('siswa')->name('si
     Route::post('attempts/{attempt}/submit', [App\Http\Controllers\ExamAttemptController::class, 'submit'])->name('exams.submit');
 
     // Anti-Cheat Tracking Routes
-    Route::post('attempts/{attempt}/track-tab-switch', [App\Http\Controllers\ExamAttemptController::class, 'trackTabSwitch'])->name('exams.track-tab-switch');
-    Route::post('attempts/{attempt}/track-fullscreen-exit', [App\Http\Controllers\ExamAttemptController::class, 'trackFullscreenExit'])->name('exams.track-fullscreen-exit');
+    Route::post('attempts/{attempt}/track-tab-switch', [App\Http\Controllers\ExamAttemptController::class, 'trackTabSwitch'])->middleware('throttle:30,1')->name('exams.track-tab-switch');
+    Route::post('attempts/{attempt}/track-fullscreen-exit', [App\Http\Controllers\ExamAttemptController::class, 'trackFullscreenExit'])->middleware('throttle:30,1')->name('exams.track-fullscreen-exit');
     Route::get('attempts/{attempt}/time-remaining', [App\Http\Controllers\ExamAttemptController::class, 'getTimeRemaining'])->name('exams.time-remaining');
 
     // Material Routes (Siswa)
@@ -317,6 +438,81 @@ Route::middleware(['auth', 'verified', 'role:siswa'])->prefix('siswa')->name('si
     Route::get('analytics/exam-pass-fail-ratio', [App\Http\Controllers\Siswa\AnalyticsController::class, 'examPassFailRatio'])->name('analytics.exam-pass-fail-ratio');
     Route::get('analytics/study-time-distribution', [App\Http\Controllers\Siswa\AnalyticsController::class, 'studyTimeDistribution'])->name('analytics.study-time-distribution');
     Route::get('analytics/recent-exam-scores', [App\Http\Controllers\Siswa\AnalyticsController::class, 'recentExamScores'])->name('analytics.recent-exam-scores');
+
+    // Assignment Routes (Siswa)
+    Route::get('assignments', [App\Http\Controllers\Siswa\AssignmentController::class, 'index'])->name('assignments.index');
+    Route::get('assignments/{assignment}', [App\Http\Controllers\Siswa\AssignmentController::class, 'show'])->name('assignments.show');
+    Route::post('assignments/{assignment}/submit', [App\Http\Controllers\Siswa\AssignmentController::class, 'submit'])->name('assignments.submit');
+});
+
+// Mahasiswa Dashboard & Course Browsing
+Route::get('/mahasiswa/dashboard', [App\Http\Controllers\Siswa\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:mahasiswa'])
+    ->name('mahasiswa.dashboard');
+
+Route::middleware(['auth', 'verified', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+    // Browse Courses
+    Route::get('courses', [App\Http\Controllers\Siswa\CourseController::class, 'index'])->name('courses.index');
+    Route::get('courses/{course}', [App\Http\Controllers\Siswa\CourseController::class, 'show'])->name('courses.show');
+
+    // My Courses
+    Route::get('my-courses', [App\Http\Controllers\Siswa\CourseController::class, 'myCourses'])->name('courses.my-courses');
+
+    // Enrollment Actions
+    Route::post('courses/{course}/enroll', [App\Http\Controllers\Siswa\CourseController::class, 'enroll'])->name('courses.enroll');
+    Route::post('enroll-by-code', [App\Http\Controllers\Siswa\CourseController::class, 'enrollByCode'])->name('courses.enroll-by-code');
+    Route::delete('courses/{course}/unenroll', [App\Http\Controllers\Siswa\CourseController::class, 'unenroll'])->name('courses.unenroll');
+
+    // Exam Routes
+    Route::get('exams', [App\Http\Controllers\Siswa\ExamController::class, 'index'])->name('exams.index');
+    Route::get('exams/{exam}', [App\Http\Controllers\Siswa\ExamController::class, 'show'])->name('exams.show');
+    Route::get('my-attempts', [App\Http\Controllers\Siswa\ExamController::class, 'myAttempts'])->name('exams.my-attempts');
+    Route::get('attempts/{attempt}/review', [App\Http\Controllers\Siswa\ExamController::class, 'reviewAttempt'])->name('exams.review-attempt');
+
+    // Exam Taking Routes
+    Route::post('exams/{exam}/start', [App\Http\Controllers\ExamAttemptController::class, 'start'])->name('exams.start');
+    Route::get('attempts/{attempt}/take', [App\Http\Controllers\ExamAttemptController::class, 'take'])->name('exams.take');
+    Route::post('attempts/{attempt}/save-answer', [App\Http\Controllers\ExamAttemptController::class, 'saveAnswer'])->name('exams.save-answer');
+    Route::post('attempts/{attempt}/submit', [App\Http\Controllers\ExamAttemptController::class, 'submit'])->name('exams.submit');
+
+    // Anti-Cheat Tracking Routes
+    Route::post('attempts/{attempt}/track-tab-switch', [App\Http\Controllers\ExamAttemptController::class, 'trackTabSwitch'])->middleware('throttle:30,1')->name('exams.track-tab-switch');
+    Route::post('attempts/{attempt}/track-fullscreen-exit', [App\Http\Controllers\ExamAttemptController::class, 'trackFullscreenExit'])->middleware('throttle:30,1')->name('exams.track-fullscreen-exit');
+    Route::get('attempts/{attempt}/time-remaining', [App\Http\Controllers\ExamAttemptController::class, 'getTimeRemaining'])->name('exams.time-remaining');
+
+    // Material Routes (Mahasiswa)
+    Route::get('materials', [App\Http\Controllers\Siswa\MaterialController::class, 'index'])->name('materials.index');
+    Route::get('materials/{material}', [App\Http\Controllers\Siswa\MaterialController::class, 'show'])->name('materials.show');
+    Route::post('materials/{material}/comment', [App\Http\Controllers\Siswa\MaterialController::class, 'comment'])
+        ->middleware('throttle:20,1')
+        ->name('materials.comment');
+
+    // Certificate Routes (Mahasiswa)
+    Route::get('certificates', [App\Http\Controllers\Siswa\CertificateController::class, 'index'])->name('certificates.index');
+    Route::get('certificates/{certificate}', [App\Http\Controllers\Siswa\CertificateController::class, 'show'])->name('certificates.show');
+    Route::get('certificates/{certificate}/download', [App\Http\Controllers\Siswa\CertificateController::class, 'download'])->name('certificates.download');
+
+    // Grade Routes (Mahasiswa)
+    Route::get('grades', [App\Http\Controllers\Siswa\GradeController::class, 'index'])->name('grades.index');
+    Route::get('grades/{enrollment}', [App\Http\Controllers\Siswa\GradeController::class, 'show'])->name('grades.show');
+
+    // Report Routes (Mahasiswa)
+    Route::get('reports', [App\Http\Controllers\Siswa\ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/my-transcript', [App\Http\Controllers\Siswa\ReportController::class, 'myTranscript'])->name('reports.my-transcript');
+    Route::get('reports/courses/{course}/transcript-pdf', [App\Http\Controllers\Siswa\ReportController::class, 'exportMyTranscriptPdf'])->name('reports.my-transcript-pdf');
+
+    // Analytics Routes (Mahasiswa)
+    Route::get('analytics', [App\Http\Controllers\Siswa\AnalyticsController::class, 'index'])->name('analytics.index');
+    Route::get('analytics/performance-trend', [App\Http\Controllers\Siswa\AnalyticsController::class, 'performanceTrend'])->name('analytics.performance-trend');
+    Route::get('analytics/performance-by-course', [App\Http\Controllers\Siswa\AnalyticsController::class, 'performanceByCourse'])->name('analytics.performance-by-course');
+    Route::get('analytics/exam-pass-fail-ratio', [App\Http\Controllers\Siswa\AnalyticsController::class, 'examPassFailRatio'])->name('analytics.exam-pass-fail-ratio');
+    Route::get('analytics/study-time-distribution', [App\Http\Controllers\Siswa\AnalyticsController::class, 'studyTimeDistribution'])->name('analytics.study-time-distribution');
+    Route::get('analytics/recent-exam-scores', [App\Http\Controllers\Siswa\AnalyticsController::class, 'recentExamScores'])->name('analytics.recent-exam-scores');
+
+    // Assignment Routes (Mahasiswa)
+    Route::get('assignments', [App\Http\Controllers\Siswa\AssignmentController::class, 'index'])->name('assignments.index');
+    Route::get('assignments/{assignment}', [App\Http\Controllers\Siswa\AssignmentController::class, 'show'])->name('assignments.show');
+    Route::post('assignments/{assignment}/submit', [App\Http\Controllers\Siswa\AssignmentController::class, 'submit'])->name('assignments.submit');
 });
 
 Route::middleware('auth')->group(function () {
@@ -347,6 +543,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/{id}/mark-as-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::post('/notifications/mark-all-as-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
     Route::delete('/notifications/{id}', [App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
+
+    // Notification Preferences
+    Route::get('/notifications/preferences', [App\Http\Controllers\NotificationPreferenceController::class, 'index'])
+        ->name('notifications.preferences');
+    Route::post('/notifications/preferences', [App\Http\Controllers\NotificationPreferenceController::class, 'update'])
+        ->name('notifications.preferences.update');
+
+    // Push Subscriptions
+    Route::post('/push-subscriptions', [App\Http\Controllers\PushSubscriptionController::class, 'store'])
+        ->name('push-subscriptions.store');
+    Route::delete('/push-subscriptions', [App\Http\Controllers\PushSubscriptionController::class, 'destroy'])
+        ->name('push-subscriptions.destroy');
 
     // Forum Routes (all authenticated users)
     Route::prefix('forum')->name('forum.')->group(function () {

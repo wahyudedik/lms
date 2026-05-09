@@ -3,12 +3,13 @@
 namespace App\Notifications;
 
 use App\Models\Material;
+use App\Models\NotificationPreference;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class MaterialPublished extends Notification
+class MaterialPublished extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -29,7 +30,33 @@ class MaterialPublished extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = [];
+        $pref = NotificationPreference::getForUser($notifiable->id, 'material_published');
+        if ($pref->via_database) {
+            $channels[] = 'database';
+        }
+        if ($pref->via_push && Setting::get('push_notifications_enabled')) {
+            $channels[] = 'push';
+        }
+
+        return $channels ?: ['database'];
+    }
+
+    /**
+     * Get the push notification representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toPush(object $notifiable): array
+    {
+        $data = $this->toArray($notifiable);
+
+        return [
+            'title' => 'Materi Baru',
+            'body' => 'Materi ' . $this->material->title . ' tersedia di kursus ' . $this->material->course->title,
+            'icon' => 'fas fa-book',
+            'action_url' => $data['action_url'],
+        ];
     }
 
     /**
@@ -48,7 +75,7 @@ class MaterialPublished extends Notification
             'icon' => 'fas fa-book',
             'color' => 'blue',
             'message' => 'Materi baru "' . $this->material->title . '" telah ditambahkan di kursus "' . $this->material->course->title . '"',
-            'action_url' => route('siswa.courses.show', $this->material->course_id),
+            'action_url' => $notifiable->getNotificationUrl('course', $this->material->course_id),
             'action_text' => 'Lihat Materi',
         ];
     }

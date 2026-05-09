@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Guru;
 
+use App\Http\Controllers\Concerns\ResolvesRolePrefix;
 use App\Http\Controllers\Controller;
 use App\Constants\AuthorizationMessages;
 use App\Models\Exam;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class QuestionController extends Controller
 {
+    use ResolvesRolePrefix;
     /**
      * Display a listing of questions for an exam
      */
@@ -151,7 +153,7 @@ class QuestionController extends Controller
         Question::create($questionData);
 
         return redirect()
-            ->route('guru.exams.questions.index', $exam)
+            ->to($this->teacherRoute('exams.questions.index', $exam))
             ->with('success', 'Soal berhasil ditambahkan!');
     }
 
@@ -301,7 +303,7 @@ class QuestionController extends Controller
         $question->update($questionData);
 
         return redirect()
-            ->route('guru.exams.questions.index', $exam)
+            ->to($this->teacherRoute('exams.questions.index', $exam))
             ->with('success', 'Soal berhasil diperbarui!');
     }
 

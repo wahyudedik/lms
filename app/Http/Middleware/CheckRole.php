@@ -27,8 +27,17 @@ class CheckRole
             return redirect()->route('login')->with('error', 'Akun Anda telah dinonaktifkan.');
         }
 
-        // Check role
-        if ($user->role !== $role) {
+        // Check role with equivalence support
+        // guru ≡ dosen, siswa ≡ mahasiswa
+        $allowedRoles = match ($role) {
+            'guru' => ['guru', 'dosen'],
+            'dosen' => ['guru', 'dosen'],
+            'siswa' => ['siswa', 'mahasiswa'],
+            'mahasiswa' => ['siswa', 'mahasiswa'],
+            default => [$role],
+        };
+
+        if (!in_array($user->role, $allowedRoles, true)) {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 

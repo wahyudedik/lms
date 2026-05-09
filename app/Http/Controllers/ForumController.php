@@ -126,6 +126,15 @@ class ForumController extends Controller
             'last_activity_at' => now(),
         ]);
 
+        // Notify all active users except the creator
+        $users = \App\Models\User::where('is_active', true)
+            ->where('id', '!=', Auth::id())
+            ->get();
+
+        foreach ($users->chunk(100) as $chunk) {
+            \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\ForumThreadCreated($thread));
+        }
+
         return redirect()
             ->route('forum.thread', [$thread->category->slug, $thread->slug])
             ->with('success', 'Thread created successfully!');
@@ -219,6 +228,34 @@ class ForumController extends Controller
             'user_id' => Auth::id(),
             'content' => $validated['content'],
         ]);
+
+        // Notify thread owner or parent reply owner (not self)
+        $recipient = $reply->parent_id
+            ? $reply->parent->user
+            : $thread->user;
+
+        if ($recipient && $recipient->id !== Auth::id()) {
+            $recipient->notify(new \App\Notifications\ForumReplyReceived($reply));
+        }
+
+        // Parse mentions and notify mentioned users
+        $mentionParser = app(\App\Services\MentionParser::class);
+        $mentionedUsers = $mentionParser->parse(
+            $reply->content,
+            'forum',
+            null,
+            Auth::id()
+        );
+
+        foreach ($mentionedUsers as $mentionedUser) {
+            $mentionedUser->notify(new \App\Notifications\UserMentioned(
+                Auth::user(),
+                'forum',
+                $thread->title,
+                \Illuminate\Support\Str::limit($reply->content, 100),
+                route('forum.thread', [$thread->category->slug, $thread->slug])
+            ));
+        }
 
         return back()->with('success', 'Reply posted successfully!');
     }

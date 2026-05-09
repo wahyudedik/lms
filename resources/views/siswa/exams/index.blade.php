@@ -11,7 +11,7 @@
             <!-- Filter by Course -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
-                    <form method="GET" action="{{ route('siswa.exams.index') }}" class="flex gap-4 items-end">
+                    <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}" class="flex gap-4 items-end">
                         <div class="flex-1">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
                                 <i class="fas fa-filter text-gray-400 mr-1"></i>Filter by Kursus
@@ -119,20 +119,20 @@
 
                                 <!-- Actions -->
                                 <div class="flex gap-2">
-                                    <a href="{{ route('siswa.exams.show', $exam) }}"
+                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}"
                                         class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md text-center">
                                         <i class="fas fa-eye"></i>
                                         {{ __('View Details') }}
                                     </a>
 
                                     @if ($attemptCount > 0 && $latestAttempt && $latestAttempt->status === 'in_progress')
-                                        <a href="{{ route('siswa.exams.take', $latestAttempt) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.take', $latestAttempt) }}"
                                             class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-200 shadow-sm hover:shadow-md text-center">
                                             <i class="fas fa-play"></i>
                                             Lanjutkan
                                         </a>
                                     @elseif ($attemptCount < $exam->max_attempts)
-                                        <a href="{{ route('siswa.exams.show', $exam) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}"
                                             class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md text-center">
                                             <i class="fas fa-pencil"></i>
                                             Mulai

@@ -57,6 +57,13 @@
                         <i class="fas fa-server mr-2"></i>
                         <span>{{ __('System') }}</span>
                     </button>
+                    <button type="button" @click="switchTab('notifications')"
+                        :class="activeTab === 'notifications' ? 'bg-blue-600 text-white' :
+                            'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+                        class="flex-1 sm:flex-none px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-sm">
+                        <i class="fas fa-bell mr-2"></i>
+                        <span>{{ __('Notifikasi') }}</span>
+                    </button>
                 </div>
             </div>
 
@@ -1312,6 +1319,167 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Notifications Tab Content -->
+            <div x-show="activeTab === 'notifications'" x-data="{
+                pushEnabled: {{ \App\Models\Setting::get('push_notifications_enabled', '0') === '1' ? 'true' : 'false' }},
+                togglingPush: false,
+                async togglePush() {
+                    this.togglingPush = true;
+                    try {
+                        const response = await fetch('{{ route('admin.settings.vapid.toggle-push') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                                'Accept': 'application/json'
+                            }
+                        });
+                        const data = await response.json();
+                        this.pushEnabled = data.enabled;
+                    } catch (e) {
+                        console.error('Toggle push failed:', e);
+                    } finally {
+                        this.togglingPush = false;
+                    }
+                }
+            }">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
+                        <i class="fas fa-bell text-yellow-600 mr-2"></i>{{ __('Push Notification (VAPID)') }}
+                    </h2>
+
+                    <!-- VAPID Status -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">{{ __('Status VAPID') }}</h3>
+                        <div class="flex items-center gap-3">
+                            @if (\App\Models\Setting::get('vapid_public_key'))
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle"></i>
+                                    {{ __('Terkonfigurasi') }}
+                                </span>
+                            @else
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                    <i class="fas fa-times-circle"></i>
+                                    {{ __('Belum Dikonfigurasi') }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Generate VAPID Keys (Production) -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-sm font-medium text-gray-700 mb-1">{{ __('Generate Otomatis (Production)') }}
+                        </h3>
+                        <p class="text-xs text-gray-500 mb-3">
+                            {{ __('Generate VAPID keys secara otomatis. Membutuhkan OpenSSL dengan dukungan EC key (biasanya tersedia di server Linux/production).') }}
+                        </p>
+                        <form id="vapid-generate-form" action="{{ route('admin.settings.vapid.generate') }}"
+                            method="POST">
+                            @csrf
+                            <input type="hidden" name="confirmed" value="1">
+                            @if (\App\Models\Setting::get('vapid_public_key'))
+                                <button type="button" onclick="confirmGenerateVapid()"
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-200 shadow-sm">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <span>{{ __('Generate Ulang VAPID Keys') }}</span>
+                                </button>
+                            @else
+                                <button type="submit"
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm">
+                                    <i class="fas fa-key"></i>
+                                    <span>{{ __('Generate VAPID Keys') }}</span>
+                                </button>
+                            @endif
+                        </form>
+                    </div>
+
+                    <!-- Input Manual VAPID Keys (Local/Windows) -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg" x-data="{ showManual: false }">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-700">{{ __('Input Manual (Local/Windows)') }}
+                            </h3>
+                            <button type="button" @click="showManual = !showManual"
+                                class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                <span
+                                    x-text="showManual ? '{{ __('Sembunyikan') }}' : '{{ __('Tampilkan') }}'"></span>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3">
+                            {{ __('Jika generate otomatis gagal (Windows/Herd), gunakan opsi ini. Generate keys via terminal:') }}
+                            <code class="bg-gray-200 px-1 rounded text-xs">php
+                                vendor/minishlink/web-push/generateVAPIDKeys.php</code>
+                            {{ __('atau gunakan') }}
+                            <a href="https://vapidkeys.com" target="_blank"
+                                class="text-blue-600 hover:underline">vapidkeys.com</a>
+                        </p>
+                        <form x-show="showManual" x-transition action="{{ route('admin.settings.vapid.manual') }}"
+                            method="POST" class="space-y-3">
+                            @csrf
+                            <div>
+                                <label
+                                    class="block text-xs font-medium text-gray-600 mb-1">{{ __('Public Key (base64url)') }}</label>
+                                <input type="text" name="vapid_public_key" placeholder="BEl62i..."
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    value="{{ old('vapid_public_key') }}">
+                                @error('vapid_public_key')
+                                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-medium text-gray-600 mb-1">{{ __('Private Key (base64url)') }}</label>
+                                <input type="password" name="vapid_private_key" placeholder="..."
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    value="{{ old('vapid_private_key') }}">
+                                @error('vapid_private_key')
+                                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm">
+                                <i class="fas fa-save"></i>
+                                <span>{{ __('Simpan VAPID Keys') }}</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Toggle Push Notification -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-700">{{ __('Push Notification') }}</h3>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    {{ __('Aktifkan atau nonaktifkan pengiriman push notification ke semua pengguna.') }}
+                                </p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" :checked="pushEnabled"
+                                    :disabled="togglingPush" @change="togglePush()">
+                                <div
+                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
+                                </div>
+                                <span class="ml-3 text-sm font-medium text-gray-700"
+                                    x-text="pushEnabled ? '{{ __('Aktif') }}' : '{{ __('Nonaktif') }}'"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- VAPID Public Key Display -->
+                    @if (\App\Models\Setting::get('vapid_public_key'))
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">{{ __('VAPID Public Key') }}</h3>
+                            <p class="text-xs text-gray-500 mb-2">
+                                {{ __('Kunci publik ini digunakan oleh browser untuk mendaftarkan push subscription.') }}
+                            </p>
+                            <textarea readonly rows="3"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-sm font-mono text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ \App\Models\Setting::get('vapid_public_key') }}</textarea>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1335,6 +1503,23 @@
                     window.history.pushState({}, '', url);
                 }
             }
+        }
+
+        function confirmGenerateVapid() {
+            Swal.fire({
+                title: '{{ __('Generate Ulang VAPID Keys?') }}',
+                text: '{{ __('Semua push subscription yang ada akan dihapus. Pengguna harus mendaftarkan ulang push notification mereka.') }}',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d97706',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '{{ __('Ya, Generate Ulang') }}',
+                cancelButtonText: '{{ __('Batal') }}'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('vapid-generate-form').submit();
+                }
+            });
         }
     </script>
 </x-app-layout>

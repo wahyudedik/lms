@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-file-alt text-blue-600 mr-2"></i>{{ $exam->title }}
             </h2>
-            <a href="{{ route('siswa.exams.index') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-sm transition">
                 <i class="fas fa-arrow-left"></i>{{ __('Back') }}
             </a>
@@ -37,7 +37,7 @@
                                     dikumpulkan saat waktu habis.</p>
                             </div>
                             <div class="mt-4">
-                                <a href="{{ route('siswa.exams.take', $latestAttempt) }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.take', $latestAttempt) }}"
                                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-sm transition">
                                     <i class="fas fa-play"></i>{{ __('Resume Exam') }}
                                 </a>
@@ -264,12 +264,12 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                 @if ($attempt->status === 'completed')
-                                                    <a href="{{ route('siswa.exams.review-attempt', $attempt) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.review-attempt', $attempt) }}"
                                                         class="text-blue-600 hover:text-blue-900 font-medium">
                                                         <i class="fas fa-eye mr-1"></i>Review
                                                     </a>
                                                 @elseif ($attempt->status === 'in_progress')
-                                                    <a href="{{ route('siswa.exams.take', $attempt) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.take', $attempt) }}"
                                                         class="text-yellow-600 hover:text-yellow-900 font-medium">
                                                         <i class="fas fa-play mr-1"></i>Lanjutkan
                                                     </a>
@@ -288,7 +288,7 @@
             @if ($canTakeExam && !$hasInProgressAttempt)
                 <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
                     <div class="p-6">
-                        <form action="{{ route('siswa.exams.start', $exam) }}" method="POST">
+                        <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.start', $exam) }}" method="POST">
                             @csrf
                             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
                                 <h4 class="font-semibold text-gray-900 mb-2">
@@ -306,7 +306,7 @@
                                     class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-sm transition text-lg">
                                     <i class="fas fa-pencil-alt"></i>{{ __('Start Exam') }}
                                 </button>
-                                <a href="{{ route('siswa.exams.index') }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
                                     class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-sm transition text-lg">
                                     <i class="fas fa-times"></i>Batal
                                 </a>

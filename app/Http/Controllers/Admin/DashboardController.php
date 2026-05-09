@@ -19,7 +19,7 @@ class DashboardController extends Controller
             'total_users' => User::count(),
             'total_courses' => Course::count(),
             'total_exams' => Exam::count(),
-            'active_students' => User::where('role', 'siswa')->where('is_active', true)->count(),
+            'active_students' => User::whereIn('role', ['siswa', 'mahasiswa'])->where('is_active', true)->count(),
             'total_enrollments' => Enrollment::count(),
             'total_attempts' => ExamAttempt::count(),
             'avg_exam_score' => ExamAttempt::where('status', 'graded')->avg('score') ?? 0,

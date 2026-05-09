@@ -1,16 +1,16 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-book mr-2"></i>{{ $course->title }}
             </h2>
             <div class="flex gap-2">
-                <a href="{{ route('guru.courses.edit', $course) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-edit"></i>
                     Edit
                 </a>
-                <a href="{{ route('guru.courses.index') }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
                     {{ __('Back') }}
@@ -68,7 +68,7 @@
                                 <h3 class="text-lg font-bold text-gray-900">
                                     <i class="fas fa-users text-purple-600 mr-2"></i>Siswa Terdaftar
                                 </h3>
-                                <a href="{{ route('guru.courses.enrollments', $course) }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
                                     class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold text-sm">
                                     <i class="fas fa-cog"></i>Kelola
                                 </a>
@@ -127,7 +127,7 @@
 
                                 @if ($course->enrollments->count() > 5)
                                     <div class="mt-4 text-center">
-                                        <a href="{{ route('guru.courses.enrollments', $course) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
                                             class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
                                             Lihat semua {{ $course->enrollments->count() }} siswa
                                         </a>
@@ -151,7 +151,7 @@
                                 <h3 class="text-lg font-bold text-gray-900">
                                     <i class="fas fa-file-alt text-green-600 mr-2"></i>{{ __('Learning Materials') }}
                                 </h3>
-                                <a href="{{ route('guru.courses.materials.index', $course) }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
                                     class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold text-sm">
                                     <i class="fas fa-cog"></i>{{ __('Manage Materials') }}
                                 </a>
@@ -160,7 +160,7 @@
                             @if ($course->materials()->published()->count() > 0)
                                 <div class="space-y-3">
                                     @foreach ($course->materials()->published()->ordered()->take(5)->get() as $material)
-                                        <a href="{{ route('guru.courses.materials.show', [$course, $material]) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $material]) }}"
                                             class="flex items-center p-3 hover:bg-gray-50 rounded-lg border border-gray-200 transition-all duration-150">
                                             <i
                                                 class="{{ $material->getFileIcon() }} {{ $material->getFileColorClass() }} text-2xl mr-3"></i>
@@ -175,7 +175,7 @@
 
                                 @if ($course->materials()->published()->count() > 5)
                                     <div class="mt-4 text-center">
-                                        <a href="{{ route('guru.courses.materials.index', $course) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
                                             class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
                                             Lihat semua {{ $course->materials()->published()->count() }} materi
                                         </a>
@@ -291,7 +291,7 @@
                             </h3>
 
                             <div class="space-y-3">
-                                <form action="{{ route('guru.courses.toggle-status', $course) }}" method="POST">
+                                <form action="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}" method="POST">
                                     @csrf
                                     <button type="submit"
                                         class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -303,12 +303,12 @@
                                     </button>
                                 </form>
 
-                                <a href="{{ route('guru.courses.enrollments', $course) }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
                                     class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                     <i class="fas fa-users"></i>Kelola Siswa
                                 </a>
 
-                                <form action="{{ route('guru.courses.destroy', $course) }}" method="POST"
+                                <form action="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}" method="POST"
                                     onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this class? All related data will be deleted!') }}');">
                                     @csrf
                                     @method('DELETE')

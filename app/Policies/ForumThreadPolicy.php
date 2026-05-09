@@ -67,8 +67,8 @@ class ForumThreadPolicy
      */
     public function pin(User $user, ForumThread $thread): bool
     {
-        // Admin and guru can pin threads
-        return $user->isAdmin() || $user->isGuru();
+        // Admin, guru, and dosen can pin threads
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 
     /**
@@ -76,8 +76,8 @@ class ForumThreadPolicy
      */
     public function lock(User $user, ForumThread $thread): bool
     {
-        // Admin and guru can lock threads
-        return $user->isAdmin() || $user->isGuru();
+        // Admin, guru, and dosen can lock threads
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 }
 

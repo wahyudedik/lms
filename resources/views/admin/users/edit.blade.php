@@ -56,6 +56,11 @@
                                         {{ __('Guru') }}</option>
                                     <option value="siswa" {{ old('role', $user->role) == 'siswa' ? 'selected' : '' }}>
                                         {{ __('Siswa') }}</option>
+                                    <option value="dosen" {{ old('role', $user->role) == 'dosen' ? 'selected' : '' }}>
+                                        {{ __('Dosen') }}</option>
+                                    <option value="mahasiswa"
+                                        {{ old('role', $user->role) == 'mahasiswa' ? 'selected' : '' }}>
+                                        {{ __('Mahasiswa') }}</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('role')" class="mt-2" />
                             </div>
@@ -175,11 +180,12 @@
                                 </div>
 
                                 <div>
-                                    <label for="new_password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <label for="new_password_confirmation"
+                                        class="block text-sm font-semibold text-gray-700 mb-2">
                                         <i class="fas fa-lock text-gray-400 mr-1"></i>{{ __('Confirm New Password') }}
                                     </label>
-                                    <x-text-input id="new_password_confirmation" class="block w-full"
-                                        type="password" name="password_confirmation" required />
+                                    <x-text-input id="new_password_confirmation" class="block w-full" type="password"
+                                        name="password_confirmation" required />
                                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                 </div>
                             </div>

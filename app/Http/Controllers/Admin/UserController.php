@@ -68,7 +68,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'in:admin,guru,siswa'],
+            'role' => ['required', 'in:admin,guru,siswa,dosen,mahasiswa'],
             'phone' => ['nullable', 'string', 'max:20'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'gender' => ['nullable', 'in:laki-laki,perempuan'],
@@ -78,7 +78,7 @@ class UserController extends Controller
         ]);
 
         $schoolClassId = $validated['school_class_id'] ?? null;
-        if ($validated['role'] === 'siswa' && !$schoolClassId) {
+        if (in_array($validated['role'], ['siswa', 'mahasiswa']) && !$schoolClassId) {
             $schoolClassId = SchoolClass::general()->id;
         }
 
@@ -133,7 +133,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'role' => ['required', 'in:admin,guru,siswa'],
+            'role' => ['required', 'in:admin,guru,siswa,dosen,mahasiswa'],
             'phone' => ['nullable', 'string', 'max:20'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'gender' => ['nullable', 'in:laki-laki,perempuan'],
@@ -143,7 +143,7 @@ class UserController extends Controller
         ]);
 
         $schoolClassId = $validated['school_class_id'] ?? null;
-        if ($validated['role'] === 'siswa' && !$schoolClassId) {
+        if (in_array($validated['role'], ['siswa', 'mahasiswa']) && !$schoolClassId) {
             $schoolClassId = SchoolClass::general()->id;
         }
 

@@ -100,10 +100,11 @@ class QuestionBankController extends Controller
         // Type-specific validation
         if ($request->type === 'mcq_single' || $request->type === 'mcq_multiple') {
             $rules['options'] = 'required|array|min:2';
-            $rules['options.*'] = 'required|string';
+            $rules['options.*.text'] = 'required|string';
 
             if ($request->type === 'mcq_single') {
-                $rules['correct_answer'] = 'required|string';
+                // View sends correct_answer_single; validate that field directly
+                $rules['correct_answer_single'] = 'required|string';
             } else {
                 $rules['correct_answer_multiple'] = 'required|array|min:1';
                 $rules['correct_answer_multiple.*'] = 'required|string';
@@ -120,18 +121,32 @@ class QuestionBankController extends Controller
             $rules['essay_grading_mode'] = 'required|in:manual,keyword,similarity';
 
             if ($request->essay_grading_mode === 'keyword') {
-                $rules['essay_keywords'] = 'required|array|min:1';
-                $rules['essay_keywords.*.keyword'] = 'required|string';
-                $rules['essay_keywords.*.points'] = 'required|numeric|min:0';
+                // View sends flat arrays: essay_keywords[] and essay_keyword_points[]
+                $rules['essay_keywords']         = 'required|array|min:1';
+                $rules['essay_keywords.*']       = 'required|string';
+                $rules['essay_keyword_points']   = 'required|array|min:1';
+                $rules['essay_keyword_points.*'] = 'required|numeric|min:0';
             }
 
             if ($request->essay_grading_mode === 'similarity') {
-                $rules['essay_model_answer'] = 'required|string';
+                $rules['essay_model_answer']   = 'required|string';
                 $rules['essay_min_similarity'] = 'required|numeric|min:0|max:100';
             }
         }
 
-        $validated = $request->validate($rules);
+        $validated = $request->validate($rules, [
+            'correct_answer_single.required'   => 'Jawaban benar wajib dipilih.',
+            'correct_answer_multiple.required' => 'Pilih minimal satu jawaban benar.',
+            'options.required'                 => 'Opsi jawaban wajib diisi.',
+            'options.*.text.required'          => 'Teks setiap opsi wajib diisi.',
+            'pairs.required'                   => 'Pasangan jawaban wajib diisi.',
+            'pairs.*.left.required'            => 'Kolom kiri pasangan wajib diisi.',
+            'pairs.*.right.required'           => 'Kolom kanan pasangan wajib diisi.',
+            'essay_keywords.required'          => 'Minimal satu kata kunci wajib diisi.',
+            'essay_keywords.*.required'        => 'Kata kunci tidak boleh kosong.',
+            'essay_keyword_points.required'    => 'Poin kata kunci wajib diisi.',
+            'essay_keyword_points.*.required'  => 'Poin tidak boleh kosong.',
+        ]);
 
         // Handle image upload
         if ($request->hasFile('question_image')) {
@@ -141,6 +156,21 @@ class QuestionBankController extends Controller
         // Parse tags
         if ($request->filled('tags')) {
             $validated['tags'] = array_map('trim', explode(',', $request->tags));
+        }
+
+        // Transform options from [{id: 'A', text: '...'}, ...] to [['id' => 'A', 'text' => '...'], ...]
+        if (in_array($request->type, ['mcq_single', 'mcq_multiple']) && $request->has('options')) {
+            $validated['options'] = collect($request->options)
+                ->filter(fn ($opt) => !empty($opt['text']))
+                ->values()
+                ->map(fn ($opt) => ['id' => $opt['id'] ?? '', 'text' => $opt['text']])
+                ->toArray();
+        }
+
+        // Map correct_answer_single → correct_answer (model field name)
+        if ($request->type === 'mcq_single') {
+            $validated['correct_answer'] = $validated['correct_answer_single'] ?? '';
+            unset($validated['correct_answer_single']);
         }
 
         $validated['created_by'] = auth()->id();
@@ -192,10 +222,11 @@ class QuestionBankController extends Controller
         // Type-specific validation (same as store)
         if ($request->type === 'mcq_single' || $request->type === 'mcq_multiple') {
             $rules['options'] = 'required|array|min:2';
-            $rules['options.*'] = 'required|string';
+            $rules['options.*.text'] = 'required|string';
 
             if ($request->type === 'mcq_single') {
-                $rules['correct_answer'] = 'required|string';
+                // View sends correct_answer_single; validate that field directly
+                $rules['correct_answer_single'] = 'required|string';
             } else {
                 $rules['correct_answer_multiple'] = 'required|array|min:1';
                 $rules['correct_answer_multiple.*'] = 'required|string';
@@ -212,16 +243,27 @@ class QuestionBankController extends Controller
             $rules['essay_grading_mode'] = 'required|in:manual,keyword,similarity';
 
             if ($request->essay_grading_mode === 'keyword') {
-                $rules['essay_keywords'] = 'required|array|min:1';
+                $rules['essay_keywords']         = 'required|array|min:1';
+                $rules['essay_keywords.*']       = 'required|string';
+                $rules['essay_keyword_points']   = 'required|array|min:1';
+                $rules['essay_keyword_points.*'] = 'required|numeric|min:0';
             }
 
             if ($request->essay_grading_mode === 'similarity') {
-                $rules['essay_model_answer'] = 'required|string';
+                $rules['essay_model_answer']   = 'required|string';
                 $rules['essay_min_similarity'] = 'required|numeric|min:0|max:100';
             }
         }
 
-        $validated = $request->validate($rules);
+        $validated = $request->validate($rules, [
+            'correct_answer_single.required'   => 'Jawaban benar wajib dipilih.',
+            'correct_answer_multiple.required' => 'Pilih minimal satu jawaban benar.',
+            'options.required'                 => 'Opsi jawaban wajib diisi.',
+            'options.*.text.required'          => 'Teks setiap opsi wajib diisi.',
+            'pairs.required'                   => 'Pasangan jawaban wajib diisi.',
+            'pairs.*.left.required' => 'Kolom kiri pasangan wajib diisi.',
+            'pairs.*.right.required' => 'Kolom kanan pasangan wajib diisi.',
+        ]);
 
         // Handle image upload
         if ($request->hasFile('question_image')) {
@@ -235,6 +277,21 @@ class QuestionBankController extends Controller
         // Parse tags
         if ($request->filled('tags')) {
             $validated['tags'] = array_map('trim', explode(',', $request->tags));
+        }
+
+        // Transform options from [{id: 'A', text: '...'}, ...] to [['id' => 'A', 'text' => '...'], ...]
+        if (in_array($request->type, ['mcq_single', 'mcq_multiple']) && $request->has('options')) {
+            $validated['options'] = collect($request->options)
+                ->filter(fn ($opt) => !empty($opt['text']))
+                ->values()
+                ->map(fn ($opt) => ['id' => $opt['id'] ?? '', 'text' => $opt['text']])
+                ->toArray();
+        }
+
+        // Map correct_answer_single → correct_answer (model field name)
+        if ($request->type === 'mcq_single') {
+            $validated['correct_answer'] = $validated['correct_answer_single'] ?? '';
+            unset($validated['correct_answer_single']);
         }
 
         $validated['is_active'] = $request->has('is_active');

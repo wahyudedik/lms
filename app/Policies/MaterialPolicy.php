@@ -31,13 +31,13 @@ class MaterialPolicy
             $material->load('course');
         }
 
-        // Guru can view materials from their own courses
-        if ($user->isGuru() && $material->course->instructor_id === $user->id) {
+        // Guru and dosen can view materials from their own courses
+        if (($user->isGuru() || $user->isDosen()) && $material->course->instructor_id === $user->id) {
             return true;
         }
 
-        // Siswa can view materials from enrolled courses
-        if ($user->isSiswa() && $material->course) {
+        // Siswa and mahasiswa can view materials from enrolled courses
+        if (($user->isSiswa() || $user->isMahasiswa()) && $material->course) {
             return $material->course->isEnrolledBy($user);
         }
 
@@ -49,8 +49,8 @@ class MaterialPolicy
      */
     public function create(User $user): bool
     {
-        // Admin and guru can create materials
-        return $user->isAdmin() || $user->isGuru();
+        // Admin, guru, and dosen can create materials
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 
     /**
@@ -68,8 +68,8 @@ class MaterialPolicy
             $material->load('course');
         }
 
-        // Guru can only update materials from their own courses
-        return $user->isGuru() && $material->course && $material->course->instructor_id === $user->id;
+        // Guru and dosen can only update materials from their own courses
+        return ($user->isGuru() || $user->isDosen()) && $material->course && $material->course->instructor_id === $user->id;
     }
 
     /**

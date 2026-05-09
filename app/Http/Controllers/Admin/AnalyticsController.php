@@ -28,7 +28,7 @@ class AnalyticsController extends Controller
             'total_courses' => Course::count(),
             'total_exams' => Exam::count(),
             'total_enrollments' => Enrollment::count(),
-            'active_students' => User::where('role', 'siswa')->where('is_active', true)->count(),
+            'active_students' => User::whereIn('role', ['siswa', 'mahasiswa'])->where('is_active', true)->count(),
             'active_courses' => Course::where('status', 'published')->count(),
             'total_attempts' => ExamAttempt::count(),
             'avg_exam_score' => ExamAttempt::where('status', 'graded')->avg('score') ?? 0,

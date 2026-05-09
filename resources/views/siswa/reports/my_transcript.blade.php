@@ -13,7 +13,7 @@
 
             <!-- Course Filter -->
             <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-                <form method="GET" action="{{ route('siswa.reports.my-transcript') }}"
+                <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.reports.my-transcript') }}"
                     class="flex gap-4 items-end flex-wrap">
                     <div class="flex-1 min-w-[250px]">
                         <label for="course_id" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -54,7 +54,7 @@
                                     {{ __('Exams') }}</span>
                             </div>
                         </div>
-                        <a href="{{ route('siswa.reports.my-transcript-pdf', $course) }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.my-transcript-pdf', $course) }}"
                             class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-sm transition">
                             <i class="fas fa-file-pdf"></i>Export PDF
                         </a>
@@ -218,12 +218,12 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                                                 @if ($attempt)
-                                                    <a href="{{ route('siswa.exams.review-attempt', $attempt) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.review-attempt', $attempt) }}"
                                                         class="text-blue-600 hover:text-blue-800 font-medium">
                                                         <i class="fas fa-eye mr-1"></i>Review
                                                     </a>
                                                 @else
-                                                    <a href="{{ route('siswa.exams.show', $exam) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}"
                                                         class="text-green-600 hover:text-green-800 font-medium">
                                                         <i class="fas fa-play mr-1"></i>Start
                                                     </a>

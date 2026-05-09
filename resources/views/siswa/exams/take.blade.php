@@ -294,7 +294,7 @@
     </div>
 
     <!-- Hidden Form for Submission -->
-    <form id="submit-form" action="{{ route('siswa.exams.submit', $attempt) }}" method="POST" class="hidden">
+    <form id="submit-form" action="{{ route(auth()->user()->getRolePrefix() . '.exams.submit', $attempt) }}" method="POST" class="hidden">
         @csrf
     </form>
 

@@ -1,16 +1,16 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-file-alt mr-2"></i>{{ $material->title }}
             </h2>
             <div class="flex gap-2">
-                <a href="{{ route('guru.courses.materials.edit', [$course, $material]) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $material]) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-edit"></i>
                     Edit
                 </a>
-                <a href="{{ route('guru.courses.materials.index', $course) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
                     {{ __('Back') }}
@@ -49,14 +49,24 @@
                             @if ($material->type === 'file' || $material->type === 'video')
                                 <div class="mb-6">
                                     @if ($material->getFileUrl())
-                                        <a href="{{ $material->getFileUrl() }}" download
-                                            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
-                                            <i class="fas fa-download"></i>
-                                            Download {{ $material->file_name }}
-                                            @if ($material->getFormattedFileSize())
-                                                ({{ $material->getFormattedFileSize() }})
+                                        <div class="flex flex-wrap gap-3">
+                                            @if ($material->isPreviewable())
+                                                <a href="{{ $material->getFileUrl() }}" target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                                    <i class="fas fa-eye"></i>
+                                                    Preview
+                                                </a>
                                             @endif
-                                        </a>
+                                            <a href="{{ $material->getFileUrl() }}" download
+                                                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                                <i class="fas fa-download"></i>
+                                                Download {{ $material->file_name }}
+                                                @if ($material->getFormattedFileSize())
+                                                    ({{ $material->getFormattedFileSize() }})
+                                                @endif
+                                            </a>
+                                        </div>
                                     @endif
                                 </div>
                             @elseif($material->type === 'youtube')
@@ -256,7 +266,7 @@
                             </h3>
                             <div class="space-y-2">
                                 <form
-                                    action="{{ route('guru.courses.materials.toggle-status', [$course, $material]) }}"
+                                    action="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $material]) }}"
                                     method="POST">
                                     @csrf
                                     <button type="submit"
@@ -271,7 +281,7 @@
                                     </button>
                                 </form>
 
-                                <form action="{{ route('guru.courses.materials.destroy', [$course, $material]) }}"
+                                <form action="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $material]) }}"
                                     method="POST"
                                     onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this material?') }}');">
                                     @csrf

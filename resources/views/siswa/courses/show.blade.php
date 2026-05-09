@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-graduation-cap mr-2"></i>{{ $course->title }}
             </h2>
-            <a href="{{ route('siswa.courses.index') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md">
                 <i class="fas fa-arrow-left"></i>
                 {{ __('Back') }}
@@ -187,12 +187,12 @@
                                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Anda Sudah Terdaftar</h3>
                                     <p class="text-gray-600 mb-4">Anda adalah bagian dari kelas ini</p>
 
-                                    <a href="{{ route('siswa.courses.my-courses') }}"
+                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.my-courses') }}"
                                         class="block w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded mb-2">
                                         <i class="fas fa-book mr-2"></i>{{ __('Go to My Courses') }}
                                     </a>
 
-                                    <form action="{{ route('siswa.courses.unenroll', $course) }}" method="POST"
+                                    <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.unenroll', $course) }}" method="POST"
                                         onsubmit="return confirmDelete('{{ __('Are you sure you want to leave this class?') }}');">
                                         @csrf
                                         @method('DELETE')
@@ -213,7 +213,7 @@
                                             <span class="text-red-700 text-sm">{{ __('Course is full') }}</span>
                                         </div>
                                     @else
-                                        <form action="{{ route('siswa.courses.enroll', $course) }}" method="POST">
+                                        <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.enroll', $course) }}" method="POST">
                                             @csrf
                                             <button type="submit"
                                                 class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded">

@@ -67,8 +67,8 @@ class ForumReplyPolicy
      */
     public function markAsSolution(User $user, ForumReply $reply): bool
     {
-        // Admin and guru can mark any reply as solution
-        if ($user->isAdmin() || $user->isGuru()) {
+        // Admin, guru, and dosen can mark any reply as solution
+        if ($user->isAdmin() || $user->isGuru() || $user->isDosen()) {
             return true;
         }
 

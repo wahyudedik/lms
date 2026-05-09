@@ -31,13 +31,13 @@ class EnrollmentPolicy
             $enrollment->load('course');
         }
 
-        // Guru can view enrollments from their own courses
-        if ($user->isGuru() && $enrollment->course) {
+        // Guru and dosen can view enrollments from their own courses
+        if (($user->isGuru() || $user->isDosen()) && $enrollment->course) {
             return $enrollment->course->instructor_id === $user->id;
         }
 
-        // Siswa can view their own enrollments
-        if ($user->isSiswa()) {
+        // Siswa and mahasiswa can view their own enrollments
+        if ($user->isSiswa() || $user->isMahasiswa()) {
             return $enrollment->user_id === $user->id;
         }
 
@@ -49,10 +49,10 @@ class EnrollmentPolicy
      */
     public function create(User $user): bool
     {
-        // Admin, guru, and siswa can create enrollments
-        // Guru can manually enroll students
-        // Siswa can self-enroll (if allowed)
-        return $user->isAdmin() || $user->isGuru() || $user->isSiswa();
+        // Admin, guru, dosen, siswa, and mahasiswa can create enrollments
+        // Guru/dosen can manually enroll students
+        // Siswa/mahasiswa can self-enroll (if allowed)
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen() || $user->isSiswa() || $user->isMahasiswa();
     }
 
     /**
@@ -70,8 +70,8 @@ class EnrollmentPolicy
             $enrollment->load('course');
         }
 
-        // Guru can update enrollments from their own courses
-        if ($user->isGuru() && $enrollment->course) {
+        // Guru and dosen can update enrollments from their own courses
+        if (($user->isGuru() || $user->isDosen()) && $enrollment->course) {
             return $enrollment->course->instructor_id === $user->id;
         }
 
@@ -94,12 +94,12 @@ class EnrollmentPolicy
             $enrollment->load('course');
         }
 
-        // Guru can delete enrollments from their own courses
-        if ($user->isGuru() && $enrollment->course) {
+        // Guru and dosen can delete enrollments from their own courses
+        if (($user->isGuru() || $user->isDosen()) && $enrollment->course) {
             return $enrollment->course->instructor_id === $user->id;
         }
 
-        // Siswa cannot delete enrollments
+        // Siswa/mahasiswa cannot delete enrollments
         return false;
     }
 
@@ -123,8 +123,8 @@ class EnrollmentPolicy
             $enrollment->load('course');
         }
 
-        // Instructor (guru) of the course can generate
-        if ($user->isGuru() && $enrollment->course) {
+        // Instructor (guru or dosen) of the course can generate
+        if (($user->isGuru() || $user->isDosen()) && $enrollment->course) {
             return $enrollment->course->instructor_id === $user->id;
         }
 

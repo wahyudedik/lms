@@ -49,23 +49,32 @@
                                 <!-- Difficulty -->
                                 <div>
                                     <label for="difficulty" class="block text-sm font-semibold text-gray-700 mb-2">
-                                        <i class="fas fa-signal text-gray-400 mr-1"></i>{{ __('Difficulty') }} <span class="text-red-500">*</span>
+                                        <i class="fas fa-signal text-gray-400 mr-1"></i>{{ __('Difficulty') }} <span
+                                            class="text-red-500">*</span>
                                     </label>
                                     <select name="difficulty" id="difficulty" required
                                         class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
-                                        <option value="easy" {{ old('difficulty', $questionBank->difficulty) == 'easy' ? 'selected' : '' }}>{{ __('Easy') }}</option>
-                                        <option value="medium" {{ old('difficulty', $questionBank->difficulty) == 'medium' ? 'selected' : '' }}>{{ __('Medium') }}</option>
-                                        <option value="hard" {{ old('difficulty', $questionBank->difficulty) == 'hard' ? 'selected' : '' }}>{{ __('Hard') }}</option>
+                                        <option value="easy"
+                                            {{ old('difficulty', $questionBank->difficulty) == 'easy' ? 'selected' : '' }}>
+                                            {{ __('Easy') }}</option>
+                                        <option value="medium"
+                                            {{ old('difficulty', $questionBank->difficulty) == 'medium' ? 'selected' : '' }}>
+                                            {{ __('Medium') }}</option>
+                                        <option value="hard"
+                                            {{ old('difficulty', $questionBank->difficulty) == 'hard' ? 'selected' : '' }}>
+                                            {{ __('Hard') }}</option>
                                     </select>
                                 </div>
 
                                 <!-- Default Points -->
                                 <div>
                                     <label for="default_points" class="block text-sm font-semibold text-gray-700 mb-2">
-                                        <i class="fas fa-star text-gray-400 mr-1"></i>{{ __('Default Points') }} <span class="text-red-500">*</span>
+                                        <i class="fas fa-star text-gray-400 mr-1"></i>{{ __('Default Points') }} <span
+                                            class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="default_points" id="default_points"
-                                        value="{{ old('default_points', $questionBank->default_points) }}" step="0.01" min="0.01" required
+                                        value="{{ old('default_points', $questionBank->default_points) }}"
+                                        step="0.01" min="0.01" required
                                         class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                                 </div>
 
@@ -75,7 +84,8 @@
                                         <input type="checkbox" name="is_active" value="1"
                                             {{ old('is_active', $questionBank->is_active) ? 'checked' : '' }}
                                             class="rounded border-gray-300 text-green-600 shadow-sm">
-                                        <span class="ml-2 text-sm font-semibold text-gray-700">{{ __('Active') }}</span>
+                                        <span
+                                            class="ml-2 text-sm font-semibold text-gray-700">{{ __('Active') }}</span>
                                     </label>
                                 </div>
                             </div>
@@ -85,10 +95,12 @@
                                 <label for="tags" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-tags text-gray-400 mr-1"></i>{{ __('Tags (comma-separated)') }}
                                 </label>
-                                <input type="text" name="tags" id="tags" value="{{ old('tags', $questionBank->tags) }}"
+                                <input type="text" name="tags" id="tags"
+                                    value="{{ old('tags', is_array($questionBank->tags) ? implode(', ', $questionBank->tags) : $questionBank->tags) }}"
                                     placeholder="{{ __('algebra, equations, linear') }}"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
-                                <p class="text-sm text-gray-500 mt-1">{{ __('Separate tags with commas for better search') }}</p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    {{ __('Separate tags with commas for better search') }}</p>
                             </div>
                         </div>
 
@@ -101,20 +113,25 @@
                             <!-- Question Type -->
                             <div class="mb-6">
                                 <label for="type" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-list text-gray-400 mr-1"></i>Tipe Soal <span class="text-red-500">*</span>
+                                    <i class="fas fa-list text-gray-400 mr-1"></i>Tipe Soal <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <select name="type" id="type" required
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
-                                    <option value="mcq_single" {{ old('type', $questionBank->type) == 'mcq_single' ? 'selected' : '' }}>
+                                    <option value="mcq_single"
+                                        {{ old('type', $questionBank->type) == 'mcq_single' ? 'selected' : '' }}>
                                         Pilihan Ganda (Single Answer)
                                     </option>
-                                    <option value="mcq_multiple" {{ old('type', $questionBank->type) == 'mcq_multiple' ? 'selected' : '' }}>
+                                    <option value="mcq_multiple"
+                                        {{ old('type', $questionBank->type) == 'mcq_multiple' ? 'selected' : '' }}>
                                         Pilihan Ganda (Multiple Answers)
                                     </option>
-                                    <option value="matching" {{ old('type', $questionBank->type) == 'matching' ? 'selected' : '' }}>
+                                    <option value="matching"
+                                        {{ old('type', $questionBank->type) == 'matching' ? 'selected' : '' }}>
                                         Menjodohkan
                                     </option>
-                                    <option value="essay" {{ old('type', $questionBank->type) == 'essay' ? 'selected' : '' }}>
+                                    <option value="essay"
+                                        {{ old('type', $questionBank->type) == 'essay' ? 'selected' : '' }}>
                                         Essay
                                     </option>
                                 </select>
@@ -123,7 +140,8 @@
                             <!-- Question Text -->
                             <div class="mb-6">
                                 <label for="question_text" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-align-left text-gray-400 mr-1"></i>Pertanyaan <span class="text-red-500">*</span>
+                                    <i class="fas fa-align-left text-gray-400 mr-1"></i>Pertanyaan <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <textarea name="question_text" id="question_text" rows="3" required
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('question_text', $questionBank->question_text) }}</textarea>
@@ -139,7 +157,8 @@
                                         <p class="text-sm font-semibold text-green-900 mb-2">
                                             <i class="fas fa-image text-green-700 mr-1"></i>{{ __('Gambar Saat Ini') }}
                                         </p>
-                                        <img src="{{ Storage::url($questionBank->question_image) }}" alt="Question Image"
+                                        <img src="{{ Storage::url($questionBank->question_image) }}"
+                                            alt="Question Image"
                                             class="max-w-xs rounded-lg shadow-md border-2 border-green-200">
                                     </div>
                                 @endif
@@ -164,7 +183,8 @@
 
                             <div id="correct-answer-single" class="mt-6">
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-check-circle text-gray-400 mr-1"></i>Jawaban Benar <span class="text-red-500">*</span>
+                                    <i class="fas fa-check-circle text-gray-400 mr-1"></i>Jawaban Benar <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <select name="correct_answer_single"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
@@ -174,7 +194,8 @@
 
                             <div id="correct-answer-multiple" class="mt-6 hidden">
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-check-double text-gray-400 mr-1"></i>Jawaban Benar (Pilih Semua yang Benar) <span class="text-red-500">*</span>
+                                    <i class="fas fa-check-double text-gray-400 mr-1"></i>Jawaban Benar (Pilih Semua
+                                    yang Benar) <span class="text-red-500">*</span>
                                 </label>
                                 <div id="correct-checkboxes" class="space-y-2">
                                     <!-- Checkboxes will be added by JavaScript -->
@@ -214,8 +235,10 @@
 
                             <!-- Essay Grading Mode -->
                             <div class="mb-6">
-                                <label for="essay_grading_mode" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-cog text-gray-400 mr-1"></i>Mode Penilaian <span class="text-red-500">*</span>
+                                <label for="essay_grading_mode"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-cog text-gray-400 mr-1"></i>Mode Penilaian <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <select name="essay_grading_mode" id="essay_grading_mode"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
@@ -235,7 +258,8 @@
                                 <label class="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                                     <input type="checkbox" name="essay_case_sensitive" id="essay_case_sensitive"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-2 text-sm font-semibold text-gray-700">Case Sensitive (huruf besar/kecil
+                                    <span class="ml-2 text-sm font-semibold text-gray-700">Case Sensitive (huruf
+                                        besar/kecil
                                         berpengaruh)</span>
                                 </label>
                             </div>
@@ -309,7 +333,8 @@
                             <!-- Teacher Notes -->
                             <div class="mb-6">
                                 <label for="teacher_notes" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-sticky-note text-gray-400 mr-1"></i>Teacher Notes (Optional - Private)
+                                    <i class="fas fa-sticky-note text-gray-400 mr-1"></i>Teacher Notes (Optional -
+                                    Private)
                                 </label>
                                 <textarea name="teacher_notes" id="teacher_notes" rows="3"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('teacher_notes', $questionBank->teacher_notes) }}</textarea>
@@ -440,7 +465,7 @@
                 div.innerHTML = `
                     <span class="font-bold text-gray-700 w-8">${letter}.</span>
                     <input type="hidden" name="options[${optionIndex}][id]" value="${letter}">
-                    <input type="text" name="options[${optionIndex}][text]" required 
+                    <input type="text" name="options[${optionIndex}][text]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Teks opsi ${letter}">
                     <button type="button" class="text-red-600 hover:text-red-800 remove-option">
                         <i class="fas fa-times-circle text-xl"></i>
@@ -491,10 +516,10 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                    <input type="text" name="pairs[${pairIndex}][left]" required 
+                    <input type="text" name="pairs[${pairIndex}][left]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Item kiri">
                     <i class="fas fa-arrows-alt-h text-gray-400"></i>
-                    <input type="text" name="pairs[${pairIndex}][right]" required 
+                    <input type="text" name="pairs[${pairIndex}][right]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Item kanan">
                     <button type="button" class="text-red-600 hover:text-red-800 remove-pair">
                         <i class="fas fa-times-circle text-xl"></i>
@@ -537,7 +562,7 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                    <input type="text" name="essay_keywords[]" 
+                    <input type="text" name="essay_keywords[]"
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Kata kunci (contoh: fotosintesis)">
                     <input type="number" name="essay_keyword_points[]" min="0" step="0.1" value="2"
                         class="w-24 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Poin">
@@ -632,23 +657,32 @@
                 // Populate MCQ options if exists
                 if ((questionType === 'mcq_single' || questionType === 'mcq_multiple') && questionData.options) {
                     setTimeout(function() {
-                        const options = JSON.parse(questionData.options);
+                        // options is already an array (cast by Eloquent), no need for JSON.parse
+                        const options = Array.isArray(questionData.options) ?
+                            questionData.options :
+                            JSON.parse(questionData.options);
                         optionIndex = 0;
                         document.getElementById('options-container').innerHTML = '';
-                        document.querySelector('select[name="correct_answer_single"]').innerHTML = '<option value="">Pilih Jawaban Benar</option>';
+                        document.querySelector('select[name="correct_answer_single"]').innerHTML =
+                            '<option value="">Pilih Jawaban Benar</option>';
                         document.getElementById('correct-checkboxes').innerHTML = '';
-                        
+
                         options.forEach(function(option) {
                             document.getElementById('add-option').click();
-                            const lastInput = document.querySelector(`input[name="options[${optionIndex-1}][text]"]`);
+                            const lastInput = document.querySelector(
+                                `input[name="options[${optionIndex-1}][text]"]`);
                             if (lastInput) lastInput.value = option.text;
                         });
-                        
+
                         // Set correct answer
                         if (questionType === 'mcq_single' && questionData.correct_answer) {
-                            document.querySelector('select[name="correct_answer_single"]').value = questionData.correct_answer;
-                        } else if (questionType === 'mcq_multiple' && questionData.correct_answer) {
-                            const correctAnswers = JSON.parse(questionData.correct_answer);
+                            document.querySelector('select[name="correct_answer_single"]').value = questionData
+                                .correct_answer;
+                        } else if (questionType === 'mcq_multiple' && questionData.correct_answer_multiple) {
+                            // correct_answer_multiple is already an array
+                            const correctAnswers = Array.isArray(questionData.correct_answer_multiple) ?
+                                questionData.correct_answer_multiple :
+                                JSON.parse(questionData.correct_answer_multiple);
                             correctAnswers.forEach(function(answer) {
                                 const checkbox = document.getElementById(`check_${answer}`);
                                 if (checkbox) checkbox.checked = true;
@@ -660,14 +694,19 @@
                 // Populate matching pairs if exists
                 if (questionType === 'matching' && questionData.pairs) {
                     setTimeout(function() {
-                        const pairs = JSON.parse(questionData.pairs);
+                        // pairs is already an array (cast by Eloquent), no need for JSON.parse
+                        const pairs = Array.isArray(questionData.pairs) ?
+                            questionData.pairs :
+                            JSON.parse(questionData.pairs);
                         pairIndex = 0;
                         document.getElementById('pairs-container').innerHTML = '';
-                        
+
                         pairs.forEach(function(pair) {
                             document.getElementById('add-pair').click();
-                            const leftInput = document.querySelector(`input[name="pairs[${pairIndex-1}][left]"]`);
-                            const rightInput = document.querySelector(`input[name="pairs[${pairIndex-1}][right]"]`);
+                            const leftInput = document.querySelector(
+                                `input[name="pairs[${pairIndex-1}][left]"]`);
+                            const rightInput = document.querySelector(
+                                `input[name="pairs[${pairIndex-1}][right]"]`);
                             if (leftInput) leftInput.value = pair.left;
                             if (rightInput) rightInput.value = pair.right;
                         });
@@ -680,23 +719,27 @@
                         const config = JSON.parse(questionData.essay_config);
                         document.getElementById('essay_grading_mode').value = config.grading_mode || 'manual';
                         document.getElementById('essay_grading_mode').dispatchEvent(new Event('change'));
-                        
+
                         if (config.case_sensitive) {
                             document.getElementById('essay_case_sensitive').checked = true;
                         }
-                        
+
                         if (config.grading_mode === 'keyword' && config.keywords) {
                             keywordIndex = 0;
                             document.getElementById('keywords-container').innerHTML = '';
                             config.keywords.forEach(function(kw) {
                                 document.getElementById('add-keyword').click();
-                                const inputs = document.querySelectorAll('#keywords-container input[name="essay_keywords[]"]');
-                                const pointInputs = document.querySelectorAll('#keywords-container input[name="essay_keyword_points[]"]');
-                                if (inputs[keywordIndex-1]) inputs[keywordIndex-1].value = kw.keyword;
-                                if (pointInputs[keywordIndex-1]) pointInputs[keywordIndex-1].value = kw.points;
+                                const inputs = document.querySelectorAll(
+                                    '#keywords-container input[name="essay_keywords[]"]');
+                                const pointInputs = document.querySelectorAll(
+                                    '#keywords-container input[name="essay_keyword_points[]"]');
+                                if (inputs[keywordIndex - 1]) inputs[keywordIndex - 1].value = kw
+                                    .keyword;
+                                if (pointInputs[keywordIndex - 1]) pointInputs[keywordIndex - 1].value =
+                                    kw.points;
                             });
                         }
-                        
+
                         if (config.grading_mode === 'similarity') {
                             document.getElementById('essay_model_answer').value = config.model_answer || '';
                             document.getElementById('essay_min_similarity').value = config.min_similarity || 70;

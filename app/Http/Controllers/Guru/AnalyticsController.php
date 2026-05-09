@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Assignment;
+use App\Models\AssignmentSubmission;
 use App\Models\Course;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
+use App\Services\AssignmentGradingService;
 use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
@@ -21,16 +24,28 @@ class AnalyticsController extends Controller
         $courses = $guru->teachingCourses;
 
         // Overall statistics
+        $courseIds = $courses->pluck('id');
+
+        $totalAssignments = Assignment::whereIn('course_id', $courseIds)->count();
+        $totalSubmissions = AssignmentSubmission::whereHas('assignment', function ($q) use ($courseIds) {
+            $q->whereIn('course_id', $courseIds);
+        })->count();
+
         $stats = [
             'total_courses' => $courses->count(),
             'total_students' => $courses->sum(fn($c) => $c->enrollments->count()),
-            'total_exams' => Exam::whereIn('course_id', $courses->pluck('id'))->count(),
-            'total_attempts' => ExamAttempt::whereHas('exam', function ($q) use ($courses) {
-                $q->whereIn('course_id', $courses->pluck('id'));
+            'total_exams' => Exam::whereIn('course_id', $courseIds)->count(),
+            'total_attempts' => ExamAttempt::whereHas('exam', function ($q) use ($courseIds) {
+                $q->whereIn('course_id', $courseIds);
             })->count(),
-            'avg_score' => ExamAttempt::whereHas('exam', function ($q) use ($courses) {
-                $q->whereIn('course_id', $courses->pluck('id'));
+            'avg_score' => ExamAttempt::whereHas('exam', function ($q) use ($courseIds) {
+                $q->whereIn('course_id', $courseIds);
             })->where('status', 'graded')->avg('score') ?? 0,
+            'total_assignments' => $totalAssignments,
+            'total_submissions' => $totalSubmissions,
+            'avg_assignment_score' => AssignmentSubmission::whereHas('assignment', function ($q) use ($courseIds) {
+                $q->whereIn('course_id', $courseIds);
+            })->where('status', 'graded')->avg('final_score') ?? 0,
         ];
 
         return view('guru.analytics.index', compact('stats', 'courses'));
@@ -190,6 +205,87 @@ class AnalyticsController extends Controller
                     'borderWidth' => 2,
                 ]
             ]
+        ];
+
+        return response()->json($result);
+    }
+
+    /**
+     * Get average assignment score per course
+     */
+    public function assignmentScoreByCourse(Request $request)
+    {
+        $guru = auth()->user();
+        $courseId = $request->input('course_id');
+
+        if ($courseId) {
+            $courses = Course::where('id', $courseId)
+                ->where('instructor_id', $guru->id)
+                ->get();
+        } else {
+            $courses = $guru->teachingCourses->take(10);
+        }
+
+        $gradingService = app(AssignmentGradingService::class);
+
+        $result = [
+            'labels' => $courses->pluck('title')->map(fn($t) => \Str::limit($t, 20))->toArray(),
+            'datasets' => [
+                [
+                    'label' => 'Rata-rata Nilai Tugas',
+                    'data' => $courses->map(fn($course) => $gradingService->getAverageAssignmentScore($course))->toArray(),
+                    'backgroundColor' => 'rgba(59, 130, 246, 0.7)',
+                    'borderColor' => 'rgb(59, 130, 246)',
+                    'borderWidth' => 2,
+                ],
+                [
+                    'label' => 'Rata-rata Nilai Ujian',
+                    'data' => $courses->map(function ($course) {
+                        return ExamAttempt::whereHas('exam', function ($q) use ($course) {
+                            $q->where('course_id', $course->id);
+                        })->where('status', 'graded')->avg('score') ?? 0;
+                    })->toArray(),
+                    'backgroundColor' => 'rgba(34, 197, 94, 0.7)',
+                    'borderColor' => 'rgb(34, 197, 94)',
+                    'borderWidth' => 2,
+                ],
+            ],
+        ];
+
+        return response()->json($result);
+    }
+
+    /**
+     * Get per-student assignment completion rate for a course
+     */
+    public function assignmentCompletionRate(Request $request)
+    {
+        $courseId = $request->input('course_id');
+        $guru = auth()->user();
+
+        $course = Course::where('instructor_id', $guru->id)
+            ->findOrFail($courseId);
+
+        $gradingService = app(AssignmentGradingService::class);
+
+        $enrollments = $course->enrollments()
+            ->with('student')
+            ->take(15)
+            ->get();
+
+        $result = [
+            'labels' => $enrollments->map(fn($e) => \Str::limit($e->student->name, 15))->toArray(),
+            'datasets' => [
+                [
+                    'label' => 'Tingkat Penyelesaian Tugas (%)',
+                    'data' => $enrollments->map(function ($enrollment) use ($gradingService, $course) {
+                        return round($gradingService->getStudentCompletionRate($enrollment->student, $course) * 100, 1);
+                    })->toArray(),
+                    'backgroundColor' => 'rgba(251, 146, 60, 0.7)',
+                    'borderColor' => 'rgb(251, 146, 60)',
+                    'borderWidth' => 2,
+                ],
+            ],
         ];
 
         return response()->json($result);

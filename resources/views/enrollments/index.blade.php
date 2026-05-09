@@ -12,7 +12,7 @@
                     <p class="text-sm text-gray-600 mt-1">Kode: {{ $course->code }}</p>
                 </div>
             </div>
-            <a href="{{ auth()->user()->isAdmin() ? route('admin.courses.show', $course) : route('guru.courses.show', $course) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $course) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                 <i class="fas fa-arrow-left"></i>
                 <span>Kembali</span>
@@ -32,7 +32,7 @@
                 <div class="p-6">
 
                     <form method="GET"
-                        action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments', $course) : route('guru.courses.enrollments', $course) }}"
+                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                         class="mb-4">
                         <div class="flex flex-col md:flex-row md:items-end gap-3">
                             <div class="w-full md:w-80">
@@ -55,7 +55,7 @@
 
                     @if ($availableStudents->count() > 0)
                         <form
-                            action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments.store', $course) : route('guru.courses.enrollments.store', $course) }}"
+                            action="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments.store', $course) }}"
                             method="POST" x-data="{
                                 open: false,
                                 students: @js(
@@ -244,7 +244,7 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <form
-                                                    action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments.update-status', [$course, $enrollment]) : route('guru.courses.enrollments.update-status', [$course, $enrollment]) }}"
+                                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments.update-status', [$course, $enrollment]) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('PATCH')
@@ -275,7 +275,7 @@
                                                         class="text-sm font-semibold text-gray-700">{{ $enrollment->progress }}%</span>
                                                 </div>
                                                 <form
-                                                    action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments.update-progress', [$course, $enrollment]) : route('guru.courses.enrollments.update-progress', [$course, $enrollment]) }}"
+                                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments.update-progress', [$course, $enrollment]) }}"
                                                     method="POST" class="mt-1">
                                                     @csrf
                                                     @method('PATCH')
@@ -296,7 +296,7 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <form
-                                                    action="{{ auth()->user()->isAdmin() ? route('admin.courses.enrollments.destroy', [$course, $enrollment]) : route('guru.courses.enrollments.destroy', [$course, $enrollment]) }}"
+                                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments.destroy', [$course, $enrollment]) }}"
                                                     method="POST" class="inline"
                                                     onsubmit="return confirmDelete('{{ __('Are you sure you want to remove this student from the class?') }}');">
                                                     @csrf

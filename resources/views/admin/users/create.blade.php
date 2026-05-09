@@ -55,6 +55,10 @@
                                         {{ __('Guru') }}</option>
                                     <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>
                                         {{ __('Siswa') }}</option>
+                                    <option value="dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>
+                                        {{ __('Dosen') }}</option>
+                                    <option value="mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>
+                                        {{ __('Mahasiswa') }}</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('role')" class="mt-2" />
                             </div>
@@ -125,7 +129,8 @@
 
                             <!-- Confirm Password -->
                             <div>
-                                <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <label for="password_confirmation"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-lock text-gray-400 mr-1"></i>{{ __('Confirm Password') }}
                                 </label>
                                 <x-text-input id="password_confirmation" class="block w-full" type="password"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Siswa;
 
+use App\Http\Controllers\Concerns\ResolvesRolePrefix;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\ExamAttempt;
@@ -12,6 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
+    use ResolvesRolePrefix;
     /**
      * Display student's grades dashboard
      */
@@ -86,10 +88,22 @@ class ReportController extends Controller
 
         $attempts = $attempts->orderBy('submitted_at', 'desc')->get();
 
+        // Fetch assignment submissions for the student
+        $assignmentSubmissions = \App\Models\AssignmentSubmission::with(['assignment.course'])
+            ->where('user_id', auth()->id());
+
+        if ($request->filled('course_id')) {
+            $assignmentSubmissions->whereHas('assignment', function ($q) use ($request) {
+                $q->where('course_id', $request->course_id);
+            });
+        }
+
+        $assignmentSubmissions = $assignmentSubmissions->orderBy('submitted_at', 'desc')->get();
+
         $filename = 'transkrip_' . auth()->user()->name . '_' . date('Y-m-d') . '.xlsx';
 
         return Excel::download(
-            new \App\Exports\StudentTranscriptExport($attempts, auth()->user()),
+            new \App\Exports\StudentTranscriptExport($attempts, auth()->user(), $assignmentSubmissions),
             $filename
         );
     }
@@ -167,7 +181,7 @@ class ReportController extends Controller
 
             if (!$course) {
                 return redirect()
-                    ->route('siswa.reports.my-transcript')
+                    ->to($this->studentRoute('reports.my-transcript'))
                     ->with('error', 'Kursus tidak ditemukan atau Anda belum terdaftar di kursus tersebut.');
             }
 

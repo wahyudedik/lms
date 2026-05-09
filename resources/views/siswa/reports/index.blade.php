@@ -7,7 +7,7 @@
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">{{ __('Ringkasan performa dan nilai ujian Anda') }}</p>
             </div>
-            <a href="{{ route('siswa.reports.my-transcript') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.my-transcript') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-sm transition">
                 <i class="fas fa-file-alt"></i>{{ __('Lihat Transkrip Resmi') }}
             </a>
@@ -131,7 +131,7 @@
                                         {{ $attempt->submitted_at ? $attempt->submitted_at->format('d/m/Y H:i') : '-' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        <a href="{{ route('siswa.exams.review-attempt', $attempt->id) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.review-attempt', $attempt->id) }}"
                                             class="text-indigo-600 hover:text-indigo-900 font-medium">
                                             <i class="fas fa-eye mr-1"></i>{{ __('Review') }}
                                         </a>
@@ -189,7 +189,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-4 pt-3 border-t text-center">
-                                    <a href="{{ route('siswa.reports.my-transcript', ['course_id' => $courseStats['course']->id]) }}"
+                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.my-transcript', ['course_id' => $courseStats['course']->id]) }}"
                                         class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
                                         <i class="fas fa-arrow-right mr-1"></i>{{ __('Lihat Detail') }}
                                     </a>

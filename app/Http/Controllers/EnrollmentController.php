@@ -34,7 +34,7 @@ class EnrollmentController extends Controller
         $enrolledStudentIds = $course->enrollments()->pluck('user_id');
 
         $availableStudentsQuery = User::query()
-            ->where('role', 'siswa')
+            ->whereIn('role', ['siswa', 'mahasiswa'])
             ->where('is_active', true)
             ->whereNotIn('id', $enrolledStudentIds);
 
@@ -102,8 +102,8 @@ class EnrollmentController extends Controller
                 continue;
             }
 
-            if (!$student->isSiswa()) {
-                $skipped[] = "{$student->name} bukan akun siswa.";
+            if (!$student->isSiswa() && !$student->isMahasiswa()) {
+                $skipped[] = "{$student->name} bukan akun siswa/mahasiswa.";
                 continue;
             }
 
@@ -127,6 +127,12 @@ class EnrollmentController extends Controller
             if (!$enrolled) {
                 $skipped[] = "{$student->name} sudah terdaftar.";
                 continue;
+            }
+
+            // Notify course instructor about new enrollment
+            $instructor = $course->instructor;
+            if ($instructor && $enrolled instanceof \App\Models\Enrollment) {
+                $instructor->notify(new \App\Notifications\EnrollmentCreated($enrolled));
             }
 
             $added[] = $student->name;

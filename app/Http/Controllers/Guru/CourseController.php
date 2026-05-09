@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Guru;
 
+use App\Http\Controllers\Concerns\ResolvesRolePrefix;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
+    use ResolvesRolePrefix;
     /**
      * Display a listing of instructor's courses
      */
@@ -79,7 +81,7 @@ class CourseController extends Controller
         $course = Course::create($validated);
 
         return redirect()
-            ->route('guru.courses.show', $course)
+            ->to($this->teacherRoute('courses.show', $course))
             ->with('success', 'Kelas berhasil dibuat!');
     }
 
@@ -145,7 +147,7 @@ class CourseController extends Controller
         $course->update($validated);
 
         return redirect()
-            ->route('guru.courses.show', $course)
+            ->to($this->teacherRoute('courses.show', $course))
             ->with('success', 'Kelas berhasil diperbarui!');
     }
 
@@ -165,7 +167,7 @@ class CourseController extends Controller
         $course->delete();
 
         return redirect()
-            ->route('guru.courses.index')
+            ->to($this->teacherRoute('courses.index'))
             ->with('success', 'Kelas berhasil dihapus!');
     }
 

@@ -18,7 +18,40 @@ class MaterialCommentController extends Controller
         $validated['material_id'] = $material->id;
         $validated['user_id'] = auth()->id();
 
-        MaterialComment::create($validated);
+        $comment = MaterialComment::create($validated);
+
+        // Notify material owner (new comment) or parent comment owner (reply)
+        if ($comment->parent_id) {
+            $recipient = $comment->parent->user;
+        } else {
+            $recipient = $material->creator;
+        }
+
+        if ($recipient && $recipient->id !== auth()->id()) {
+            $recipient->notify(new \App\Notifications\MaterialCommentReceived($comment));
+        }
+
+        // Parse mentions and notify mentioned users
+        $mentionParser = app(\App\Services\MentionParser::class);
+        $mentionedUsers = $mentionParser->parse(
+            $comment->comment,
+            'material_comment',
+            auth()->user()->school_class_id,
+            auth()->id()
+        );
+
+        foreach ($mentionedUsers as $mentionedUser) {
+            // Generate role-specific URL for the mentioned user
+            $actionUrl = $mentionedUser->getNotificationUrl('material', $material->id);
+
+            $mentionedUser->notify(new \App\Notifications\UserMentioned(
+                auth()->user(),
+                'material',
+                $material->title,
+                \Illuminate\Support\Str::limit($comment->comment, 100),
+                $actionUrl
+            ));
+        }
 
         return back()->with('success', 'Komentar berhasil ditambahkan!');
     }

@@ -3,12 +3,13 @@
 namespace App\Notifications;
 
 use App\Models\ExamAttempt;
+use App\Models\NotificationPreference;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ExamGraded extends Notification
+class ExamGraded extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -29,7 +30,34 @@ class ExamGraded extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = [];
+        $pref = NotificationPreference::getForUser($notifiable->id, 'exam_graded');
+        if ($pref->via_database) {
+            $channels[] = 'database';
+        }
+        if ($pref->via_push && Setting::get('push_notifications_enabled')) {
+            $channels[] = 'push';
+        }
+
+        return $channels ?: ['database'];
+    }
+
+    /**
+     * Get the push notification representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toPush(object $notifiable): array
+    {
+        $passed = $this->attempt->passed;
+        $data = $this->toArray($notifiable);
+
+        return [
+            'title' => 'Nilai Ujian Keluar',
+            'body' => 'Nilai ujian ' . $this->attempt->exam->title . ': ' . number_format($this->attempt->score, 2) . '% - ' . ($passed ? 'LULUS' : 'TIDAK LULUS'),
+            'icon' => 'fas fa-check-circle',
+            'action_url' => $data['action_url'],
+        ];
     }
 
     /**
@@ -53,7 +81,7 @@ class ExamGraded extends Notification
             'icon' => $passed ? 'fas fa-check-circle' : 'fas fa-times-circle',
             'color' => $passed ? 'green' : 'red',
             'message' => 'Nilai ujian "' . $this->attempt->exam->title . '" sudah keluar: ' . number_format($this->attempt->score, 2) . '% - ' . ($passed ? 'LULUS' : 'TIDAK LULUS'),
-            'action_url' => route('siswa.exams.review-attempt', $this->attempt),
+            'action_url' => $notifiable->getNotificationUrl('exam', $this->attempt->exam_id),
             'action_text' => 'Lihat Hasil',
         ];
     }

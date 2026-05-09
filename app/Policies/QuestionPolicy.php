@@ -12,8 +12,8 @@ class QuestionPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Admin and guru can view questions
-        return $user->isAdmin() || $user->isGuru();
+        // Admin, guru, and dosen can view questions
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 
     /**
@@ -31,13 +31,13 @@ class QuestionPolicy
             $question->load('exam.course');
         }
 
-        // Guru can view questions from their own exams
-        if ($user->isGuru() && $question->exam && $question->exam->course) {
+        // Guru and dosen can view questions from their own exams
+        if (($user->isGuru() || $user->isDosen()) && $question->exam && $question->exam->course) {
             return $question->exam->course->instructor_id === $user->id;
         }
 
-        // Siswa can view questions from enrolled courses (when taking exam)
-        if ($user->isSiswa() && $question->exam && $question->exam->course) {
+        // Siswa and mahasiswa can view questions from enrolled courses (when taking exam)
+        if (($user->isSiswa() || $user->isMahasiswa()) && $question->exam && $question->exam->course) {
             return $question->exam->course->isEnrolledBy($user);
         }
 
@@ -49,8 +49,8 @@ class QuestionPolicy
      */
     public function create(User $user): bool
     {
-        // Admin and guru can create questions
-        return $user->isAdmin() || $user->isGuru();
+        // Admin, guru, and dosen can create questions
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 
     /**
@@ -68,8 +68,8 @@ class QuestionPolicy
             $question->load('exam.course');
         }
 
-        // Guru can only update questions from their own exams
-        return $user->isGuru() && $question->exam && $question->exam->course && $question->exam->course->instructor_id === $user->id;
+        // Guru and dosen can only update questions from their own exams
+        return ($user->isGuru() || $user->isDosen()) && $question->exam && $question->exam->course && $question->exam->course->instructor_id === $user->id;
     }
 
     /**

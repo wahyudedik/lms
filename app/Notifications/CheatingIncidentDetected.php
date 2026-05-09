@@ -3,10 +3,11 @@
 namespace App\Notifications;
 
 use App\Models\CheatingIncident;
+use App\Models\NotificationPreference;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
 
 class CheatingIncidentDetected extends Notification implements ShouldQueue
@@ -19,7 +20,16 @@ class CheatingIncidentDetected extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        $channels = ['mail'];
+        $pref = NotificationPreference::getForUser($notifiable->id, 'cheating_incident_detected');
+        if ($pref->via_database) {
+            $channels[] = 'database';
+        }
+        if ($pref->via_push && Setting::get('push_notifications_enabled')) {
+            $channels[] = 'push';
+        }
+
+        return $channels;
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -36,6 +46,23 @@ class CheatingIncidentDetected extends Notification implements ShouldQueue
             ->line('Reason: ' . ($this->incident->reason ?? 'No details provided.'))
             ->action('Review Incident', $actionUrl)
             ->line('Please review and take appropriate action.');
+    }
+
+    /**
+     * Get the push notification representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toPush(object $notifiable): array
+    {
+        $data = $this->toArray($notifiable);
+
+        return [
+            'title' => 'Insiden Kecurangan Terdeteksi',
+            'body' => ($this->incident->user?->name ?? 'Guest') . ' terdeteksi kecurangan pada ' . ($this->incident->exam?->title ?? 'Ujian'),
+            'icon' => 'fas fa-shield-alt',
+            'action_url' => $data['action_url'],
+        ];
     }
 
     public function toArray(object $notifiable): array
@@ -65,4 +92,3 @@ class CheatingIncidentDetected extends Notification implements ShouldQueue
         ];
     }
 }
-

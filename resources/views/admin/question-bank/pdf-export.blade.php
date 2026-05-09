@@ -159,10 +159,23 @@
 
             @if ($question->options && in_array($question->type, ['mcq_single', 'mcq_multiple']))
                 <div class="options">
-                    @foreach ($question->options as $optionIndex => $option)
-                        <div class="option {{ in_array($option, $question->correct_answer ?? []) ? 'correct' : '' }}">
-                            {{ chr(65 + $optionIndex) }}. {{ $option }}
-                            @if (in_array($option, $question->correct_answer ?? []))
+                    @foreach ($question->options as $option)
+                        @php
+                            $optionId = is_array($option) ? $option['id'] ?? '' : $option;
+                            $optionText = is_array($option) ? $option['text'] ?? $option : $option;
+                            $isCorrect =
+                                $question->type === 'mcq_single'
+                                    ? $question->correct_answer === $optionId
+                                    : in_array(
+                                        $optionId,
+                                        is_array($question->correct_answer_multiple)
+                                            ? $question->correct_answer_multiple
+                                            : [],
+                                    );
+                        @endphp
+                        <div class="option {{ $isCorrect ? 'correct' : '' }}">
+                            {{ $optionId }}. {{ $optionText }}
+                            @if ($isCorrect)
                                 ✓
                             @endif
                         </div>

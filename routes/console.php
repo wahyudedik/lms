@@ -26,3 +26,21 @@ Schedule::job(new \App\Jobs\SendScheduledAnalyticsReport('monthly'))
     ->monthlyOn(1, '10:00')
     ->name('analytics:send-monthly-report')
     ->onOneServer();
+
+// Auto-unblock users whose block period has expired (runs daily at 01:00)
+Schedule::command('cheating:auto-unblock --days=7')
+    ->daily()
+    ->at('01:00')
+    ->name('cheating:auto-unblock')
+    ->onOneServer()
+    ->withoutOverlapping();
+
+// Cleanup expired push subscriptions (not updated in 90 days)
+Schedule::command('notifications:cleanup-subscriptions')->weekly();
+
+// Send assignment deadline reminders (24 hours before deadline)
+Schedule::command('assignments:send-deadline-reminders')
+    ->hourly()
+    ->name('assignments:send-deadline-reminders')
+    ->onOneServer()
+    ->withoutOverlapping();

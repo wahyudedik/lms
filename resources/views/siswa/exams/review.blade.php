@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-eye text-blue-600 mr-2"></i>Review Hasil: {{ $exam->title }}
             </h2>
-            <a href="{{ route('siswa.exams.show', $exam) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-sm transition">
                 <i class="fas fa-arrow-left"></i>{{ __('Back') }}
             </a>
@@ -303,11 +303,11 @@
             <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
                 <div class="p-6">
                     <div class="flex gap-4 justify-center flex-wrap">
-                        <a href="{{ route('siswa.exams.show', $exam) }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}"
                             class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition">
                             <i class="fas fa-arrow-left"></i>{{ __('Back to Exam Details') }}
                         </a>
-                        <a href="{{ route('siswa.exams.index') }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
                             class="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-sm transition">
                             <i class="fas fa-list"></i>{{ __('Exam List') }}
                         </a>

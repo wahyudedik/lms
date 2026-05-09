@@ -86,6 +86,35 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
+        // Create sample dosen
+        User::create([
+            'name' => 'Dosen Sample',
+            'email' => 'dosen@lms.com',
+            'password' => Hash::make('password'),
+            'role' => 'dosen',
+            'phone' => '081234567895',
+            'birth_date' => '1983-04-12',
+            'gender' => 'laki-laki',
+            'address' => 'Jl. Dosen No. 6, Jakarta',
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+
+        // Create sample mahasiswa
+        User::create([
+            'name' => 'Mahasiswa Sample',
+            'email' => 'mahasiswa@lms.com',
+            'password' => Hash::make('password'),
+            'role' => 'mahasiswa',
+            'school_class_id' => $generalClassId,
+            'phone' => '081234567896',
+            'birth_date' => '2002-11-05',
+            'gender' => 'perempuan',
+            'address' => 'Jl. Mahasiswa No. 7, Jakarta',
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+
         // Create additional students
         for ($i = 2; $i <= 10; $i++) {
             User::create([
@@ -118,6 +147,14 @@ class UserSeeder extends Seeder
         echo "╠════════════════════════════════════════════════╣\n";
         echo "║ SISWA (Sample):                                ║\n";
         echo "║   Email    : siswa@lms.com                      ║\n";
+        echo "║   Password : password                          ║\n";
+        echo "╠════════════════════════════════════════════════╣\n";
+        echo "║ DOSEN (Sample):                                ║\n";
+        echo "║   Email    : dosen@lms.com                     ║\n";
+        echo "║   Password : password                          ║\n";
+        echo "╠════════════════════════════════════════════════╣\n";
+        echo "║ MAHASISWA (Sample):                            ║\n";
+        echo "║   Email    : mahasiswa@lms.com                 ║\n";
         echo "║   Password : password                          ║\n";
         echo "╚════════════════════════════════════════════════╝\n";
         echo "\n";

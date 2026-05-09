@@ -60,9 +60,11 @@ class CheatingIncident extends Model
         'exam_id',
         'exam_attempt_id',
         'type',
+        'warning_count',
         'reason',
         'details',
         'blocked_at',
+        'auto_unblock_at',
         'status',
         'resolved_by',
         'resolved_at',
@@ -72,6 +74,7 @@ class CheatingIncident extends Model
     protected $casts = [
         'details' => 'array',
         'blocked_at' => 'datetime',
+        'auto_unblock_at' => 'datetime',
         'resolved_at' => 'datetime',
     ];
 

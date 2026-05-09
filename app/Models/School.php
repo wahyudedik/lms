@@ -303,7 +303,7 @@ class School extends Model
      */
     public function teachers()
     {
-        return $this->users()->where('role', 'guru');
+        return $this->users()->whereIn('role', ['guru', 'dosen']);
     }
 
     /**
@@ -311,7 +311,7 @@ class School extends Model
      */
     public function students()
     {
-        return $this->users()->where('role', 'siswa');
+        return $this->users()->whereIn('role', ['siswa', 'mahasiswa']);
     }
 
     /**

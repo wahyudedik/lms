@@ -85,7 +85,8 @@
                                 {!! $questionBank->difficulty_badge !!}
                                 {!! $questionBank->verification_badge !!}
                                 @if (!$questionBank->is_active)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
                                         <i class="fas fa-eye-slash mr-1"></i>{{ __('Inactive') }}
                                     </span>
                                 @endif
@@ -109,17 +110,23 @@
                         <div class="mt-6">
                             <h4 class="font-bold text-gray-900 mb-3">{{ __('Answer Options:') }}</h4>
                             <div class="space-y-2">
-                                @foreach ($questionBank->options as $key => $option)
+                                @foreach ($questionBank->options as $option)
+                                    @php
+                                        $optionId = is_array($option) ? $option['id'] ?? '' : $option;
+                                        $optionText = is_array($option) ? $option['text'] ?? $option : $option;
+                                        $isCorrectSingle =
+                                            $questionBank->type === 'mcq_single' &&
+                                            $questionBank->correct_answer === $optionId;
+                                        $isCorrectMultiple =
+                                            $questionBank->type === 'mcq_multiple' &&
+                                            in_array($optionId, $questionBank->correct_answer_multiple ?? []);
+                                        $isCorrect = $isCorrectSingle || $isCorrectMultiple;
+                                    @endphp
                                     <div
-                                        class="flex items-center p-3 rounded-lg {{ ($questionBank->type == 'mcq_single' && $questionBank->correct_answer == $key) ||
-                                        ($questionBank->type == 'mcq_multiple' && in_array($key, $questionBank->correct_answer_multiple ?? []))
-                                            ? 'bg-green-50 border-2 border-green-500'
-                                            : 'bg-gray-50' }}">
-                                        <span class="font-bold mr-3">{{ $key }}.</span>
-                                        <span>{{ $option }}</span>
-                                        @if (
-                                            ($questionBank->type == 'mcq_single' && $questionBank->correct_answer == $key) ||
-                                                ($questionBank->type == 'mcq_multiple' && in_array($key, $questionBank->correct_answer_multiple ?? [])))
+                                        class="flex items-center p-3 rounded-lg {{ $isCorrect ? 'bg-green-50 border-2 border-green-500' : 'bg-gray-50' }}">
+                                        <span class="font-bold mr-3">{{ $optionId }}.</span>
+                                        <span>{{ $optionText }}</span>
+                                        @if ($isCorrect)
                                             <i class="fas fa-check-circle text-green-600 ml-auto"></i>
                                         @endif
                                     </div>
@@ -227,7 +234,8 @@
                                             {{ $examQuestion->exam->title }}
                                         </a>
                                         <div class="text-sm text-gray-600">
-                                            {{ __('Order: #:num', ['num' => $examQuestion->order]) }} | {{ __('Points: :pts', ['pts' => $examQuestion->points]) }}
+                                            {{ __('Order: #:num', ['num' => $examQuestion->order]) }} |
+                                            {{ __('Points: :pts', ['pts' => $examQuestion->points]) }}
                                         </div>
                                     </div>
                                     <a href="{{ route('admin.exams.show', $examQuestion->exam) }}"

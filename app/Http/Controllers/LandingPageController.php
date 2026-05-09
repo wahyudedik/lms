@@ -16,8 +16,20 @@ class LandingPageController extends Controller
         // Get active school with cached query
         $school = School::getActiveLandingSchool();
 
+        // If no active school, create a default object to prevent null errors in the view
+        if (!$school) {
+            $school = new School([
+                'name' => config('app.name', 'LMS'),
+                'meta_title' => config('app.name', 'LMS'),
+                'meta_description' => 'Learning Management System',
+                'contact_phone' => '',
+                'contact_email' => '',
+                'contact_address' => '',
+            ]);
+        }
+
         // Load published courses from instructors belonging to this school
-        if ($school) {
+        if ($school->exists) {
             $school->setRelation('courses', \App\Models\Course::whereHas('instructor', function ($q) use ($school) {
                 $q->where('school_id', $school->id);
             })->where('status', 'published')
@@ -25,10 +37,12 @@ class LandingPageController extends Controller
                 ->latest()
                 ->limit(6)
                 ->get());
+        } else {
+            $school->setRelation('courses', collect());
         }
 
         // Track visit (non-blocking)
-        $this->trackVisit($request, $school);
+        $this->trackVisit($request, $school->exists ? $school : null);
 
         // Return view with school data
         return view('landing', compact('school'));

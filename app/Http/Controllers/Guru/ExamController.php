@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Guru;
 
+use App\Http\Controllers\Concerns\ResolvesRolePrefix;
 use App\Http\Controllers\Controller;
 use App\Constants\AuthorizationMessages;
 use App\Models\Exam;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 
 class ExamController extends Controller
 {
+    use ResolvesRolePrefix;
     /**
      * Display a listing of the exams for guru's courses
      */
@@ -92,8 +94,23 @@ class ExamController extends Controller
 
         $exam = Exam::create($validated);
 
+        // Notify enrolled students if exam is published
+        if ($exam->is_published) {
+            $students = $exam->course->enrollments()
+                ->where('status', 'active')
+                ->whereHas('user', fn($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
+                ->with('user')
+                ->get()
+                ->pluck('user')
+                ->filter();
+
+            foreach ($students->chunk(100) as $chunk) {
+                \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\ExamScheduled($exam));
+            }
+        }
+
         return redirect()
-            ->route('guru.exams.show', $exam)
+            ->to($this->teacherRoute('exams.show', $exam))
             ->with('success', 'Ujian berhasil dibuat!');
     }
 
@@ -163,7 +180,7 @@ class ExamController extends Controller
         $exam->update($validated);
 
         return redirect()
-            ->route('guru.exams.show', $exam)
+            ->to($this->teacherRoute('exams.show', $exam))
             ->with('success', 'Ujian berhasil diperbarui!');
     }
 
@@ -178,7 +195,7 @@ class ExamController extends Controller
         $exam->delete();
 
         return redirect()
-            ->route('guru.exams.index')
+            ->to($this->teacherRoute('exams.index'))
             ->with('success', 'Ujian berhasil dihapus!');
     }
 
@@ -190,10 +207,27 @@ class ExamController extends Controller
         // Check authorization using policy
         $this->authorize('update', $exam);
 
+        $wasPublished = $exam->is_published;
+
         $exam->update([
             'is_published' => !$exam->is_published,
-            'published_at' => !$exam->is_published ? now() : null,
+            'published_at' => !$wasPublished ? now() : null,
         ]);
+
+        // Notify enrolled students if exam just became published
+        if (!$wasPublished && $exam->is_published) {
+            $students = $exam->course->enrollments()
+                ->where('status', 'active')
+                ->whereHas('user', fn($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
+                ->with('user')
+                ->get()
+                ->pluck('user')
+                ->filter();
+
+            foreach ($students->chunk(100) as $chunk) {
+                \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\ExamScheduled($exam));
+            }
+        }
 
         $status = $exam->is_published ? 'dipublikasikan' : 'disembunyikan';
 
@@ -224,7 +258,7 @@ class ExamController extends Controller
         }
 
         return redirect()
-            ->route('guru.exams.show', $newExam)
+            ->to($this->teacherRoute('exams.show', $newExam))
             ->with('success', 'Ujian berhasil diduplikasi!');
     }
 

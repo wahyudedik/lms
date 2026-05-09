@@ -29,7 +29,8 @@
                         <div class="p-6">
                             <div class="flex items-center mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
                                 <div class="p-3 bg-blue-100 rounded-lg mr-4">
-                                    <i class="{{ $material->getFileIcon() }} {{ $material->getFileColorClass() }} text-4xl"></i>
+                                    <i
+                                        class="{{ $material->getFileIcon() }} {{ $material->getFileColorClass() }} text-4xl"></i>
                                 </div>
                                 <div class="flex-1">
                                     <h3 class="text-2xl font-bold text-gray-900">{{ $material->title }}</h3>
@@ -44,7 +45,8 @@
                                     <h4 class="text-lg font-bold text-gray-900 mb-2">
                                         <i class="fas fa-align-left text-green-600 mr-2"></i>{{ __('Description') }}
                                     </h4>
-                                    <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ $material->description }}</p>
+                                    <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ $material->description }}
+                                    </p>
                                 </div>
                             @endif
 
@@ -52,20 +54,31 @@
                             @if ($material->type === 'file' || $material->type === 'video')
                                 <div class="mb-6">
                                     @if ($material->getFileUrl())
-                                        <a href="{{ $material->getFileUrl() }}" download
-                                            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
-                                            <i class="fas fa-download"></i>
-                                            {{ __('Download :filename', ['filename' => $material->file_name]) }}
-                                            @if ($material->getFormattedFileSize())
-                                                ({{ $material->getFormattedFileSize() }})
+                                        <div class="flex flex-wrap gap-3">
+                                            @if ($material->isPreviewable())
+                                                <a href="{{ $material->getFileUrl() }}" target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                                    <i class="fas fa-eye"></i>
+                                                    {{ __('Preview') }}
+                                                </a>
                                             @endif
-                                        </a>
+                                            <a href="{{ $material->getFileUrl() }}" download
+                                                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                                <i class="fas fa-download"></i>
+                                                {{ __('Download :filename', ['filename' => $material->file_name]) }}
+                                                @if ($material->getFormattedFileSize())
+                                                    ({{ $material->getFormattedFileSize() }})
+                                                @endif
+                                            </a>
+                                        </div>
                                     @endif
                                 </div>
                             @elseif($material->type === 'youtube')
                                 @if ($material->getEmbedUrl())
                                     <div class="mb-6">
-                                        <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-md border border-gray-200">
+                                        <div
+                                            class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-md border border-gray-200">
                                             <iframe src="{{ $material->getEmbedUrl() }}" frameborder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowfullscreen class="w-full h-96"></iframe>
@@ -91,7 +104,8 @@
                     <div class="bg-white overflow-hidden shadow-md rounded-lg">
                         <div class="p-6">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">
-                                <i class="fas fa-comments text-orange-600 mr-2"></i>{{ __('Discussion (:count comments)', ['count' => $material->allComments->count()]) }}
+                                <i
+                                    class="fas fa-comments text-orange-600 mr-2"></i>{{ __('Discussion (:count comments)', ['count' => $material->allComments->count()]) }}
                             </h3>
 
                             <!-- Comment Form -->
@@ -145,7 +159,8 @@
                                         @if ($comment->replies->count() > 0)
                                             <div class="mt-3 ml-6 space-y-3">
                                                 @foreach ($comment->replies as $reply)
-                                                    <div class="flex items-start justify-between p-3 bg-white rounded-lg border border-blue-200">
+                                                    <div
+                                                        class="flex items-start justify-between p-3 bg-white rounded-lg border border-blue-200">
                                                         <div class="flex-1">
                                                             <div class="flex items-center mb-1">
                                                                 <img src="{{ $reply->user->profile_photo_url }}"
@@ -195,7 +210,8 @@
                                 @empty
                                     <div class="flex flex-col items-center justify-center text-gray-500 py-8">
                                         <i class="fas fa-comments text-4xl text-gray-300 mb-3"></i>
-                                        <p class="text-sm font-semibold">{{ __('No comments yet. Be the first to comment!') }}</p>
+                                        <p class="text-sm font-semibold">
+                                            {{ __('No comments yet. Be the first to comment!') }}</p>
                                     </div>
                                 @endforelse
                             </div>
@@ -218,20 +234,24 @@
                                 </div>
                                 <div class="p-3 bg-green-50 rounded-lg border border-green-100">
                                     <dt class="text-xs font-semibold text-green-700 mb-1">{{ __('Dibuat oleh') }}</dt>
-                                    <dd class="text-sm font-semibold text-gray-900">{{ $material->creator->name }}</dd>
+                                    <dd class="text-sm font-semibold text-gray-900">{{ $material->creator->name }}
+                                    </dd>
                                 </div>
                                 <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
                                     <dt class="text-xs font-semibold text-purple-700 mb-1">{{ __('Status') }}</dt>
                                     <dd>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $material->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                            <i class="fas fa-{{ $material->is_published ? 'check' : 'clock' }} mr-1"></i>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $material->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                            <i
+                                                class="fas fa-{{ $material->is_published ? 'check' : 'clock' }} mr-1"></i>
                                             {{ $material->is_published ? __('Published') : __('Draft') }}
                                         </span>
                                     </dd>
                                 </div>
                                 @if ($material->published_at)
                                     <div class="p-3 bg-orange-50 rounded-lg border border-orange-100">
-                                        <dt class="text-xs font-semibold text-orange-700 mb-1">{{ __('Dipublikasikan') }}</dt>
+                                        <dt class="text-xs font-semibold text-orange-700 mb-1">
+                                            {{ __('Dipublikasikan') }}</dt>
                                         <dd class="text-sm font-semibold text-gray-900">
                                             {{ $material->published_at->format('d M Y H:i') }}</dd>
                                     </div>

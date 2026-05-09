@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-graduation-cap text-purple-600 mr-2"></i>Detail Nilai - {{ $grade->course->title }}
             </h2>
-            <a href="{{ route('siswa.grades.index') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.grades.index') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-sm transition">
                 <i class="fas fa-arrow-left"></i>Kembali
             </a>
@@ -194,7 +194,7 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                                            <a href="{{ route('siswa.exams.review-attempt', $examGrade) }}"
+                                            <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.review-attempt', $examGrade) }}"
                                                 class="text-purple-600 hover:text-purple-900 font-medium">
                                                 <i class="fas fa-eye mr-1"></i>Review
                                             </a>
@@ -217,16 +217,16 @@
             <!-- Actions -->
             <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
                 <div class="flex gap-4 justify-center flex-wrap">
-                    <a href="{{ route('siswa.courses.show', $grade->course) }}"
+                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $grade->course) }}"
                         class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition">
                         <i class="fas fa-book"></i>Lihat Kursus
                     </a>
-                    <a href="{{ route('siswa.reports.my-transcript', ['course_id' => $grade->course->id]) }}"
+                    <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.my-transcript', ['course_id' => $grade->course->id]) }}"
                         class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-sm transition">
                         <i class="fas fa-file-alt"></i>Lihat Transkrip
                     </a>
                     @if ($grade->certificate)
-                        <a href="{{ route('siswa.certificates.show', $grade->certificate) }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.certificates.show', $grade->certificate) }}"
                             class="inline-flex items-center gap-2 px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg shadow-sm transition">
                             <i class="fas fa-certificate"></i>Lihat Sertifikat
                         </a>

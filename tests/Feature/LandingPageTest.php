@@ -101,6 +101,8 @@ class LandingPageTest extends TestCase
 
         $response = $this->get('/');
 
-        $response->assertSee('Selamat Datang di Learning Management System');
+        $response->assertSee('Get your');
+        $response->assertSee('Education');
+        $response->assertSee('today!');
     }
 }

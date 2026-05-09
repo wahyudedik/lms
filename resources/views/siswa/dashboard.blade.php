@@ -91,28 +91,28 @@
                     <i class="fas fa-bolt text-yellow-500 mr-2"></i>{{ __('Quick Actions') }}
                 </h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <a href="{{ route('siswa.courses.index') }}"
+                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                         class="flex items-center p-4 bg-purple-50 rounded-lg border border-purple-200 hover:bg-purple-100 hover:border-purple-300 transition-all">
                         <div class="bg-purple-600 rounded-lg p-3 text-white mr-3">
                             <i class="fas fa-search"></i>
                         </div>
                         <span class="text-gray-900 font-semibold">{{ __('Browse Courses') }}</span>
                     </a>
-                    <a href="{{ route('siswa.courses.my-courses') }}"
+                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.my-courses') }}"
                         class="flex items-center p-4 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-all">
                         <div class="bg-blue-600 rounded-lg p-3 text-white mr-3">
                             <i class="fas fa-book"></i>
                         </div>
                         <span class="text-gray-900 font-semibold">{{ __('My Courses') }}</span>
                     </a>
-                    <a href="{{ route('siswa.exams.index') }}"
+                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
                         class="flex items-center p-4 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 hover:border-green-300 transition-all">
                         <div class="bg-green-600 rounded-lg p-3 text-white mr-3">
                             <i class="fas fa-clipboard-list"></i>
                         </div>
                         <span class="text-gray-900 font-semibold">{{ __('Exams') }}</span>
                     </a>
-                    <a href="{{ route('siswa.analytics.index') }}"
+                    <a href="{{ route(auth()->user()->getRolePrefix() . '.analytics.index') }}"
                         class="flex items-center p-4 bg-orange-50 rounded-lg border border-orange-200 hover:bg-orange-100 hover:border-orange-300 transition-all">
                         <div class="bg-orange-600 rounded-lg p-3 text-white mr-3">
                             <i class="fas fa-poll"></i>
@@ -130,7 +130,7 @@
                         <h4 class="text-lg font-bold text-gray-900">
                             <i class="fas fa-book-open text-purple-600 mr-2"></i>{{ __('My Courses') }}
                         </h4>
-                        <a href="{{ route('siswa.courses.my-courses') }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.my-courses') }}"
                             class="text-sm text-blue-600 hover:text-blue-800 font-semibold">{{ __('View all →') }}</a>
                     </div>
                     @forelse($myCourses as $course)
@@ -155,7 +155,7 @@
                         <div class="text-center py-8">
                             <i class="fas fa-book text-gray-400 text-4xl mb-3"></i>
                             <p class="text-gray-500 mb-3">{{ __('No courses enrolled') }}</p>
-                            <a href="{{ route('siswa.courses.index') }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                                 class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                                 <i class="fas fa-search mr-2"></i>{{ __('Browse Courses') }}
                             </a>
@@ -169,7 +169,7 @@
                         <h4 class="text-lg font-bold text-gray-900">
                             <i class="fas fa-calendar-alt text-green-600 mr-2"></i>{{ __('Upcoming Exams') }}
                         </h4>
-                        <a href="{{ route('siswa.exams.index') }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
                             class="text-sm text-blue-600 hover:text-blue-800 font-semibold">{{ __('View all →') }}</a>
                     </div>
                     @forelse($upcomingExams as $exam)
@@ -201,7 +201,7 @@
                     <h4 class="text-lg font-bold text-gray-900">
                         <i class="fas fa-chart-bar text-blue-600 mr-2"></i>{{ __('Recent Grades') }}
                     </h4>
-                    <a href="{{ route('siswa.exams.my-attempts') }}"
+                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.my-attempts') }}"
                         class="text-sm text-blue-600 hover:text-blue-800 font-semibold">{{ __('View all →') }}</a>
                 </div>
                 @forelse($recentGrades as $attempt)
@@ -219,7 +219,7 @@
                                 {{ number_format($attempt->score, 1) }}%</p>
                             <p class="text-xs text-gray-500">{{ $attempt->submitted_at->diffForHumans() }}</p>
                         </div>
-                        <a href="{{ route('siswa.exams.review-attempt', $attempt) }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.review-attempt', $attempt) }}"
                             class="text-blue-600 hover:text-blue-800">
                             <i class="fas fa-eye"></i>
                         </a>

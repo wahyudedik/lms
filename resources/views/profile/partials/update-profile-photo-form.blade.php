@@ -21,13 +21,7 @@
             <div>
                 <h3 class="text-base font-bold text-gray-900">{{ auth()->user()->name }}</h3>
                 <p class="text-sm text-gray-600">
-                    @if (auth()->user()->role === 'admin')
-                        Administrator
-                    @elseif(auth()->user()->role === 'guru')
-                        Dosen
-                    @else
-                        Mahasiswa
-                    @endif
+                    {{ auth()->user()->role_display }}
                 </p>
             </div>
         </div>

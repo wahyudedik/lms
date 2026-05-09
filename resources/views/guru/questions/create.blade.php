@@ -1,10 +1,10 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-plus-circle mr-2"></i>{{ __('Add Question - :title', ['title' => $exam->title]) }}
             </h2>
-            <a href="{{ route('guru.exams.questions.index', $exam) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                 <i class="fas fa-arrow-left"></i>
                 {{ __('Back') }}
@@ -16,7 +16,7 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route('guru.exams.questions.store', $exam) }}" method="POST"
+                    <form action="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
 
@@ -230,7 +230,7 @@
 
                         <!-- Submit -->
                         <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
-                            <a href="{{ route('guru.exams.questions.index', $exam) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                                 <i class="fas fa-times"></i>
                                 Batal

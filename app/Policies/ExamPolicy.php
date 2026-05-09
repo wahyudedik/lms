@@ -12,8 +12,8 @@ class ExamPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Admin and guru can view exams
-        return $user->isAdmin() || $user->isGuru();
+        // Admin, guru, and dosen can view exams
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 
     /**
@@ -31,13 +31,13 @@ class ExamPolicy
             $exam->load('course');
         }
 
-        // Guru can view exams from their own courses
-        if ($user->isGuru() && $exam->course) {
+        // Guru and dosen can view exams from their own courses
+        if (($user->isGuru() || $user->isDosen()) && $exam->course) {
             return $exam->course->instructor_id === $user->id;
         }
 
-        // Siswa can view exams from enrolled courses
-        if ($user->isSiswa() && $exam->course) {
+        // Siswa and mahasiswa can view exams from enrolled courses
+        if (($user->isSiswa() || $user->isMahasiswa()) && $exam->course) {
             return $exam->course->isEnrolledBy($user);
         }
 
@@ -49,8 +49,8 @@ class ExamPolicy
      */
     public function create(User $user): bool
     {
-        // Admin and guru can create exams
-        return $user->isAdmin() || $user->isGuru();
+        // Admin, guru, and dosen can create exams
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 
     /**
@@ -68,8 +68,8 @@ class ExamPolicy
             $exam->load('course');
         }
 
-        // Guru can only update exams from their own courses
-        return $user->isGuru() && $exam->course && $exam->course->instructor_id === $user->id;
+        // Guru and dosen can only update exams from their own courses
+        return ($user->isGuru() || $user->isDosen()) && $exam->course && $exam->course->instructor_id === $user->id;
     }
 
     /**

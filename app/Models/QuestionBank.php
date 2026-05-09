@@ -229,10 +229,19 @@ class QuestionBank extends Model
             'points' => $points ?? $this->default_points,
             'order' => $order ?? 0,
             'options' => $this->options,
-            'correct_answer' => $this->correct_answer,
-            'correct_answer_multiple' => $this->correct_answer_multiple,
+            // Map bank fields to questions table fields correctly:
+            // - mcq_single: correct_answer is a string in bank → store in correct_answer (JSON string)
+            // - mcq_multiple: correct_answer_multiple is array in bank → store in correct_answer_multiple
+            // - matching: pairs double as correct answer
+            'correct_answer' => match ($this->type) {
+                'mcq_single'   => $this->correct_answer,
+                'mcq_multiple' => null,
+                'matching'     => $this->pairs,
+                default        => null,
+            },
+            'correct_answer_multiple' => $this->type === 'mcq_multiple' ? $this->correct_answer_multiple : null,
             'pairs' => $this->pairs,
-            'essay_grading_mode' => $this->essay_grading_mode,
+            'essay_grading_mode' => $this->essay_grading_mode ?? 'manual',
             'essay_keywords' => $this->essay_keywords,
             'essay_model_answer' => $this->essay_model_answer,
             'essay_min_similarity' => $this->essay_min_similarity,

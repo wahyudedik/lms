@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\AuthorizationLog;
 use App\Models\School;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,139 +35,137 @@ class SchoolToggleLandingTest extends TestCase
     /** @test */
     public function test_admin_can_activate_landing_page(): void
     {
-        $school = School::factory()->create(['is_landing_active' => false]);
+        $school = School::factory()->create(['show_landing_page' => false]);
 
         $response = $this->actingAs($this->admin)
-            ->postJson("/admin/schools/{$school->id}/toggle-landing");
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'success' => true,
-                'is_active' => true,
+            ->post(route('admin.settings.landing.update'), [
+                'show_landing_page' => true,
             ]);
 
-        $this->assertTrue($school->fresh()->is_landing_active);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertTrue($school->fresh()->show_landing_page);
     }
 
     /** @test */
     public function test_admin_can_deactivate_landing_page(): void
     {
-        $school = School::factory()->create(['is_landing_active' => true]);
+        $school = School::factory()->create(['show_landing_page' => true]);
 
         $response = $this->actingAs($this->admin)
-            ->postJson("/admin/schools/{$school->id}/toggle-landing");
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'success' => true,
-                'is_active' => false,
+            ->post(route('admin.settings.landing.update'), [
+                // Not sending show_landing_page means it will be set to false
             ]);
 
-        $this->assertFalse($school->fresh()->is_landing_active);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertFalse($school->fresh()->show_landing_page);
     }
 
     /** @test */
-    public function test_activating_one_school_deactivates_others(): void
+    public function test_updating_landing_page_with_content(): void
     {
-        $school1 = School::factory()->create(['is_landing_active' => true]);
-        $school2 = School::factory()->create(['is_landing_active' => false]);
+        $school = School::factory()->create(['show_landing_page' => false]);
 
-        $this->actingAs($this->admin)
-            ->postJson("/admin/schools/{$school2->id}/toggle-landing");
+        $response = $this->actingAs($this->admin)
+            ->post(route('admin.settings.landing.update'), [
+                'show_landing_page' => true,
+                'hero_title' => 'Selamat Datang',
+                'hero_subtitle' => 'Platform Belajar Terbaik',
+            ]);
 
-        $this->assertFalse($school1->fresh()->is_landing_active);
-        $this->assertTrue($school2->fresh()->is_landing_active);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $school->refresh();
+        $this->assertTrue($school->show_landing_page);
+        $this->assertEquals('Selamat Datang', $school->hero_title);
+        $this->assertEquals('Platform Belajar Terbaik', $school->hero_subtitle);
     }
 
     /** @test */
-    public function test_unauthenticated_user_cannot_toggle_landing(): void
+    public function test_unauthenticated_user_cannot_update_landing(): void
     {
-        $school = School::factory()->create();
+        School::factory()->create();
 
-        $response = $this->postJson("/admin/schools/{$school->id}/toggle-landing");
+        $response = $this->post(route('admin.settings.landing.update'), [
+            'show_landing_page' => true,
+        ]);
 
-        $response->assertStatus(401);
+        $response->assertRedirect(route('login'));
     }
 
     /** @test */
-    public function test_non_admin_cannot_toggle_landing(): void
+    public function test_non_admin_cannot_update_landing(): void
     {
-        $school = School::factory()->create();
+        School::factory()->create();
 
         $response = $this->actingAs($this->siswa)
-            ->postJson("/admin/schools/{$school->id}/toggle-landing");
+            ->post(route('admin.settings.landing.update'), [
+                'show_landing_page' => true,
+            ]);
 
         $response->assertStatus(403);
     }
 
     /** @test */
-    public function test_toggle_returns_correct_json_structure(): void
+    public function test_update_redirects_to_landing_tab(): void
     {
-        $school = School::factory()->create(['is_landing_active' => false]);
+        $school = School::factory()->create(['show_landing_page' => false]);
 
         $response = $this->actingAs($this->admin)
-            ->postJson("/admin/schools/{$school->id}/toggle-landing");
-
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'success',
-                'message',
-                'is_active',
+            ->post(route('admin.settings.landing.update'), [
+                'show_landing_page' => true,
             ]);
+
+        $response->assertRedirect(route('admin.settings.index', ['tab' => 'landing']));
     }
 
     /** @test */
-    public function test_toggle_clears_cache(): void
+    public function test_update_clears_cache(): void
     {
-        $school = School::factory()->create(['is_landing_active' => false]);
+        $school = School::factory()->create(['show_landing_page' => false]);
 
         // Prime the cache
         Cache::put(School::CACHE_KEY_ACTIVE_LANDING, $school, School::CACHE_TTL_LANDING);
 
         $this->actingAs($this->admin)
-            ->postJson("/admin/schools/{$school->id}/toggle-landing");
+            ->post(route('admin.settings.landing.update'), [
+                'show_landing_page' => true,
+            ]);
 
         $this->assertFalse(Cache::has(School::CACHE_KEY_ACTIVE_LANDING));
     }
 
     /** @test */
-    public function test_toggle_logs_authorization_action(): void
+    public function test_update_validates_hero_image(): void
     {
-        $school = School::factory()->create(['is_landing_active' => false]);
+        School::factory()->create();
 
-        $this->actingAs($this->admin)
-            ->postJson("/admin/schools/{$school->id}/toggle-landing");
-
-        $this->assertDatabaseHas('authorization_logs', [
-            'user_id' => $this->admin->id,
-            'action' => 'activated_landing',
-            'resource_type' => School::class,
-            'resource_id' => $school->id,
-        ]);
-    }
-
-    /** @test */
-    public function test_invalid_school_id_returns_404(): void
-    {
         $response = $this->actingAs($this->admin)
-            ->postJson('/admin/schools/99999/toggle-landing');
+            ->post(route('admin.settings.landing.update'), [
+                'hero_image' => 'not-a-file',
+            ]);
 
-        $response->assertStatus(404);
+        $response->assertSessionHasErrors('hero_image');
     }
 
     /** @test */
-    public function test_toggle_response_contains_success_message(): void
+    public function test_update_returns_success_message(): void
     {
-        $school = School::factory()->create([
+        School::factory()->create([
             'name' => 'Sekolah Test',
-            'is_landing_active' => false,
+            'show_landing_page' => false,
         ]);
 
         $response = $this->actingAs($this->admin)
-            ->postJson("/admin/schools/{$school->id}/toggle-landing");
+            ->post(route('admin.settings.landing.update'), [
+                'show_landing_page' => true,
+            ]);
 
-        $response->assertStatus(200);
-        $data = $response->json();
-        $this->assertStringContainsString('Sekolah Test', $data['message']);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
     }
 }

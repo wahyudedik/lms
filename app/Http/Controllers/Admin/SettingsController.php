@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\PushSubscription;
 use App\Models\School;
 use App\Models\Setting;
+use App\Services\PushNotificationService;
 use App\Services\ThemeService;
 use App\Support\AppPreferences as AppPreferencesSupport;
 use Illuminate\Http\Request;
@@ -536,5 +538,92 @@ class SettingsController extends Controller
 
         return redirect()->route('admin.settings.index', ['tab' => 'landing'])
             ->with('success', __('Landing page berhasil diperbarui'));
+    }
+
+    // =========================================================================
+    // VAPID & PUSH NOTIFICATIONS
+    // =========================================================================
+
+    /**
+     * Generate VAPID keys for Web Push Notifications.
+     *
+     * If keys already exist and the request doesn't include a 'confirmed' field,
+     * return back with an error asking for confirmation. On regeneration, all
+     * existing push subscriptions are deleted (since old keys are now invalid).
+     */
+    public function generateVapid(Request $request)
+    {
+        $existingPublicKey = Setting::get('vapid_public_key');
+
+        // If keys already exist and user hasn't confirmed, ask for confirmation
+        if ($existingPublicKey && !$request->has('confirmed')) {
+            return redirect()->back()->with(
+                'error',
+                __('VAPID keys sudah ada. Jika Anda generate ulang, semua push subscription yang ada akan dihapus. Silakan konfirmasi untuk melanjutkan.')
+            );
+        }
+
+        try {
+            $pushService = app(PushNotificationService::class);
+            $keys = $pushService->generateVapidKeys();
+        } catch (\Throwable $e) {
+            return redirect()->back()->with(
+                'error',
+                __('Tidak dapat generate VAPID keys secara otomatis di environment ini. Silakan gunakan opsi "Input Manual" di bawah, atau jalankan: php artisan vapid:generate di terminal.')
+            );
+        }
+
+        Setting::set('vapid_public_key', $keys['publicKey'], 'text', 'notification');
+        Setting::set('vapid_private_key', $keys['privateKey'], 'text', 'notification');
+        Setting::set('vapid_subject', config('app.url'), 'text', 'notification');
+
+        // If regenerating (keys already existed), delete all push subscriptions
+        if ($existingPublicKey) {
+            PushSubscription::query()->delete();
+        }
+
+        return redirect()->back()->with('success', __('VAPID keys berhasil di-generate.'));
+    }
+
+    /**
+     * Toggle push notifications enabled/disabled.
+     *
+     * Returns JSON response with the new enabled state.
+     */
+    public function togglePush(Request $request)
+    {
+        $currentValue = Setting::get('push_notifications_enabled');
+
+        $newValue = ($currentValue === '1' || $currentValue === true) ? '0' : '1';
+
+        Setting::set('push_notifications_enabled', $newValue, 'boolean', 'notification');
+
+        return response()->json([
+            'enabled' => $newValue === '1',
+        ]);
+    }
+
+    /**
+     * Save manually provided VAPID keys (for environments where auto-generation fails).
+     */
+    public function saveManualVapid(Request $request)
+    {
+        $validated = $request->validate([
+            'vapid_public_key' => 'required|string|min:20',
+            'vapid_private_key' => 'required|string|min:20',
+        ]);
+
+        $existingPublicKey = Setting::get('vapid_public_key');
+
+        Setting::set('vapid_public_key', $validated['vapid_public_key'], 'text', 'notification');
+        Setting::set('vapid_private_key', $validated['vapid_private_key'], 'text', 'notification');
+        Setting::set('vapid_subject', config('app.url'), 'text', 'notification');
+
+        // If replacing existing keys, delete all push subscriptions
+        if ($existingPublicKey) {
+            PushSubscription::query()->delete();
+        }
+
+        return redirect()->back()->with('success', __('VAPID keys berhasil disimpan.'));
     }
 }

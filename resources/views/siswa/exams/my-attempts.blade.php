@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-history mr-2"></i>{{ __('My Exam History') }}
             </h2>
-            <a href="{{ route('siswa.exams.index') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                 <i class="fas fa-list"></i>
                 {{ __('Browse Exams') }}
@@ -137,19 +137,19 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div class="flex gap-2">
                                                     @if ($attempt->status === 'in_progress')
-                                                        <a href="{{ route('siswa.exams.take', $attempt) }}"
+                                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.take', $attempt) }}"
                                                             class="text-yellow-600 hover:text-yellow-900"
                                                             title="Lanjutkan">
                                                             <i class="fas fa-play"></i>
                                                         </a>
                                                     @else
-                                                        <a href="{{ route('siswa.exams.review-attempt', $attempt) }}"
+                                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.review-attempt', $attempt) }}"
                                                             class="text-blue-600 hover:text-blue-900" title="Review">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                     @endif
 
-                                                    <a href="{{ route('siswa.exams.show', $attempt->exam) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $attempt->exam) }}"
                                                         class="text-green-600 hover:text-green-900"
                                                         title="{{ __('Exam Details') }}">
                                                         <i class="fas fa-info-circle"></i>
@@ -251,7 +251,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ __('No exam history yet.') }}</h3>
                         <p class="text-gray-500 text-sm mb-6">Mulai kerjakan ujian untuk melihat riwayat di sini.</p>
-                        <a href="{{ route('siswa.exams.index') }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
                             class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                             <i class="fas fa-list"></i>
                             {{ __('Browse Exams') }}

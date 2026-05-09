@@ -41,6 +41,12 @@ class CertificateService
             'metadata' => $this->generateMetadata($enrollment),
         ]);
 
+        // Notify student that certificate is available
+        $student = $certificate->user;
+        if ($student) {
+            $student->notify(new \App\Notifications\CertificateAvailable($certificate));
+        }
+
         return $certificate;
     }
 

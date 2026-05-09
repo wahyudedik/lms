@@ -264,6 +264,11 @@ class ExamAttempt extends Model
         }
 
         $this->save();
+
+        // Notify student if graded (not a guest attempt)
+        if ($this->status === 'graded' && !$this->is_guest && $this->user) {
+            $this->user->notify(new \App\Notifications\ExamGraded($this));
+        }
     }
 
     /**
@@ -319,6 +324,11 @@ class ExamAttempt extends Model
 
         $this->status = 'graded';
         $this->save();
+
+        // Notify student that grading is complete
+        if (!$this->is_guest && $this->user) {
+            $this->user->notify(new \App\Notifications\ExamGraded($this));
+        }
     }
 
     /**
@@ -388,6 +398,11 @@ class ExamAttempt extends Model
 
     /**
      * Block associated user login if cheating is detected.
+     * Implements graduated response: warn first, block on repeat offenses.
+     *
+     * Warning thresholds (configurable via exam settings):
+     *  - 1st offense on an exam → warning recorded, no block
+     *  - 2nd+ offense OR tab_switches >= max_tab_switches → block
      */
     public function blockUserForCheating(string $reason, array $details = []): void
     {
@@ -401,24 +416,57 @@ class ExamAttempt extends Model
             return;
         }
 
-        $incident = CheatingIncident::create([
-            'user_id' => $user->id,
-            'exam_id' => $this->exam_id,
-            'exam_attempt_id' => $this->id,
-            'type' => $details['type'] ?? 'anti_cheat',
-            'reason' => $reason,
-            'details' => array_merge([
-                'tab_switches' => $this->tab_switches,
-                'fullscreen_exits' => $this->fullscreen_exits,
-            ], $details),
-            'blocked_at' => now(),
-            'status' => 'blocked',
-        ]);
+        // Count prior unresolved incidents for this user on this exam
+        $priorIncidents = CheatingIncident::where('user_id', $user->id)
+            ->where('exam_id', $this->exam_id)
+            ->whereNull('resolved_at')
+            ->count();
 
-        $user->blockLogin($reason);
+        $isHardBlock = $details['type'] === 'tab_switch_threshold'
+            || $priorIncidents >= 1
+            || ($user->cheat_warning_count ?? 0) >= 2;
 
-        if ($incident) {
-            $incident->notifyStakeholders();
+        if ($isHardBlock) {
+            // Full block
+            $incident = CheatingIncident::create([
+                'user_id' => $user->id,
+                'exam_id' => $this->exam_id,
+                'exam_attempt_id' => $this->id,
+                'type' => $details['type'] ?? 'anti_cheat',
+                'warning_count' => $priorIncidents,
+                'reason' => $reason,
+                'details' => array_merge([
+                    'tab_switches' => $this->tab_switches,
+                    'fullscreen_exits' => $this->fullscreen_exits,
+                ], $details),
+                'blocked_at' => now(),
+                'status' => 'blocked',
+            ]);
+
+            $user->blockLogin($reason);
+
+            if ($incident) {
+                $incident->notifyStakeholders();
+            }
+        } else {
+            // First offense — issue a warning, do not block login
+            $user->increment('cheat_warning_count');
+
+            CheatingIncident::create([
+                'user_id' => $user->id,
+                'exam_id' => $this->exam_id,
+                'exam_attempt_id' => $this->id,
+                'type' => $details['type'] ?? 'anti_cheat',
+                'warning_count' => 1,
+                'reason' => 'Peringatan: ' . $reason,
+                'details' => array_merge([
+                    'tab_switches' => $this->tab_switches,
+                    'fullscreen_exits' => $this->fullscreen_exits,
+                    'graduated_response' => 'warning',
+                ], $details),
+                'blocked_at' => null,
+                'status' => 'reviewing',
+            ]);
         }
     }
 
@@ -504,15 +552,15 @@ class ExamAttempt extends Model
         if ($this->status === 'in_progress') {
             $this->submitted_at = now();
             $this->status = 'submitted';
-            
+
             // Calculate time spent in seconds
             if ($this->started_at) {
                 $this->time_spent = $this->started_at->diffInSeconds($this->submitted_at);
             }
-            
+
             $this->save();
         }
-        
+
         $this->autoGrade();
     }
 

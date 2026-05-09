@@ -62,6 +62,26 @@
             </div>
         </div>
 
+        <!-- Push Notification Toggle -->
+        <div x-data="pushNotificationToggle()" x-init="checkSupport()" x-show="supported && configured" x-cloak
+            class="p-3 bg-gray-50 border-t">
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-600">
+                    <i class="fas fa-bell-slash mr-1" x-show="!subscribed"></i>
+                    <i class="fas fa-bell mr-1" x-show="subscribed"></i>
+                    <span
+                        x-text="subscribed ? '{{ __('Push Notification Aktif') }}' : '{{ __('Push Notification Nonaktif') }}'"></span>
+                </span>
+                <button @click="togglePush()" :disabled="loading"
+                    class="text-xs px-2 py-1 rounded font-medium transition-colors"
+                    :class="subscribed ? 'bg-red-100 text-red-700 hover:bg-red-200' :
+                        'bg-green-100 text-green-700 hover:bg-green-200'">
+                    <span x-show="loading" class="inline-block animate-spin mr-1">⟳</span>
+                    <span x-text="subscribed ? '{{ __('Nonaktifkan') }}' : '{{ __('Aktifkan') }}'"></span>
+                </button>
+            </div>
+        </div>
+
         <!-- Footer -->
         <div class="p-3 bg-gray-50 border-t text-center">
             <a href="{{ route('notifications.index') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
@@ -72,6 +92,58 @@
 </div>
 
 <script>
+    function pushNotificationToggle() {
+        return {
+            supported: false,
+            configured: false,
+            subscribed: false,
+            loading: false,
+
+            async checkSupport() {
+                this.supported = ('serviceWorker' in navigator) && ('PushManager' in window);
+                if (!this.supported) return;
+
+                try {
+                    const res = await fetch('/api/vapid-public-key');
+                    const data = await res.json();
+                    this.configured = !!data.public_key;
+                } catch (e) {
+                    this.configured = false;
+                    return;
+                }
+
+                if (this.configured) {
+                    try {
+                        const registration = await navigator.serviceWorker.ready;
+                        const subscription = await registration.pushManager.getSubscription();
+                        this.subscribed = !!subscription;
+                    } catch (e) {
+                        this.subscribed = false;
+                    }
+                }
+            },
+
+            async togglePush() {
+                this.loading = true;
+                try {
+                    if (this.subscribed) {
+                        await window.unsubscribeFromPush();
+                        this.subscribed = false;
+                    } else {
+                        const result = await window.subscribeToPush();
+                        if (result.success) {
+                            this.subscribed = true;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Push toggle error:', e);
+                } finally {
+                    this.loading = false;
+                }
+            }
+        };
+    }
+
     function notificationBell(localeTexts = {}) {
         return {
             dropdownOpen: false,

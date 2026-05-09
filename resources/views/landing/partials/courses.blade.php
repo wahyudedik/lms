@@ -53,7 +53,7 @@
                                     @endif
                                 </div>
                                 @auth
-                                    <a href="{{ route('siswa.courses.show', $course) }}"
+                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $course) }}"
                                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                                         Lihat Detail
                                     </a>
@@ -72,7 +72,7 @@
             {{-- View All Courses Button --}}
             @auth
                 <div class="text-center mt-12">
-                    <a href="{{ route('siswa.courses.index') }}"
+                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                         class="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
                         Lihat Semua Kursus
                         <i class="fas fa-arrow-right ml-2"></i>

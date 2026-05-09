@@ -36,8 +36,8 @@ class CertificatePolicy
             $certificate->load('course');
         }
 
-        // Guru can view certificates from their own courses
-        if ($user->isGuru() && $certificate->course) {
+        // Guru and dosen can view certificates from their own courses
+        if (($user->isGuru() || $user->isDosen()) && $certificate->course) {
             return $certificate->course->instructor_id === $user->id;
         }
 
@@ -49,9 +49,9 @@ class CertificatePolicy
      */
     public function create(User $user): bool
     {
-        // Admin, guru, and siswa can create certificates
+        // Admin, guru, dosen, and siswa can create certificates
         // Usually generated automatically, but can be manually created
-        return $user->isAdmin() || $user->isGuru() || $user->isSiswa();
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen() || $user->isSiswa() || $user->isMahasiswa();
     }
 
     /**
@@ -69,8 +69,8 @@ class CertificatePolicy
             $certificate->load('course');
         }
 
-        // Guru can update certificates from their own courses
-        if ($user->isGuru() && $certificate->course) {
+        // Guru and dosen can update certificates from their own courses
+        if (($user->isGuru() || $user->isDosen()) && $certificate->course) {
             return $certificate->course->instructor_id === $user->id;
         }
 

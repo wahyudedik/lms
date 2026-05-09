@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
@@ -10,12 +10,12 @@
                 </p>
             </div>
             <div class="flex gap-2">
-                <a href="{{ route('guru.exams.questions.create', $exam) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-plus"></i>
                     {{ __('Add Question') }}
                 </a>
-                <a href="{{ route('guru.exams.show', $exam) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
                     {{ __('Back') }}
@@ -62,14 +62,14 @@
 
                                                 <!-- Actions -->
                                                 <div class="flex gap-3">
-                                                    <a href="{{ route('guru.exams.questions.edit', [$exam, $question]) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$exam, $question]) }}"
                                                         class="text-green-600 hover:text-green-800 font-semibold"
                                                         title="Edit">
                                                         Edit
                                                     </a>
 
                                                     <form
-                                                        action="{{ route('guru.exams.questions.duplicate', [$exam, $question]) }}"
+                                                        action="{{ route(auth()->user()->getRolePrefix() . '.', [$exam, $question]) }}"
                                                         method="POST" class="inline">
                                                         @csrf
                                                         <button type="submit"
@@ -80,7 +80,7 @@
                                                     </form>
 
                                                     <form
-                                                        action="{{ route('guru.exams.questions.destroy', [$exam, $question]) }}"
+                                                        action="{{ route(auth()->user()->getRolePrefix() . '.', [$exam, $question]) }}"
                                                         method="POST" class="inline"
                                                         onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this question?') }}')">
                                                         @csrf
@@ -193,7 +193,7 @@
                                 <i class="fas fa-clipboard-question text-3xl text-gray-400"></i>
                             </div>
                             <p class="text-gray-500 text-sm font-semibold mb-4">{{ __('No questions added yet.') }}</p>
-                            <a href="{{ route('guru.exams.questions.create', $exam) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                 <i class="fas fa-plus"></i>
                                 {{ __('Add First Question') }}
@@ -223,7 +223,7 @@
                             );
 
                             // Send to server
-                            fetch('{{ route('guru.exams.questions.reorder', $exam) }}', {
+                            fetch('{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',

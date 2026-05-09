@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -65,9 +65,51 @@
                             <i class="fas fa-star text-orange-600 text-2xl"></i>
                         </div>
                         <div>
-                            <div class="text-orange-600 text-xs font-semibold mb-1">Avg Score</div>
+                            <div class="text-orange-600 text-xs font-semibold mb-1">Avg Exam Score</div>
                             <div class="text-2xl font-bold text-orange-900">{{ number_format($stats['avg_score'], 1) }}%
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignment Overview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-indigo-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-indigo-100 rounded-lg mr-3">
+                            <i class="fas fa-tasks text-indigo-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-indigo-600 text-xs font-semibold mb-1">Total Tugas</div>
+                            <div class="text-2xl font-bold text-indigo-900">
+                                {{ number_format($stats['total_assignments']) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-teal-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-teal-100 rounded-lg mr-3">
+                            <i class="fas fa-file-upload text-teal-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-teal-600 text-xs font-semibold mb-1">Total Pengumpulan</div>
+                            <div class="text-2xl font-bold text-teal-900">
+                                {{ number_format($stats['total_submissions']) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg p-4 shadow-md border-l-4 border-rose-600">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-rose-100 rounded-lg mr-3">
+                            <i class="fas fa-chart-line text-rose-600 text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-rose-600 text-xs font-semibold mb-1">Rata-rata Nilai Tugas</div>
+                            <div class="text-2xl font-bold text-rose-900">
+                                {{ number_format($stats['avg_assignment_score'], 1) }}</div>
                         </div>
                     </div>
                 </div>
@@ -116,6 +158,35 @@
                 </div>
             </div>
 
+            <!-- Assignment Score by Course -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-chart-bar text-indigo-600 mr-2"></i>Rata-rata Nilai Tugas vs Ujian per Kursus
+                </h3>
+                <div class="h-80">
+                    <canvas id="assignmentScoreChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Assignment Completion Rate -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-check-circle text-teal-600 mr-2"></i>Tingkat Penyelesaian Tugas per Siswa
+                </h3>
+                <div class="mb-3">
+                    <select id="completion_course_filter" class="rounded-md border-gray-300 shadow-sm text-sm"
+                        onchange="refreshAssignmentCompletion()">
+                        <option value="">Pilih Kursus</option>
+                        @foreach ($courses as $course)
+                            <option value="{{ $course->id }}">{{ $course->title }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="h-80">
+                    <canvas id="assignmentCompletionChart"></canvas>
+                </div>
+            </div>
+
             <!-- Student Engagement -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">
@@ -145,7 +216,7 @@
 
             async function initializeCharts() {
                 // Student Performance
-                const performanceData = await fetchData('{{ route('guru.analytics.student-performance-by-course') }}');
+                const performanceData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.') }}');
                 charts.studentPerformance = new Chart(document.getElementById('studentPerformanceChart'), {
                     type: 'bar',
                     data: performanceData,
@@ -183,7 +254,7 @@
                 });
 
                 // Exam Completion
-                const completionData = await fetchData('{{ route('guru.analytics.exam-completion-rate') }}');
+                const completionData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.') }}');
                 charts.examCompletion = new Chart(document.getElementById('examCompletionChart'), {
                     type: 'bar',
                     data: completionData,
@@ -206,6 +277,32 @@
                         }
                     }
                 });
+
+                // Assignment Score by Course
+                const assignmentScoreData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.') }}');
+                charts.assignmentScore = new Chart(document.getElementById('assignmentScoreChart'), {
+                    type: 'bar',
+                    data: assignmentScoreData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Rata-rata Nilai'
+                                }
+                            }
+                        }
+                    }
+                });
             }
 
             async function refreshGradeDistribution() {
@@ -214,7 +311,7 @@
 
                 if (charts.gradeDistribution) charts.gradeDistribution.destroy();
 
-                const data = await fetchData('{{ route('guru.analytics.grade-distribution') }}?exam_id=' + examId);
+                const data = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.') }}?exam_id=' + examId);
                 charts.gradeDistribution = new Chart(document.getElementById('gradeDistributionChart'), {
                     type: 'pie',
                     data: data,
@@ -236,7 +333,7 @@
 
                 if (charts.studentEngagement) charts.studentEngagement.destroy();
 
-                const data = await fetchData('{{ route('guru.analytics.student-engagement-metrics') }}?course_id=' +
+                const data = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.') }}?course_id=' +
                     courseId);
                 charts.studentEngagement = new Chart(document.getElementById('studentEngagementChart'), {
                     type: 'radar',
@@ -254,13 +351,46 @@
                 });
             }
 
+            async function refreshAssignmentCompletion() {
+                const courseId = document.getElementById('completion_course_filter').value;
+                if (!courseId) return;
+
+                if (charts.assignmentCompletion) charts.assignmentCompletion.destroy();
+
+                const data = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.') }}?course_id=' +
+                    courseId);
+                charts.assignmentCompletion = new Chart(document.getElementById('assignmentCompletionChart'), {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Penyelesaian (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
             async function refreshCourseCharts() {
                 const courseId = document.getElementById('course_filter').value;
 
                 if (charts.studentPerformance) charts.studentPerformance.destroy();
 
                 const performanceData = await fetchData(
-                    '{{ route('guru.analytics.student-performance-by-course') }}?course_id=' + courseId);
+                    '{{ route(auth()->user()->getRolePrefix() . '.') }}?course_id=' + courseId);
                 charts.studentPerformance = new Chart(document.getElementById('studentPerformanceChart'), {
                     type: 'bar',
                     data: performanceData,

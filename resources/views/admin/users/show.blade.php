@@ -27,20 +27,25 @@
                     <!-- User Profile Header -->
                     <div class="flex items-center gap-6 mb-8 pb-8 border-b border-gray-200">
                         <div class="flex-shrink-0">
-                            <img class="h-24 w-24 rounded-full object-cover border-4 border-gray-100 shadow-md" src="{{ $user->profile_photo_url }}"
-                                alt="{{ $user->name }}'s profile photo">
+                            <img class="h-24 w-24 rounded-full object-cover border-4 border-gray-100 shadow-md"
+                                src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}'s profile photo">
                         </div>
                         <div class="flex-1">
                             <h1 class="text-2xl font-bold text-gray-900">{{ $user->name }}</h1>
                             <p class="text-lg text-gray-600 mt-1">{{ $user->email }}</p>
                             <div class="flex items-center flex-wrap gap-2 mt-3">
+                                @php
+                                    $roleColor = match ($user->role) {
+                                        'admin' => 'bg-red-100 text-red-800',
+                                        'guru' => 'bg-green-100 text-green-800',
+                                        'dosen' => 'bg-emerald-100 text-emerald-800',
+                                        'siswa' => 'bg-blue-100 text-blue-800',
+                                        'mahasiswa' => 'bg-indigo-100 text-indigo-800',
+                                        default => 'bg-gray-100 text-gray-800',
+                                    };
+                                @endphp
                                 <span
-                                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold
-                                    {{ $user->role === 'admin'
-                                        ? 'bg-red-100 text-red-800'
-                                        : ($user->role === 'guru'
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-blue-100 text-blue-800') }}">
+                                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold {{ $roleColor }}">
                                     {{ $user->role_display }}
                                 </span>
                                 <span
@@ -71,7 +76,8 @@
                                 </div>
                                 <div>
                                     <dt class="text-sm font-semibold text-gray-600">{{ __('Phone Number') }}</dt>
-                                    <dd class="text-sm text-gray-900 mt-1">{{ $user->phone ?? __('Not provided') }}</dd>
+                                    <dd class="text-sm text-gray-900 mt-1">{{ $user->phone ?? __('Not provided') }}
+                                    </dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm font-semibold text-gray-600">{{ __('Birth Date') }}</dt>
@@ -132,7 +138,8 @@
                                     </dd>
                                 </div>
                                 <div>
-                                    <dt class="text-sm font-semibold text-gray-600">{{ __('Active Cheating Incidents') }}</dt>
+                                    <dt class="text-sm font-semibold text-gray-600">
+                                        {{ __('Active Cheating Incidents') }}</dt>
                                     <dd class="text-sm text-gray-900 mt-1">
                                         @if ($activeIncidentCount > 0)
                                             <a href="{{ route('admin.cheating-incidents.index', ['search' => $user->email]) }}"
@@ -148,25 +155,28 @@
                                     <dt class="text-sm font-semibold text-gray-600">{{ __('Email Verified') }}</dt>
                                     <dd class="text-sm text-gray-900 mt-1">
                                         @if ($user->email_verified_at)
-                                                <span
-                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                                                    <i class="fas fa-check-circle mr-1"></i>{{ __('Verified on :date', ['date' => $user->email_verified_at->translatedFormat('d M Y')]) }}
-                                                </span>
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                <i
+                                                    class="fas fa-check-circle mr-1"></i>{{ __('Verified on :date', ['date' => $user->email_verified_at->translatedFormat('d M Y')]) }}
+                                            </span>
                                         @else
-                                                <span
-                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                                                    <i class="fas fa-exclamation-circle mr-1"></i>{{ __('Not Verified') }}
-                                                </span>
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                                                <i class="fas fa-exclamation-circle mr-1"></i>{{ __('Not Verified') }}
+                                            </span>
                                         @endif
                                     </dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm font-semibold text-gray-600">{{ __('Member Since') }}</dt>
-                                    <dd class="text-sm text-gray-900 mt-1">{{ $user->created_at->translatedFormat('d M Y') }}</dd>
+                                    <dd class="text-sm text-gray-900 mt-1">
+                                        {{ $user->created_at->translatedFormat('d M Y') }}</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm font-semibold text-gray-600">{{ __('Last Updated') }}</dt>
-                                    <dd class="text-sm text-gray-900 mt-1">{{ $user->updated_at->translatedFormat('d M Y H:i') }}
+                                    <dd class="text-sm text-gray-900 mt-1">
+                                        {{ $user->updated_at->translatedFormat('d M Y H:i') }}
                                     </dd>
                                 </div>
                             </dl>
@@ -241,17 +251,28 @@
                     @if ($recentIncidents->isNotEmpty())
                         <div>
                             <h3 class="text-lg font-bold text-gray-900 mb-4">
-                                <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>{{ __('Cheating Incident History') }}
+                                <i
+                                    class="fas fa-exclamation-triangle text-red-600 mr-2"></i>{{ __('Cheating Incident History') }}
                             </h3>
                             <div class="overflow-x-auto border border-gray-200 rounded-lg">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('Date') }}</th>
-                                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('Exam') }}</th>
-                                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('Reason') }}</th>
-                                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('Status') }}</th>
-                                            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ __('Actions') }}</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Date') }}</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Exam') }}</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Reason') }}</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Status') }}</th>
+                                            <th
+                                                class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Actions') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
@@ -320,21 +341,21 @@
                 });
             });
 
-        // Handle reset login confirmation
-        document.querySelectorAll('.reset-login-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const button = this.querySelector('button');
-                const userName = button.getAttribute('data-user-name');
+            // Handle reset login confirmation
+            document.querySelectorAll('.reset-login-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const button = this.querySelector('button');
+                    const userName = button.getAttribute('data-user-name');
 
-                confirmResetLogin(userName)
-                    .then((result) => {
-                        if (result.isConfirmed) {
-                            this.submit();
-                        }
-                    });
+                    confirmResetLogin(userName)
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                this.submit();
+                            }
+                        });
+                });
             });
-        });
         </script>
     @endpush
 </x-app-layout>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -56,6 +57,7 @@ use Illuminate\Support\Facades\Storage;
  */
 class Material extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'course_id',
         'created_by',
@@ -206,6 +208,20 @@ class Material extends Model
             'ppt', 'pptx' => 'text-orange-600',
             default => 'text-gray-600',
         };
+    }
+
+    /**
+     * Check if the file can be previewed in a new browser tab.
+     */
+    public function isPreviewable(): bool
+    {
+        if ($this->type !== 'file' || !$this->file_name) {
+            return false;
+        }
+
+        $extension = strtolower(pathinfo($this->file_name, PATHINFO_EXTENSION));
+
+        return in_array($extension, ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'gif']);
     }
 
     public function getEmbedUrl(): ?string

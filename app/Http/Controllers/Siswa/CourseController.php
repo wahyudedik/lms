@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Siswa;
 
+use App\Http\Controllers\Concerns\ResolvesRolePrefix;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    use ResolvesRolePrefix;
     /**
      * Display published courses (browse)
      */
@@ -99,7 +101,7 @@ class CourseController extends Controller
         auth()->user()->enrollInCourse($course->id);
 
         return redirect()
-            ->route('siswa.courses.show', $course)
+            ->to($this->studentRoute('courses.show', $course))
             ->with('success', 'Berhasil mendaftar ke kelas ini!');
     }
 
@@ -133,7 +135,7 @@ class CourseController extends Controller
         auth()->user()->enrollInCourse($course->id);
 
         return redirect()
-            ->route('siswa.courses.show', $course)
+            ->to($this->studentRoute('courses.show', $course))
             ->with('success', 'Berhasil mendaftar ke kelas menggunakan kode!');
     }
 
@@ -154,7 +156,7 @@ class CourseController extends Controller
         $enrollment->drop();
 
         return redirect()
-            ->route('siswa.courses.my-courses')
+            ->to($this->studentRoute('courses.my-courses'))
             ->with('success', 'Berhasil keluar dari kelas.');
     }
 }

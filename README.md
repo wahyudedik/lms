@@ -53,6 +53,24 @@
 - **Guru/Dosen**: Pembuat konten dan pengelola ujian
 - **Siswa/Mahasiswa**: Peserta pembelajaran dan ujian
 
+### 🔑 Role System & Equivalensi
+
+Sistem mendukung 5 role dengan dua pasang role yang ekuivalen secara permission:
+
+| Role | Terminologi | Ekuivalen Dengan | URL Prefix | Dashboard |
+|------|-------------|-----------------|------------|-----------|
+| `admin` | Administrator | — | `/admin/*` | `/admin/dashboard` |
+| `guru` | Guru (SMA/SMK) | — | `/guru/*` | `/guru/dashboard` |
+| `dosen` | Dosen (Perguruan Tinggi) | **sama dengan `guru`** | `/dosen/*` | `/dosen/dashboard` |
+| `siswa` | Siswa (SMA/SMK) | — | `/siswa/*` | `/siswa/dashboard` |
+| `mahasiswa` | Mahasiswa (Perguruan Tinggi) | **sama dengan `siswa`** | `/mahasiswa/*` | `/mahasiswa/dashboard` |
+
+**Penting untuk Administrator:**
+- Role `dosen` memiliki **permission identik** dengan `guru` — dapat membuat kursus, ujian, materi, dan mengelola enrollment
+- Role `mahasiswa` memiliki **permission identik** dengan `siswa` — dapat mengakses kursus, mengikuti ujian, melihat sertifikat
+- Perbedaan hanya pada URL prefix dan terminologi, **bukan** pada hak akses
+- Institusi pendidikan tinggi sebaiknya menggunakan `dosen`/`mahasiswa`; sekolah menggunakan `guru`/`siswa`
+
 ### 🌟 Keunggulan
 
 - ✅ **Multi-Tenant**: Mendukung multiple sekolah dengan branding terpisah
@@ -69,7 +87,7 @@
 
 ### 🎓 Manajemen Pengguna & Role-Based Access
 
-- **Multi-Role System**: Admin, Guru, dan Siswa dengan permission terpisah
+- **Multi-Role System**: Admin, Guru, Dosen, Siswa, dan Mahasiswa dengan permission terpisah
 - **Authentication**: Login, registrasi, email verification, password reset
 - **Profile Management**: Update profil, foto profil, change password
 - **User Management**: CRUD users dengan bulk import/export Excel
@@ -283,6 +301,8 @@
 - **User Management**: CRUD users dengan bulk operations
 - **Course Management**: Approve, edit, delete courses
 - **Exam Management**: Monitor exams dan attempts
+- **Grading Capabilities**: Grade assignments, submissions, and essay questions (same as Guru/Dosen)
+- **Reports & Export**: Export grades to Excel/PDF, generate student transcripts
 - **Settings System**: Centralized settings dengan caching
 - **Database Backup**: One-click backup dan restore
 - **System Logs**: View application logs

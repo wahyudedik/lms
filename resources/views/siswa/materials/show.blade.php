@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-book-reader text-indigo-600 mr-2"></i>Detail Materi
             </h2>
-            <a href="{{ route('siswa.materials.index') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.materials.index') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-sm transition">
                 <i class="fas fa-arrow-left"></i>Kembali
             </a>
@@ -183,7 +183,7 @@
 
                     <div class="p-6">
                         <!-- Add Comment Form -->
-                        <form action="{{ route('siswa.materials.comment', $material) }}" method="POST"
+                        <form action="{{ route(auth()->user()->getRolePrefix() . '.materials.comment', $material) }}" method="POST"
                             class="mb-6">
                             @csrf
                             <div class="mb-3">

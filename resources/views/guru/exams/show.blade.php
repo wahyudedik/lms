@@ -1,16 +1,16 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-file-alt mr-2"></i>{{ __('Exam Details: :title', ['title' => $exam->title]) }}
             </h2>
             <div class="flex gap-2">
-                <a href="{{ route('guru.exams.edit', $exam) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-edit"></i>
                     Edit
                 </a>
-                <a href="{{ route('guru.exams.index') }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
                     {{ __('Back') }}
@@ -35,13 +35,13 @@
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <a href="{{ route('guru.exams.questions.index', $exam) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                 <i class="fas fa-list"></i>
                                 Kelola Soal
                             </a>
 
-                            <a href="{{ route('guru.exams.review-essays', $exam) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                 <i class="fas fa-pen-fancy"></i>
                                 Review Essay
@@ -199,7 +199,7 @@
                         <h3 class="text-lg font-bold text-gray-900">
                             <i class="fas fa-list text-purple-600 mr-2"></i>Soal ({{ $exam->questions->count() }})
                         </h3>
-                        <a href="{{ route('guru.exams.questions.index', $exam) }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                             class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                             <i class="fas fa-list"></i>
                             Kelola Soal
@@ -245,7 +245,7 @@
                                 <i class="fas fa-clipboard-question text-gray-400 text-2xl"></i>
                             </div>
                             <p class="text-lg font-semibold mb-2">{{ __('No questions added yet.') }}</p>
-                            <a href="{{ route('guru.exams.questions.index', $exam) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                 class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                 <i class="fas fa-plus"></i>
                                 {{ __('Add Question') }}

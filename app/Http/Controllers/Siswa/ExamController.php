@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Siswa;
 
+use App\Http\Controllers\Concerns\ResolvesRolePrefix;
 use App\Http\Controllers\Controller;
 use App\Constants\AuthorizationMessages;
 use App\Models\Exam;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 
 class ExamController extends Controller
 {
+    use ResolvesRolePrefix;
     /**
      * Display available exams for enrolled courses
      */
@@ -108,7 +110,7 @@ class ExamController extends Controller
 
         // Check if attempt is completed
         if ($attempt->status === 'in_progress') {
-            return redirect()->route('siswa.exams.take', $attempt);
+            return redirect()->to($this->studentRoute('exams.take', $attempt));
         }
 
         $exam = $attempt->exam;

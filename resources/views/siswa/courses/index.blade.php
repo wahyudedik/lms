@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-search mr-2"></i>{{ __('Browse Courses') }}
             </h2>
-            <a href="{{ route('siswa.courses.my-courses') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.my-courses') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                 <i class="fas fa-book"></i>
                 {{ __('My Courses') }}
@@ -21,7 +21,7 @@
                         <i class="fas fa-key text-indigo-600"></i>
                         {{ __('Enroll with Course Code') }}
                     </h3>
-                    <form method="POST" action="{{ route('siswa.courses.enroll-by-code') }}" class="flex gap-4">
+                    <form method="POST" action="{{ route(auth()->user()->getRolePrefix() . '.courses.enroll-by-code') }}" class="flex gap-4">
                         @csrf
                         <input type="text" name="code" placeholder="Masukkan kode kelas (contoh: MTK001)" required
                             class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150">
@@ -37,7 +37,7 @@
             <!-- Search -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
-                    <form method="GET" action="{{ route('siswa.courses.index') }}">
+                    <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}">
                         <div class="flex gap-4">
                             <input type="text" name="search" value="{{ request('search') }}"
                                 placeholder="Cari kelas berdasarkan nama, deskripsi, atau pengajar..."
@@ -48,7 +48,7 @@
                                 Cari
                             </button>
                             @if (request('search'))
-                                <a href="{{ route('siswa.courses.index') }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md">
                                     <i class="fas fa-times"></i>
                                     Reset
@@ -96,7 +96,7 @@
                                 </span>
                             </div>
 
-                            <a href="{{ route('siswa.courses.show', $course) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $course) }}"
                                 class="block w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md text-center">
                                 <i class="fas fa-arrow-right"></i>
                                 {{ __('View Details') }}
@@ -114,7 +114,7 @@
                                 <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ __('No courses found') }}</h3>
                                 <p class="text-gray-500 text-sm mb-4">Tidak ada kelas yang ditemukan</p>
                                 @if (request('search'))
-                                    <a href="{{ route('siswa.courses.index') }}"
+                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                         <i class="fas fa-list"></i>
                                         Tampilkan semua kelas

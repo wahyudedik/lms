@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-book-open mr-2"></i>{{ __('My Courses') }}
             </h2>
-            <a href="{{ route('siswa.courses.index') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                 <i class="fas fa-search"></i>
                 {{ __('Browse Courses') }}
@@ -118,7 +118,7 @@
                                 Bergabung: {{ $enrollment->enrolled_at->format('d M Y') }}
                             </div>
 
-                            <a href="{{ route('siswa.courses.show', $enrollment->course) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $enrollment->course) }}"
                                 class="block w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md text-center">
                                 <i class="fas fa-arrow-right"></i>
                                 {{ __('View Course') }}
@@ -135,7 +135,7 @@
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-700 mb-2">{{ __('No Courses Yet') }}</h3>
                                 <p class="text-gray-500 text-sm mb-6">Anda belum terdaftar di kelas manapun</p>
-                                <a href="{{ route('siswa.courses.index') }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                                     class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                     <i class="fas fa-search"></i>
                                     {{ __('Browse Courses') }}

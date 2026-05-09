@@ -27,12 +27,12 @@ class CoursePolicy
         }
 
         // Guru can view their own courses
-        if ($user->isGuru() && $course->instructor_id === $user->id) {
+        if (($user->isGuru() || $user->isDosen()) && $course->instructor_id === $user->id) {
             return true;
         }
 
         // Siswa can view courses they are enrolled in
-        if ($user->isSiswa()) {
+        if ($user->isSiswa() || $user->isMahasiswa()) {
             return $course->isEnrolledBy($user);
         }
 
@@ -45,7 +45,7 @@ class CoursePolicy
     public function create(User $user): bool
     {
         // Admin and guru can create courses
-        return $user->isAdmin() || $user->isGuru();
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 
     /**
@@ -58,8 +58,8 @@ class CoursePolicy
             return true;
         }
 
-        // Guru can only update their own courses
-        return $user->isGuru() && $course->instructor_id === $user->id;
+        // Guru and dosen can only update their own courses
+        return ($user->isGuru() || $user->isDosen()) && $course->instructor_id === $user->id;
     }
 
     /**

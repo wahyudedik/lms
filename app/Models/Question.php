@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property array<array-key, mixed>|null $options
  * @property array<array-key, mixed>|null $pairs
  * @property array<array-key, mixed>|null $correct_answer
+ * @property array<array-key, mixed>|null $correct_answer_multiple
  * @property numeric $points
  * @property int $order
  * @property string|null $explanation
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property array<array-key, mixed>|null $essay_keyword_points Bobot poin per kata kunci
  * @property string|null $essay_model_answer Jawaban model/referensi untuk similarity matching
  * @property int $essay_min_similarity Minimal % similarity untuk lulus (0-100)
+ * @property float|null $essay_similarity_penalty Multiplier penalti (0-1) saat similarity di bawah threshold; null = gunakan default 0.5
  * @property bool $essay_case_sensitive Apakah penilaian case-sensitive
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -156,7 +158,7 @@ class Question extends Model
 
     /**
      * Check if answer is correct
-     * 
+     *
      * @param mixed $userAnswer
      * @return bool
      */
@@ -177,7 +179,7 @@ class Question extends Model
             }
 
             sort($userAnswer);
-            $correctAnswer = $this->correct_answer;
+            $correctAnswer = $this->correct_answer_multiple ?? [];
             sort($correctAnswer);
 
             return $userAnswer === $correctAnswer;
@@ -211,7 +213,7 @@ class Question extends Model
 
     /**
      * Calculate points earned based on answer
-     * 
+     *
      * @param mixed $userAnswer
      * @return float
      */
@@ -233,7 +235,7 @@ class Question extends Model
 
     /**
      * Get shuffled options for MCQ questions
-     * 
+     *
      * @return array|null
      */
     public function getShuffledOptions(): ?array
@@ -250,7 +252,7 @@ class Question extends Model
 
     /**
      * Get shuffled pairs for matching questions
-     * 
+     *
      * @return array|null
      */
     public function getShuffledPairs(): ?array
@@ -274,7 +276,7 @@ class Question extends Model
 
     /**
      * Auto-grade essay by keyword matching
-     * 
+     *
      * @param string $userAnswer
      * @return float
      */
@@ -307,7 +309,7 @@ class Question extends Model
 
     /**
      * Auto-grade essay by similarity matching
-     * 
+     *
      * @param string $userAnswer
      * @return float
      */
@@ -333,8 +335,9 @@ class Question extends Model
 
         // Check if meets minimum similarity threshold
         if ($percent < $this->essay_min_similarity) {
-            // Below threshold, significantly reduce points
-            $earnedPoints = $earnedPoints * 0.5; // 50% penalty
+            // Below threshold, apply configurable penalty multiplier (default 0.5 = 50% penalty)
+            $penalty = $this->essay_similarity_penalty ?? 0.5;
+            $earnedPoints = $earnedPoints * $penalty;
         }
 
         return round($earnedPoints, 2);

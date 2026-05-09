@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Guru;
 
+use App\Http\Controllers\Concerns\ResolvesRolePrefix;
 use App\Http\Controllers\Controller;
 use App\Constants\AuthorizationMessages;
 use App\Models\Course;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class MaterialController extends Controller
 {
+    use ResolvesRolePrefix;
     public function index(Course $course)
     {
         // Check authorization using policy
@@ -59,10 +61,25 @@ class MaterialController extends Controller
             $validated['file_size'] = $file->getSize();
         }
 
-        Material::create($validated);
+        $material = Material::create($validated);
+
+        // Notify enrolled students if material is published
+        if ($material->is_published) {
+            $students = $course->enrollments()
+                ->where('status', 'active')
+                ->whereHas('user', fn($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
+                ->with('user')
+                ->get()
+                ->pluck('user')
+                ->filter();
+
+            foreach ($students->chunk(100) as $chunk) {
+                \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\MaterialPublished($material));
+            }
+        }
 
         return redirect()
-            ->route('guru.courses.materials.index', $course)
+            ->to($this->teacherRoute('courses.materials.index', $course))
             ->with('success', 'Materi berhasil ditambahkan!');
     }
 
@@ -119,7 +136,7 @@ class MaterialController extends Controller
         $material->update($validated);
 
         return redirect()
-            ->route('guru.courses.materials.index', $course)
+            ->to($this->teacherRoute('courses.materials.index', $course))
             ->with('success', 'Materi berhasil diperbarui!');
     }
 
@@ -131,7 +148,7 @@ class MaterialController extends Controller
         $material->delete();
 
         return redirect()
-            ->route('guru.courses.materials.index', $course)
+            ->to($this->teacherRoute('courses.materials.index', $course))
             ->with('success', 'Materi berhasil dihapus!');
     }
 
@@ -145,6 +162,20 @@ class MaterialController extends Controller
             $message = 'Materi berhasil di-unpublish!';
         } else {
             $material->publish();
+
+            // Notify enrolled students that material is now published
+            $students = $course->enrollments()
+                ->where('status', 'active')
+                ->whereHas('user', fn($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
+                ->with('user')
+                ->get()
+                ->pluck('user')
+                ->filter();
+
+            foreach ($students->chunk(100) as $chunk) {
+                \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\MaterialPublished($material));
+            }
+
             $message = 'Materi berhasil dipublikasikan!';
         }
 

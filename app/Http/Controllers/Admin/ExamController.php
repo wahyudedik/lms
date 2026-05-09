@@ -175,9 +175,6 @@ class ExamController extends Controller
         $validated['require_fullscreen'] = $request->boolean('require_fullscreen');
         $validated['detect_tab_switch'] = $request->boolean('detect_tab_switch');
 
-        // Log for debugging (temporary)
-        \Log::info('Validated data after boolean handling:', $validated);
-
         $validated['start_time'] = $this->normalizeDateTime($request->input('start_time'));
         $validated['end_time'] = $this->normalizeDateTime($request->input('end_time'));
         $validated['offline_enabled'] = $request->boolean('offline_enabled');
@@ -239,8 +236,20 @@ class ExamController extends Controller
         $newExam->title = $exam->title . ' (Copy)';
         $newExam->is_published = false;
         $newExam->published_at = null;
+        $newExam->current_token_uses = 0;
         $newExam->created_by = auth()->id();
+
+        // Clear token before saving to avoid unique constraint violation;
+        // a new unique token will be generated after save if needed.
+        if ($exam->allow_token_access) {
+            $newExam->access_token = null;
+        }
+
         $newExam->save();
+
+        if ($exam->allow_token_access) {
+            $newExam->generateAccessToken();
+        }
 
         // Duplicate questions
         foreach ($exam->questions as $question) {

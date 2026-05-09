@@ -38,7 +38,7 @@ class CourseController extends Controller
         }
 
         $courses = $query->latest()->paginate(10)->withQueryString();
-        $instructors = User::where('role', 'guru')->orderBy('name')->get();
+        $instructors = User::whereIn('role', ['guru', 'dosen'])->orderBy('name')->get();
 
         return view('admin.courses.index', compact('courses', 'instructors'));
     }
@@ -48,7 +48,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        $instructors = User::where('role', 'guru')
+        $instructors = User::whereIn('role', ['guru', 'dosen'])
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
@@ -106,7 +106,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        $instructors = User::where('role', 'guru')
+        $instructors = User::whereIn('role', ['guru', 'dosen'])
             ->where('is_active', true)
             ->orderBy('name')
             ->get();

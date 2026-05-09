@@ -74,14 +74,11 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyl
      */
     public function map($user): array
     {
-        // Default password untuk semua user baru
-        $defaultPassword = 'LMS2024@Pass';
-
         return [
             $user->id,
             $user->name,
             $user->email,
-            $defaultPassword, // Default password yang sama untuk semua user
+            '', // Password tidak dapat di-export (tersimpan sebagai hash terenkripsi)
             $user->role_display,
             $user->phone,
             $user->birth_date ? $user->birth_date->format('Y-m-d') : '',

@@ -10,7 +10,7 @@
 
             <!-- Filter Section -->
             <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-                <form method="GET" action="{{ route('siswa.grades.index') }}" class="flex gap-4 items-end flex-wrap">
+                <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.grades.index') }}" class="flex gap-4 items-end flex-wrap">
                     <div class="flex-1 min-w-[200px]">
                         <label for="course_id" class="block text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-book text-gray-400 mr-1"></i>Filter Kursus
@@ -31,7 +31,7 @@
                         <i class="fas fa-search"></i>Filter
                     </button>
                     @if (request('course_id'))
-                        <a href="{{ route('siswa.grades.index') }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.grades.index') }}"
                             class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-sm transition">
                             <i class="fas fa-times"></i>Reset
                         </a>
@@ -181,7 +181,7 @@
                                     </div>
 
                                     <div class="flex flex-col gap-2">
-                                        <a href="{{ route('siswa.grades.show', $grade) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.grades.show', $grade) }}"
                                             class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-sm transition whitespace-nowrap">
                                             <i class="fas fa-eye"></i>Detail
                                         </a>
@@ -202,7 +202,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-700 mb-2">Belum Ada Nilai</h3>
                         <p class="text-gray-500 mb-4">Ikuti kursus dan selesaikan ujian untuk melihat nilai Anda.</p>
-                        <a href="{{ route('siswa.courses.index') }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                             class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-sm transition">
                             <i class="fas fa-book"></i>Lihat Kursus
                         </a>

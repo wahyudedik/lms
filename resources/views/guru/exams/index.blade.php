@@ -1,10 +1,10 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-file-alt mr-2"></i>{{ __('My Exam Management') }}
             </h2>
-            <a href="{{ route('guru.exams.create') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                 <i class="fas fa-plus"></i>
                 {{ __('Create New Exam') }}
@@ -17,7 +17,7 @@
             <!-- Filters -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
-                    <form method="GET" action="{{ route('guru.exams.index') }}"
+                    <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.') }}"
                         class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -128,22 +128,22 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                 <div class="flex gap-3">
-                                                    <a href="{{ route('guru.exams.show', $exam) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                                         class="text-blue-600 hover:text-blue-800 font-semibold"
                                                         title="Detail">
                                                         <i class="fas fa-eye mr-1"></i>Lihat
                                                     </a>
-                                                    <a href="{{ route('guru.exams.edit', $exam) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                                         class="text-green-600 hover:text-green-800 font-semibold"
                                                         title="Edit">
                                                         <i class="fas fa-edit mr-1"></i>Edit
                                                     </a>
-                                                    <a href="{{ route('guru.exams.questions.index', $exam) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                                         class="text-purple-600 hover:text-purple-800 font-semibold"
                                                         title="Kelola Soal">
                                                         <i class="fas fa-list mr-1"></i>Soal
                                                     </a>
-                                                    <form action="{{ route('guru.exams.destroy', $exam) }}"
+                                                    <form action="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
                                                         method="POST" class="inline"
                                                         onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this exam?') }}')">
                                                         @csrf
@@ -171,7 +171,7 @@
                                 <i class="fas fa-file-alt text-gray-400 text-2xl"></i>
                             </div>
                             <p class="text-lg font-semibold mb-2">{{ __('No exams yet.') }}</p>
-                            <a href="{{ route('guru.exams.create') }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
                                 class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                 <i class="fas fa-plus"></i>
                                 {{ __('Create First Exam') }}

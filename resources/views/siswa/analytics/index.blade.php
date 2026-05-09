@@ -167,7 +167,7 @@
 
             async function initializeCharts() {
                 // Performance Trend
-                const trendData = await fetchData('{{ route('siswa.analytics.performance-trend') }}');
+                const trendData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.performance-trend') }}');
                 charts.performanceTrend = new Chart(document.getElementById('performanceTrendChart'), {
                     type: 'line',
                     data: trendData,
@@ -204,7 +204,7 @@
                 });
 
                 // Performance by Course
-                const courseData = await fetchData('{{ route('siswa.analytics.performance-by-course') }}');
+                const courseData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.performance-by-course') }}');
                 charts.performanceByCourse = new Chart(document.getElementById('performanceByCourseChart'), {
                     type: 'polarArea',
                     data: courseData,
@@ -226,7 +226,7 @@
                 });
 
                 // Pass/Fail Ratio
-                const passFailData = await fetchData('{{ route('siswa.analytics.exam-pass-fail-ratio') }}');
+                const passFailData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.exam-pass-fail-ratio') }}');
                 charts.passFail = new Chart(document.getElementById('passFailChart'), {
                     type: 'doughnut',
                     data: passFailData,
@@ -242,7 +242,7 @@
                 });
 
                 // Recent Scores
-                const scoresData = await fetchData('{{ route('siswa.analytics.recent-exam-scores') }}');
+                const scoresData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.recent-exam-scores') }}');
                 charts.recentScores = new Chart(document.getElementById('recentScoresChart'), {
                     type: 'bar',
                     data: scoresData,
@@ -264,7 +264,7 @@
                 });
 
                 // Study Time Distribution
-                const studyData = await fetchData('{{ route('siswa.analytics.study-time-distribution') }}');
+                const studyData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.study-time-distribution') }}');
                 charts.studyTime = new Chart(document.getElementById('studyTimeChart'), {
                     type: 'bar',
                     data: studyData,

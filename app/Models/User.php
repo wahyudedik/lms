@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -105,6 +106,7 @@ class User extends Authenticatable
         'is_active',
         'login_blocked_at',
         'login_blocked_reason',
+        'username',
     ];
 
     /**
@@ -134,6 +136,71 @@ class User extends Authenticatable
     }
 
     /**
+     * Bootstrap model events.
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function (self $model): void {
+            if (empty($model->username)) {
+                $model->username = static::generateUsername($model->name);
+            }
+        });
+    }
+
+    /**
+     * Generate a unique username from a display name.
+     *
+     * Steps:
+     *  1. Lowercase and replace spaces with underscores.
+     *  2. Strip any character that is not alphanumeric or underscore.
+     *  3. Trim leading/trailing underscores.
+     *  4. Fall back to 'user' if the result is empty.
+     *  5. Truncate the base to 45 characters.
+     *  6. Append _2, _3, … until the username is unique in the DB.
+     */
+    public static function generateUsername(string $name): string
+    {
+        $base = strtolower($name);
+        $base = str_replace(' ', '_', $base);
+        $base = preg_replace('/[^a-z0-9_]/', '', $base);
+        $base = trim($base, '_');
+
+        if ($base === '') {
+            $base = 'user';
+        }
+
+        $base = substr($base, 0, 45);
+
+        $username = $base;
+        $counter = 2;
+
+        while (static::where('username', $username)->exists()) {
+            $username = $base . '_' . $counter;
+            $counter++;
+        }
+
+        return $username;
+    }
+
+    /**
+     * Get the push subscriptions for this user.
+     */
+    public function pushSubscriptions(): HasMany
+    {
+        return $this->hasMany(PushSubscription::class);
+    }
+
+    /**
+     * Get the notification preferences for this user.
+     */
+    public function notificationPreferences(): HasMany
+    {
+        return $this->hasMany(NotificationPreference::class);
+    }
+
+    /**
      * Check if user is admin
      */
     public function isAdmin(): bool
@@ -158,6 +225,69 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is dosen
+     */
+    public function isDosen(): bool
+    {
+        return $this->role === 'dosen';
+    }
+
+    /**
+     * Check if user is mahasiswa
+     */
+    public function isMahasiswa(): bool
+    {
+        return $this->role === 'mahasiswa';
+    }
+
+    /**
+     * Get role prefix for route naming
+     */
+    public function getRolePrefix(): string
+    {
+        return match ($this->role) {
+            'admin' => 'admin',
+            'guru' => 'guru',
+            'dosen' => 'dosen',
+            'siswa' => 'siswa',
+            'mahasiswa' => 'mahasiswa',
+            default => throw new \InvalidArgumentException("Role '{$this->role}' does not have a route prefix")
+        };
+    }
+
+    /**
+     * Get notification action URL based on role and resource type
+     * Admin gets redirected to admin pages, others to their role-specific pages
+     */
+    public function getNotificationUrl(string $resourceType, $resourceId): string
+    {
+        if ($this->isAdmin()) {
+            // Admin-specific routes
+            return match ($resourceType) {
+                'course' => route('admin.courses.show', $resourceId),
+                'material' => route('admin.courses.show', $resourceId), // materials don't have admin detail page
+                'exam' => route('admin.exams.show', $resourceId),
+                'assignment' => route('admin.assignments.show', $resourceId),
+                'certificate' => route('admin.certificates.index'), // admin views all certificates
+                'submission' => route('admin.assignments.submissions.show', $resourceId),
+                default => route('admin.dashboard'),
+            };
+        }
+
+        // For guru/dosen/siswa/mahasiswa, use their role prefix
+        $prefix = $this->getRolePrefix();
+        return match ($resourceType) {
+            'course' => route("{$prefix}.courses.show", $resourceId),
+            'material' => route("{$prefix}.materials.show", $resourceId),
+            'exam' => route("{$prefix}.exams.show", $resourceId),
+            'assignment' => route("{$prefix}.assignments.show", $resourceId),
+            'certificate' => route("{$prefix}.certificates.show", $resourceId),
+            'submission' => route("{$prefix}.assignments.submissions.show", $resourceId),
+            default => route("{$prefix}.dashboard"),
+        };
+    }
+
+    /**
      * Get role display name
      */
     public function getRoleDisplayAttribute(): string
@@ -165,7 +295,9 @@ class User extends Authenticatable
         return match ($this->role) {
             'admin' => 'Administrator',
             'guru' => 'Guru',
+            'dosen' => 'Dosen',
             'siswa' => 'Siswa',
+            'mahasiswa' => 'Mahasiswa',
             default => 'Unknown'
         };
     }
@@ -182,7 +314,9 @@ class User extends Authenticatable
         return match ($this->role) {
             'admin' => 'admin.dashboard',
             'guru' => 'guru.dashboard',
+            'dosen' => 'dosen.dashboard',
             'siswa' => 'siswa.dashboard',
+            'mahasiswa' => 'mahasiswa.dashboard',
             default => null
         };
     }
@@ -241,6 +375,22 @@ class User extends Authenticatable
     public function createdExams()
     {
         return $this->hasMany(\App\Models\Exam::class, 'created_by');
+    }
+
+    /**
+     * Get assignments created by this user (for Guru/Dosen).
+     */
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(\App\Models\Assignment::class, 'created_by');
+    }
+
+    /**
+     * Get assignment submissions by this user (for Siswa/Mahasiswa).
+     */
+    public function assignmentSubmissions(): HasMany
+    {
+        return $this->hasMany(\App\Models\AssignmentSubmission::class);
     }
 
     /**
@@ -342,11 +492,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Only unresolved cheating incidents.
+     * Only unresolved cheating incidents (usable with withCount/has).
      */
     public function activeCheatingIncidents()
     {
-        return $this->cheatingIncidents()->whereNull('resolved_at');
+        return $this->hasMany(CheatingIncident::class)->whereNull('resolved_at');
     }
 
     /**

@@ -34,8 +34,7 @@
                         <form method="GET" action="{{ route('admin.users.index') }}"
                             class="flex flex-wrap gap-4 items-end">
                             <div class="flex-1 min-w-64">
-                                <label for="search"
-                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                <label for="search" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-search text-gray-400 mr-1"></i>{{ __('Search') }}
                                 </label>
                                 <input type="text" id="search" name="search" value="{{ request('search') }}"
@@ -43,33 +42,43 @@
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                             </div>
 
-                            <div class="min-w-32">
+                            <div class="min-w-40">
                                 <label for="role" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-user-tag text-gray-400 mr-1"></i>{{ __('Role') }}
+                                    <i class="fas fa-user-tag text-gray-400 mr-1"></i>{{ __('Peran') }}
                                 </label>
                                 <select id="role" name="role"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
-                                    <option value="">{{ __('All Roles') }}</option>
-                                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>{{ __('Admin') }}
+                                    <option value="">{{ __('Semua Peran') }}</option>
+                                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>
+                                        {{ __('Admin') }}
                                     </option>
-                                    <option value="guru" {{ request('role') == 'guru' ? 'selected' : '' }}>{{ __('Guru') }}
+                                    <option value="guru" {{ request('role') == 'guru' ? 'selected' : '' }}>
+                                        {{ __('Guru') }}
                                     </option>
-                                    <option value="siswa" {{ request('role') == 'siswa' ? 'selected' : '' }}>{{ __('Siswa') }}
+                                    <option value="siswa" {{ request('role') == 'siswa' ? 'selected' : '' }}>
+                                        {{ __('Siswa') }}
+                                    </option>
+                                    <option value="dosen" {{ request('role') == 'dosen' ? 'selected' : '' }}>
+                                        {{ __('Dosen') }}
+                                    </option>
+                                    <option value="mahasiswa" {{ request('role') == 'mahasiswa' ? 'selected' : '' }}>
+                                        {{ __('Mahasiswa') }}
                                     </option>
                                 </select>
                             </div>
 
                             <div class="min-w-32">
-                                <label for="status"
-                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-toggle-on text-gray-400 mr-1"></i>{{ __('Status') }}
                                 </label>
                                 <select id="status" name="status"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">{{ __('All Status') }}</option>
-                                    <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>{{ __('Active') }}
+                                    <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>
+                                        {{ __('Active') }}
                                     </option>
-                                    <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>{{ __('Inactive') }}
+                                    <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>
+                                        {{ __('Inactive') }}
                                     </option>
                                 </select>
                             </div>
@@ -127,20 +136,26 @@
                                                         alt="{{ $user->name }}">
                                                 </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-semibold text-gray-900">{{ $user->name }}
+                                                    <div class="text-sm font-semibold text-gray-900">
+                                                        {{ $user->name }}
                                                     </div>
                                                     <div class="text-sm text-gray-500">{{ $user->email }}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
+                                            @php
+                                                $roleColor = match ($user->role) {
+                                                    'admin' => 'bg-red-100 text-red-800',
+                                                    'guru' => 'bg-green-100 text-green-800',
+                                                    'dosen' => 'bg-emerald-100 text-emerald-800',
+                                                    'siswa' => 'bg-blue-100 text-blue-800',
+                                                    'mahasiswa' => 'bg-indigo-100 text-indigo-800',
+                                                    default => 'bg-gray-100 text-gray-800',
+                                                };
+                                            @endphp
                                             <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
-                                                {{ $user->role === 'admin'
-                                                    ? 'bg-red-100 text-red-800'
-                                                    : ($user->role === 'guru'
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-blue-100 text-blue-800') }}">
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $roleColor }}">
                                                 {{ $user->role_display }}
                                             </span>
                                         </td>
@@ -270,11 +285,11 @@
                 exportLoadingText: @json(__('Please wait while we prepare your export file.')),
                 exportSuccessTitle: @json(__('Export Completed!')),
                 exportSuccessMessage: @json(__('File exported successfully!')),
-                defaultPasswordLabel: @json(__('Default password for all users:')),
-                passwordNoteLine1: @json(__('This password appears in the "Password" column for all users in the Excel file.')),
-                passwordNoteLine2: @json(__('Instruct users to change their password after the first login.')),
+                passwordNoteTitle: @json(__('Note about passwords:')),
+                passwordNoteLine1: @json(__(
+                        'The "Password" column in the Excel file is empty because passwords are stored encrypted and cannot be exported.')),
+                passwordNoteLine2: @json(__('If you need to reset a user\'s password, use the Edit User feature in the admin panel.')),
                 ok: @json(__('OK')),
-                exportingPassword: @json(config('app.default_export_password', 'LMS2024@Pass')),
             };
 
             // Handle delete confirmation
@@ -358,18 +373,15 @@
                         html: `
                             <div class="text-left">
                                 <p class="mb-3"><strong>✅ ${usersIndexLocale.exportSuccessMessage}</strong></p>
-                                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
                                     <p class="text-sm text-gray-700 mb-2">
-                                        <strong>🔐 ${usersIndexLocale.defaultPasswordLabel}</strong>
-                                    </p>
-                                    <div class="bg-white p-3 rounded border border-blue-200">
-                                        <code style="font-size: 18px; font-weight: bold; color: #1e40af;">${usersIndexLocale.exportingPassword}</code>
-                                    </div>
-                                    <p class="text-xs text-gray-600 mt-3">
-                                        📋 ${usersIndexLocale.passwordNoteLine1}
+                                        <strong>ℹ️ ${usersIndexLocale.passwordNoteTitle}</strong>
                                     </p>
                                     <p class="text-xs text-gray-600 mt-1">
-                                        ⚠️ ${usersIndexLocale.passwordNoteLine2}
+                                        🔒 ${usersIndexLocale.passwordNoteLine1}
+                                    </p>
+                                    <p class="text-xs text-gray-600 mt-1">
+                                        💡 ${usersIndexLocale.passwordNoteLine2}
                                     </p>
                                 </div>
                             </div>

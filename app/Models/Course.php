@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 /**
@@ -137,6 +139,22 @@ class Course extends Model
     public function exams()
     {
         return $this->hasMany(Exam::class);
+    }
+
+    /**
+     * Get all assignments for this course.
+     */
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class);
+    }
+
+    /**
+     * Get the grade weight configuration for this course.
+     */
+    public function gradeWeight(): HasOne
+    {
+        return $this->hasOne(CourseGradeWeight::class);
     }
 
     /**
