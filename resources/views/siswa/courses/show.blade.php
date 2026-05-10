@@ -172,6 +172,69 @@
                             </div>
                         </div>
                     @endif
+
+                    <!-- Assignments (Only for enrolled students) -->
+                    @if ($isEnrolled)
+                        @php
+                            $assignments = $course->assignments()->published()->orderBy('deadline', 'asc')->get();
+                        @endphp
+                        @if ($assignments->count() > 0)
+                            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                <div class="p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                                        <i class="fas fa-tasks text-orange-500 mr-2"></i>{{ __('Tugas') }}
+                                    </h3>
+
+                                    <div class="space-y-3">
+                                        @foreach ($assignments as $assignment)
+                                            <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.show', $assignment) }}"
+                                                class="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-all">
+                                                <div class="flex-shrink-0 mr-4">
+                                                    @if ($assignment->getSubmissionForUser(auth()->user()))
+                                                        <div
+                                                            class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                                            <i class="fas fa-check text-green-600"></i>
+                                                        </div>
+                                                    @elseif($assignment->isDeadlinePassed())
+                                                        <div
+                                                            class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                                            <i class="fas fa-times text-red-600"></i>
+                                                        </div>
+                                                    @else
+                                                        <div
+                                                            class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                                                            <i class="fas fa-file-alt text-orange-600"></i>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-semibold text-gray-900">
+                                                        {{ $assignment->title }}</p>
+                                                    <div class="flex items-center gap-3 mt-1">
+                                                        <span class="text-xs text-gray-500">
+                                                            <i
+                                                                class="fas fa-clock mr-1"></i>{{ $assignment->deadline->translatedFormat('d M Y, H:i') }}
+                                                        </span>
+                                                        @if ($assignment->getSubmissionForUser(auth()->user()))
+                                                            <span class="text-xs text-green-600 font-semibold">Sudah
+                                                                dikumpulkan</span>
+                                                        @elseif($assignment->isDeadlinePassed())
+                                                            <span class="text-xs text-red-600 font-semibold">Sudah
+                                                                lewat</span>
+                                                        @else
+                                                            <span class="text-xs text-orange-600 font-semibold">Belum
+                                                                dikumpulkan</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <i class="fas fa-chevron-right text-gray-400"></i>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endif
                 </div>
 
                 <!-- Sidebar -->
@@ -192,7 +255,9 @@
                                         <i class="fas fa-book mr-2"></i>{{ __('Go to My Courses') }}
                                     </a>
 
-                                    <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.unenroll', $course) }}" method="POST"
+                                    <form
+                                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.unenroll', $course) }}"
+                                        method="POST"
                                         onsubmit="return confirmDelete('{{ __('Are you sure you want to leave this class?') }}');">
                                         @csrf
                                         @method('DELETE')
@@ -213,7 +278,9 @@
                                             <span class="text-red-700 text-sm">{{ __('Course is full') }}</span>
                                         </div>
                                     @else
-                                        <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.enroll', $course) }}" method="POST">
+                                        <form
+                                            action="{{ route(auth()->user()->getRolePrefix() . '.courses.enroll', $course) }}"
+                                            method="POST">
                                             @csrf
                                             <button type="submit"
                                                 class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded">

@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-pen-fancy mr-2"></i>Review Jawaban Essay - {{ $exam->title }}
             </h2>
-            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md">
                 <i class="fas fa-arrow-left"></i>
                 Kembali
@@ -250,7 +250,7 @@
                                         @endif
 
                                         <!-- Grading Form -->
-                                        <form action="{{ route(auth()->user()->getRolePrefix() . '.', [$exam, $answer]) }}"
+                                        <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.grade-essay', [$exam, $answer]) }}"
                                             method="POST" class="bg-gray-50 border border-gray-300 rounded p-3">
                                             @csrf
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -281,7 +281,7 @@
                                             </div>
                                         </form>
                                         <!-- Grading Form -->
-                                        <form action="{{ route(auth()->user()->getRolePrefix() . '.', [$exam, $answer]) }}"
+                                        <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.grade-essay', [$exam, $answer]) }}"
                                             method="POST"
                                             class="bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-gray-300 rounded-lg p-5">
                                             @csrf

@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-tasks mr-2"></i>{{ $assignment->title }}
             </h2>
-            <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.my-courses') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                 <i class="fas fa-arrow-left"></i>
                 Kembali
@@ -251,8 +251,9 @@
                             </div>
                         @endif
 
-                        <form action="{{ route(auth()->user()->getRolePrefix() . '.', $assignment) }}" method="POST"
-                            enctype="multipart/form-data">
+                        <form
+                            action="{{ route(auth()->user()->getRolePrefix() . '.assignments.submit', $assignment) }}"
+                            method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="mb-4">

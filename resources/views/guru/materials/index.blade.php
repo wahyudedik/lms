@@ -8,12 +8,12 @@
                 <p class="text-sm text-gray-600 mt-1">Kode: {{ $course->code }}</p>
             </div>
             <div class="flex gap-2">
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-plus"></i>
                     {{ __('Add Material') }}
                 </a>
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
                     {{ __('Back') }}
@@ -95,16 +95,16 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                                             <div class="flex justify-end gap-3">
-                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $material]) }}"
+                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', [$course, $material]) }}"
                                                     class="text-blue-600 hover:text-blue-800 font-semibold">
                                                     Lihat
                                                 </a>
-                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $material]) }}"
+                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', [$course, $material]) }}"
                                                     class="text-green-600 hover:text-green-800 font-semibold">
                                                     Edit
                                                 </a>
                                                 <form
-                                                    action="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $material]) }}"
+                                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', [$course, $material]) }}"
                                                     method="POST" class="inline"
                                                     onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this material?') }}');">
                                                     @csrf
@@ -126,7 +126,7 @@
                                                     <i class="fas fa-folder-open text-3xl text-gray-400"></i>
                                                 </div>
                                                 <p class="text-sm font-semibold mb-2">{{ __('No materials yet') }}</p>
-                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', $course) }}"
                                                     class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
                                                     {{ __('Add your first material') }}
                                                 </a>

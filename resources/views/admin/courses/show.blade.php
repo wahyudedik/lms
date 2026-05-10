@@ -36,13 +36,15 @@
 
                             <div class="flex flex-wrap gap-2 mb-6">
                                 <span
-                                    class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full 
+                                    class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full
                                     @if ($course->status == 'published') bg-green-100 text-green-800
                                     @elseif($course->status == 'draft') bg-yellow-100 text-yellow-800
                                     @else bg-gray-100 text-gray-800 @endif">
-                                    <i class="fas fa-{{ $course->status == 'published' ? 'check-circle' : 'clock' }} mr-1"></i>{{ $course->status_display }}
+                                    <i
+                                        class="fas fa-{{ $course->status == 'published' ? 'check-circle' : 'clock' }} mr-1"></i>{{ $course->status_display }}
                                 </span>
-                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                                <span
+                                    class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
                                     <i class="fas fa-code mr-1"></i>{{ $course->code }}
                                 </span>
                             </div>
@@ -74,11 +76,14 @@
                                     <table class="min-w-full divide-y divide-gray-200">
                                         <thead class="bg-gray-50">
                                             <tr>
-                                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                                     {{ __('Siswa') }}</th>
-                                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                                     {{ __('Status') }}</th>
-                                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                                     {{ __('Progress') }}</th>
                                             </tr>
                                         </thead>
@@ -86,7 +91,8 @@
                                             @foreach ($course->enrollments->take(5) as $enrollment)
                                                 <tr class="hover:bg-gray-50 transition-colors">
                                                     <td class="px-6 py-4 whitespace-nowrap">
-                                                        <div class="text-sm font-semibold text-gray-900">{{ $enrollment->student->name }}</div>
+                                                        <div class="text-sm font-semibold text-gray-900">
+                                                            {{ $enrollment->student->name }}</div>
                                                     </td>
                                                     <td class="px-6 py-4 whitespace-nowrap">
                                                         <span
@@ -103,7 +109,8 @@
                                                                 <div class="bg-blue-600 h-2 rounded-full"
                                                                     style="width: {{ $enrollment->progress }}%"></div>
                                                             </div>
-                                                            <span class="text-xs font-semibold text-gray-600 min-w-[3rem] text-right">{{ $enrollment->progress }}%</span>
+                                                            <span
+                                                                class="text-xs font-semibold text-gray-600 min-w-[3rem] text-right">{{ $enrollment->progress }}%</span>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -147,9 +154,11 @@
                                     @foreach ($course->materials()->published()->ordered()->take(5)->get() as $material)
                                         <a href="{{ route('admin.courses.materials.show', [$course, $material]) }}"
                                             class="flex items-center p-4 hover:bg-gray-50 rounded-lg border border-gray-200 transition-all duration-150">
-                                            <i class="{{ $material->getFileIcon() }} {{ $material->getFileColorClass() }} text-2xl mr-3"></i>
+                                            <i
+                                                class="{{ $material->getFileIcon() }} {{ $material->getFileColorClass() }} text-2xl mr-3"></i>
                                             <div class="flex-1">
-                                                <p class="text-sm font-semibold text-gray-900">{{ $material->title }}</p>
+                                                <p class="text-sm font-semibold text-gray-900">{{ $material->title }}
+                                                </p>
                                                 <p class="text-xs text-gray-500">{{ $material->type_display }}</p>
                                             </div>
                                             <i class="fas fa-chevron-right text-gray-400"></i>
@@ -173,6 +182,63 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- Assignments -->
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">
+                                    <i class="fas fa-tasks text-orange-600 mr-2"></i>{{ __('Tugas') }}
+                                </h3>
+                                <a href="{{ route('admin.courses.assignments.index', $course) }}"
+                                    class="text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                                    <i class="fas fa-cog mr-1"></i>{{ __('Kelola Tugas') }}
+                                </a>
+                            </div>
+
+                            @if ($course->assignments->count() > 0)
+                                <div class="space-y-2">
+                                    @foreach ($course->assignments->sortByDesc('created_at')->take(5) as $assignment)
+                                        <a href="{{ route('admin.courses.assignments.show', [$course, $assignment]) }}"
+                                            class="flex items-center p-4 hover:bg-gray-50 rounded-lg border border-gray-200 transition-all duration-150">
+                                            <i class="fas fa-file-alt text-orange-500 text-2xl mr-3"></i>
+                                            <div class="flex-1">
+                                                <p class="text-sm font-semibold text-gray-900">{{ $assignment->title }}
+                                                </p>
+                                                <div class="flex items-center gap-2 mt-1">
+                                                    @if ($assignment->deadline)
+                                                        <span class="text-xs text-gray-500">
+                                                            <i
+                                                                class="fas fa-clock mr-1"></i>{{ $assignment->deadline->format('d M Y H:i') }}
+                                                        </span>
+                                                    @endif
+                                                    <span
+                                                        class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-full {{ $assignment->is_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                        {{ $assignment->is_published ? __('Dipublikasikan') : __('Draft') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <i class="fas fa-chevron-right text-gray-400"></i>
+                                        </a>
+                                    @endforeach
+                                </div>
+
+                                @if ($course->assignments->count() > 5)
+                                    <div class="mt-4 text-center">
+                                        <a href="{{ route('admin.courses.assignments.index', $course) }}"
+                                            class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
+                                            {{ __('Lihat semua :count tugas', ['count' => $course->assignments->count()]) }}
+                                        </a>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="flex flex-col items-center justify-center text-gray-500 py-8">
+                                    <i class="fas fa-tasks text-4xl text-gray-300 mb-3"></i>
+                                    <p class="text-sm font-semibold">{{ __('Belum ada tugas') }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Sidebar -->
@@ -187,7 +253,8 @@
                             <div class="space-y-4">
                                 <div>
                                     <p class="text-sm font-semibold text-gray-600">{{ __('Pengajar') }}</p>
-                                    <p class="text-base font-semibold text-gray-900 mt-1">{{ $course->instructor->name }}</p>
+                                    <p class="text-base font-semibold text-gray-900 mt-1">
+                                        {{ $course->instructor->name }}</p>
                                 </div>
 
                                 <div>
@@ -228,17 +295,21 @@
                             </h3>
 
                             <div class="space-y-4">
-                                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg border-l-4 border-green-600">
+                                <div
+                                    class="flex justify-between items-center p-3 bg-green-50 rounded-lg border-l-4 border-green-600">
                                     <span class="text-sm font-semibold text-gray-700">{{ __('Siswa Aktif') }}</span>
                                     <span class="text-lg font-bold text-green-600">{{ $activeStudents }}</span>
                                 </div>
-                                <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg border-l-4 border-blue-600">
+                                <div
+                                    class="flex justify-between items-center p-3 bg-blue-50 rounded-lg border-l-4 border-blue-600">
                                     <span class="text-sm font-semibold text-gray-700">{{ __('Siswa Selesai') }}</span>
                                     <span class="text-lg font-bold text-blue-600">{{ $completedStudents }}</span>
                                 </div>
-                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border-l-4 border-gray-600">
+                                <div
+                                    class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border-l-4 border-gray-600">
                                     <span class="text-sm font-semibold text-gray-700">{{ __('Total Siswa') }}</span>
-                                    <span class="text-lg font-bold text-gray-900">{{ $course->enrollments->count() }}</span>
+                                    <span
+                                        class="text-lg font-bold text-gray-900">{{ $course->enrollments->count() }}</span>
                                 </div>
                             </div>
                         </div>
@@ -267,6 +338,11 @@
                                 <a href="{{ route('admin.courses.enrollments', $course) }}"
                                     class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                     <i class="fas fa-users"></i>{{ __('Manage Students') }}
+                                </a>
+
+                                <a href="{{ route('admin.courses.assignments.index', $course) }}"
+                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-tasks"></i>{{ __('Kelola Tugas') }}
                                 </a>
 
                                 <form action="{{ route('admin.courses.destroy', $course) }}" method="POST"

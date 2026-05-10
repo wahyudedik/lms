@@ -24,26 +24,30 @@ class AiSettingsController extends Controller
     {
         $settings = [
             'ai_enabled' => Setting::get('ai_enabled', false),
+            'ai_provider' => Setting::get('ai_provider', 'openai'),
             'ai_openai_api_key' => Setting::get('ai_openai_api_key'),
+            'ai_anthropic_api_key' => Setting::get('ai_anthropic_api_key'),
+            'ai_gemini_api_key' => Setting::get('ai_gemini_api_key'),
             'ai_model' => Setting::get('ai_model', 'gpt-3.5-turbo'),
             'ai_max_tokens' => Setting::get('ai_max_tokens', 1000),
             'ai_temperature' => Setting::get('ai_temperature', 0.7),
             'ai_system_prompt' => Setting::get('ai_system_prompt', ''),
-            'ai_rate_limit' => Setting::get('ai_rate_limit', 20), // messages per hour
+            'ai_rate_limit' => Setting::get('ai_rate_limit', 20),
             'ai_show_widget' => Setting::get('ai_show_widget', true),
         ];
 
         $stats = $this->aiService->getStatistics();
         $status = $this->aiService->getStatus();
 
-        $models = [
-            'gpt-4' => 'GPT-4 (Most capable, slower, more expensive)',
-            'gpt-4-turbo-preview' => 'GPT-4 Turbo (Fast & capable)',
-            'gpt-3.5-turbo' => 'GPT-3.5 Turbo (Fast, cost-effective)',
-            'gpt-3.5-turbo-16k' => 'GPT-3.5 Turbo 16K (Longer context)',
+        $providers = $this->aiService->getProviders();
+        $models = $this->aiService->getAllModels();
+        $modelsByProvider = [
+            'openai' => $this->aiService->getModelsForProvider('openai'),
+            'anthropic' => $this->aiService->getModelsForProvider('anthropic'),
+            'gemini' => $this->aiService->getModelsForProvider('gemini'),
         ];
 
-        return view('admin.ai-settings.index', compact('settings', 'stats', 'status', 'models'));
+        return view('admin.ai-settings.index', compact('settings', 'stats', 'status', 'providers', 'models', 'modelsByProvider'));
     }
 
     /**
@@ -53,11 +57,14 @@ class AiSettingsController extends Controller
     {
         $validated = $request->validate([
             'ai_enabled' => 'boolean',
+            'ai_provider' => 'required|string|in:openai,anthropic,gemini',
             'ai_openai_api_key' => 'nullable|string|min:20',
+            'ai_anthropic_api_key' => 'nullable|string|min:20',
+            'ai_gemini_api_key' => 'nullable|string|min:20',
             'ai_model' => 'required|string',
             'ai_max_tokens' => 'required|integer|min:100|max:4000',
             'ai_temperature' => 'required|numeric|min:0|max:2',
-            'ai_system_prompt' => 'nullable|string|max:1000',
+            'ai_system_prompt' => 'nullable|string|max:2000',
             'ai_rate_limit' => 'required|integer|min:1|max:100',
             'ai_show_widget' => 'boolean',
         ]);
@@ -79,7 +86,7 @@ class AiSettingsController extends Controller
 
         return redirect()
             ->route('admin.ai-settings.index')
-            ->with('success', 'AI settings updated successfully! 🤖');
+            ->with('success', 'Pengaturan AI berhasil diperbarui!');
     }
 
     /**
@@ -98,8 +105,11 @@ class AiSettingsController extends Controller
     public function reset()
     {
         Setting::set('ai_enabled', false, 'boolean', 'ai');
+        Setting::set('ai_provider', 'openai', 'text', 'ai');
         Setting::set('ai_openai_api_key', null, 'text', 'ai');
-        Setting::set('ai_model', 'gpt-3.5-turbo', 'text', 'ai');
+        Setting::set('ai_anthropic_api_key', null, 'text', 'ai');
+        Setting::set('ai_gemini_api_key', null, 'text', 'ai');
+        Setting::set('ai_model', 'gpt-4o-mini', 'text', 'ai');
         Setting::set('ai_max_tokens', 1000, 'integer', 'ai');
         Setting::set('ai_temperature', 0.7, 'float', 'ai');
         Setting::set('ai_system_prompt', '', 'text', 'ai');
@@ -112,7 +122,7 @@ class AiSettingsController extends Controller
 
         return redirect()
             ->route('admin.ai-settings.index')
-            ->with('success', 'AI settings reset to default!');
+            ->with('success', 'Pengaturan AI berhasil direset ke default!');
     }
 
     /**

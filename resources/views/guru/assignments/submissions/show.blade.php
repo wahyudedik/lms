@@ -7,7 +7,7 @@
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">{{ $assignment->title }} - {{ $submission->user->name }}</p>
             </div>
-            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $assignment) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', $assignment) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                 <i class="fas fa-arrow-left"></i>
                 Kembali
@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$assignment, $submission]) }}"
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.download', [$assignment, $submission]) }}"
                             class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                             <i class="fas fa-download"></i>
                             Unduh File
@@ -131,7 +131,7 @@
                         {{ $submission->isGraded() ? 'Perbarui Nilai' : 'Beri Nilai' }}
                     </h3>
 
-                    <form action="{{ route(auth()->user()->getRolePrefix() . '.', [$assignment, $submission]) }}"
+                    <form action="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', [$assignment, $submission]) }}"
                         method="POST">
                         @csrf
 
@@ -163,7 +163,7 @@
                         </div>
 
                         <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-                            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $assignment) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', $assignment) }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                                 <i class="fas fa-times"></i>
                                 Batal

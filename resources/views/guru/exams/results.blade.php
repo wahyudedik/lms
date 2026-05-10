@@ -10,17 +10,17 @@
                 <p class="text-gray-600 text-sm mt-1">Kursus: {{ $exam->course->title }}</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-excel', $exam) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-file-excel"></i>
                     Export Excel
                 </a>
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-pdf', $exam) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-file-pdf"></i>
                     Export PDF
                 </a>
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
                     Kembali
@@ -218,7 +218,7 @@
                                         </td>
                                         <td class="px-6 py-4 text-right text-sm font-medium">
                                             @if ($exam->questions->where('type', 'essay')->count() > 0)
-                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $exam) }}"
+                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}"
                                                     class="text-indigo-600 hover:text-indigo-800 font-semibold">
                                                     Review Essay
                                                 </a>

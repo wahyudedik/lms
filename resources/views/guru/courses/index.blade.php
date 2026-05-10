@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-book mr-2"></i>{{ __('Course Management') }}
             </h2>
-            <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.create') }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                 <i class="fas fa-plus"></i>
                 {{ __('Add Course') }}
@@ -17,7 +17,7 @@
             <!-- Search & Filter -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
-                    <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.') }}"
+                    <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                         class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Search -->
                         <div>
@@ -50,7 +50,7 @@
                                 <i class="fas fa-search"></i>
                                 Cari
                             </button>
-                            <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                                 <i class="fas fa-redo"></i>
                                 Reset
@@ -87,7 +87,8 @@
                                         <td class="px-6 py-4">
                                             <div class="flex items-center">
                                                 <div>
-                                                    <div class="text-sm font-semibold text-gray-900">{{ $course->title }}
+                                                    <div class="text-sm font-semibold text-gray-900">
+                                                        {{ $course->title }}
                                                     </div>
                                                     <div class="text-sm text-gray-500">Kode: {{ $course->code }}</div>
                                                 </div>
@@ -108,28 +109,33 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <i class="fas fa-users text-gray-400 mr-1"></i>{{ $course->enrollments->count() }} siswa
+                                            <i
+                                                class="fas fa-users text-gray-400 mr-1"></i>{{ $course->enrollments->count() }}
+                                            siswa
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                                             <div class="flex justify-end gap-3">
-                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $course) }}"
                                                     class="text-blue-600 hover:text-blue-800 font-semibold">
                                                     <i class="fas fa-eye mr-1"></i>Lihat
                                                 </a>
-                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.edit', $course) }}"
                                                     class="text-green-600 hover:text-green-800 font-semibold">
                                                     <i class="fas fa-edit mr-1"></i>Edit
                                                 </a>
-                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
-                                                    class="text-purple-600 hover:text-purple-800 font-semibold" title="Kelola Siswa">
+                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
+                                                    class="text-purple-600 hover:text-purple-800 font-semibold"
+                                                    title="Kelola Siswa">
                                                     <i class="fas fa-users mr-1"></i>Siswa
                                                 </a>
-                                                <form action="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}" method="POST"
-                                                    class="inline"
+                                                <form
+                                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.destroy', $course) }}"
+                                                    method="POST" class="inline"
                                                     onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this class?') }}');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">
+                                                    <button type="submit"
+                                                        class="text-red-600 hover:text-red-800 font-semibold">
                                                         <i class="fas fa-trash mr-1"></i>Hapus
                                                     </button>
                                                 </form>
@@ -140,7 +146,8 @@
                                     <tr>
                                         <td colspan="4" class="px-6 py-8 text-center">
                                             <div class="flex flex-col items-center justify-center text-gray-500">
-                                                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                                <div
+                                                    class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                                                     <i class="fas fa-book text-gray-400 text-2xl"></i>
                                                 </div>
                                                 <p class="text-sm font-semibold">{{ __('No courses found.') }}</p>

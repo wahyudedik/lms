@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
             <div>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     <i class="fas fa-tasks mr-2"></i>Tugas - {{ $course->title }}
@@ -11,24 +11,25 @@
                 <a href="{{ route('admin.courses.assignments.create', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-plus"></i>
-                    Buat Tugas
+                    <span class="hidden sm:inline">Buat Tugas</span>
+                    <span class="sm:hidden">Buat</span>
                 </a>
                 <a href="{{ route('admin.courses.show', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
-                    Kembali
+                    <span class="hidden sm:inline">Kembali</span>
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Filters -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <form method="GET" action="{{ route('admin.courses.assignments.index', $course) }}"
-                        class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
                                 <i class="fas fa-search text-gray-400 mr-1"></i>Cari
@@ -53,7 +54,7 @@
                             </select>
                         </div>
 
-                        <div class="flex items-end">
+                        <div class="flex items-end sm:col-span-2 md:col-span-1">
                             <button type="submit"
                                 class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                 <i class="fas fa-filter"></i>
@@ -64,11 +65,12 @@
                 </div>
             </div>
 
-            <!-- Assignments Table -->
+            <!-- Assignments -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg">
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     @if ($assignments->count() > 0)
-                        <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                        <!-- Desktop Table (hidden on mobile) -->
+                        <div class="hidden md:block overflow-x-auto border border-gray-200 rounded-lg">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
@@ -126,32 +128,33 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span
-                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
-                                                    {{ $assignment->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $assignment->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                                                     <i
                                                         class="fas fa-{{ $assignment->is_published ? 'check' : 'clock' }} mr-1"></i>
                                                     {{ $assignment->is_published ? 'Dipublikasikan' : 'Draft' }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                                <div class="flex justify-end gap-3">
+                                                <div class="flex justify-end gap-2">
                                                     <a href="{{ route('admin.courses.assignments.show', [$course, $assignment]) }}"
-                                                        class="text-blue-600 hover:text-blue-800 font-semibold">
-                                                        <i class="fas fa-eye mr-1"></i>Lihat
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                                                        title="Lihat">
+                                                        <i class="fas fa-eye text-sm"></i>
                                                     </a>
                                                     <a href="{{ route('admin.courses.assignments.edit', [$course, $assignment]) }}"
-                                                        class="text-green-600 hover:text-green-800 font-semibold">
-                                                        <i class="fas fa-edit mr-1"></i>Edit
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
+                                                        title="Edit">
+                                                        <i class="fas fa-edit text-sm"></i>
                                                     </a>
                                                     <form
                                                         action="{{ route('admin.courses.assignments.toggle-status', [$course, $assignment]) }}"
                                                         method="POST" class="inline">
                                                         @csrf
                                                         <button type="submit"
-                                                            class="text-purple-600 hover:text-purple-800 font-semibold">
+                                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors"
+                                                            title="{{ $assignment->is_published ? 'Unpublish' : 'Publish' }}">
                                                             <i
-                                                                class="fas fa-{{ $assignment->is_published ? 'eye-slash' : 'eye' }} mr-1"></i>
-                                                            {{ $assignment->is_published ? 'Unpublish' : 'Publish' }}
+                                                                class="fas fa-{{ $assignment->is_published ? 'eye-slash' : 'eye' }} text-sm"></i>
                                                         </button>
                                                     </form>
                                                     <form
@@ -160,8 +163,9 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
-                                                            class="text-red-600 hover:text-red-800 font-semibold">
-                                                            <i class="fas fa-trash mr-1"></i>Hapus
+                                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                                                            title="Hapus">
+                                                            <i class="fas fa-trash text-sm"></i>
                                                         </button>
                                                     </form>
                                                 </div>
@@ -170,6 +174,81 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- Mobile Cards (hidden on desktop) -->
+                        <div class="md:hidden space-y-4">
+                            @foreach ($assignments as $assignment)
+                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div class="flex-1 min-w-0">
+                                            <h4 class="text-sm font-semibold text-gray-900 truncate">
+                                                {{ $assignment->title }}</h4>
+                                            <p class="text-xs text-gray-500 mt-0.5">Nilai maks:
+                                                {{ $assignment->max_score }}</p>
+                                        </div>
+                                        <span
+                                            class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold {{ $assignment->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                            {{ $assignment->is_published ? 'Published' : 'Draft' }}
+                                        </span>
+                                    </div>
+
+                                    <div class="flex flex-wrap gap-2 mb-3 text-xs">
+                                        <span class="inline-flex items-center text-gray-600">
+                                            <i class="fas fa-calendar mr-1"></i>
+                                            {{ $assignment->deadline->format('d M Y, H:i') }}
+                                        </span>
+                                        @if ($assignment->isDeadlinePassed())
+                                            <span class="text-red-600 font-semibold">• Sudah lewat</span>
+                                        @else
+                                            <span class="text-green-600 font-semibold">• Masih aktif</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                            <i class="fas fa-upload mr-1"></i>
+                                            {{ $assignment->submissions_count }} pengumpulan
+                                        </span>
+
+                                        <div class="flex items-center gap-2">
+                                            <a href="{{ route('admin.courses.assignments.show', [$course, $assignment]) }}"
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                                                title="Lihat">
+                                                <i class="fas fa-eye text-sm"></i>
+                                            </a>
+                                            <a href="{{ route('admin.courses.assignments.edit', [$course, $assignment]) }}"
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
+                                                title="Edit">
+                                                <i class="fas fa-edit text-sm"></i>
+                                            </a>
+                                            <form
+                                                action="{{ route('admin.courses.assignments.toggle-status', [$course, $assignment]) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors"
+                                                    title="{{ $assignment->is_published ? 'Unpublish' : 'Publish' }}">
+                                                    <i
+                                                        class="fas fa-{{ $assignment->is_published ? 'eye-slash' : 'eye' }} text-sm"></i>
+                                                </button>
+                                            </form>
+                                            <form
+                                                action="{{ route('admin.courses.assignments.destroy', [$course, $assignment]) }}"
+                                                method="POST" class="inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                                                    title="Hapus">
+                                                    <i class="fas fa-trash text-sm"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
 
                         @if ($assignments->hasPages())

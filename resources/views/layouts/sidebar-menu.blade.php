@@ -95,7 +95,12 @@
                             'admin.certificate-settings.*',
                             'admin.ai-settings.*',
                         );
-                        $adminPlatformActive = request()->routeIs('admin.settings.*', 'admin.documentation.*');
+                        $adminPlatformActive = request()->routeIs(
+                            'admin.settings.*',
+                            'admin.documentation.*',
+                            'admin.certificate-settings.*',
+                            'admin.ai-settings.*',
+                        );
                     @endphp
 
                     <div class="space-y-1">

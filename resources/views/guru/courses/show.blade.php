@@ -5,12 +5,12 @@
                 <i class="fas fa-book mr-2"></i>{{ $course->title }}
             </h2>
             <div class="flex gap-2">
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.edit', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-edit"></i>
                     Edit
                 </a>
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.') }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.index') }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
                     {{ __('Back') }}
@@ -47,7 +47,8 @@
                                     @endif
                                     {{ $course->status_display }}
                                 </span>
-                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                                <span
+                                    class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
                                     <i class="fas fa-code mr-1"></i>{{ $course->code }}
                                 </span>
                             </div>
@@ -68,7 +69,7 @@
                                 <h3 class="text-lg font-bold text-gray-900">
                                     <i class="fas fa-users text-purple-600 mr-2"></i>Siswa Terdaftar
                                 </h3>
-                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                                     class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold text-sm">
                                     <i class="fas fa-cog"></i>Kelola
                                 </a>
@@ -127,7 +128,7 @@
 
                                 @if ($course->enrollments->count() > 5)
                                     <div class="mt-4 text-center">
-                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                                             class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
                                             Lihat semua {{ $course->enrollments->count() }} siswa
                                         </a>
@@ -135,7 +136,8 @@
                                 @endif
                             @else
                                 <div class="flex flex-col items-center justify-center text-gray-500 py-8">
-                                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                    <div
+                                        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                                         <i class="fas fa-users text-gray-400 text-2xl"></i>
                                     </div>
                                     <p class="text-sm font-semibold">{{ __('No students enrolled yet') }}</p>
@@ -151,7 +153,7 @@
                                 <h3 class="text-lg font-bold text-gray-900">
                                     <i class="fas fa-file-alt text-green-600 mr-2"></i>{{ __('Learning Materials') }}
                                 </h3>
-                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', $course) }}"
                                     class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold text-sm">
                                     <i class="fas fa-cog"></i>{{ __('Manage Materials') }}
                                 </a>
@@ -160,12 +162,13 @@
                             @if ($course->materials()->published()->count() > 0)
                                 <div class="space-y-3">
                                     @foreach ($course->materials()->published()->ordered()->take(5)->get() as $material)
-                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $material]) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.show', [$course, $material]) }}"
                                             class="flex items-center p-3 hover:bg-gray-50 rounded-lg border border-gray-200 transition-all duration-150">
                                             <i
                                                 class="{{ $material->getFileIcon() }} {{ $material->getFileColorClass() }} text-2xl mr-3"></i>
                                             <div class="flex-1">
-                                                <p class="text-sm font-semibold text-gray-900">{{ $material->title }}</p>
+                                                <p class="text-sm font-semibold text-gray-900">{{ $material->title }}
+                                                </p>
                                                 <p class="text-xs text-gray-500">{{ $material->type_display }}</p>
                                             </div>
                                             <i class="fas fa-chevron-right text-gray-400"></i>
@@ -175,7 +178,7 @@
 
                                 @if ($course->materials()->published()->count() > 5)
                                     <div class="mt-4 text-center">
-                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', $course) }}"
                                             class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
                                             Lihat semua {{ $course->materials()->published()->count() }} materi
                                         </a>
@@ -183,7 +186,8 @@
                                 @endif
                             @else
                                 <div class="flex flex-col items-center justify-center text-gray-500 py-8">
-                                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                    <div
+                                        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                                         <i class="fas fa-file-alt text-gray-400 text-2xl"></i>
                                     </div>
                                     <p class="text-sm font-semibold">{{ __('No materials published yet') }}</p>
@@ -205,7 +209,8 @@
                             <div class="space-y-4">
                                 <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
                                     <dt class="text-xs font-semibold text-blue-700 mb-1">Pengajar</dt>
-                                    <dd class="text-sm font-semibold text-gray-900">{{ $course->instructor->name }}</dd>
+                                    <dd class="text-sm font-semibold text-gray-900">{{ $course->instructor->name }}
+                                    </dd>
                                 </div>
 
                                 <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
@@ -263,7 +268,8 @@
                                         </div>
                                         <div>
                                             <div class="text-blue-600 text-xs font-semibold mb-1">Siswa Selesai</div>
-                                            <div class="text-2xl font-bold text-blue-900">{{ $completedStudents }}</div>
+                                            <div class="text-2xl font-bold text-blue-900">{{ $completedStudents }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -275,7 +281,8 @@
                                         </div>
                                         <div>
                                             <div class="text-purple-600 text-xs font-semibold mb-1">Total Siswa</div>
-                                            <div class="text-2xl font-bold text-purple-900">{{ $course->enrollments->count() }}</div>
+                                            <div class="text-2xl font-bold text-purple-900">
+                                                {{ $course->enrollments->count() }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -291,7 +298,9 @@
                             </h3>
 
                             <div class="space-y-3">
-                                <form action="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}" method="POST">
+                                <form
+                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.toggle-status', $course) }}"
+                                    method="POST">
                                     @csrf
                                     <button type="submit"
                                         class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -303,12 +312,14 @@
                                     </button>
                                 </form>
 
-                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                                     class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                     <i class="fas fa-users"></i>Kelola Siswa
                                 </a>
 
-                                <form action="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}" method="POST"
+                                <form
+                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.destroy', $course) }}"
+                                    method="POST"
                                     onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this class? All related data will be deleted!') }}');">
                                     @csrf
                                     @method('DELETE')

@@ -7,7 +7,7 @@
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">Konfigurasi bobot penilaian tugas dan ujian</p>
             </div>
-            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $course) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                 <i class="fas fa-arrow-left"></i>
                 Kembali
@@ -56,7 +56,9 @@
                         </div>
                     </div>
 
-                    <form action="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}" method="POST">
+                    <form
+                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.grade-weights.update', $course) }}"
+                        method="POST">
                         @csrf
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -108,7 +110,7 @@
 
                         <!-- Submit Button -->
                         <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-                            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $course) }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                                 <i class="fas fa-times"></i>
                                 Batal

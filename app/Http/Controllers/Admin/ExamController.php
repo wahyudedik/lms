@@ -116,6 +116,21 @@ class ExamController extends Controller
             $exam->generateAccessToken();
         }
 
+        // Notify enrolled students if exam is published
+        if ($exam->is_published) {
+            $students = $exam->course->enrollments()
+                ->where('status', 'active')
+                ->whereHas('user', fn ($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
+                ->with('user')
+                ->get()
+                ->pluck('user')
+                ->filter();
+
+            foreach ($students->chunk(100) as $chunk) {
+                \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\ExamScheduled($exam));
+            }
+        }
+
         return redirect()
             ->route('admin.exams.show', $exam)
             ->with('success', 'Ujian berhasil dibuat!');
@@ -217,10 +232,27 @@ class ExamController extends Controller
      */
     public function toggleStatus(Exam $exam)
     {
+        $wasPublished = $exam->is_published;
+
         $exam->update([
             'is_published' => !$exam->is_published,
-            'published_at' => !$exam->is_published ? now() : null,
+            'published_at' => !$wasPublished ? now() : null,
         ]);
+
+        // Notify enrolled students if exam just became published
+        if (!$wasPublished && $exam->is_published) {
+            $students = $exam->course->enrollments()
+                ->where('status', 'active')
+                ->whereHas('user', fn ($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
+                ->with('user')
+                ->get()
+                ->pluck('user')
+                ->filter();
+
+            foreach ($students->chunk(100) as $chunk) {
+                \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\ExamScheduled($exam));
+            }
+        }
 
         $status = $exam->is_published ? 'dipublikasikan' : 'disembunyikan';
 

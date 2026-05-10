@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
-    <title>Certificate - {{ $certificate->certificate_number }}</title>
+    <title>Sertifikat - {{ $certificate->certificate_number }}</title>
     <style>
         @page {
             margin: 0;
+            size: A4 landscape;
         }
 
         * {
@@ -16,306 +17,325 @@
         }
 
         body {
-            font-family: 'Garamond', 'Georgia', serif;
-            background: #1a1a1a;
-            padding: 40px;
+            font-family: 'Georgia', 'Times New Roman', serif;
             width: 100%;
             height: 100vh;
+            background: #1a1a1a;
+            padding: 20px;
         }
 
-        .certificate-container {
-            background: linear-gradient(135deg, #f5f5f0 0%, #ffffff 100%);
-            padding: 60px;
-            border: 25px solid #2c1810;
-            box-shadow: 0 0 0 5px #d4af37, 0 20px 60px rgba(0, 0, 0, 0.5);
-            position: relative;
-            height: 100%;
-        }
-
-        .inner-border {
-            border: 3px double #d4af37;
-            padding: 50px;
+        .certificate-wrapper {
+            background: #fffef8;
+            width: 100%;
             height: 100%;
             position: relative;
+            overflow: hidden;
+            border: 8px solid #2c1810;
+            box-shadow: inset 0 0 0 3px #c5a028;
         }
 
+        /* Gold inner border */
+        .gold-frame {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            border: 2px solid #c5a028;
+        }
+
+        /* Corner ornaments using borders */
         .ornament {
             position: absolute;
-            font-size: 48px;
-            color: #d4af37;
-            opacity: 0.6;
+            width: 50px;
+            height: 50px;
         }
 
         .ornament-tl {
             top: 20px;
             left: 20px;
+            border-top: 4px solid #c5a028;
+            border-left: 4px solid #c5a028;
         }
 
         .ornament-tr {
             top: 20px;
             right: 20px;
+            border-top: 4px solid #c5a028;
+            border-right: 4px solid #c5a028;
         }
 
         .ornament-bl {
             bottom: 20px;
             left: 20px;
+            border-bottom: 4px solid #c5a028;
+            border-left: 4px solid #c5a028;
         }
 
         .ornament-br {
             bottom: 20px;
             right: 20px;
+            border-bottom: 4px solid #c5a028;
+            border-right: 4px solid #c5a028;
         }
 
-        .certificate-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .seal {
-            width: 90px;
-            height: 90px;
-            border: 5px solid #d4af37;
-            border-radius: 50%;
-            margin: 0 auto 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle, #2c1810 0%, #1a1a1a 100%);
-            position: relative;
-        }
-
-        .seal:before {
-            content: '';
+        /* Content */
+        .content {
             position: absolute;
-            width: 70px;
-            height: 70px;
-            border: 2px solid #d4af37;
-            border-radius: 50%;
+            top: 45px;
+            left: 70px;
+            right: 70px;
+            bottom: 45px;
+            text-align: center;
         }
 
-        .seal-icon {
-            font-size: 42px;
-            color: #d4af37;
+        /* Header */
+        .institution-name {
+            font-size: 13px;
+            color: #6b5d52;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
 
         .certificate-title {
-            font-size: 56px;
-            font-weight: normal;
+            font-size: 50px;
             color: #2c1810;
-            text-transform: uppercase;
-            letter-spacing: 12px;
-            margin-bottom: 8px;
+            font-weight: normal;
             font-style: italic;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
         .certificate-subtitle {
-            font-size: 22px;
-            color: #6b5d52;
-            letter-spacing: 6px;
-            font-weight: 300;
-        }
-
-        .divider {
-            width: 150px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent 0%, #d4af37 50%, transparent 100%);
-            margin: 25px auto;
-        }
-
-        .certificate-body {
-            text-align: center;
-            margin: 50px 0;
-        }
-
-        .certificate-text {
             font-size: 18px;
-            color: #4a4a4a;
-            margin-bottom: 25px;
-            line-height: 1.8;
+            color: #c5a028;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+
+        .gold-divider {
+            width: 200px;
+            height: 2px;
+            background: #c5a028;
+            margin: 20px auto;
+        }
+
+        .gold-divider-thin {
+            width: 100px;
+            height: 1px;
+            background: #c5a028;
+            margin: 5px auto 20px;
+        }
+
+        /* Body */
+        .preamble {
+            font-size: 15px;
+            color: #6b5d52;
             font-style: italic;
+            margin-bottom: 10px;
         }
 
         .student-name {
-            font-size: 48px;
+            font-size: 40px;
+            color: #2c1810;
             font-weight: normal;
-            color: #2c1810;
-            margin: 35px 0;
-            text-transform: capitalize;
-            border-bottom: 3px double #d4af37;
-            padding-bottom: 15px;
+            font-style: italic;
+            margin: 10px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #c5a028;
             display: inline-block;
-            letter-spacing: 3px;
-        }
-
-        .course-title {
-            font-size: 32px;
-            font-weight: 600;
-            color: #2c1810;
-            margin: 25px 0;
             letter-spacing: 2px;
         }
 
-        .details-box {
-            background: rgba(212, 175, 55, 0.08);
-            border-left: 4px solid #d4af37;
-            border-right: 4px solid #d4af37;
-            padding: 25px;
-            margin: 35px auto;
-            max-width: 500px;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 12px 0;
+        .completion-text {
             font-size: 15px;
+            color: #6b5d52;
+            font-style: italic;
+            margin: 12px 0;
         }
 
-        .detail-label {
-            color: #6b5d52;
-            font-weight: 600;
-            text-transform: uppercase;
+        .course-title {
+            font-size: 24px;
+            color: #2c1810;
+            font-weight: bold;
+            margin: 8px 0 15px;
             letter-spacing: 1px;
+        }
+
+        /* Grade */
+        .grade-seal {
+            display: inline-block;
+            width: 65px;
+            height: 65px;
+            border: 3px solid #c5a028;
+            border-radius: 50%;
+            line-height: 59px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #2c1810;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Details */
+        .details-box {
+            margin: 15px auto;
+            max-width: 450px;
+            border-top: 1px solid #c5a028;
+            border-bottom: 1px solid #c5a028;
+            padding: 12px 0;
+        }
+
+        .details-table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .details-table td {
+            padding: 4px 12px;
             font-size: 12px;
         }
 
-        .detail-value {
-            color: #2c1810;
-            font-weight: 600;
-        }
-
-        .grade-badge {
-            display: inline-block;
-            width: 80px;
-            height: 80px;
-            border: 4px solid #d4af37;
-            border-radius: 50%;
-            line-height: 72px;
-            font-size: 36px;
-            font-weight: 700;
-            color: #2c1810;
-            margin: 20px 0;
-            background: white;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
-        }
-
-        .certificate-footer {
-            display: table;
-            width: 100%;
-            margin-top: 60px;
-        }
-
-        .signature-section {
-            display: table-cell;
-            text-align: center;
-            padding: 0 40px;
-        }
-
-        .signature-line {
-            border-top: 2px solid #2c1810;
-            width: 180px;
-            margin: 50px auto 12px;
-        }
-
-        .signature-name {
-            font-weight: 600;
-            color: #2c1810;
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .signature-title {
+        .details-table .label {
             color: #6b5d52;
+            text-align: right;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 10px;
+        }
+
+        .details-table .value {
+            color: #2c1810;
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* Signatures */
+        .signatures {
+            position: absolute;
+            bottom: 35px;
+            left: 80px;
+            right: 80px;
+        }
+
+        .sig-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .sig-table td {
+            text-align: center;
+            padding: 0 30px;
+            vertical-align: bottom;
+        }
+
+        .sig-line {
+            width: 160px;
+            height: 1px;
+            background: #2c1810;
+            margin: 0 auto 8px;
+        }
+
+        .sig-name {
             font-size: 13px;
+            font-weight: bold;
+            color: #2c1810;
+        }
+
+        .sig-title {
+            font-size: 10px;
+            color: #6b5d52;
             font-style: italic;
         }
 
-        .certificate-number {
+        /* Footer */
+        .cert-number {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
             text-align: center;
-            margin-top: 40px;
-            font-size: 11px;
-            color: #9a8a7a;
+            font-size: 9px;
+            color: #999;
             letter-spacing: 2px;
         }
     </style>
 </head>
 
 <body>
-    <div class="certificate-container">
-        <div class="inner-border">
-            <div class="ornament ornament-tl">❖</div>
-            <div class="ornament ornament-tr">❖</div>
-            <div class="ornament ornament-bl">❖</div>
-            <div class="ornament ornament-br">❖</div>
+    <div class="certificate-wrapper">
+        <div class="gold-frame"></div>
+        <div class="ornament ornament-tl"></div>
+        <div class="ornament ornament-tr"></div>
+        <div class="ornament ornament-bl"></div>
+        <div class="ornament ornament-br"></div>
 
-            <div class="certificate-header">
-                <div class="seal">
-                    <div class="seal-icon">🎓</div>
-                </div>
-                <div class="certificate-title">Certificate</div>
-                <div class="certificate-subtitle">Of Achievement</div>
-                <div class="divider"></div>
+        <div class="content">
+            <div class="institution-name">{{ config('certificate.institution.name', 'Learning Management System') }}
+            </div>
+            <div class="certificate-title">Sertifikat</div>
+            <div class="certificate-subtitle">Penghargaan</div>
+            <div class="gold-divider"></div>
+            <div class="gold-divider-thin"></div>
+
+            <p class="preamble">Dengan bangga diberikan kepada</p>
+
+            <div class="student-name">{{ $certificate->student_name }}</div>
+
+            <p class="completion-text">yang telah berhasil menyelesaikan kursus</p>
+
+            <div class="course-title">&ldquo;{{ $certificate->course_title }}&rdquo;</div>
+
+            @if ($certificate->grade)
+                <div class="grade-seal">{{ $certificate->grade }}</div>
+            @endif
+
+            <div class="details-box">
+                <table class="details-table">
+                    <tr>
+                        <td class="label">Tanggal Selesai</td>
+                        <td class="value">{{ $certificate->completion_date->translatedFormat('d F Y') }}</td>
+                        @if ($certificate->final_score)
+                            <td class="label">Nilai Akhir</td>
+                            <td class="value">{{ $certificate->final_score }}%</td>
+                        @endif
+                    </tr>
+                    <tr>
+                        <td class="label">Tanggal Terbit</td>
+                        <td class="value">{{ $certificate->issue_date->translatedFormat('d F Y') }}</td>
+                        @if (isset($certificate->metadata['total_hours']) && $certificate->metadata['total_hours'] > 0)
+                            <td class="label">Durasi</td>
+                            <td class="value">{{ $certificate->metadata['total_hours'] }} Jam</td>
+                        @endif
+                    </tr>
+                </table>
             </div>
 
-            <div class="certificate-body">
-                <p class="certificate-text">
-                    This is to certify that
-                </p>
-
-                <div class="student-name">{{ $certificate->student_name }}</div>
-
-                <p class="certificate-text">
-                    has successfully completed the course
-                </p>
-
-                <div class="course-title">{{ $certificate->course_title }}</div>
-
-                @if ($certificate->grade)
-                    <div class="grade-badge">{{ $certificate->grade }}</div>
-                @endif
-
-                <div class="details-box">
-                    <div class="detail-row">
-                        <span class="detail-label">Completed On:</span>
-                        <span class="detail-value">{{ $certificate->completion_date->format('F d, Y') }}</span>
-                    </div>
-                    @if ($certificate->final_score)
-                        <div class="detail-row">
-                            <span class="detail-label">Final Score:</span>
-                            <span class="detail-value">{{ $certificate->final_score }}%</span>
-                        </div>
-                    @endif
-                    <div class="detail-row">
-                        <span class="detail-label">Issued On:</span>
-                        <span class="detail-value">{{ $certificate->issue_date->format('F d, Y') }}</span>
-                    </div>
-                    @if (isset($certificate->metadata['total_hours']))
-                        <div class="detail-row">
-                            <span class="detail-label">Duration:</span>
-                            <span class="detail-value">{{ $certificate->metadata['total_hours'] }} Hours</span>
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            <div class="certificate-footer">
-                <div class="signature-section">
-                    <div class="signature-line"></div>
-                    <div class="signature-name">{{ $certificate->instructor_name ?? 'Instructor' }}</div>
-                    <div class="signature-title">Course Instructor</div>
-                </div>
-
-                <div class="signature-section">
-                    <div class="signature-line"></div>
-                    <div class="signature-name">Academic Director</div>
-                    <div class="signature-title">Educational Institution</div>
-                </div>
-            </div>
-
-            <div class="certificate-number">
-                {{ $certificate->certificate_number }}
+            <div class="signatures">
+                <table class="sig-table">
+                    <tr>
+                        <td>
+                            <div class="sig-line"></div>
+                            <div class="sig-name">{{ $certificate->instructor_name ?? 'Pengajar' }}</div>
+                            <div class="sig-title">Pengajar Kursus</div>
+                        </td>
+                        <td>
+                            <div class="sig-line"></div>
+                            <div class="sig-name">{{ config('certificate.institution.director', 'Direktur') }}</div>
+                            <div class="sig-title">{{ config('certificate.institution.name', 'LMS Platform') }}</div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
+
+        <div class="cert-number">No: {{ $certificate->certificate_number }} | Verifikasi:
+            {{ $certificate->verification_url }}</div>
     </div>
 </body>
 

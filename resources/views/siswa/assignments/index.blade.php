@@ -102,7 +102,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.', $assignment) }}"
+                                                <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.show', $assignment) }}"
                                                     class="text-blue-600 hover:text-blue-800 font-semibold">
                                                     <i class="fas fa-eye mr-1"></i>Lihat
                                                 </a>

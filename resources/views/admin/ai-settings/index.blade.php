@@ -5,7 +5,8 @@
                 <h2 class="text-3xl font-bold text-gray-900">
                     <i class="fas fa-robot mr-3"></i>{{ __('AI Assistant Settings') }}
                 </h2>
-                <p class="text-sm text-gray-600 mt-1">{{ __('Configure ChatGPT integration for intelligent Q&A assistance') }}</p>
+                <p class="text-sm text-gray-600 mt-1">
+                    {{ __('Configure ChatGPT integration for intelligent Q&A assistance') }}</p>
             </div>
             <div class="flex gap-2">
                 <button type="button" onclick="testConnection()"
@@ -49,7 +50,8 @@
                         </div>
                         <div>
                             <div class="text-blue-600 text-xs font-semibold mb-1">{{ __('Total Conversations') }}</div>
-                            <div class="text-2xl font-bold text-blue-900">{{ number_format($stats['total_conversations']) }}</div>
+                            <div class="text-2xl font-bold text-blue-900">
+                                {{ number_format($stats['total_conversations']) }}</div>
                         </div>
                     </div>
                 </div>
@@ -61,7 +63,8 @@
                         </div>
                         <div>
                             <div class="text-purple-600 text-xs font-semibold mb-1">{{ __('Total Messages') }}</div>
-                            <div class="text-2xl font-bold text-purple-900">{{ number_format($stats['total_messages']) }}</div>
+                            <div class="text-2xl font-bold text-purple-900">
+                                {{ number_format($stats['total_messages']) }}</div>
                         </div>
                     </div>
                 </div>
@@ -73,7 +76,8 @@
                         </div>
                         <div>
                             <div class="text-green-600 text-xs font-semibold mb-1">{{ __('Tokens Used') }}</div>
-                            <div class="text-2xl font-bold text-green-900">{{ number_format($stats['total_tokens_used']) }}</div>
+                            <div class="text-2xl font-bold text-green-900">
+                                {{ number_format($stats['total_tokens_used']) }}</div>
                         </div>
                     </div>
                 </div>
@@ -85,7 +89,8 @@
                         </div>
                         <div>
                             <div class="text-orange-600 text-xs font-semibold mb-1">{{ __('Active Chats') }}</div>
-                            <div class="text-2xl font-bold text-orange-900">{{ number_format($stats['active_conversations']) }}</div>
+                            <div class="text-2xl font-bold text-orange-900">
+                                {{ number_format($stats['active_conversations']) }}</div>
                         </div>
                     </div>
                 </div>
@@ -165,19 +170,82 @@
                             </div>
                         </div>
 
-                        <!-- API Key -->
+                        <!-- AI Provider Selection -->
                         <div>
+                            <label for="ai_provider" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('AI Provider') }} <span class="text-red-500">*</span>
+                            </label>
+                            <select name="ai_provider" id="ai_provider"
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                onchange="updateProviderFields()">
+                                @foreach ($providers as $value => $label)
+                                    <option value="{{ $value }}"
+                                        {{ old('ai_provider', $settings['ai_provider']) == $value ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-sm text-gray-500 mt-1">
+                                {{ __('Pilih provider AI yang ingin digunakan. Setiap provider memiliki model dan harga yang berbeda.') }}
+                            </p>
+                        </div>
+
+                        <!-- OpenAI API Key -->
+                        <div id="openai-key-section">
                             <label for="ai_openai_api_key" class="block text-sm font-medium text-gray-700 mb-2">
-                                {{ __('OpenAI API Key') }} <span class="text-red-500">*</span>
+                                {{ __('OpenAI API Key') }}
                             </label>
                             <input type="password" name="ai_openai_api_key" id="ai_openai_api_key"
                                 value="{{ old('ai_openai_api_key', $settings['ai_openai_api_key']) }}"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 placeholder="sk-proj-...">
                             <p class="text-sm text-gray-500 mt-1">
-                                {!! __('Get your API key from :link', ['link' => '<a href="https://platform.openai.com/api-keys" target="_blank" class="text-blue-600 hover:underline">'.__('OpenAI Platform').'</a>']) !!}
+                                {!! __('Dapatkan API key dari :link', [
+                                    'link' =>
+                                        '<a href="https://platform.openai.com/api-keys" target="_blank" class="text-blue-600 hover:underline">OpenAI Platform</a>',
+                                ]) !!}
                             </p>
                             @error('ai_openai_api_key')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Anthropic API Key -->
+                        <div id="anthropic-key-section">
+                            <label for="ai_anthropic_api_key" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Anthropic API Key') }}
+                            </label>
+                            <input type="password" name="ai_anthropic_api_key" id="ai_anthropic_api_key"
+                                value="{{ old('ai_anthropic_api_key', $settings['ai_anthropic_api_key']) }}"
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                placeholder="sk-ant-...">
+                            <p class="text-sm text-gray-500 mt-1">
+                                {!! __('Dapatkan API key dari :link', [
+                                    'link' =>
+                                        '<a href="https://console.anthropic.com/settings/keys" target="_blank" class="text-blue-600 hover:underline">Anthropic Console</a>',
+                                ]) !!}
+                            </p>
+                            @error('ai_anthropic_api_key')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Gemini API Key -->
+                        <div id="gemini-key-section">
+                            <label for="ai_gemini_api_key" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Google Gemini API Key') }}
+                            </label>
+                            <input type="password" name="ai_gemini_api_key" id="ai_gemini_api_key"
+                                value="{{ old('ai_gemini_api_key', $settings['ai_gemini_api_key']) }}"
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                placeholder="AIza...">
+                            <p class="text-sm text-gray-500 mt-1">
+                                {!! __('Dapatkan API key dari :link', [
+                                    'link' =>
+                                        '<a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-600 hover:underline">Google AI Studio</a>',
+                                ]) !!}
+                            </p>
+                            @error('ai_gemini_api_key')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -197,7 +265,7 @@
                                 @endforeach
                             </select>
                             <p class="text-sm text-gray-500 mt-1">
-                                {{ __('Choose the AI model to use. GPT-4 is more capable but slower and expensive. GPT-3.5 Turbo is faster and cost-effective.') }}
+                                {{ __('Pilih model AI. Model yang ditampilkan sesuai dengan provider yang dipilih.') }}
                             </p>
                             @error('ai_model')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -290,7 +358,8 @@
                         <i class="fas fa-times"></i>
                         <span>{{ __('Cancel') }}</span>
                     </a>
-                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                         <i class="fas fa-save"></i>
                         <span>{{ __('Save Settings') }}</span>
                     </button>
@@ -304,13 +373,15 @@
                     {{ __('Getting Started with AI Assistant') }}
                 </h3>
                 <div class="space-y-3 text-sm text-gray-700">
-                    <p><strong>1.</strong> {{ __('Get your OpenAI API key from') }} <a href="https://platform.openai.com/api-keys"
-                            target="_blank"
+                    <p><strong>1.</strong> {{ __('Get your OpenAI API key from') }} <a
+                            href="https://platform.openai.com/api-keys" target="_blank"
                             class="text-blue-600 hover:underline">https://platform.openai.com/api-keys</a></p>
                     <p><strong>2.</strong> {{ __('Paste the API key above and enable the AI assistant') }}</p>
                     <p><strong>3.</strong> {{ __('Click "Test Connection" to verify your API key works') }}</p>
-                    <p><strong>4.</strong> {{ __('Configure advanced settings like model, tokens, and temperature') }}</p>
-                    <p><strong>5.</strong> {{ __('Students can now access AI assistant via the chat widget or dedicated AI page') }}
+                    <p><strong>4.</strong> {{ __('Configure advanced settings like model, tokens, and temperature') }}
+                    </p>
+                    <p><strong>5.</strong>
+                        {{ __('Students can now access AI assistant via the chat widget or dedicated AI page') }}
                     </p>
                 </div>
             </div>
@@ -358,7 +429,8 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: aiSettingsLocale.successTitle,
-                                html: data.message + '<br><small>' + aiSettingsLocale.modelsAvailable.replace(':count', data.models_available) +
+                                html: data.message + '<br><small>' + aiSettingsLocale.modelsAvailable.replace(
+                                        ':count', data.models_available) +
                                     '</small>',
                                 timer: 3000
                             });
@@ -380,6 +452,37 @@
                         });
                     });
             }
+
+            // Provider-based field toggling
+            const modelsByProvider = @json($modelsByProvider);
+            const currentModel = @json(old('ai_model', $settings['ai_model']));
+
+            function updateProviderFields() {
+                const provider = document.getElementById('ai_provider').value;
+
+                // Show/hide API key sections
+                document.getElementById('openai-key-section').style.display = provider === 'openai' ? 'block' : 'none';
+                document.getElementById('anthropic-key-section').style.display = provider === 'anthropic' ? 'block' : 'none';
+                document.getElementById('gemini-key-section').style.display = provider === 'gemini' ? 'block' : 'none';
+
+                // Update model dropdown
+                const modelSelect = document.getElementById('ai_model');
+                const models = modelsByProvider[provider] || {};
+
+                modelSelect.innerHTML = '';
+                for (const [value, label] of Object.entries(models)) {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = label;
+                    if (value === currentModel) {
+                        option.selected = true;
+                    }
+                    modelSelect.appendChild(option);
+                }
+            }
+
+            // Initialize on page load
+            document.addEventListener('DOMContentLoaded', updateProviderFields);
         </script>
     @endpush
 </x-app-layout>

@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-edit mr-2"></i>Edit Tugas - {{ $assignment->title }}
             </h2>
-            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', $course) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                 <i class="fas fa-arrow-left"></i>
                 Kembali
@@ -19,7 +19,7 @@
                     latePolicy: '{{ old('late_policy', $assignment->late_policy) }}',
                     isPublished: {{ old('is_published', $assignment->is_published) ? 'true' : 'false' }}
                 }">
-                    <form action="{{ route(auth()->user()->getRolePrefix() . '.', [$course, $assignment]) }}"
+                    <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$course, $assignment]) }}"
                         method="POST">
                         @csrf
                         @method('PUT')
@@ -233,7 +233,7 @@
 
                         <!-- Submit Buttons -->
                         <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
-                            <a href="{{ route(auth()->user()->getRolePrefix() . '.', $course) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', $course) }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                                 <i class="fas fa-times"></i>
                                 Batal

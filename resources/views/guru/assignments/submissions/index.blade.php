@@ -7,7 +7,7 @@
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">Nilai maks: {{ $assignment->max_score }}</p>
             </div>
-            <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$assignment->course, $assignment]) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$assignment->course, $assignment]) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                 <i class="fas fa-arrow-left"></i>
                 Kembali
@@ -20,7 +20,8 @@
             <!-- Filters -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
-                    <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.', $assignment) }}"
+                    <form method="GET"
+                        action="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.index', $assignment) }}"
                         class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -130,17 +131,17 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                                                 <div class="flex justify-end gap-3">
-                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$assignment, $submission]) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', [$assignment, $submission]) }}"
                                                         class="text-blue-600 hover:text-blue-800 font-semibold">
                                                         <i class="fas fa-eye mr-1"></i>Lihat
                                                     </a>
                                                     @if (!$submission->isGraded())
-                                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$assignment, $submission]) }}"
+                                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', [$assignment, $submission]) }}"
                                                             class="text-green-600 hover:text-green-800 font-semibold">
                                                             <i class="fas fa-pen mr-1"></i>Nilai
                                                         </a>
                                                     @endif
-                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.', [$assignment, $submission]) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.download', [$assignment, $submission]) }}"
                                                         class="text-purple-600 hover:text-purple-800 font-semibold">
                                                         <i class="fas fa-download mr-1"></i>Unduh
                                                     </a>

@@ -65,7 +65,8 @@
                                                 <!-- Actions -->
                                                 <div class="flex gap-2">
                                                     <a href="{{ route('admin.exams.questions.edit', [$exam, $question]) }}"
-                                                        class="text-yellow-600 hover:text-yellow-900" title="{{ __('Edit') }}">
+                                                        class="text-yellow-600 hover:text-yellow-900"
+                                                        title="{{ __('Edit') }}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
 
@@ -135,14 +136,16 @@
                                             @elseif($question->type === 'matching')
                                                 <div class="grid grid-cols-2 gap-4 text-sm">
                                                     <div>
-                                                        <p class="font-semibold text-gray-700 mb-1">{{ __('Left Column:') }}</p>
+                                                        <p class="font-semibold text-gray-700 mb-1">
+                                                            {{ __('Left Column:') }}</p>
                                                         @foreach ($question->pairs ?? [] as $pair)
                                                             <div class="text-gray-700">• {{ $pair['left'] ?? '' }}
                                                             </div>
                                                         @endforeach
                                                     </div>
                                                     <div>
-                                                        <p class="font-semibold text-gray-700 mb-1">{{ __('Right Column:') }}</p>
+                                                        <p class="font-semibold text-gray-700 mb-1">
+                                                            {{ __('Right Column:') }}</p>
                                                         @foreach ($question->pairs ?? [] as $pair)
                                                             <div class="text-gray-700">• {{ $pair['right'] ?? '' }}
                                                             </div>
@@ -175,7 +178,8 @@
                         <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <p class="text-sm text-blue-800">
                                 <i class="fas fa-info-circle mr-2"></i>
-                                <strong>{{ __('Tips:') }}</strong> {{ __('Klik dan drag ikon') }} <i class="fas fa-grip-vertical mx-1"></i> {{ __('untuk mengubah urutan soal.') }}
+                                <strong>{{ __('Tips:') }}</strong> {{ __('Klik dan drag ikon') }} <i
+                                    class="fas fa-grip-vertical mx-1"></i> {{ __('untuk mengubah urutan soal.') }}
                             </p>
                         </div>
                     </div>
@@ -198,39 +202,44 @@
         </div>
     </div>
 
+    @php
+        $questionLocale = [
+            'reorderSuccess' => __('Urutan soal berhasil diperbarui!'),
+            'reorderFail' => __('Gagal memperbarui urutan soal'),
+            'loadFail' => __('Gagal memuat soal'),
+            'noQuestions' => __('No questions found'),
+            'usedTimes' => __('Digunakan :countx'),
+            'selectedCountSingular' => __('1 soal dipilih'),
+            'selectedCountPlural' => __(':count soal dipilih'),
+            'importSuccessFallback' => __('Soal berhasil diimport!'),
+            'importFail' => __('Gagal mengimport soal'),
+            'importError' => __('Terjadi kesalahan'),
+            'importing' => __('Mengimpor...'),
+            'importSelected' => __('Import Terpilih'),
+            'typeLabels' => [
+                'mcq_single' => __('MCQ Single'),
+                'mcq_multiple' => __('MCQ Multiple'),
+                'matching' => __('Matching'),
+                'essay' => __('Essay'),
+            ],
+            'difficultyLabels' => [
+                'easy' => __('Mudah'),
+                'medium' => __('Sedang'),
+                'hard' => __('Sulit'),
+            ],
+        ];
+    @endphp
+
+    @push('scripts')
+        <script>
+            const questionLocale = @json($questionLocale);
+        </script>
+    @endpush
+
     @if ($questions->count() > 0)
-        @php
-            $questionLocale = [
-                'reorderSuccess' => __('Urutan soal berhasil diperbarui!'),
-                'reorderFail' => __('Gagal memperbarui urutan soal'),
-                'loadFail' => __('Gagal memuat soal'),
-                'noQuestions' => __('No questions found'),
-                'usedTimes' => __('Digunakan :countx'),
-                'selectedCountSingular' => __('1 soal dipilih'),
-                'selectedCountPlural' => __(':count soal dipilih'),
-                'importSuccessFallback' => __('Soal berhasil diimport!'),
-                'importFail' => __('Gagal mengimport soal'),
-                'importError' => __('Terjadi kesalahan'),
-                'importing' => __('Mengimpor...'),
-                'importSelected' => __('Import Terpilih'),
-                'typeLabels' => [
-                    'mcq_single' => __('MCQ Single'),
-                    'mcq_multiple' => __('MCQ Multiple'),
-                    'matching' => __('Matching'),
-                    'essay' => __('Essay'),
-                ],
-                'difficultyLabels' => [
-                    'easy' => __('Mudah'),
-                    'medium' => __('Sedang'),
-                    'hard' => __('Sulit'),
-                ],
-            ];
-        @endphp
         @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
             <script>
-                const questionLocale = @json($questionLocale);
-
                 // Initialize Sortable for drag-and-drop reordering
                 const questionsList = document.getElementById('questions-list');
                 if (questionsList) {
@@ -427,7 +436,7 @@
                      onclick="toggleQuestion(${q.id})">
                     <div class="flex items-start gap-3">
                         <div class="flex items-center mt-1">
-                            <input type="checkbox" 
+                            <input type="checkbox"
                                    ${selectedQuestions.has(q.id) ? 'checked' : ''}
                                    class="w-5 h-5 text-purple-600 rounded"
                                    onclick="event.stopPropagation()">
@@ -481,9 +490,9 @@
 
                 if (count > 0) {
                     countDiv.classList.remove('hidden');
-                    countText.textContent = count === 1
-                        ? questionLocale.selectedCountSingular
-                        : questionLocale.selectedCountPlural.replace(':count', count);
+                    countText.textContent = count === 1 ?
+                        questionLocale.selectedCountSingular :
+                        questionLocale.selectedCountPlural.replace(':count', count);
                     importBtn.disabled = false;
                 } else {
                     countDiv.classList.add('hidden');
