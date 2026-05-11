@@ -225,6 +225,7 @@
                             "{$rolePrefix}.courses.*",
                             "{$rolePrefix}.exams.*",
                             "{$rolePrefix}.questions.*",
+                            "{$rolePrefix}.question-bank.*",
                         );
                         $guruAnalyticsActive = request()->routeIs("{$rolePrefix}.analytics.*");
                         $guruReportsActive = request()->routeIs("{$rolePrefix}.reports.*");
@@ -249,6 +250,13 @@
                                     <i class="fas fa-file-alt text-sm"></i>
                                 </div>
                                 <span class="truncate">{{ __('Ujian Saya') }}</span>
+                            </x-sidebar-link>
+
+                            <x-sidebar-link :href="route($rolePrefix . '.question-bank.index')" :active="request()->routeIs($rolePrefix . '.question-bank.*')">
+                                <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-database text-sm"></i>
+                                </div>
+                                <span class="truncate">{{ __('Bank Soal') }}</span>
                             </x-sidebar-link>
                         </x-sidebar-group>
 

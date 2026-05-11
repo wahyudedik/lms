@@ -118,10 +118,29 @@
                                                 @endif
 
                                                 @if ($material->type === 'file' || $material->type === 'video')
-                                                    <a href="{{ $material->getFileUrl() }}" download
-                                                        class="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
-                                                        <i class="fas fa-download mr-2"></i>Download
-                                                    </a>
+                                                    <div class="flex flex-wrap gap-2 mb-4">
+                                                        @php
+                                                            $previewable = in_array(
+                                                                strtolower(
+                                                                    pathinfo(
+                                                                        $material->file_name ?? '',
+                                                                        PATHINFO_EXTENSION,
+                                                                    ),
+                                                                ),
+                                                                ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'],
+                                                            );
+                                                        @endphp
+                                                        @if ($previewable)
+                                                            <a href="{{ $material->getFileUrl() }}" target="_blank"
+                                                                class="inline-flex items-center bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                                                <i class="fas fa-eye mr-2"></i>Preview
+                                                            </a>
+                                                        @endif
+                                                        <a href="{{ $material->getFileUrl() }}" download
+                                                            class="inline-flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                            <i class="fas fa-download mr-2"></i>Download
+                                                        </a>
+                                                    </div>
                                                 @elseif($material->type === 'youtube' && $material->getEmbedUrl())
                                                     <div class="mb-4">
                                                         <iframe src="{{ $material->getEmbedUrl() }}" frameborder="0"

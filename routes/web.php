@@ -279,6 +279,8 @@ Route::middleware(['auth', 'verified', 'role:guru'])->prefix('guru')->name('guru
     Route::resource('exams.questions', App\Http\Controllers\Guru\QuestionController::class);
     Route::post('exams/{exam}/questions/reorder', [App\Http\Controllers\Guru\QuestionController::class, 'reorder'])->name('exams.questions.reorder');
     Route::post('exams/{exam}/questions/{question}/duplicate', [App\Http\Controllers\Guru\QuestionController::class, 'duplicate'])->name('exams.questions.duplicate');
+    Route::post('exams/{exam}/questions/import-from-bank', [App\Http\Controllers\Guru\QuestionController::class, 'importFromBank'])->name('exams.questions.import-from-bank');
+    Route::get('question-bank/get-for-import', [App\Http\Controllers\Guru\QuestionController::class, 'getForImport'])->name('question-bank.get-for-import');
 
     // Report Routes (Guru)
     Route::get('reports', [App\Http\Controllers\Guru\ReportController::class, 'index'])->name('reports.index');
@@ -308,6 +310,10 @@ Route::middleware(['auth', 'verified', 'role:guru'])->prefix('guru')->name('guru
     // Grade Weights
     Route::get('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'gradeWeights'])->name('courses.grade-weights');
     Route::post('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'updateGradeWeights'])->name('courses.grade-weights.update');
+
+    // Question Bank (Guru)
+    Route::resource('question-bank', App\Http\Controllers\Guru\QuestionBankController::class)->parameters(['question-bank' => 'questionBank']);
+    Route::post('question-bank/{questionBank}/duplicate', [App\Http\Controllers\Guru\QuestionBankController::class, 'duplicate'])->name('question-bank.duplicate');
 });
 
 // Dosen Dashboard & Course Management
@@ -344,6 +350,8 @@ Route::middleware(['auth', 'verified', 'role:dosen'])->prefix('dosen')->name('do
     Route::resource('exams.questions', App\Http\Controllers\Guru\QuestionController::class);
     Route::post('exams/{exam}/questions/reorder', [App\Http\Controllers\Guru\QuestionController::class, 'reorder'])->name('exams.questions.reorder');
     Route::post('exams/{exam}/questions/{question}/duplicate', [App\Http\Controllers\Guru\QuestionController::class, 'duplicate'])->name('exams.questions.duplicate');
+    Route::post('exams/{exam}/questions/import-from-bank', [App\Http\Controllers\Guru\QuestionController::class, 'importFromBank'])->name('exams.questions.import-from-bank');
+    Route::get('question-bank/get-for-import', [App\Http\Controllers\Guru\QuestionController::class, 'getForImport'])->name('question-bank.get-for-import');
 
     // Report Routes (Dosen)
     Route::get('reports', [App\Http\Controllers\Guru\ReportController::class, 'index'])->name('reports.index');
@@ -373,6 +381,10 @@ Route::middleware(['auth', 'verified', 'role:dosen'])->prefix('dosen')->name('do
     // Grade Weights
     Route::get('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'gradeWeights'])->name('courses.grade-weights');
     Route::post('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'updateGradeWeights'])->name('courses.grade-weights.update');
+
+    // Question Bank (Dosen)
+    Route::resource('question-bank', App\Http\Controllers\Guru\QuestionBankController::class)->parameters(['question-bank' => 'questionBank']);
+    Route::post('question-bank/{questionBank}/duplicate', [App\Http\Controllers\Guru\QuestionBankController::class, 'duplicate'])->name('question-bank.duplicate');
 });
 
 // Siswa Dashboard & Course Browsing

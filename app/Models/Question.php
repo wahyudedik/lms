@@ -179,7 +179,7 @@ class Question extends Model
             }
 
             sort($userAnswer);
-            $correctAnswer = $this->correct_answer_multiple ?? [];
+            $correctAnswer = is_array($this->correct_answer_multiple) ? $this->correct_answer_multiple : [];
             sort($correctAnswer);
 
             return $userAnswer === $correctAnswer;
@@ -191,13 +191,21 @@ class Question extends Model
             }
 
             // Check if all pairs are correctly matched
-            $correctPairs = collect($this->correct_answer);
+            $correctPairs = collect($this->pairs ?? []);
             $userPairs = collect($userAnswer);
 
+            if ($correctPairs->isEmpty()) {
+                return false;
+            }
+
             foreach ($correctPairs as $correctPair) {
+                if (!is_array($correctPair)) {
+                    continue;
+                }
                 $match = $userPairs->first(function ($userPair) use ($correctPair) {
-                    return $userPair['left'] === $correctPair['left']
-                        && $userPair['right'] === $correctPair['right'];
+                    return is_array($userPair)
+                        && ($userPair['left'] ?? '') === ($correctPair['left'] ?? '')
+                        && ($userPair['right'] ?? '') === ($correctPair['right'] ?? '');
                 });
 
                 if (!$match) {

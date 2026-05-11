@@ -216,7 +216,8 @@
 
             async function initializeCharts() {
                 // Student Performance
-                const performanceData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.student-performance') }}');
+                const performanceData = await fetchData(
+                    '{{ route(auth()->user()->getRolePrefix() . '.analytics.student-performance-by-course') }}');
                 charts.studentPerformance = new Chart(document.getElementById('studentPerformanceChart'), {
                     type: 'bar',
                     data: performanceData,
@@ -254,7 +255,8 @@
                 });
 
                 // Exam Completion
-                const completionData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.exam-completion') }}');
+                const completionData = await fetchData(
+                    '{{ route(auth()->user()->getRolePrefix() . '.analytics.exam-completion-rate') }}');
                 charts.examCompletion = new Chart(document.getElementById('examCompletionChart'), {
                     type: 'bar',
                     data: completionData,
@@ -279,7 +281,8 @@
                 });
 
                 // Assignment Score by Course
-                const assignmentScoreData = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.assignment-score-by-course') }}');
+                const assignmentScoreData = await fetchData(
+                    '{{ route(auth()->user()->getRolePrefix() . '.analytics.assignment-score-by-course') }}');
                 charts.assignmentScore = new Chart(document.getElementById('assignmentScoreChart'), {
                     type: 'bar',
                     data: assignmentScoreData,
@@ -311,7 +314,8 @@
 
                 if (charts.gradeDistribution) charts.gradeDistribution.destroy();
 
-                const data = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.grade-distribution') }}?exam_id=' + examId);
+                const data = await fetchData(
+                    '{{ route(auth()->user()->getRolePrefix() . '.analytics.grade-distribution') }}?exam_id=' + examId);
                 charts.gradeDistribution = new Chart(document.getElementById('gradeDistributionChart'), {
                     type: 'pie',
                     data: data,
@@ -333,7 +337,8 @@
 
                 if (charts.studentEngagement) charts.studentEngagement.destroy();
 
-                const data = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.student-engagement-metrics') }}?course_id=' +
+                const data = await fetchData(
+                    '{{ route(auth()->user()->getRolePrefix() . '.analytics.student-engagement-metrics') }}?course_id=' +
                     courseId);
                 charts.studentEngagement = new Chart(document.getElementById('studentEngagementChart'), {
                     type: 'radar',
@@ -357,7 +362,8 @@
 
                 if (charts.assignmentCompletion) charts.assignmentCompletion.destroy();
 
-                const data = await fetchData('{{ route(auth()->user()->getRolePrefix() . '.analytics.assignment-completion-rate') }}?course_id=' +
+                const data = await fetchData(
+                    '{{ route(auth()->user()->getRolePrefix() . '.analytics.assignment-completion-rate') }}?course_id=' +
                     courseId);
                 charts.assignmentCompletion = new Chart(document.getElementById('assignmentCompletionChart'), {
                     type: 'bar',
@@ -390,7 +396,8 @@
                 if (charts.studentPerformance) charts.studentPerformance.destroy();
 
                 const performanceData = await fetchData(
-                    '{{ route(auth()->user()->getRolePrefix() . '.analytics.student-performance') }}?course_id=' + courseId);
+                    '{{ route(auth()->user()->getRolePrefix() . '.analytics.student-performance-by-course') }}?course_id=' +
+                    courseId);
                 charts.studentPerformance = new Chart(document.getElementById('studentPerformanceChart'), {
                     type: 'bar',
                     data: performanceData,

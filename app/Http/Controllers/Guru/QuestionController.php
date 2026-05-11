@@ -360,4 +360,74 @@ class QuestionController extends Controller
 
         return back()->with('success', 'Soal berhasil diduplikasi!');
     }
+
+    /**
+     * Import questions from bank to exam.
+     */
+    public function importFromBank(Request $request, Exam $exam)
+    {
+        $this->authorize('update', $exam);
+
+        $validated = $request->validate([
+            'question_ids' => 'required|array',
+            'question_ids.*' => 'exists:question_bank,id',
+        ]);
+
+        $nextOrder = $exam->questions()->max('order') + 1;
+        $imported = 0;
+
+        $bankQuestions = \App\Models\QuestionBank::whereIn('id', $validated['question_ids'])->get();
+
+        foreach ($bankQuestions as $bankQuestion) {
+            $bankQuestion->cloneToExam($exam->id, $nextOrder);
+            $nextOrder++;
+            $imported++;
+        }
+
+        return response()->json([
+            'success' => true,
+            'imported' => $imported,
+            'message' => "$imported soal berhasil diimport dari Bank Soal!",
+        ]);
+    }
+
+    /**
+     * Get questions from bank for import modal (AJAX).
+     * Shows: own questions (active) + other teachers' questions (active + verified + shared)
+     */
+    public function getForImport()
+    {
+        $userId = auth()->id();
+
+        $questions = \App\Models\QuestionBank::with(['category', 'creator'])
+            ->where('is_active', true)
+            ->where(function ($query) use ($userId) {
+                $query->where('created_by', $userId) // soal sendiri
+                    ->orWhere(function ($q) {
+                        $q->where('is_shared', true)
+                            ->where('is_verified', true); // soal guru lain yang shared + verified
+                    });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($q) use ($userId) {
+                return [
+                    'id' => $q->id,
+                    'question_text' => $q->question_text,
+                    'type' => $q->type,
+                    'difficulty' => $q->difficulty,
+                    'default_points' => $q->default_points,
+                    'category_id' => $q->category_id,
+                    'category_name' => $q->category ? $q->category->name : null,
+                    'times_used' => $q->times_used,
+                    'is_own' => $q->created_by === $userId,
+                    'creator_name' => $q->created_by !== $userId ? ($q->creator->name ?? 'Unknown') : null,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'questions' => $questions,
+        ]);
+    }
 }

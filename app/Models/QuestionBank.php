@@ -118,6 +118,7 @@ class QuestionBank extends Model
         'times_incorrect',
         'is_active',
         'is_verified',
+        'is_shared',
     ];
 
     protected $casts = [
@@ -129,6 +130,7 @@ class QuestionBank extends Model
         'essay_case_sensitive' => 'boolean',
         'is_active' => 'boolean',
         'is_verified' => 'boolean',
+        'is_shared' => 'boolean',
         'default_points' => 'decimal:2',
         'average_score' => 'decimal:2',
         'essay_min_similarity' => 'decimal:2',

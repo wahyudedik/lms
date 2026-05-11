@@ -195,6 +195,67 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- Assignments -->
+                    <div class="bg-white overflow-hidden shadow-md rounded-lg">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-900">
+                                    <i class="fas fa-tasks text-orange-600 mr-2"></i>{{ __('Tugas') }}
+                                </h3>
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.index', $course) }}"
+                                    class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                                    <i class="fas fa-cog"></i>{{ __('Kelola Tugas') }}
+                                </a>
+                            </div>
+
+                            @if ($course->assignments->count() > 0)
+                                <div class="space-y-2">
+                                    @foreach ($course->assignments->sortByDesc('created_at')->take(5) as $assignment)
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$course, $assignment]) }}"
+                                            class="flex items-center p-3 hover:bg-gray-50 rounded-lg border border-gray-200 transition-all duration-150">
+                                            <i class="fas fa-file-alt text-orange-500 text-xl mr-3"></i>
+                                            <div class="flex-1">
+                                                <p class="text-sm font-semibold text-gray-900">
+                                                    {{ $assignment->title }}
+                                                </p>
+                                                <div class="flex items-center gap-2 mt-1">
+                                                    @if ($assignment->deadline)
+                                                        <span class="text-xs text-gray-500">
+                                                            <i
+                                                                class="fas fa-clock mr-1"></i>{{ $assignment->deadline->format('d M Y H:i') }}
+                                                        </span>
+                                                    @endif
+                                                    <span
+                                                        class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-full {{ $assignment->is_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                        {{ $assignment->is_published ? __('Published') : __('Draft') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <i class="fas fa-chevron-right text-gray-400"></i>
+                                        </a>
+                                    @endforeach
+                                </div>
+
+                                @if ($course->assignments->count() > 5)
+                                    <div class="mt-4 text-center">
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.index', $course) }}"
+                                            class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
+                                            {{ __('Lihat semua :count tugas', ['count' => $course->assignments->count()]) }}
+                                        </a>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="flex flex-col items-center justify-center text-gray-500 py-8">
+                                    <div
+                                        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                        <i class="fas fa-tasks text-gray-400 text-2xl"></i>
+                                    </div>
+                                    <p class="text-sm font-semibold">{{ __('Belum ada tugas') }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Sidebar -->
@@ -209,7 +270,8 @@
                             <div class="space-y-4">
                                 <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
                                     <dt class="text-xs font-semibold text-blue-700 mb-1">Pengajar</dt>
-                                    <dd class="text-sm font-semibold text-gray-900">{{ $course->instructor->name }}
+                                    <dd class="text-sm font-semibold text-gray-900">
+                                        {{ $course->instructor->name }}
                                     </dd>
                                 </div>
 
@@ -217,7 +279,8 @@
                                     <dt class="text-xs font-semibold text-purple-700 mb-1">Kapasitas</dt>
                                     <dd class="text-sm font-semibold text-gray-900">
                                         @if ($course->max_students)
-                                            {{ $course->enrollments->count() }} / {{ $course->max_students }} siswa
+                                            {{ $course->enrollments->count() }} / {{ $course->max_students }}
+                                            siswa
                                         @else
                                             {{ $course->enrollments->count() }} siswa (Tidak terbatas)
                                         @endif
@@ -255,8 +318,10 @@
                                             <i class="fas fa-user-check text-green-600 text-xl"></i>
                                         </div>
                                         <div>
-                                            <div class="text-green-600 text-xs font-semibold mb-1">Siswa Aktif</div>
-                                            <div class="text-2xl font-bold text-green-900">{{ $activeStudents }}</div>
+                                            <div class="text-green-600 text-xs font-semibold mb-1">Siswa Aktif
+                                            </div>
+                                            <div class="text-2xl font-bold text-green-900">{{ $activeStudents }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -267,7 +332,8 @@
                                             <i class="fas fa-check-circle text-blue-600 text-xl"></i>
                                         </div>
                                         <div>
-                                            <div class="text-blue-600 text-xs font-semibold mb-1">Siswa Selesai</div>
+                                            <div class="text-blue-600 text-xs font-semibold mb-1">Siswa Selesai
+                                            </div>
                                             <div class="text-2xl font-bold text-blue-900">{{ $completedStudents }}
                                             </div>
                                         </div>
@@ -280,7 +346,8 @@
                                             <i class="fas fa-users text-purple-600 text-xl"></i>
                                         </div>
                                         <div>
-                                            <div class="text-purple-600 text-xs font-semibold mb-1">Total Siswa</div>
+                                            <div class="text-purple-600 text-xs font-semibold mb-1">Total Siswa
+                                            </div>
                                             <div class="text-2xl font-bold text-purple-900">
                                                 {{ $course->enrollments->count() }}</div>
                                         </div>

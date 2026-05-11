@@ -13,7 +13,7 @@
                     <i class="fas fa-plus"></i>
                     Buat Tugas
                 </a>
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.create', $course) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.show', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left"></i>
                     Kembali
@@ -27,7 +27,8 @@
             <!-- Filters -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg mb-6">
                 <div class="p-6">
-                    <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', $course) }}"
+                    <form method="GET"
+                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.index', $course) }}"
                         class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -139,12 +140,12 @@
                                                         class="text-blue-600 hover:text-blue-800 font-semibold">
                                                         <i class="fas fa-eye mr-1"></i>Lihat
                                                     </a>
-                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$course, $assignment]) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.edit', [$course, $assignment]) }}"
                                                         class="text-green-600 hover:text-green-800 font-semibold">
                                                         <i class="fas fa-edit mr-1"></i>Edit
                                                     </a>
                                                     <form
-                                                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$course, $assignment]) }}"
+                                                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.toggle-status', [$course, $assignment]) }}"
                                                         method="POST" class="inline">
                                                         @csrf
                                                         <button type="submit"
@@ -155,7 +156,7 @@
                                                         </button>
                                                     </form>
                                                     <form
-                                                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$course, $assignment]) }}"
+                                                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.destroy', [$course, $assignment]) }}"
                                                         method="POST" class="inline delete-form">
                                                         @csrf
                                                         @method('DELETE')

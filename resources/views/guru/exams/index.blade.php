@@ -138,7 +138,7 @@
                                                         title="Edit">
                                                         <i class="fas fa-edit mr-1"></i>Edit
                                                     </a>
-                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.edit', $exam) }}"
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.questions.index', $exam) }}"
                                                         class="text-purple-600 hover:text-purple-800 font-semibold"
                                                         title="Kelola Soal">
                                                         <i class="fas fa-list mr-1"></i>Soal

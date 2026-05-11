@@ -174,6 +174,7 @@ Sistem mendukung 5 role dengan dua pasang role yang ekuivalen secara permission:
 - **Template Export**: Download template untuk bulk import
 - **Clone to Exam**: Quick add questions dari bank ke exam
 - **Random Selection**: Auto-select questions berdasarkan criteria
+- **Sharing**: Guru dapat share bank soal ke guru lain (shared + verified)
 - **Version Control**: Track changes pada questions
 
 ### 🎯 Grading & Reporting

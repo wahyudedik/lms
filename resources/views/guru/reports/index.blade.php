@@ -9,7 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Course Filter -->
             <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.reports.index') }}" class="flex gap-4 items-end">
+                <form method="GET" action="{{ route(auth()->user()->getRolePrefix() . '.reports.index') }}"
+                    class="flex gap-4 items-end">
                     <div class="flex-1">
                         <label for="course_id" class="block text-sm font-semibold text-gray-700 mb-2">
                             <i class="fas fa-book text-gray-400 mr-1"></i>{{ __('Select Course') }}
@@ -72,17 +73,17 @@
 
                                     <!-- Export Actions -->
                                     <div class="ml-6 space-y-2">
-                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-excel', $exam) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-excel', $exam) }}"
                                             class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md text-sm">
                                             <i class="fas fa-file-excel"></i>
                                             {{ __('Export Excel') }}
                                         </a>
-                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-excel', $exam) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-pdf', $exam) }}"
                                             class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md text-sm">
                                             <i class="fas fa-file-pdf"></i>
                                             {{ __('Export PDF') }}
                                         </a>
-                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-pdf', $exam) }}"
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-pdf', $exam) }}"
                                             class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md text-sm">
                                             <i class="fas fa-chart-line"></i>
                                             {{ __('View Details') }}

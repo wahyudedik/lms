@@ -16,8 +16,8 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.questions.index', $exam) }}" method="POST"
-                        enctype="multipart/form-data">
+                    <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.questions.index', $exam) }}"
+                        method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <!-- Question Type -->
@@ -142,7 +142,9 @@
                             <!-- Case Sensitive -->
                             <div class="mb-4">
                                 <label class="flex items-center">
+                                    <input type="hidden" name="essay_case_sensitive" value="0">
                                     <input type="checkbox" name="essay_case_sensitive" id="essay_case_sensitive"
+                                        value="1"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                     <span class="ml-2 text-sm text-gray-700">Case Sensitive (huruf besar/kecil
                                         berpengaruh)</span>

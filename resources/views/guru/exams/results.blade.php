@@ -10,12 +10,12 @@
                 <p class="text-gray-600 text-sm mt-1">Kursus: {{ $exam->course->title }}</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-excel', $exam) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-excel', $exam) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-file-excel"></i>
                     Export Excel
                 </a>
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-pdf', $exam) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-pdf', $exam) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-file-pdf"></i>
                     Export PDF

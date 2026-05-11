@@ -5,7 +5,7 @@
                 <i class="fas fa-file-alt mr-2"></i>{{ $material->title }}
             </h2>
             <div class="flex gap-2">
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', [$course, $material]) }}"
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.edit', [$course, $material]) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-edit"></i>
                     Edit
@@ -266,7 +266,7 @@
                             </h3>
                             <div class="space-y-2">
                                 <form
-                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', [$course, $material]) }}"
+                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.toggle-status', [$course, $material]) }}"
                                     method="POST">
                                     @csrf
                                     <button type="submit"
@@ -281,7 +281,8 @@
                                     </button>
                                 </form>
 
-                                <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.index', [$course, $material]) }}"
+                                <form
+                                    action="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.destroy', [$course, $material]) }}"
                                     method="POST"
                                     onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this material?') }}');">
                                     @csrf
