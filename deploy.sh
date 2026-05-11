@@ -44,6 +44,9 @@ COMPOSER_BIN="composer"
 NPM_BIN="npm"
 GIT_BRANCH="main"
 
+# Izinkan Composer berjalan sebagai root tanpa warning
+export COMPOSER_ALLOW_SUPERUSER=1
+
 # =============================================================================
 # Mulai Deploy
 # =============================================================================
@@ -62,50 +65,54 @@ echo ""
 info "Mengaktifkan maintenance mode..."
 $PHP_BIN artisan down --refresh=15 --retry=60 || true
 
-# 2. Pull perubahan terbaru dari Git
+# 2. Bersihkan file/folder sampah yang tidak seharusnya ada
+info "Membersihkan file/folder sampah..."
+rm -rf "$APP_DIR/toArray()" "$APP_DIR/getRolePrefix()" 2>/dev/null || true
+
+# 3. Pull perubahan terbaru dari Git
 info "Pulling perubahan terbaru dari git..."
 git pull origin "$GIT_BRANCH" || error "Gagal pull dari git"
 
-# 3. Install/update dependencies PHP
+# 4. Install/update dependencies PHP
 info "Menginstall dependencies PHP (production)..."
 $COMPOSER_BIN install --no-dev --optimize-autoloader --no-interaction
 
-# 4. Install/update dependencies Node.js & build assets
+# 5. Install/update dependencies Node.js & build assets
 info "Menginstall dependencies Node.js..."
 $NPM_BIN ci
 
 info "Building assets (Vite)..."
 $NPM_BIN run build
 
-# 5. Jalankan migrasi database
+# 6. Jalankan migrasi database
 info "Menjalankan migrasi database..."
 $PHP_BIN artisan migrate --force
 
-# 6. Optimasi Laravel
+# 7. Optimasi Laravel
 info "Mengoptimasi aplikasi..."
 $PHP_BIN artisan config:cache
 $PHP_BIN artisan route:cache
 $PHP_BIN artisan view:cache
 $PHP_BIN artisan event:cache
 
-# 7. Clear cache lama
+# 8. Clear cache lama
 info "Membersihkan cache lama..."
 $PHP_BIN artisan cache:clear
 
-# 8. Link storage (jika belum)
+# 9. Link storage (jika belum)
 info "Memastikan storage link..."
 $PHP_BIN artisan storage:link 2>/dev/null || true
 
-# 9. Restart queue worker
+# 10. Restart queue worker
 info "Merestart queue worker..."
 $PHP_BIN artisan queue:restart
 
-# 10. Set permission yang benar
+# 11. Set permission yang benar
 info "Mengatur permission..."
 chmod -R 775 storage bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || warn "Gagal chown (mungkin bukan root). Pastikan permission sudah benar."
 
-# 11. Nonaktifkan Maintenance Mode
+# 12. Nonaktifkan Maintenance Mode
 info "Menonaktifkan maintenance mode..."
 $PHP_BIN artisan up
 

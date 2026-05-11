@@ -23,3 +23,21 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# IDE Helper (dev only)
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+
+# Documentation files (dev only)
+BLADE_ROUTES_UPDATE_STATUS.md
+MANUAL_VIEW_UPDATE_GUIDE.md
+ROLE_EQUIVALENCE_COMPLETE.md
+ROLE_EQUIVALENCE_FIX_GUIDE.md
+ROLE_EQUIVALENCE_IMPLEMENTATION_SUMMARY.md
+TEST_RESULTS_SUMMARY.md
+translate.md
+
+# Scripts not needed in production
+update-blade-routes.ps1
+update-blade-routes.sh
