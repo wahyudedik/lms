@@ -68,7 +68,7 @@ $PHP_BIN artisan down --refresh=15 --retry=60 || true
 # 2. Reset local changes & pull perubahan terbaru dari Git
 info "Mereset perubahan lokal..."
 git checkout -- .
-git clean -fd
+git clean -fd -e public/.user.ini -e public/.well-known
 
 info "Pulling perubahan terbaru dari git..."
 git pull origin "$GIT_BRANCH" || error "Gagal pull dari git"
