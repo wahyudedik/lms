@@ -110,7 +110,13 @@ $PHP_BIN artisan queue:restart
 # 11. Set permission yang benar
 info "Mengatur permission..."
 chmod -R 775 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || warn "Gagal chown (mungkin bukan root). Pastikan permission sudah benar."
+
+# Deteksi user web server (www-data untuk Ubuntu/Debian, www untuk aaPanel/BT Panel)
+WEB_USER="www-data"
+if id "www" &>/dev/null; then
+    WEB_USER="www"
+fi
+chown -R "$WEB_USER:$WEB_USER" storage bootstrap/cache 2>/dev/null || warn "Gagal chown. Pastikan permission sudah benar secara manual."
 
 # 12. Nonaktifkan Maintenance Mode
 info "Menonaktifkan maintenance mode..."
