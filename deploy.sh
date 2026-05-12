@@ -73,6 +73,9 @@ git clean -fd
 info "Pulling perubahan terbaru dari git..."
 git pull origin "$GIT_BRANCH" || error "Gagal pull dari git"
 
+# Pastikan deploy.sh tetap executable setelah pull
+chmod +x "$APP_DIR/deploy.sh"
+
 # 3. Install/update dependencies PHP
 info "Menginstall dependencies PHP (production)..."
 $COMPOSER_BIN install --no-dev --optimize-autoloader --no-interaction
