@@ -65,7 +65,11 @@ echo ""
 info "Mengaktifkan maintenance mode..."
 $PHP_BIN artisan down --refresh=15 --retry=60 || true
 
-# 2. Pull perubahan terbaru dari Git
+# 2. Reset local changes & pull perubahan terbaru dari Git
+info "Mereset perubahan lokal..."
+git checkout -- .
+git clean -fd
+
 info "Pulling perubahan terbaru dari git..."
 git pull origin "$GIT_BRANCH" || error "Gagal pull dari git"
 

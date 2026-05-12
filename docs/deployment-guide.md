@@ -79,7 +79,7 @@ chmod +x deploy.sh
 
 Script ini otomatis melakukan:
 1. Aktifkan maintenance mode
-2. Pull perubahan dari git
+2. Reset perubahan lokal (`git checkout -- .` & `git clean -fd`) lalu pull dari git
 3. Install dependencies PHP dan Node.js
 4. Build assets (Vite)
 5. Jalankan migrasi database
