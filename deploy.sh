@@ -65,49 +65,45 @@ echo ""
 info "Mengaktifkan maintenance mode..."
 $PHP_BIN artisan down --refresh=15 --retry=60 || true
 
-# 2. Bersihkan file/folder sampah yang tidak seharusnya ada
-info "Membersihkan file/folder sampah..."
-rm -rf "$APP_DIR/toArray()" "$APP_DIR/getRolePrefix()" 2>/dev/null || true
-
-# 3. Pull perubahan terbaru dari Git
+# 2. Pull perubahan terbaru dari Git
 info "Pulling perubahan terbaru dari git..."
 git pull origin "$GIT_BRANCH" || error "Gagal pull dari git"
 
-# 4. Install/update dependencies PHP
+# 3. Install/update dependencies PHP
 info "Menginstall dependencies PHP (production)..."
 $COMPOSER_BIN install --no-dev --optimize-autoloader --no-interaction
 
-# 5. Install/update dependencies Node.js & build assets
+# 4. Install/update dependencies Node.js & build assets
 info "Menginstall dependencies Node.js..."
 $NPM_BIN ci
 
 info "Building assets (Vite)..."
 $NPM_BIN run build
 
-# 6. Jalankan migrasi database
+# 5. Jalankan migrasi database
 info "Menjalankan migrasi database..."
 $PHP_BIN artisan migrate --force
 
-# 7. Optimasi Laravel
+# 6. Optimasi Laravel
 info "Mengoptimasi aplikasi..."
 $PHP_BIN artisan config:cache
 $PHP_BIN artisan route:cache
 $PHP_BIN artisan view:cache
 $PHP_BIN artisan event:cache
 
-# 8. Clear cache lama
+# 7. Clear cache lama
 info "Membersihkan cache lama..."
 $PHP_BIN artisan cache:clear
 
-# 9. Link storage (jika belum)
+# 8. Link storage (jika belum)
 info "Memastikan storage link..."
 $PHP_BIN artisan storage:link 2>/dev/null || true
 
-# 10. Restart queue worker
+# 9. Restart queue worker
 info "Merestart queue worker..."
 $PHP_BIN artisan queue:restart
 
-# 11. Set permission yang benar
+# 10. Set permission yang benar
 info "Mengatur permission..."
 chmod -R 775 storage bootstrap/cache
 
@@ -118,7 +114,7 @@ if id "www" &>/dev/null; then
 fi
 chown -R "$WEB_USER:$WEB_USER" storage bootstrap/cache 2>/dev/null || warn "Gagal chown. Pastikan permission sudah benar secara manual."
 
-# 12. Nonaktifkan Maintenance Mode
+# 11. Nonaktifkan Maintenance Mode
 info "Menonaktifkan maintenance mode..."
 $PHP_BIN artisan up
 
