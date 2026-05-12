@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
 use App\Models\Enrollment;
+use App\Models\InformationCard;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -52,6 +53,9 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentUsers', 'recentCourses', 'recentAttempts', 'activeExams'));
+        // Information cards visible to this user
+        $informationCards = InformationCard::visibleTo(auth()->user())->get();
+
+        return view('admin.dashboard', compact('stats', 'recentUsers', 'recentCourses', 'recentAttempts', 'activeExams', 'informationCards'));
     }
 }

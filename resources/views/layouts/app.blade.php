@@ -43,6 +43,8 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @stack('styles')
 </head>
 
 <body class="font-sans antialiased bg-gray-50">

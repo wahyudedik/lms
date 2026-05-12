@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use App\Models\ExamAttempt;
+use App\Models\InformationCard;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -48,6 +49,9 @@ class DashboardController extends Controller
         // Recent courses
         $recentCourses = $courses->sortByDesc('updated_at')->take(3);
 
-        return view('guru.dashboard', compact('stats', 'recentAttempts', 'upcomingExams', 'recentCourses'));
+        // Information cards visible to this user
+        $informationCards = InformationCard::visibleTo($guru)->get();
+
+        return view('guru.dashboard', compact('stats', 'recentAttempts', 'upcomingExams', 'recentCourses', 'informationCards'));
     }
 }

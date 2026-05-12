@@ -304,6 +304,8 @@ Sistem mendukung 5 role dengan dua pasang role yang ekuivalen secara permission:
 - **Exam Management**: Monitor exams dan attempts
 - **Grading Capabilities**: Grade assignments, submissions, and essay questions (same as Guru/Dosen)
 - **Reports & Export**: Export grades to Excel/PDF, generate student transcripts
+- **Information Cards**: Targeted announcement cards per role/user with scheduling (always, date range, daily), file attachments, and video URL embeds
+- **Note**: Guru/Dosen can also create and manage information cards targeted at their students (CRUD + toggle status)
 - **Settings System**: Centralized settings dengan caching
 - **Database Backup**: One-click backup dan restore
 - **System Logs**: View application logs

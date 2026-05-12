@@ -217,6 +217,10 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     // Import questions from bank
     Route::post('exams/{exam}/questions/import-from-bank', [App\Http\Controllers\Admin\QuestionController::class, 'importFromBank'])->name('exams.questions.import-from-bank');
 
+    // Information Cards (Admin)
+    Route::resource('information-cards', App\Http\Controllers\Admin\InformationCardController::class)->except(['show'])->parameters(['information-cards' => 'informationCard']);
+    Route::post('information-cards/{informationCard}/toggle-status', [App\Http\Controllers\Admin\InformationCardController::class, 'toggleStatus'])->name('information-cards.toggle-status');
+
     // Forum Category Management (Admin only)
     Route::resource('forum-categories', App\Http\Controllers\Admin\ForumCategoryController::class);
 
@@ -314,6 +318,10 @@ Route::middleware(['auth', 'verified', 'role:guru'])->prefix('guru')->name('guru
     // Question Bank (Guru)
     Route::resource('question-bank', App\Http\Controllers\Guru\QuestionBankController::class)->parameters(['question-bank' => 'questionBank']);
     Route::post('question-bank/{questionBank}/duplicate', [App\Http\Controllers\Guru\QuestionBankController::class, 'duplicate'])->name('question-bank.duplicate');
+
+    // Information Cards (Guru)
+    Route::resource('information-cards', App\Http\Controllers\Guru\InformationCardController::class)->except(['show'])->parameters(['information-cards' => 'informationCard']);
+    Route::post('information-cards/{informationCard}/toggle-status', [App\Http\Controllers\Guru\InformationCardController::class, 'toggleStatus'])->name('information-cards.toggle-status');
 });
 
 // Dosen Dashboard & Course Management
@@ -385,6 +393,10 @@ Route::middleware(['auth', 'verified', 'role:dosen'])->prefix('dosen')->name('do
     // Question Bank (Dosen)
     Route::resource('question-bank', App\Http\Controllers\Guru\QuestionBankController::class)->parameters(['question-bank' => 'questionBank']);
     Route::post('question-bank/{questionBank}/duplicate', [App\Http\Controllers\Guru\QuestionBankController::class, 'duplicate'])->name('question-bank.duplicate');
+
+    // Information Cards (Dosen)
+    Route::resource('information-cards', App\Http\Controllers\Guru\InformationCardController::class)->except(['show'])->parameters(['information-cards' => 'informationCard']);
+    Route::post('information-cards/{informationCard}/toggle-status', [App\Http\Controllers\Guru\InformationCardController::class, 'toggleStatus'])->name('information-cards.toggle-status');
 });
 
 // Siswa Dashboard & Course Browsing

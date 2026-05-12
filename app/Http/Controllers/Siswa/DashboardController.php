@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Siswa;
 use App\Http\Controllers\Controller;
 use App\Models\ExamAttempt;
 use App\Models\Exam;
+use App\Models\InformationCard;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -73,6 +74,9 @@ class DashboardController extends Controller
         // My courses (recent 3)
         $myCourses = $enrolledCourses->sortByDesc('pivot.updated_at')->take(3);
 
-        return view('siswa.dashboard', compact('stats', 'recentGrades', 'upcomingExams', 'myCourses'));
+        // Information cards visible to this user
+        $informationCards = InformationCard::visibleTo($student)->get();
+
+        return view('siswa.dashboard', compact('stats', 'recentGrades', 'upcomingExams', 'myCourses', 'informationCards'));
     }
 }

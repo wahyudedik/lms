@@ -15,11 +15,18 @@
                         <i class="fas fa-user-shield text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold mb-1">{{ __('Selamat datang, :name!', ['name' => auth()->user()->name]) }}</h3>
-                        <p class="text-blue-100">{{ __('Anda login sebagai :role', ['role' => auth()->user()->role_display]) }}</p>
+                        <h3 class="text-2xl font-bold mb-1">
+                            {{ __('Selamat datang, :name!', ['name' => auth()->user()->name]) }}</h3>
+                        <p class="text-blue-100">
+                            {{ __('Anda login sebagai :role', ['role' => auth()->user()->role_display]) }}</p>
                     </div>
                 </div>
             </div>
+
+            <!-- Information Cards -->
+            @if ($informationCards->isNotEmpty())
+                <x-information-cards :cards="$informationCards" />
+            @endif
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -27,7 +34,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-semibold">{{ __('Total Users') }}</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_users']) }}</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_users']) }}
+                            </p>
                             <p class="text-gray-500 text-xs mt-1">
                                 <i class="fas fa-user-check mr-1"></i>{{ number_format($stats['active_students']) }}
                                 {{ __('active students') }}
@@ -43,9 +51,11 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-semibold">{{ __('Total Courses') }}</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_courses']) }}</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">
+                                {{ number_format($stats['total_courses']) }}</p>
                             <p class="text-gray-500 text-xs mt-1">
-                                <i class="fas fa-user-graduate mr-1"></i>{{ number_format($stats['total_enrollments']) }}
+                                <i
+                                    class="fas fa-user-graduate mr-1"></i>{{ number_format($stats['total_enrollments']) }}
                                 {{ __('enrollments') }}
                             </p>
                         </div>
@@ -59,7 +69,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-semibold">{{ __('Total Exams') }}</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_exams']) }}</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_exams']) }}
+                            </p>
                             <p class="text-gray-500 text-xs mt-1">
                                 <i class="fas fa-check-circle mr-1"></i>{{ number_format($stats['total_attempts']) }}
                                 {{ __('attempts') }}
@@ -75,7 +86,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-semibold">{{ __('Average Score') }}</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['avg_exam_score'], 1) }}%</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">
+                                {{ number_format($stats['avg_exam_score'], 1) }}%</p>
                             <p class="text-gray-500 text-xs mt-1">
                                 <i class="fas fa-chart-line mr-1"></i>{{ __('System performance') }}
                             </p>
@@ -144,7 +156,7 @@
                                 <p class="text-xs text-gray-500">{{ $user->email }}</p>
                             </div>
                             <span
-                                class="px-2 py-1 text-xs font-semibold rounded-full 
+                                class="px-2 py-1 text-xs font-semibold rounded-full
                                 {{ $user->role === 'admin' ? 'bg-blue-100 text-blue-800' : '' }}
                                 {{ $user->role === 'guru' ? 'bg-green-100 text-green-800' : '' }}
                                 {{ $user->role === 'siswa' ? 'bg-purple-100 text-purple-800' : '' }}">
@@ -174,7 +186,8 @@
                                 <p class="text-sm font-medium text-gray-900">{{ $exam->title }}</p>
                                 <p class="text-xs text-gray-500">{{ $exam->course->title }}</p>
                             </div>
-                            <span class="text-xs text-gray-500">{{ trans_choice(__(':count question|:count questions'), $exam->questions_count, ['count' => $exam->questions_count]) }}</span>
+                            <span
+                                class="text-xs text-gray-500">{{ trans_choice(__(':count question|:count questions'), $exam->questions_count, ['count' => $exam->questions_count]) }}</span>
                         </div>
                     @empty
                         <p class="text-center text-gray-500 py-4">{{ __('No active exams') }}</p>
@@ -200,7 +213,8 @@
                             </div>
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-gray-900">{{ $course->title }}</p>
-                                <p class="text-xs text-gray-500">{{ __('By :name', ['name' => $course->instructor->name]) }}</p>
+                                <p class="text-xs text-gray-500">
+                                    {{ __('By :name', ['name' => $course->instructor->name]) }}</p>
                             </div>
                             <span
                                 class="px-2 py-1 text-xs font-semibold rounded-full {{ $course->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
@@ -224,10 +238,11 @@
                             @php
                                 $attemptUser = $attempt->user;
                                 $displayName = $attemptUser?->name ?? ($attempt->guest_name ?? __('Guest'));
-                                $avatarUrl = $attemptUser?->profile_photo_url ?? asset('images/avatars/default-avatar.png');
+                                $avatarUrl =
+                                    $attemptUser?->profile_photo_url ?? asset('images/avatars/default-avatar.png');
                             @endphp
-                            <img class="h-8 w-8 rounded-full object-cover mr-3"
-                                src="{{ $avatarUrl }}" alt="{{ $displayName }}">
+                            <img class="h-8 w-8 rounded-full object-cover mr-3" src="{{ $avatarUrl }}"
+                                alt="{{ $displayName }}">
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-gray-900">{{ $displayName }}</p>
                                 <p class="text-xs text-gray-500">{{ $attempt->exam->title }}</p>

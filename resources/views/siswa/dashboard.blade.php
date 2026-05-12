@@ -15,11 +15,18 @@
                         <i class="fas fa-graduation-cap text-2xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold mb-1">{{ __('Selamat datang, :name!', ['name' => auth()->user()->name]) }}</h3>
-                        <p class="text-purple-100">{{ __('Anda login sebagai :role', ['role' => auth()->user()->role_display]) }}</p>
+                        <h3 class="text-2xl font-bold mb-1">
+                            {{ __('Selamat datang, :name!', ['name' => auth()->user()->name]) }}</h3>
+                        <p class="text-purple-100">
+                            {{ __('Anda login sebagai :role', ['role' => auth()->user()->role_display]) }}</p>
                     </div>
                 </div>
             </div>
+
+            <!-- Information Cards -->
+            @if ($informationCards->isNotEmpty())
+                <x-information-cards :cards="$informationCards" />
+            @endif
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -27,7 +34,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-semibold">{{ __('Enrolled Courses') }}</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['enrolled_courses']) }}</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">
+                                {{ number_format($stats['enrolled_courses']) }}</p>
                             <p class="text-gray-500 text-xs mt-1">
                                 <i class="fas fa-book-open mr-1"></i>{{ __('Active') }}
                             </p>
@@ -42,7 +50,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-semibold">{{ __('Completed') }}</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['completed_courses']) }}</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">
+                                {{ number_format($stats['completed_courses']) }}</p>
                             <p class="text-gray-500 text-xs mt-1">
                                 <i class="fas fa-check-circle mr-1"></i>{{ __('Courses') }}
                             </p>
@@ -57,7 +66,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 text-sm font-semibold">{{ __('Pending Exams') }}</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['pending_exams']) }}</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">
+                                {{ number_format($stats['pending_exams']) }}</p>
                             <p class="text-gray-500 text-xs mt-1">
                                 <i class="fas fa-clock mr-1"></i>{{ __('To Do') }}
                             </p>
@@ -140,7 +150,8 @@
                             </div>
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-gray-900">{{ $course->title }}</p>
-                                <p class="text-xs text-gray-500">{{ __('By :name', ['name' => $course->instructor->name]) }}</p>
+                                <p class="text-xs text-gray-500">
+                                    {{ __('By :name', ['name' => $course->instructor->name]) }}</p>
                             </div>
                             <div class="text-right">
                                 <div class="text-xs text-gray-500 mb-1">{{ number_format($course->pivot->progress) }}%
@@ -183,7 +194,8 @@
                             </div>
                             <div class="text-right">
                                 <p class="text-xs font-semibold text-green-600">
-                                    {{ $exam->start_time ? $exam->start_time->translatedFormat('d M') : __('Available') }}</p>
+                                    {{ $exam->start_time ? $exam->start_time->translatedFormat('d M') : __('Available') }}
+                                </p>
                                 <p class="text-xs text-gray-500">
                                     {{ trans_choice(__(':count minute|:count minutes'), $exam->duration, ['count' => $exam->duration]) }}
                                 </p>
@@ -228,7 +240,8 @@
                     <div class="text-center py-8">
                         <i class="fas fa-clipboard text-gray-400 text-4xl mb-3"></i>
                         <p class="text-gray-500 mb-3">{{ __('No exam results yet') }}</p>
-                        <p class="text-xs text-gray-400">{{ __('Complete your first exam to see your grades here') }}</p>
+                        <p class="text-xs text-gray-400">{{ __('Complete your first exam to see your grades here') }}
+                        </p>
                     </div>
                 @endforelse
             </div>

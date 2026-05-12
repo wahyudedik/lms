@@ -23,6 +23,11 @@
                 </div>
             </div>
 
+            <!-- Information Cards -->
+            @if ($informationCards->isNotEmpty())
+                <x-information-cards :cards="$informationCards" />
+            @endif
+
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-white rounded-lg shadow-md border-l-4 border-green-600 p-6">

@@ -89,6 +89,7 @@
                             'admin.forum-categories.*',
                             'admin.authorization-logs.*',
                             'admin.cheating-incidents.*',
+                            'admin.information-cards.*',
                         );
                         $adminReportsActive = request()->routeIs('admin.analytics.*');
                         $adminSettingsActive = request()->routeIs(
@@ -171,6 +172,13 @@
                                     <i class="fas fa-user-slash text-sm"></i>
                                 </div>
                                 <span class="truncate">{{ __('Pelanggaran') }}</span>
+                            </x-sidebar-link>
+
+                            <x-sidebar-link :href="route('admin.information-cards.index')" :active="request()->routeIs('admin.information-cards.*')">
+                                <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-id-card text-sm"></i>
+                                </div>
+                                <span class="truncate">{{ __('Kartu Informasi') }}</span>
                             </x-sidebar-link>
                         </x-sidebar-group>
 
@@ -272,6 +280,13 @@
                                 <i class="fas fa-file-contract text-sm"></i>
                             </div>
                             <span class="truncate">{{ __('Laporan Nilai') }}</span>
+                        </x-sidebar-link>
+
+                        <x-sidebar-link :href="route($rolePrefix . '.information-cards.index')" :active="request()->routeIs($rolePrefix . '.information-cards.*')">
+                            <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-id-card text-sm"></i>
+                            </div>
+                            <span class="truncate">{{ __('Kartu Informasi') }}</span>
                         </x-sidebar-link>
                     </div>
                 @elseif($user->isSiswa() || $user->isMahasiswa())
