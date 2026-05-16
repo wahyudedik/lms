@@ -161,7 +161,7 @@
 
                             @if ($course->materials()->published()->count() > 0)
                                 <div class="space-y-3">
-                                    @foreach ($course->materials()->published()->ordered()->take(5)->get() as $material)
+                                    @foreach ($course->materials()->published()->ordered()->with('courseGroups')->take(5)->get() as $material)
                                         <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.show', [$course, $material]) }}"
                                             class="flex items-center p-3 hover:bg-gray-50 rounded-lg border border-gray-200 transition-all duration-150">
                                             <i
@@ -169,7 +169,21 @@
                                             <div class="flex-1">
                                                 <p class="text-sm font-semibold text-gray-900">{{ $material->title }}
                                                 </p>
-                                                <p class="text-xs text-gray-500">{{ $material->type_display }}</p>
+                                                <div class="flex items-center gap-2 mt-0.5">
+                                                    <span
+                                                        class="text-xs text-gray-500">{{ $material->type_display }}</span>
+                                                    @if ($material->courseGroups->count() > 0)
+                                                        @foreach ($material->courseGroups as $group)
+                                                            <span
+                                                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                                    class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                                        @endforeach
+                                                    @else
+                                                        <span
+                                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                                                class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                    @endif
+                                                </div>
                                             </div>
                                             <i class="fas fa-chevron-right text-gray-400"></i>
                                         </a>
@@ -219,7 +233,7 @@
                                                 <p class="text-sm font-semibold text-gray-900">
                                                     {{ $assignment->title }}
                                                 </p>
-                                                <div class="flex items-center gap-2 mt-1">
+                                                <div class="flex flex-wrap items-center gap-2 mt-1">
                                                     @if ($assignment->deadline)
                                                         <span class="text-xs text-gray-500">
                                                             <i
@@ -230,6 +244,17 @@
                                                         class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-full {{ $assignment->is_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                                         {{ $assignment->is_published ? __('Published') : __('Draft') }}
                                                     </span>
+                                                    @if ($assignment->courseGroups->count() > 0)
+                                                        @foreach ($assignment->courseGroups as $group)
+                                                            <span
+                                                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                                    class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                                        @endforeach
+                                                    @else
+                                                        <span
+                                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                                                class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                    @endif
                                                 </div>
                                             </div>
                                             <i class="fas fa-chevron-right text-gray-400"></i>
@@ -382,6 +407,11 @@
                                 <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                                     class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                     <i class="fas fa-users"></i>Kelola Siswa
+                                </a>
+
+                                <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.groups.index', $course) }}"
+                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    <i class="fas fa-users-cog"></i>Kelola Kelompok
                                 </a>
 
                                 <form

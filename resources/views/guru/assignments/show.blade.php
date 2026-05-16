@@ -187,6 +187,23 @@
                                 </dd>
                             </div>
                         @endif
+
+                        <div class="p-3 bg-teal-50 rounded-lg border border-teal-100 md:col-span-2">
+                            <dt class="text-xs font-semibold text-teal-700 mb-1">Kelompok Target</dt>
+                            <dd class="flex flex-wrap gap-1 mt-1">
+                                @if ($assignment->courseGroups && $assignment->courseGroups->count() > 0)
+                                    @foreach ($assignment->courseGroups as $group)
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                    @endforeach
+                                @else
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                            class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                @endif
+                            </dd>
+                        </div>
                     </div>
 
                     @if ($assignment->description)

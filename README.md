@@ -638,9 +638,21 @@ Buka browser dan akses: `http://localhost:8000`
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@example.com | password |
-| Guru | guru@example.com | password |
-| Siswa | siswa@example.com | password |
+| Admin | admin@lms.com | password |
+| Guru | guru@lms.com | password |
+| Siswa | siswa@lms.com | password |
+| Dosen | dosen@lms.com | password |
+| Mahasiswa | mahasiswa@lms.com | password |
+
+**Course Groups Demo Credentials** (seeded via `CourseGroupSeeder`):
+
+| Role | Email | Password | Kelompok |
+|------|-------|----------|----------|
+| Dosen | dosen.web@lms.com | password | — (owner kursus WEB201) |
+| Mahasiswa | andi@lms.com | password | Frontend |
+| Mahasiswa | fitri@lms.com | password | Backend |
+
+> **Catatan**: Course Groups demo membuat kursus "Pemrograman Web Lanjut" (WEB201) dengan 10 mahasiswa dibagi 2 kelompok (Frontend & Backend). Mahasiswa hanya melihat materi/tugas sesuai kelompoknya + materi umum.
 
 ### Metode 2: Setup dengan Laravel Sail (Docker)
 

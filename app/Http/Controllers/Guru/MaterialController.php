@@ -6,8 +6,11 @@ use App\Http\Controllers\Concerns\ResolvesRolePrefix;
 use App\Http\Controllers\Controller;
 use App\Constants\AuthorizationMessages;
 use App\Models\Course;
+use App\Models\CourseGroup;
 use App\Models\Material;
+use App\Services\GroupTargetedNotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class MaterialController extends Controller
@@ -18,7 +21,7 @@ class MaterialController extends Controller
         // Check authorization using policy
         $this->authorize('view', $course);
 
-        $materials = $course->materials()->with('creator')->ordered()->paginate(15);
+        $materials = $course->materials()->with(['creator', 'courseGroups'])->ordered()->paginate(15);
 
         return view('guru.materials.index', compact('course', 'materials'));
     }
@@ -27,6 +30,8 @@ class MaterialController extends Controller
     {
         // Check authorization using policy
         $this->authorize('view', $course);
+
+        $course->load('courseGroups');
 
         return view('guru.materials.create', compact('course'));
     }
@@ -63,18 +68,46 @@ class MaterialController extends Controller
 
         $material = Material::create($validated);
 
-        // Notify enrolled students if material is published
-        if ($material->is_published) {
-            $students = $course->enrollments()
-                ->where('status', 'active')
-                ->whereHas('user', fn($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
-                ->with('user')
-                ->get()
-                ->pluck('user')
-                ->filter();
+        // Handle group associations
+        if ($request->has('group_ids')) {
+            $groupIds = array_filter((array) $request->input('group_ids'));
 
-            foreach ($students->chunk(100) as $chunk) {
-                \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\MaterialPublished($material));
+            if (!empty($groupIds)) {
+                // Validate max 20 groups per material
+                if (count($groupIds) > 20) {
+                    $material->delete();
+                    return redirect()
+                        ->back()
+                        ->withInput()
+                        ->withErrors(['group_ids' => 'Maksimal 20 kelompok per materi.']);
+                }
+
+                // Validate all group_ids belong to the same course
+                $validCount = CourseGroup::whereIn('id', $groupIds)
+                    ->where('course_id', $course->id)
+                    ->count();
+
+                if ($validCount !== count($groupIds)) {
+                    $material->delete();
+                    return redirect()
+                        ->back()
+                        ->withInput()
+                        ->withErrors(['group_ids' => 'Kelompok harus berasal dari kursus yang sama.']);
+                }
+
+                $material->courseGroups()->sync($groupIds);
+            }
+        }
+
+        // Notify targeted students if material is published
+        if ($material->is_published) {
+            $notificationService = app(GroupTargetedNotificationService::class);
+            $recipients = $notificationService->getRecipientsForMaterial($material);
+
+            if ($recipients->isNotEmpty()) {
+                foreach ($recipients->chunk(100) as $chunk) {
+                    Notification::send($chunk, new \App\Notifications\MaterialPublished($material));
+                }
             }
         }
 
@@ -88,7 +121,7 @@ class MaterialController extends Controller
         // Check authorization using policy
         $this->authorize('view', $material);
 
-        $material->load(['creator', 'comments.user', 'comments.replies.user']);
+        $material->load(['creator', 'courseGroups', 'comments.user', 'comments.replies.user']);
 
         return view('guru.materials.show', compact('course', 'material'));
     }
@@ -97,6 +130,9 @@ class MaterialController extends Controller
     {
         // Check authorization using policy
         $this->authorize('update', $material);
+
+        $course->load('courseGroups');
+        $material->load('courseGroups');
 
         return view('guru.materials.edit', compact('course', 'material'));
     }
@@ -135,6 +171,38 @@ class MaterialController extends Controller
 
         $material->update($validated);
 
+        // Handle group associations
+        if ($request->has('group_ids')) {
+            $groupIds = array_filter((array) $request->input('group_ids'));
+
+            if (empty($groupIds)) {
+                // Empty array = remove all associations = ungrouped
+                $material->courseGroups()->sync([]);
+            } else {
+                // Validate max 20 groups per material
+                if (count($groupIds) > 20) {
+                    return redirect()
+                        ->back()
+                        ->withInput()
+                        ->withErrors(['group_ids' => 'Maksimal 20 kelompok per materi.']);
+                }
+
+                // Validate all group_ids belong to the same course
+                $validCount = CourseGroup::whereIn('id', $groupIds)
+                    ->where('course_id', $course->id)
+                    ->count();
+
+                if ($validCount !== count($groupIds)) {
+                    return redirect()
+                        ->back()
+                        ->withInput()
+                        ->withErrors(['group_ids' => 'Kelompok harus berasal dari kursus yang sama.']);
+                }
+
+                $material->courseGroups()->sync($groupIds);
+            }
+        }
+
         return redirect()
             ->to($this->teacherRoute('courses.materials.index', $course))
             ->with('success', 'Materi berhasil diperbarui!');
@@ -163,17 +231,14 @@ class MaterialController extends Controller
         } else {
             $material->publish();
 
-            // Notify enrolled students that material is now published
-            $students = $course->enrollments()
-                ->where('status', 'active')
-                ->whereHas('user', fn($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
-                ->with('user')
-                ->get()
-                ->pluck('user')
-                ->filter();
+            // Notify targeted students that material is now published
+            $notificationService = app(GroupTargetedNotificationService::class);
+            $recipients = $notificationService->getRecipientsForMaterial($material);
 
-            foreach ($students->chunk(100) as $chunk) {
-                \Illuminate\Support\Facades\Notification::send($chunk, new \App\Notifications\MaterialPublished($material));
+            if ($recipients->isNotEmpty()) {
+                foreach ($recipients->chunk(100) as $chunk) {
+                    Notification::send($chunk, new \App\Notifications\MaterialPublished($material));
+                }
             }
 
             $message = 'Materi berhasil dipublikasikan!';

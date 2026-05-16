@@ -16,8 +16,8 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.store', $course) }}" method="POST"
-                        enctype="multipart/form-data">
+                    <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.store', $course) }}"
+                        method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <!-- Title -->
@@ -99,6 +99,34 @@
                                 <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <!-- Target Groups -->
+                        @if ($course->courseGroups->count() > 0)
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-users text-gray-400 mr-1"></i>Kelompok Target
+                                </label>
+                                <p class="text-sm text-gray-500 mb-3">Kosongkan untuk semua siswa</p>
+                                <div
+                                    class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                    @foreach ($course->courseGroups as $group)
+                                        <label
+                                            class="flex items-center p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors">
+                                            <input type="checkbox" name="group_ids[]" value="{{ $group->id }}"
+                                                {{ in_array($group->id, old('group_ids', [])) ? 'checked' : '' }}
+                                                class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                            <span class="ml-2 text-sm text-gray-700">{{ $group->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('group_ids')
+                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                @enderror
+                                @error('group_ids.*')
+                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        @endif
 
                         <!-- Order & Published -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">

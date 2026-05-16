@@ -68,6 +68,19 @@
                                                                 {{ Str::limit($material->url, 30) }}
                                                             @endif
                                                         </p>
+                                                        <div class="mt-1 flex flex-wrap gap-1">
+                                                            @if ($material->courseGroups && $material->courseGroups->count() > 0)
+                                                                @foreach ($material->courseGroups as $group)
+                                                                    <span
+                                                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                                            class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                                                @endforeach
+                                                            @else
+                                                                <span
+                                                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                                                        class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -141,8 +154,22 @@
                                             @if ($material->type === 'file' && $material->file_name)
                                                 <p class="text-xs text-gray-500 mt-1 truncate">
                                                     {{ $material->file_name }}
-                                                    ({{ $material->getFormattedFileSize() }})</p>
+                                                    ({{ $material->getFormattedFileSize() }})
+                                                </p>
                                             @endif
+                                            <div class="mt-1 flex flex-wrap gap-1">
+                                                @if ($material->courseGroups && $material->courseGroups->count() > 0)
+                                                    @foreach ($material->courseGroups as $group)
+                                                        <span
+                                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                                class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                                    @endforeach
+                                                @else
+                                                    <span
+                                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                                            class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">

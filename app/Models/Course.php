@@ -150,6 +150,14 @@ class Course extends Model
     }
 
     /**
+     * Get all groups for this course.
+     */
+    public function courseGroups(): HasMany
+    {
+        return $this->hasMany(CourseGroup::class);
+    }
+
+    /**
      * Get the grade weight configuration for this course.
      */
     public function gradeWeight(): HasOne

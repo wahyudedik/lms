@@ -29,7 +29,8 @@
 
                             <div class="mb-6">
                                 <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-heading text-gray-400 mr-1"></i>{{ __('Material Title') }} <span class="text-red-500">*</span>
+                                    <i class="fas fa-heading text-gray-400 mr-1"></i>{{ __('Material Title') }} <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <input type="text" name="title" id="title"
                                     value="{{ old('title', $material->title) }}" required
@@ -53,17 +54,22 @@
 
                             <div class="mb-6">
                                 <label for="type" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-list text-gray-400 mr-1"></i>{{ __('Material Type') }} <span class="text-red-500">*</span>
+                                    <i class="fas fa-list text-gray-400 mr-1"></i>{{ __('Material Type') }} <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <select name="type" id="type" required
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
-                                    <option value="file" {{ old('type', $material->type) == 'file' ? 'selected' : '' }}>
+                                    <option value="file"
+                                        {{ old('type', $material->type) == 'file' ? 'selected' : '' }}>
                                         {{ __('File (PDF, PPT, DOC)') }}</option>
-                                    <option value="video" {{ old('type', $material->type) == 'video' ? 'selected' : '' }}>
+                                    <option value="video"
+                                        {{ old('type', $material->type) == 'video' ? 'selected' : '' }}>
                                         {{ __('Video File') }}</option>
                                     <option value="youtube"
-                                        {{ old('type', $material->type) == 'youtube' ? 'selected' : '' }}>YouTube</option>
-                                    <option value="link" {{ old('type', $material->type) == 'link' ? 'selected' : '' }}>
+                                        {{ old('type', $material->type) == 'youtube' ? 'selected' : '' }}>YouTube
+                                    </option>
+                                    <option value="link"
+                                        {{ old('type', $material->type) == 'link' ? 'selected' : '' }}>
                                         {{ __('Link External') }}</option>
                                 </select>
                             </div>
@@ -83,7 +89,8 @@
                             <div id="file-upload-section"
                                 class="mb-6 {{ $material->type === 'file' || $material->type === 'video' ? '' : 'hidden' }}">
                                 <label for="file" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-upload text-gray-400 mr-1"></i>{{ __('Upload File Baru (opsional)') }}
+                                    <i
+                                        class="fas fa-upload text-gray-400 mr-1"></i>{{ __('Upload File Baru (opsional)') }}
                                 </label>
                                 <input type="file" name="file" id="file"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
@@ -109,6 +116,31 @@
                                 <i class="fas fa-cog text-purple-600 mr-2"></i>{{ __('Settings') }}
                             </h3>
 
+                            <!-- Kelompok Target -->
+                            @if ($course->courseGroups->count() > 0)
+                                <div class="mb-6">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-users text-teal-600 mr-1"></i>Kelompok Target
+                                    </label>
+                                    <p class="text-sm text-gray-500 mb-3">Kosongkan untuk semua siswa</p>
+                                    <div
+                                        class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                        @foreach ($course->courseGroups as $group)
+                                            <label
+                                                class="flex items-center p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors">
+                                                <input type="checkbox" name="group_ids[]" value="{{ $group->id }}"
+                                                    {{ in_array($group->id, old('group_ids', $material->courseGroups->pluck('id')->toArray())) ? 'checked' : '' }}
+                                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                                <span class="ml-2 text-sm text-gray-700">{{ $group->name }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    @error('group_ids')
+                                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label for="order" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -125,7 +157,8 @@
                                             <input type="checkbox" name="is_published" value="1"
                                                 {{ old('is_published', $material->is_published) ? 'checked' : '' }}
                                                 class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500">
-                                            <span class="ml-2 text-sm font-semibold text-gray-700">{{ __('Publish Material') }}</span>
+                                            <span
+                                                class="ml-2 text-sm font-semibold text-gray-700">{{ __('Publish Material') }}</span>
                                         </label>
                                     </div>
                                 </div>
@@ -158,7 +191,7 @@
                 document.getElementById('file-upload-section').classList.toggle('hidden', type !== 'file' && type !==
                     'video');
                 document.getElementById('url-section').classList.toggle('hidden', type !== 'youtube' && type !==
-                'link');
+                    'link');
             });
         </script>
     @endpush

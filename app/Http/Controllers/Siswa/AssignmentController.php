@@ -31,10 +31,11 @@ class AssignmentController extends Controller
             ->where('status', 'active')
             ->pluck('course_id');
 
-        // Get all published assignments for enrolled courses
+        // Get all published assignments for enrolled courses, filtered by group visibility
         $assignments = Assignment::with(['course'])
             ->whereIn('course_id', $enrolledCourseIds)
             ->published()
+            ->visibleToStudent($user)
             ->orderBy('deadline', 'asc')
             ->get();
 
@@ -61,6 +62,17 @@ class AssignmentController extends Controller
 
         $assignment->load(['course', 'material']);
 
+        // Check group membership for targeted content
+        if ($assignment->courseGroups()->count() > 0) {
+            $isMember = $assignment->courseGroups()
+                ->whereHas('members', fn($q) => $q->where('user_id', auth()->id()))
+                ->exists();
+
+            if (!$isMember) {
+                abort(403, 'Anda tidak memiliki akses ke konten ini.');
+            }
+        }
+
         $user = Auth::user();
         $submission = $assignment->getSubmissionForUser($user);
         $remainingTime = $assignment->getRemainingTime();
@@ -84,6 +96,17 @@ class AssignmentController extends Controller
         $this->authorize('submit', $assignment);
 
         $user = Auth::user();
+
+        // Check group membership for targeted content
+        if ($assignment->courseGroups()->count() > 0) {
+            $isMember = $assignment->courseGroups()
+                ->whereHas('members', fn($q) => $q->where('user_id', $user->id))
+                ->exists();
+
+            if (!$isMember) {
+                abort(403, 'Anda tidak memiliki akses ke tugas ini.');
+            }
+        }
 
         // Validate file is present
         $request->validate([

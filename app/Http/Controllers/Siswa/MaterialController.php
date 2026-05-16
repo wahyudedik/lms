@@ -19,10 +19,11 @@ class MaterialController extends Controller
             ->get()
             ->pluck('course');
 
-        // Build query
+        // Build query with group visibility scope
         $query = Material::with(['course.instructor'])
             ->whereIn('course_id', $enrolledCourses->pluck('id'))
             ->where('is_published', true)
+            ->visibleToStudent(Auth::user())
             ->ordered();
 
         // Filter by course
@@ -37,18 +38,21 @@ class MaterialController extends Controller
 
         $materials = $query->paginate(12);
 
-        // Statistics
+        // Statistics (also apply visibility scope)
         $stats = [
             'pdf' => Material::whereIn('course_id', $enrolledCourses->pluck('id'))
                 ->where('is_published', true)
+                ->visibleToStudent(Auth::user())
                 ->where('type', 'pdf')
                 ->count(),
             'video' => Material::whereIn('course_id', $enrolledCourses->pluck('id'))
                 ->where('is_published', true)
+                ->visibleToStudent(Auth::user())
                 ->whereIn('type', ['video', 'youtube'])
                 ->count(),
             'link' => Material::whereIn('course_id', $enrolledCourses->pluck('id'))
                 ->where('is_published', true)
+                ->visibleToStudent(Auth::user())
                 ->where('type', 'link')
                 ->count(),
         ];
@@ -70,6 +74,17 @@ class MaterialController extends Controller
         // Check if material is published
         if (!$material->is_published) {
             abort(404, 'Materi tidak ditemukan.');
+        }
+
+        // Check group membership for targeted content
+        if ($material->courseGroups()->count() > 0) {
+            $isMember = $material->courseGroups()
+                ->whereHas('members', fn($q) => $q->where('user_id', Auth::id()))
+                ->exists();
+
+            if (!$isMember) {
+                abort(403, 'Anda tidak memiliki akses ke konten ini.');
+            }
         }
 
         // Load relationships

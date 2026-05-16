@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,           // 7. Create settings
             CertificateSeeder::class,       // 8. Create certificates (needs completed enrollments)
             AiConversationSeeder::class,    // 9. Create AI conversations (needs users & courses)
+            CourseGroupSeeder::class,       // 10. Create course groups demo data
         ]);
     }
 }

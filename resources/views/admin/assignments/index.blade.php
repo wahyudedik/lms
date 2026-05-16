@@ -106,6 +106,19 @@
                                                 <div class="text-sm text-gray-500">
                                                     Nilai maks: {{ $assignment->max_score }}
                                                 </div>
+                                                <div class="mt-1 flex flex-wrap gap-1">
+                                                    @if ($assignment->courseGroups && $assignment->courseGroups->count() > 0)
+                                                        @foreach ($assignment->courseGroups as $group)
+                                                            <span
+                                                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                                    class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                                        @endforeach
+                                                    @else
+                                                        <span
+                                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                                                class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                    @endif
+                                                </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">
@@ -186,6 +199,19 @@
                                                 {{ $assignment->title }}</h4>
                                             <p class="text-xs text-gray-500 mt-0.5">Nilai maks:
                                                 {{ $assignment->max_score }}</p>
+                                            <div class="mt-1 flex flex-wrap gap-1">
+                                                @if ($assignment->courseGroups && $assignment->courseGroups->count() > 0)
+                                                    @foreach ($assignment->courseGroups as $group)
+                                                        <span
+                                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                                class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                                    @endforeach
+                                                @else
+                                                    <span
+                                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                                            class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                @endif
+                                            </div>
                                         </div>
                                         <span
                                             class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold {{ $assignment->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">

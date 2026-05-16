@@ -19,7 +19,8 @@
                     latePolicy: '{{ old('late_policy', $assignment->late_policy) }}',
                     isPublished: {{ old('is_published', $assignment->is_published) ? 'true' : 'false' }}
                 }">
-                    <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$course, $assignment]) }}"
+                    <form
+                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$course, $assignment]) }}"
                         method="POST">
                         @csrf
                         @method('PUT')
@@ -215,6 +216,35 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <!-- Kelompok Target -->
+                        @if ($course->courseGroups->count() > 0)
+                            <div class="mb-8 pb-8 border-b border-gray-200">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4">
+                                    <i class="fas fa-users text-teal-600 mr-2"></i>Kelompok Target
+                                </h3>
+                                <p class="text-sm text-gray-500 mb-3">Kosongkan untuk semua siswa. Maksimal 10 kelompok
+                                    per tugas.</p>
+                                <div
+                                    class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                    @foreach ($course->courseGroups as $group)
+                                        <label
+                                            class="flex items-center p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors">
+                                            <input type="checkbox" name="group_ids[]" value="{{ $group->id }}"
+                                                {{ in_array($group->id, old('group_ids', $assignment->courseGroups->pluck('id')->toArray())) ? 'checked' : '' }}
+                                                class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                            <span class="ml-2 text-sm text-gray-700">{{ $group->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('group_ids')
+                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                @enderror
+                                @error('group_ids.*')
+                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        @endif
 
                         <!-- Publish Settings -->
                         <div class="mb-8">

@@ -12,13 +12,15 @@ class MaterialController extends Controller
 {
     public function index(Course $course)
     {
-        $materials = $course->materials()->with('creator')->ordered()->paginate(15);
+        $materials = $course->materials()->with(['creator', 'courseGroups'])->ordered()->paginate(15);
 
         return view('admin.materials.index', compact('course', 'materials'));
     }
 
     public function create(Course $course)
     {
+        $course->load('courseGroups');
+
         return view('admin.materials.create', compact('course'));
     }
 
@@ -48,7 +50,31 @@ class MaterialController extends Controller
             $validated['file_size'] = $file->getSize();
         }
 
-        Material::create($validated);
+        $material = Material::create($validated);
+
+        // Handle group associations
+        if ($request->has('group_ids')) {
+            $groupIds = array_filter((array) $request->input('group_ids'));
+
+            if (!empty($groupIds)) {
+                if (count($groupIds) > 20) {
+                    $material->delete();
+                    return redirect()->back()->withInput()
+                        ->withErrors(['group_ids' => 'Maksimal 20 kelompok per materi.']);
+                }
+
+                $validCount = \App\Models\CourseGroup::whereIn('id', $groupIds)
+                    ->where('course_id', $course->id)->count();
+
+                if ($validCount !== count($groupIds)) {
+                    $material->delete();
+                    return redirect()->back()->withInput()
+                        ->withErrors(['group_ids' => 'Kelompok harus berasal dari kursus yang sama.']);
+                }
+
+                $material->courseGroups()->sync($groupIds);
+            }
+        }
 
         return redirect()
             ->route('admin.courses.materials.index', $course)
@@ -57,13 +83,16 @@ class MaterialController extends Controller
 
     public function show(Course $course, Material $material)
     {
-        $material->load(['creator', 'comments.user', 'comments.replies.user']);
+        $material->load(['creator', 'courseGroups', 'comments.user', 'comments.replies.user']);
 
         return view('admin.materials.show', compact('course', 'material'));
     }
 
     public function edit(Course $course, Material $material)
     {
+        $course->load('courseGroups');
+        $material->load('courseGroups');
+
         return view('admin.materials.edit', compact('course', 'material'));
     }
 
@@ -97,6 +126,30 @@ class MaterialController extends Controller
         }
 
         $material->update($validated);
+
+        // Handle group associations
+        if ($request->has('group_ids')) {
+            $groupIds = array_filter((array) $request->input('group_ids'));
+
+            if (empty($groupIds)) {
+                $material->courseGroups()->sync([]);
+            } else {
+                if (count($groupIds) > 20) {
+                    return redirect()->back()->withInput()
+                        ->withErrors(['group_ids' => 'Maksimal 20 kelompok per materi.']);
+                }
+
+                $validCount = \App\Models\CourseGroup::whereIn('id', $groupIds)
+                    ->where('course_id', $course->id)->count();
+
+                if ($validCount !== count($groupIds)) {
+                    return redirect()->back()->withInput()
+                        ->withErrors(['group_ids' => 'Kelompok harus berasal dari kursus yang sama.']);
+                }
+
+                $material->courseGroups()->sync($groupIds);
+            }
+        }
 
         return redirect()
             ->route('admin.courses.materials.index', $course)

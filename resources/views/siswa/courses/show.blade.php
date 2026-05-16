@@ -88,14 +88,16 @@
                     </div>
 
                     <!-- Materials (Only for enrolled students) -->
-                    @if ($isEnrolled && $course->materials()->published()->count() > 0)
+                    @if (
+                        $isEnrolled &&
+                            $course->materials()->published()->visibleToStudent(auth()->user())->count() > 0)
                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 {{ __('Learning Materials') }}
                                 </h3>
 
                                 <div class="space-y-3">
-                                    @foreach ($course->materials()->published()->ordered()->get() as $material)
+                                    @foreach ($course->materials()->published()->visibleToStudent(auth()->user())->ordered()->with('courseGroups')->get() as $material)
                                         <div class="border rounded-lg overflow-hidden">
                                             <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                                                 onclick="document.getElementById('material{{ $material->id }}').classList.toggle('hidden')">
@@ -104,8 +106,23 @@
                                                 <div class="flex-1">
                                                     <p class="text-sm font-medium text-gray-900">{{ $material->title }}
                                                     </p>
-                                                    <p class="text-xs text-gray-500">{{ $material->type_display }} •
-                                                        {{ $material->created_at->diffForHumans() }}</p>
+                                                    <div class="flex items-center gap-2 mt-0.5">
+                                                        <span
+                                                            class="text-xs text-gray-500">{{ $material->type_display }}
+                                                            •
+                                                            {{ $material->created_at->diffForHumans() }}</span>
+                                                        @if ($material->courseGroups->count() > 0)
+                                                            @foreach ($material->courseGroups as $group)
+                                                                <span
+                                                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                                        class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                                            @endforeach
+                                                        @else
+                                                            <span
+                                                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                                                    class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                                 <i class="fas fa-chevron-down text-gray-400"></i>
                                             </div>
@@ -195,7 +212,13 @@
                     <!-- Assignments (Only for enrolled students) -->
                     @if ($isEnrolled)
                         @php
-                            $assignments = $course->assignments()->published()->orderBy('deadline', 'asc')->get();
+                            $assignments = $course
+                                ->assignments()
+                                ->published()
+                                ->visibleToStudent(auth()->user())
+                                ->with('courseGroups')
+                                ->orderBy('deadline', 'asc')
+                                ->get();
                         @endphp
                         @if ($assignments->count() > 0)
                             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -229,7 +252,7 @@
                                                 <div class="flex-1">
                                                     <p class="text-sm font-semibold text-gray-900">
                                                         {{ $assignment->title }}</p>
-                                                    <div class="flex items-center gap-3 mt-1">
+                                                    <div class="flex flex-wrap items-center gap-3 mt-1">
                                                         <span class="text-xs text-gray-500">
                                                             <i
                                                                 class="fas fa-clock mr-1"></i>{{ $assignment->deadline->translatedFormat('d M Y, H:i') }}
@@ -243,6 +266,17 @@
                                                         @else
                                                             <span class="text-xs text-orange-600 font-semibold">Belum
                                                                 dikumpulkan</span>
+                                                        @endif
+                                                        @if ($assignment->courseGroups->count() > 0)
+                                                            @foreach ($assignment->courseGroups as $group)
+                                                                <span
+                                                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-100 text-teal-800"><i
+                                                                        class="fas fa-users mr-1"></i>{{ $group->name }}</span>
+                                                            @endforeach
+                                                        @else
+                                                            <span
+                                                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
+                                                                    class="fas fa-globe mr-1"></i>Semua Siswa</span>
                                                         @endif
                                                     </div>
                                                 </div>

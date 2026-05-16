@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Assignment;
 use App\Models\Course;
 use App\Models\CourseGradeWeight;
+use App\Models\CourseGroup;
 use App\Services\AssignmentGradingService;
+use App\Services\GroupTargetedNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 
@@ -25,7 +27,7 @@ class AssignmentController extends Controller
     {
         $this->authorize('create', [Assignment::class, $course]);
 
-        $query = $course->assignments()->with('creator');
+        $query = $course->assignments()->with(['creator', 'courseGroups']);
 
         // Search by title
         if ($search = $request->input('search')) {
@@ -111,6 +113,22 @@ class AssignmentController extends Controller
 
         $assignment = Assignment::create($validated);
 
+        // Sync group associations if provided
+        if ($request->has('group_ids')) {
+            $groupIds = $request->input('group_ids') ?? [];
+
+            if (!empty($groupIds)) {
+                $validationError = $this->validateGroupIds($groupIds, $course);
+                if ($validationError) {
+                    // Delete the just-created assignment and return with error
+                    $assignment->forceDelete();
+                    return back()->withErrors(['group_ids' => $validationError])->withInput();
+                }
+
+                $assignment->courseGroups()->sync($groupIds);
+            }
+        }
+
         // Dispatch notification if published
         if ($assignment->is_published) {
             $this->notifyEnrolledStudents($course, $assignment);
@@ -128,7 +146,7 @@ class AssignmentController extends Controller
     {
         $this->authorize('view', $assignment);
 
-        $assignment->load(['creator', 'material']);
+        $assignment->load(['creator', 'material', 'courseGroups']);
 
         $statistics = $this->gradingService->getSubmissionStatistics($assignment);
 
@@ -203,6 +221,23 @@ class AssignmentController extends Controller
         }
 
         $assignment->update($validated);
+
+        // Sync group associations if provided
+        if ($request->has('group_ids')) {
+            $groupIds = $request->input('group_ids') ?? [];
+
+            if (empty($groupIds)) {
+                // Empty array = remove all associations (revert to ungrouped)
+                $assignment->courseGroups()->sync([]);
+            } else {
+                $validationError = $this->validateGroupIds($groupIds, $course);
+                if ($validationError) {
+                    return back()->withErrors(['group_ids' => $validationError])->withInput();
+                }
+
+                $assignment->courseGroups()->sync($groupIds);
+            }
+        }
 
         return redirect()
             ->to($this->teacherRoute('courses.assignments.index', $course))
@@ -303,25 +338,44 @@ class AssignmentController extends Controller
     }
 
     /**
-     * Notify enrolled students about a published assignment.
+     * Validate group_ids belong to the same course and don't exceed the limit.
+     *
+     * @return string|null Error message if validation fails, null if valid.
+     */
+    protected function validateGroupIds(array $groupIds, Course $course): ?string
+    {
+        // Max 10 groups per assignment
+        if (count($groupIds) > 10) {
+            return 'Maksimal 10 kelompok per tugas.';
+        }
+
+        // Validate all group_ids belong to the same course
+        $validCount = CourseGroup::whereIn('id', $groupIds)
+            ->where('course_id', $course->id)
+            ->count();
+
+        if ($validCount !== count($groupIds)) {
+            return 'Kelompok harus berasal dari kursus yang sama.';
+        }
+
+        return null;
+    }
+
+    /**
+     * Notify targeted students about a published assignment.
      */
     protected function notifyEnrolledStudents(Course $course, Assignment $assignment): void
     {
-        $students = $course->enrollments()
-            ->where('status', 'active')
-            ->whereHas('user', fn ($q) => $q->whereIn('role', ['siswa', 'mahasiswa']))
-            ->with('user')
-            ->get()
-            ->pluck('user')
-            ->filter();
+        $notificationService = app(GroupTargetedNotificationService::class);
+        $recipients = $notificationService->getRecipientsForAssignment($assignment);
 
-        if ($students->isEmpty()) {
+        if ($recipients->isEmpty()) {
             return;
         }
 
-        // Only dispatch if the notification class exists (created in a later task)
+        // Only dispatch if the notification class exists
         if (class_exists(\App\Notifications\AssignmentPublished::class)) {
-            foreach ($students->chunk(100) as $chunk) {
+            foreach ($recipients->chunk(100) as $chunk) {
                 Notification::send($chunk, new \App\Notifications\AssignmentPublished($assignment));
             }
         }

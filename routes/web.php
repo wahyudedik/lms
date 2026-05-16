@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Guru\CourseGroupController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -97,6 +98,16 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     // Course Management
     Route::resource('courses', App\Http\Controllers\Admin\CourseController::class);
     Route::post('courses/{course}/toggle-status', [App\Http\Controllers\Admin\CourseController::class, 'toggleStatus'])->name('courses.toggle-status');
+
+    // Course Group Management (Admin uses Guru controller)
+    Route::prefix('courses/{course}/groups')->name('courses.groups.')->group(function () {
+        Route::get('/', [CourseGroupController::class, 'index'])->name('index');
+        Route::post('/', [CourseGroupController::class, 'store'])->name('store');
+        Route::put('/{group}', [CourseGroupController::class, 'update'])->name('update');
+        Route::delete('/{group}', [CourseGroupController::class, 'destroy'])->name('destroy');
+        Route::post('/{group}/members', [CourseGroupController::class, 'addMember'])->name('members.store');
+        Route::delete('/{group}/members/{user}', [CourseGroupController::class, 'removeMember'])->name('members.destroy');
+    });
 
     // Enrollment Management
     Route::get('courses/{course}/enrollments', [App\Http\Controllers\EnrollmentController::class, 'index'])->name('courses.enrollments');
@@ -315,6 +326,16 @@ Route::middleware(['auth', 'verified', 'role:guru'])->prefix('guru')->name('guru
     Route::get('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'gradeWeights'])->name('courses.grade-weights');
     Route::post('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'updateGradeWeights'])->name('courses.grade-weights.update');
 
+    // Course Group Management
+    Route::prefix('courses/{course}/groups')->name('courses.groups.')->group(function () {
+        Route::get('/', [CourseGroupController::class, 'index'])->name('index');
+        Route::post('/', [CourseGroupController::class, 'store'])->name('store');
+        Route::put('/{group}', [CourseGroupController::class, 'update'])->name('update');
+        Route::delete('/{group}', [CourseGroupController::class, 'destroy'])->name('destroy');
+        Route::post('/{group}/members', [CourseGroupController::class, 'addMember'])->name('members.store');
+        Route::delete('/{group}/members/{user}', [CourseGroupController::class, 'removeMember'])->name('members.destroy');
+    });
+
     // Question Bank (Guru)
     Route::resource('question-bank', App\Http\Controllers\Guru\QuestionBankController::class)->parameters(['question-bank' => 'questionBank']);
     Route::post('question-bank/{questionBank}/duplicate', [App\Http\Controllers\Guru\QuestionBankController::class, 'duplicate'])->name('question-bank.duplicate');
@@ -389,6 +410,16 @@ Route::middleware(['auth', 'verified', 'role:dosen'])->prefix('dosen')->name('do
     // Grade Weights
     Route::get('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'gradeWeights'])->name('courses.grade-weights');
     Route::post('courses/{course}/grade-weights', [App\Http\Controllers\Guru\AssignmentController::class, 'updateGradeWeights'])->name('courses.grade-weights.update');
+
+    // Course Group Management
+    Route::prefix('courses/{course}/groups')->name('courses.groups.')->group(function () {
+        Route::get('/', [CourseGroupController::class, 'index'])->name('index');
+        Route::post('/', [CourseGroupController::class, 'store'])->name('store');
+        Route::put('/{group}', [CourseGroupController::class, 'update'])->name('update');
+        Route::delete('/{group}', [CourseGroupController::class, 'destroy'])->name('destroy');
+        Route::post('/{group}/members', [CourseGroupController::class, 'addMember'])->name('members.store');
+        Route::delete('/{group}/members/{user}', [CourseGroupController::class, 'removeMember'])->name('members.destroy');
+    });
 
     // Question Bank (Dosen)
     Route::resource('question-bank', App\Http\Controllers\Guru\QuestionBankController::class)->parameters(['question-bank' => 'questionBank']);

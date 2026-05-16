@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Assignment extends Model
 {
@@ -91,8 +93,42 @@ class Assignment extends Model
     }
 
     /**
+     * Get the course groups associated with this assignment.
+     */
+    public function courseGroups(): MorphToMany
+    {
+        return $this->morphToMany(CourseGroup::class, 'contentable', 'course_group_content');
+    }
+
+    /**
      * Scopes
      */
+
+    /**
+     * Scope to filter assignments visible to a specific student.
+     *
+     * Shows assignments that are either:
+     * - Ungrouped (no course_group_content entries), OR
+     * - Targeted to at least one group the student belongs to
+     */
+    public function scopeVisibleToStudent($query, User $user)
+    {
+        return $query->where(function ($q) use ($user) {
+            $q->whereNotExists(function ($sub) {
+                $sub->select(DB::raw(1))
+                    ->from('course_group_content')
+                    ->where('course_group_content.contentable_type', (new self())->getMorphClass())
+                    ->whereColumn('course_group_content.contentable_id', 'assignments.id');
+            })->orWhereExists(function ($sub) use ($user) {
+                $sub->select(DB::raw(1))
+                    ->from('course_group_content as cgc')
+                    ->join('course_group_members as cgm', 'cgm.course_group_id', '=', 'cgc.course_group_id')
+                    ->where('cgc.contentable_type', (new self())->getMorphClass())
+                    ->whereColumn('cgc.contentable_id', 'assignments.id')
+                    ->where('cgm.user_id', $user->id);
+            });
+        });
+    }
 
     /**
      * Scope to get only published assignments.

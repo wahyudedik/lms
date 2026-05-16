@@ -10,11 +10,13 @@ use App\Models\Exam;
 use App\Models\ForumReply;
 use App\Models\ForumThread;
 use App\Models\Material;
+use App\Models\CourseGroup;
 use App\Models\Question;
 use App\Models\Setting;
 use App\Models\AuthorizationLog;
 use App\Policies\AssignmentPolicy;
 use App\Policies\CertificatePolicy;
+use App\Policies\CourseGroupPolicy;
 use App\Policies\CoursePolicy;
 use App\Policies\EnrollmentPolicy;
 use App\Policies\ExamPolicy;
@@ -23,6 +25,7 @@ use App\Policies\ForumThreadPolicy;
 use App\Policies\MaterialPolicy;
 use App\Policies\QuestionPolicy;
 use App\Channels\WebPushChannel;
+use App\Observers\EnrollmentObserver;
 use App\Services\MentionParser;
 use DateTimeZone;
 use Illuminate\Support\Facades\App;
@@ -50,6 +53,9 @@ class AppServiceProvider extends ServiceProvider
         $this->ensureValidTimezone();
         $this->registerBladeDirectives();
 
+        // Register model observers
+        Enrollment::observe(EnrollmentObserver::class);
+
         // Register custom notification channels
         Notification::extend('push', fn ($app) => $app->make(WebPushChannel::class));
         $this->app->bind(MentionParser::class, MentionParser::class);
@@ -58,6 +64,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Assignment::class, AssignmentPolicy::class);
         Gate::policy(Exam::class, ExamPolicy::class);
         Gate::policy(Course::class, CoursePolicy::class);
+        Gate::policy(CourseGroup::class, CourseGroupPolicy::class);
         Gate::policy(Material::class, MaterialPolicy::class);
         Gate::policy(Question::class, QuestionPolicy::class);
         Gate::policy(Enrollment::class, EnrollmentPolicy::class);

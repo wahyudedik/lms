@@ -23,7 +23,7 @@ class AssignmentController extends Controller
     {
         $this->authorize('create', [Assignment::class, $course]);
 
-        $query = $course->assignments()->with('creator');
+        $query = $course->assignments()->with(['creator', 'courseGroups']);
 
         // Search by title
         if ($search = $request->input('search')) {
@@ -53,6 +53,7 @@ class AssignmentController extends Controller
         $this->authorize('create', [Assignment::class, $course]);
 
         $materials = $course->materials()->get();
+        $course->load('courseGroups');
 
         return view('admin.assignments.create', compact('course', 'materials'));
     }
@@ -109,6 +110,28 @@ class AssignmentController extends Controller
 
         $assignment = Assignment::create($validated);
 
+        // Handle group associations
+        if ($request->has('group_ids')) {
+            $groupIds = array_filter((array) $request->input('group_ids'));
+
+            if (!empty($groupIds)) {
+                if (count($groupIds) > 10) {
+                    $assignment->forceDelete();
+                    return back()->withErrors(['group_ids' => 'Maksimal 10 kelompok per tugas.'])->withInput();
+                }
+
+                $validCount = \App\Models\CourseGroup::whereIn('id', $groupIds)
+                    ->where('course_id', $course->id)->count();
+
+                if ($validCount !== count($groupIds)) {
+                    $assignment->forceDelete();
+                    return back()->withErrors(['group_ids' => 'Kelompok harus berasal dari kursus yang sama.'])->withInput();
+                }
+
+                $assignment->courseGroups()->sync($groupIds);
+            }
+        }
+
         // Dispatch notification if published
         if ($assignment->is_published) {
             $this->notifyEnrolledStudents($course, $assignment);
@@ -126,7 +149,7 @@ class AssignmentController extends Controller
     {
         $this->authorize('view', $assignment);
 
-        $assignment->load(['creator', 'material']);
+        $assignment->load(['creator', 'material', 'courseGroups']);
 
         $statistics = $this->gradingService->getSubmissionStatistics($assignment);
 
@@ -141,6 +164,8 @@ class AssignmentController extends Controller
         $this->authorize('update', $assignment);
 
         $materials = $course->materials()->get();
+        $course->load('courseGroups');
+        $assignment->load('courseGroups');
 
         return view('admin.assignments.edit', compact('course', 'assignment', 'materials'));
     }
@@ -201,6 +226,28 @@ class AssignmentController extends Controller
         }
 
         $assignment->update($validated);
+
+        // Handle group associations
+        if ($request->has('group_ids')) {
+            $groupIds = array_filter((array) $request->input('group_ids'));
+
+            if (empty($groupIds)) {
+                $assignment->courseGroups()->sync([]);
+            } else {
+                if (count($groupIds) > 10) {
+                    return back()->withErrors(['group_ids' => 'Maksimal 10 kelompok per tugas.'])->withInput();
+                }
+
+                $validCount = \App\Models\CourseGroup::whereIn('id', $groupIds)
+                    ->where('course_id', $course->id)->count();
+
+                if ($validCount !== count($groupIds)) {
+                    return back()->withErrors(['group_ids' => 'Kelompok harus berasal dari kursus yang sama.'])->withInput();
+                }
+
+                $assignment->courseGroups()->sync($groupIds);
+            }
+        }
 
         return redirect()
             ->route('admin.courses.assignments.index', $course)

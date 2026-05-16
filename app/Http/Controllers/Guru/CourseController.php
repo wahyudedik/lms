@@ -93,7 +93,7 @@ class CourseController extends Controller
         // Check authorization using policy
         $this->authorize('view', $course);
 
-        $course->load(['enrollments.student', 'assignments']);
+        $course->load(['enrollments.student', 'assignments.courseGroups']);
         $activeStudents = $course->enrollments()->where('status', 'active')->count();
         $completedStudents = $course->enrollments()->where('status', 'completed')->count();
 

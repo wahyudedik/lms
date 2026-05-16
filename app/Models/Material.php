@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -126,6 +128,14 @@ class Material extends Model
     public function allComments(): HasMany
     {
         return $this->hasMany(MaterialComment::class)->latest();
+    }
+
+    /**
+     * Get the course groups associated with this material.
+     */
+    public function courseGroups(): MorphToMany
+    {
+        return $this->morphToMany(CourseGroup::class, 'contentable', 'course_group_content');
     }
 
     /**
@@ -274,6 +284,31 @@ class Material extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('order')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Scope to filter materials visible to a specific student.
+     *
+     * Shows materials that are either:
+     * - Ungrouped (no entries in course_group_content for this material)
+     * - Targeted to a group the student belongs to
+     */
+    public function scopeVisibleToStudent(Builder $query, User $user): Builder
+    {
+        return $query->where(function (Builder $q) use ($user) {
+            $q->whereRaw('NOT EXISTS (
+                SELECT 1 FROM course_group_content
+                WHERE course_group_content.contentable_type = ?
+                  AND course_group_content.contentable_id = materials.id
+            )', [Material::class])
+            ->orWhereRaw('EXISTS (
+                SELECT 1 FROM course_group_content cgc
+                INNER JOIN course_group_members cgm ON cgm.course_group_id = cgc.course_group_id
+                WHERE cgc.contentable_type = ?
+                  AND cgc.contentable_id = materials.id
+                  AND cgm.user_id = ?
+            )', [Material::class, $user->id]);
+        });
     }
 
     /**
