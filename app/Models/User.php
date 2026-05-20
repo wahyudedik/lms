@@ -256,6 +256,18 @@ class User extends Authenticatable
     }
 
     /**
+     * Get student label based on authenticated user's role context.
+     * Returns "Mahasiswa" for dosen, "Siswa" for guru/admin.
+     */
+    public function getStudentLabel(): string
+    {
+        return match ($this->role) {
+            'dosen', 'mahasiswa' => 'Mahasiswa',
+            default => 'Siswa',
+        };
+    }
+
+    /**
      * Get notification action URL based on role and resource type
      * Admin gets redirected to admin pages, others to their role-specific pages
      */

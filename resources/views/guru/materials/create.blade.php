@@ -106,7 +106,8 @@
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-users text-gray-400 mr-1"></i>Kelompok Target
                                 </label>
-                                <p class="text-sm text-gray-500 mb-3">Kosongkan untuk semua siswa</p>
+                                <p class="text-sm text-gray-500 mb-3">Kosongkan untuk semua
+                                    {{ strtolower(auth()->user()->getStudentLabel()) }}</p>
                                 <div
                                     class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
                                     @foreach ($course->courseGroups as $group)

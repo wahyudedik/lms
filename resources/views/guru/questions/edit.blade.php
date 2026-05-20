@@ -178,7 +178,8 @@
                                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
                                     <h5 class="font-medium text-yellow-900 mb-2">Kata Kunci & Poin</h5>
                                     <p class="text-sm text-yellow-700 mb-3">
-                                        Tambahkan kata kunci yang harus ada dalam jawaban siswa. Sistem akan menghitung
+                                        Tambahkan kata kunci yang harus ada dalam jawaban
+                                        {{ strtolower(auth()->user()->getStudentLabel()) }}. Sistem akan menghitung
                                         poin berdasarkan kata kunci yang ditemukan.
                                     </p>
                                     <div id="keywords-container" class="space-y-2">
@@ -197,7 +198,8 @@
                                 <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
                                     <h5 class="font-medium text-green-900 mb-2">Jawaban Model</h5>
                                     <p class="text-sm text-green-700 mb-3">
-                                        Berikan jawaban yang benar/ideal. Sistem akan membandingkan jawaban siswa dengan
+                                        Berikan jawaban yang benar/ideal. Sistem akan membandingkan jawaban
+                                        {{ strtolower(auth()->user()->getStudentLabel()) }} dengan
                                         jawaban model ini.
                                     </p>
                                     <textarea name="essay_model_answer" id="essay_model_answer" rows="4"
@@ -251,7 +253,8 @@
                             </label>
                             <textarea name="explanation" id="explanation" rows="3"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('explanation', $question->explanation) }}</textarea>
-                            <p class="text-sm text-gray-500 mt-1">Penjelasan akan ditampilkan setelah siswa selesai
+                            <p class="text-sm text-gray-500 mt-1">Penjelasan akan ditampilkan setelah
+                                {{ strtolower(auth()->user()->getStudentLabel()) }} selesai
                                 mengerjakan</p>
                         </div>
 

@@ -131,7 +131,8 @@
                         {{ $submission->isGraded() ? 'Perbarui Nilai' : 'Beri Nilai' }}
                     </h3>
 
-                    <form action="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', [$assignment, $submission]) }}"
+                    <form
+                        action="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', [$assignment, $submission]) }}"
                         method="POST">
                         @csrf
 
@@ -156,7 +157,7 @@
                             </label>
                             <textarea name="feedback" id="feedback" rows="4"
                                 class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150"
-                                placeholder="Berikan feedback untuk siswa...">{{ old('feedback', $submission->feedback) }}</textarea>
+                                placeholder="Berikan feedback untuk {{ strtolower(auth()->user()->getStudentLabel()) }}...">{{ old('feedback', $submission->feedback) }}</textarea>
                             @error('feedback')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror

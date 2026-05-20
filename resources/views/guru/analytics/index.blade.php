@@ -171,7 +171,8 @@
             <!-- Assignment Completion Rate -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                    <i class="fas fa-check-circle text-teal-600 mr-2"></i>Tingkat Penyelesaian Tugas per Siswa
+                    <i class="fas fa-check-circle text-teal-600 mr-2"></i>Tingkat Penyelesaian Tugas per
+                    {{ auth()->user()->getStudentLabel() }}
                 </h3>
                 <div class="mb-3">
                     <select id="completion_course_filter" class="rounded-md border-gray-300 shadow-sm text-sm"
@@ -235,7 +236,7 @@
                                 position: 'left',
                                 title: {
                                     display: true,
-                                    text: 'Jumlah Siswa'
+                                    text: 'Jumlah {{ auth()->user()->getStudentLabel() }}'
                                 }
                             },
                             y1: {

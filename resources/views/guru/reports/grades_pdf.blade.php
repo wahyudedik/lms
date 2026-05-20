@@ -193,7 +193,7 @@
         </div>
         <div class="info-row">
             <div class="info-label">Total Peserta</div>
-            <div class="info-value">{{ $attempts->count() }} Siswa</div>
+            <div class="info-value">{{ $attempts->count() }} {{ auth()->user()->getStudentLabel() }}</div>
         </div>
     </div>
 
@@ -234,7 +234,7 @@
         <thead>
             <tr>
                 <th class="text-center" style="width: 30px;">No</th>
-                <th>Nama Siswa</th>
+                <th>Nama {{ auth()->user()->getStudentLabel() }}</th>
                 <th>Email</th>
                 <th class="text-center">Skor (%)</th>
                 <th class="text-center">Poin</th>
@@ -247,8 +247,9 @@
             @foreach ($attempts->sortByDesc('score') as $index => $attempt)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $attempt->is_guest ? ($attempt->guest_name ?? 'Tamu') : ($attempt->user->name ?? 'Tidak diketahui') }}</td>
-                    <td>{{ $attempt->is_guest ? ($attempt->guest_email ?? '-') : ($attempt->user->email ?? '-') }}</td>
+                    <td>{{ $attempt->is_guest ? $attempt->guest_name ?? 'Tamu' : $attempt->user->name ?? 'Tidak diketahui' }}
+                    </td>
+                    <td>{{ $attempt->is_guest ? $attempt->guest_email ?? '-' : $attempt->user->email ?? '-' }}</td>
                     <td class="text-center">
                         @if (!is_null($attempt->score))
                             <strong>{{ number_format($attempt->score, 2) }}%</strong>

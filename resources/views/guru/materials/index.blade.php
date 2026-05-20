@@ -78,7 +78,8 @@
                                                             @else
                                                                 <span
                                                                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
-                                                                        class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                                        class="fas fa-globe mr-1"></i>Semua
+                                                                    {{ auth()->user()->getStudentLabel() }}</span>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -167,7 +168,8 @@
                                                 @else
                                                     <span
                                                         class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
-                                                            class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                            class="fas fa-globe mr-1"></i>Semua
+                                                        {{ auth()->user()->getStudentLabel() }}</span>
                                                 @endif
                                             </div>
                                         </div>

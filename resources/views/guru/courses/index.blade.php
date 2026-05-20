@@ -75,7 +75,7 @@
                                         Status</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Siswa</th>
+                                        {{ auth()->user()->getStudentLabel() }}</th>
                                     <th
                                         class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         Aksi</th>
@@ -111,7 +111,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             <i
                                                 class="fas fa-users text-gray-400 mr-1"></i>{{ $course->enrollments->count() }}
-                                            siswa
+                                            {{ strtolower(auth()->user()->getStudentLabel()) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                                             <div class="flex justify-end gap-3">
@@ -125,8 +125,9 @@
                                                 </a>
                                                 <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                                                     class="text-purple-600 hover:text-purple-800 font-semibold"
-                                                    title="Kelola Siswa">
-                                                    <i class="fas fa-users mr-1"></i>Siswa
+                                                    title="Kelola {{ auth()->user()->getStudentLabel() }}">
+                                                    <i
+                                                        class="fas fa-users mr-1"></i>{{ auth()->user()->getStudentLabel() }}
                                                 </a>
                                                 <form
                                                     action="{{ route(auth()->user()->getRolePrefix() . '.courses.destroy', $course) }}"

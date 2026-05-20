@@ -210,7 +210,7 @@
                                         <div class="bg-white border-l-4 border-blue-400 rounded-lg p-4 mb-4 shadow-sm">
                                             <p class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
                                                 <i class="fas fa-comment-dots text-blue-500"></i>
-                                                Jawaban Mahasiswa:
+                                                Jawaban {{ auth()->user()->getStudentLabel() }}:
                                             </p>
                                             <p class="text-gray-900 leading-relaxed">
                                                 {{ is_array($answer->answer) ? json_encode($answer->answer) : $answer->answer }}
@@ -250,7 +250,8 @@
                                         @endif
 
                                         <!-- Grading Form -->
-                                        <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.grade-essay', [$exam, $answer]) }}"
+                                        <form
+                                            action="{{ route(auth()->user()->getRolePrefix() . '.exams.grade-essay', [$exam, $answer]) }}"
                                             method="POST" class="bg-gray-50 border border-gray-300 rounded p-3">
                                             @csrf
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -270,7 +271,7 @@
                                                     </label>
                                                     <textarea name="feedback" rows="2"
                                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                                        placeholder="Berikan feedback untuk siswa...">{{ old('feedback', $answer->feedback) }}</textarea>
+                                                        placeholder="Berikan feedback untuk {{ strtolower(auth()->user()->getStudentLabel()) }}...">{{ old('feedback', $answer->feedback) }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="mt-3 flex justify-end">
@@ -281,7 +282,8 @@
                                             </div>
                                         </form>
                                         <!-- Grading Form -->
-                                        <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.grade-essay', [$exam, $answer]) }}"
+                                        <form
+                                            action="{{ route(auth()->user()->getRolePrefix() . '.exams.grade-essay', [$exam, $answer]) }}"
                                             method="POST"
                                             class="bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-gray-300 rounded-lg p-5">
                                             @csrf
@@ -308,7 +310,7 @@
                                                     </label>
                                                     <textarea name="feedback" rows="2"
                                                         class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150"
-                                                        placeholder="Berikan feedback untuk mahasiswa...">{{ old('feedback', $answer->feedback) }}</textarea>
+                                                        placeholder="Berikan feedback untuk {{ strtolower(auth()->user()->getStudentLabel()) }}...">{{ old('feedback', $answer->feedback) }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="mt-4 flex justify-end">

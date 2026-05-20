@@ -272,7 +272,7 @@
                             <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-chart-line text-sm"></i>
                             </div>
-                            <span class="truncate">{{ __('Analitik Siswa') }}</span>
+                            <span class="truncate">{{ __('Analitik') }} {{ auth()->user()->getStudentLabel() }}</span>
                         </x-sidebar-link>
 
                         <x-sidebar-link :href="route($rolePrefix . '.reports.index')" :active="$guruReportsActive">

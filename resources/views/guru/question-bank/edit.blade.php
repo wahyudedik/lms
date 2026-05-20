@@ -280,7 +280,8 @@
                                         <i class="fas fa-key text-yellow-700 mr-2"></i>Kata Kunci & Poin
                                     </h5>
                                     <p class="text-sm text-yellow-700 mb-3">
-                                        Tambahkan kata kunci yang harus ada dalam jawaban siswa. Sistem akan menghitung
+                                        Tambahkan kata kunci yang harus ada dalam jawaban
+                                        {{ strtolower(auth()->user()->getStudentLabel()) }}. Sistem akan menghitung
                                         poin berdasarkan kata kunci yang ditemukan.
                                     </p>
                                     <div id="keywords-container" class="space-y-2 mb-3">
@@ -300,7 +301,8 @@
                                         <i class="fas fa-check-double text-green-700 mr-2"></i>Jawaban Model
                                     </h5>
                                     <p class="text-sm text-green-700 mb-3">
-                                        Berikan jawaban yang benar/ideal. Sistem akan membandingkan jawaban siswa dengan
+                                        Berikan jawaban yang benar/ideal. Sistem akan membandingkan jawaban
+                                        {{ strtolower(auth()->user()->getStudentLabel()) }} dengan
                                         jawaban model ini.
                                     </p>
                                     <textarea name="essay_model_answer" id="essay_model_answer" rows="4"

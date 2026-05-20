@@ -1,7 +1,8 @@
 ﻿<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            <i class="fas fa-chalkboard-teacher mr-2"></i>{{ __('Dashboard Guru') }}
+            <i
+                class="fas fa-chalkboard-teacher mr-2"></i>{{ auth()->user()->role === 'dosen' ? __('Dashboard Dosen') : __('Dashboard Guru') }}
         </h2>
     </x-slot>
 
@@ -49,7 +50,8 @@
                 <div class="bg-white rounded-lg shadow-md border-l-4 border-blue-600 p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-gray-600 text-sm font-semibold">{{ __('Total Students') }}</p>
+                            <p class="text-gray-600 text-sm font-semibold">{{ __('Total') }}
+                                {{ auth()->user()->getStudentLabel() }}</p>
                             <p class="text-3xl font-bold text-gray-900 mt-2">
                                 {{ number_format($stats['total_students']) }}</p>
                             <p class="text-gray-500 text-xs mt-1">

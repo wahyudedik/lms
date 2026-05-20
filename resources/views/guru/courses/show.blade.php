@@ -67,7 +67,9 @@
                         <div class="p-6">
                             <div class="flex justify-between items-center mb-4">
                                 <h3 class="text-lg font-bold text-gray-900">
-                                    <i class="fas fa-users text-purple-600 mr-2"></i>Siswa Terdaftar
+                                    <i
+                                        class="fas fa-users text-purple-600 mr-2"></i>{{ auth()->user()->getStudentLabel() }}
+                                    Terdaftar
                                 </h3>
                                 <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                                     class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold text-sm">
@@ -82,7 +84,7 @@
                                             <tr>
                                                 <th
                                                     class="px-4 py-2 text-left text-xs font-semibold text-gray-700 uppercase">
-                                                    Siswa</th>
+                                                    {{ auth()->user()->getStudentLabel() }}</th>
                                                 <th
                                                     class="px-4 py-2 text-left text-xs font-semibold text-gray-700 uppercase">
                                                     Status</th>
@@ -130,7 +132,8 @@
                                     <div class="mt-4 text-center">
                                         <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                                             class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
-                                            Lihat semua {{ $course->enrollments->count() }} siswa
+                                            Lihat semua {{ $course->enrollments->count() }}
+                                            {{ strtolower(auth()->user()->getStudentLabel()) }}
                                         </a>
                                     </div>
                                 @endif
@@ -181,7 +184,8 @@
                                                     @else
                                                         <span
                                                             class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
-                                                                class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                                class="fas fa-globe mr-1"></i>Semua
+                                                            {{ auth()->user()->getStudentLabel() }}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -253,7 +257,8 @@
                                                     @else
                                                         <span
                                                             class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700"><i
-                                                                class="fas fa-globe mr-1"></i>Semua Siswa</span>
+                                                                class="fas fa-globe mr-1"></i>Semua
+                                                            {{ auth()->user()->getStudentLabel() }}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -305,9 +310,10 @@
                                     <dd class="text-sm font-semibold text-gray-900">
                                         @if ($course->max_students)
                                             {{ $course->enrollments->count() }} / {{ $course->max_students }}
-                                            siswa
+                                            {{ strtolower(auth()->user()->getStudentLabel()) }}
                                         @else
-                                            {{ $course->enrollments->count() }} siswa (Tidak terbatas)
+                                            {{ $course->enrollments->count() }}
+                                            {{ strtolower(auth()->user()->getStudentLabel()) }} (Tidak terbatas)
                                         @endif
                                     </dd>
                                 </div>
@@ -343,7 +349,8 @@
                                             <i class="fas fa-user-check text-green-600 text-xl"></i>
                                         </div>
                                         <div>
-                                            <div class="text-green-600 text-xs font-semibold mb-1">Siswa Aktif
+                                            <div class="text-green-600 text-xs font-semibold mb-1">
+                                                {{ auth()->user()->getStudentLabel() }} Aktif
                                             </div>
                                             <div class="text-2xl font-bold text-green-900">{{ $activeStudents }}
                                             </div>
@@ -357,7 +364,8 @@
                                             <i class="fas fa-check-circle text-blue-600 text-xl"></i>
                                         </div>
                                         <div>
-                                            <div class="text-blue-600 text-xs font-semibold mb-1">Siswa Selesai
+                                            <div class="text-blue-600 text-xs font-semibold mb-1">
+                                                {{ auth()->user()->getStudentLabel() }} Selesai
                                             </div>
                                             <div class="text-2xl font-bold text-blue-900">{{ $completedStudents }}
                                             </div>
@@ -371,7 +379,8 @@
                                             <i class="fas fa-users text-purple-600 text-xl"></i>
                                         </div>
                                         <div>
-                                            <div class="text-purple-600 text-xs font-semibold mb-1">Total Siswa
+                                            <div class="text-purple-600 text-xs font-semibold mb-1">Total
+                                                {{ auth()->user()->getStudentLabel() }}
                                             </div>
                                             <div class="text-2xl font-bold text-purple-900">
                                                 {{ $course->enrollments->count() }}</div>
@@ -406,7 +415,7 @@
 
                                 <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.enrollments', $course) }}"
                                     class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all duration-200 shadow-sm hover:shadow-md">
-                                    <i class="fas fa-users"></i>Kelola Siswa
+                                    <i class="fas fa-users"></i>Kelola {{ auth()->user()->getStudentLabel() }}
                                 </a>
 
                                 <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.groups.index', $course) }}"

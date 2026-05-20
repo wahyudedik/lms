@@ -269,7 +269,7 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                                            Siswa</th>
+                                            {{ auth()->user()->getStudentLabel() }}</th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                                             Waktu</th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">

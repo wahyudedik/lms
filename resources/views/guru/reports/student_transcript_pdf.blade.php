@@ -205,7 +205,7 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>TRANSKRIP NILAI SISWA</h1>
+        <h1>TRANSKRIP NILAI {{ strtoupper(auth()->user()->getStudentLabel()) }}</h1>
         <h2>{{ $course->title }}</h2>
         <p>Dicetak pada: {{ now()->format('d F Y, H:i') }} WIB</p>
     </div>
@@ -213,7 +213,7 @@
     <!-- Student Information -->
     <div class="student-info">
         <div class="info-row">
-            <div class="info-label">Nama Siswa</div>
+            <div class="info-label">Nama {{ auth()->user()->getStudentLabel() }}</div>
             <div class="info-value">{{ $student->name }}</div>
         </div>
         <div class="info-row">

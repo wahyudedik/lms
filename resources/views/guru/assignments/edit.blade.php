@@ -117,7 +117,8 @@
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-file text-gray-400 mr-1"></i>Tipe File yang Diizinkan
                                 </label>
-                                <p class="text-xs text-gray-500 mb-3">Pilih tipe file yang boleh dikumpulkan siswa. Jika
+                                <p class="text-xs text-gray-500 mb-3">Pilih tipe file yang boleh dikumpulkan
+                                    {{ strtolower(auth()->user()->getStudentLabel()) }}. Jika
                                     tidak ada yang dipilih, semua tipe diizinkan.</p>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                                     @php
@@ -223,7 +224,8 @@
                                 <h3 class="text-lg font-bold text-gray-900 mb-4">
                                     <i class="fas fa-users text-teal-600 mr-2"></i>Kelompok Target
                                 </h3>
-                                <p class="text-sm text-gray-500 mb-3">Kosongkan untuk semua siswa. Maksimal 10 kelompok
+                                <p class="text-sm text-gray-500 mb-3">Kosongkan untuk semua
+                                    {{ strtolower(auth()->user()->getStudentLabel()) }}. Maksimal 10 kelompok
                                     per tugas.</p>
                                 <div
                                     class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
@@ -257,7 +259,8 @@
                                     Publikasikan Tugas
                                 </span>
                             </label>
-                            <p class="text-xs text-gray-500 mt-2">Jika dipublikasikan, siswa yang terdaftar akan
+                            <p class="text-xs text-gray-500 mt-2">Jika dipublikasikan,
+                                {{ strtolower(auth()->user()->getStudentLabel()) }} yang terdaftar akan
                                 menerima notifikasi.</p>
                         </div>
 

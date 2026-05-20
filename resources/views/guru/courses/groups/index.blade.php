@@ -141,7 +141,8 @@
                                             <select name="user_id"
                                                 class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                                                 required>
-                                                <option value="">-- Pilih Siswa --</option>
+                                                <option value="">-- Pilih {{ auth()->user()->getStudentLabel() }}
+                                                    --</option>
                                                 @foreach ($enrolledStudents as $student)
                                                     @unless (in_array($student->id, $allGroupedStudentIds))
                                                         <option value="{{ $student->id }}">{{ $student->name }}</option>

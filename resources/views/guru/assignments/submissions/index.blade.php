@@ -61,7 +61,7 @@
                                     <tr>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            Siswa
+                                            {{ auth()->user()->getStudentLabel() }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -164,7 +164,8 @@
                                 <i class="fas fa-inbox text-gray-400 text-2xl"></i>
                             </div>
                             <p class="text-lg font-semibold mb-2">Belum ada pengumpulan.</p>
-                            <p class="text-sm text-gray-400">Siswa belum mengumpulkan tugas ini.</p>
+                            <p class="text-sm text-gray-400">{{ auth()->user()->getStudentLabel() }} belum mengumpulkan
+                                tugas ini.</p>
                         </div>
                     @endif
                 </div>

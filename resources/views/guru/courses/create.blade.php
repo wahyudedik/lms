@@ -16,13 +16,15 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route(auth()->user()->getRolePrefix() . '.courses.store') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
 
                         <!-- Title -->
                         <div class="mb-6">
                             <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-book text-gray-400 mr-1"></i>{{ __('Course Name') }} <span class="text-red-500">*</span>
+                                <i class="fas fa-book text-gray-400 mr-1"></i>{{ __('Course Name') }} <span
+                                    class="text-red-500">*</span>
                             </label>
                             <input type="text" name="title" id="title" value="{{ old('title') }}" required
                                 class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150 @error('title') border-red-500 @enderror"
@@ -65,7 +67,8 @@
                             <!-- Status -->
                             <div>
                                 <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-toggle-on text-gray-400 mr-1"></i>Status <span class="text-red-500">*</span>
+                                    <i class="fas fa-toggle-on text-gray-400 mr-1"></i>Status <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <select name="status" id="status" required
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150 @error('status') border-red-500 @enderror">
@@ -82,7 +85,8 @@
                             <!-- Max Students -->
                             <div>
                                 <label for="max_students" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-users text-gray-400 mr-1"></i>Maks. Siswa
+                                    <i class="fas fa-users text-gray-400 mr-1"></i>Maks.
+                                    {{ auth()->user()->getStudentLabel() }}
                                 </label>
                                 <input type="number" name="max_students" id="max_students"
                                     value="{{ old('max_students') }}" min="1" placeholder="Tidak terbatas"
