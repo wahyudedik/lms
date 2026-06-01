@@ -28,12 +28,47 @@
                 </h3>
                 <ol class="list-decimal list-inside space-y-2 text-sm text-blue-800">
                     <li>{{ __('Download the Excel template using the button above') }}</li>
-                    <li><strong>{{ __('Required fields:') }}</strong> {{ __('name, email') }}</li>
-                    <li><strong>{{ __('Optional fields:') }}</strong> {{ __('role, phone, birth_date, gender, address, status') }}</li>
-                    <li><strong>{{ __('Supported roles:') }}</strong> {{ __('admin, guru, siswa') }}</li>
-                    <li><strong>{{ __('Supported genders:') }}</strong> {{ __('laki-laki, perempuan') }}</li>
-                    <li><strong>{{ __('Date format:') }}</strong> {{ __('YYYY-MM-DD (e.g., 2000-01-01)') }}</li>
-                    <li><strong>{{ __('Maximum file size:') }}</strong> 10MB</li>
+                    <li><strong>{{ __('Kolom wajib diisi:') }}</strong> <span class="inline-flex gap-1 flex-wrap">
+                            <span
+                                class="inline-block px-2 py-0.5 bg-red-100 text-red-700 rounded font-mono text-xs">name</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-red-100 text-red-700 rounded font-mono text-xs">email</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-red-100 text-red-700 rounded font-mono text-xs">role</span>
+                        </span></li>
+                    <li><strong>{{ __('Kolom opsional (boleh dikosongkan):') }}</strong> <span
+                            class="inline-flex gap-1 flex-wrap">
+                            <span
+                                class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 rounded font-mono text-xs">phone</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 rounded font-mono text-xs">birth_date</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 rounded font-mono text-xs">gender</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 rounded font-mono text-xs">address</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 rounded font-mono text-xs">status</span>
+                        </span></li>
+                    <li><strong>{{ __('Peran yang didukung:') }}</strong> <span class="inline-flex gap-1 flex-wrap">
+                            <span
+                                class="inline-block px-2 py-0.5 bg-purple-100 text-purple-700 rounded font-mono text-xs">admin</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-mono text-xs">guru</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-green-100 text-green-700 rounded font-mono text-xs">siswa</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-orange-100 text-orange-700 rounded font-mono text-xs">dosen</span>
+                            <span
+                                class="inline-block px-2 py-0.5 bg-teal-100 text-teal-700 rounded font-mono text-xs">mahasiswa</span>
+                        </span></li>
+                    <li><strong>{{ __('Gender yang didukung:') }}</strong> <span
+                            class="font-mono text-xs">laki-laki</span>, <span class="font-mono text-xs">perempuan</span>
+                    </li>
+                    <li><strong>{{ __('Format tanggal:') }}</strong> <span class="font-mono text-xs">YYYY-MM-DD</span>
+                        {{ __('(contoh: 2000-01-01)') }}</li>
+                    <li><strong>{{ __('Ukuran file maksimal:') }}</strong> 10MB</li>
+                    <li>{{ __('Baris abu-abu di template adalah panduan format, silakan dihapus sebelum mengisi data') }}
+                    </li>
                 </ol>
             </div>
 
@@ -45,7 +80,8 @@
                 <div class="bg-white border-2 border-green-300 rounded-lg p-4 mb-4">
                     <p class="text-center">
                         <span class="text-sm text-gray-600 block mb-2">{{ __('All users will use password:') }}</span>
-                        <code class="text-2xl font-bold text-green-700 bg-green-100 px-4 py-2 rounded-lg">LMS2024@Pass</code>
+                        <code
+                            class="text-2xl font-bold text-green-700 bg-green-100 px-4 py-2 rounded-lg">LMS2024@Pass</code>
                     </p>
                 </div>
                 <ul class="text-sm text-green-800 space-y-2">
@@ -83,11 +119,13 @@
 
                             <div class="mb-6">
                                 <label for="file" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-file-excel text-gray-400 mr-1"></i>{{ __('Excel/CSV File') }} <span class="text-red-500">*</span>
+                                    <i class="fas fa-file-excel text-gray-400 mr-1"></i>{{ __('Excel/CSV File') }}
+                                    <span class="text-red-500">*</span>
                                 </label>
                                 <input type="file" id="file" name="file" accept=".xlsx,.xls,.csv" required
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                <p class="text-sm text-gray-500 mt-1">{{ __('Supported formats: XLSX, XLS, CSV (Max: 10MB)') }}</p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    {{ __('Supported formats: XLSX, XLS, CSV (Max: 10MB)') }}</p>
                                 @error('file')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror

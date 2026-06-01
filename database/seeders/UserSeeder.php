@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
             'phone' => '081234567890',
             'birth_date' => '1990-01-01',
             'gender' => 'laki-laki',
-            'address' => 'Jl. Admin No. 1, Jakarta',
+            'address' => 'Jl. Admin No. 1, Jakarta', 
             'is_active' => true,
             'email_verified_at' => now(),
         ]);

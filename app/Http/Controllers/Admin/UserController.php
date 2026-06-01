@@ -259,13 +259,41 @@ class UserController extends Controller
         ]);
 
         try {
-            Excel::import(new UsersImport, $request->file('file'));
+            $import = new UsersImport();
+            Excel::import($import, $request->file('file'));
 
-            return redirect()->route('admin.users.index')
-                ->with('success', 'Users imported successfully!');
+            $stats = $import->getStats();
+
+            if ($stats['imported'] > 0) {
+                $message = "{$stats['imported']} pengguna berhasil diimport.";
+
+                if ($stats['skipped'] > 0) {
+                    $message .= " {$stats['skipped']} baris dilewati.";
+                    // Store skipped details in session for potential flash display
+                    session(['import_errors' => array_merge(
+                        $stats['failure_messages'] ?? [],
+                        $stats['error_messages'] ?? []
+                    )]);
+                }
+
+                return redirect()->route('admin.users.index')
+                    ->with('success', $message);
+            } else {
+                $errorMessages = array_merge(
+                    $stats['failure_messages'] ?? [],
+                    $stats['error_messages'] ?? []
+                );
+
+                $errorMsg = 'Tidak ada pengguna yang diimport.';
+                if (!empty($errorMessages)) {
+                    $errorMsg .= ' Error: ' . implode(' | ', array_slice($errorMessages, 0, 5));
+                }
+
+                return redirect()->back()->with('error', $errorMsg);
+            }
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Import failed: ' . $e->getMessage());
+                ->with('error', 'Import gagal: ' . $e->getMessage());
         }
     }
 
@@ -274,62 +302,103 @@ class UserController extends Controller
      */
     public function downloadTemplate()
     {
-        // Create a simple template export with sample data
-        $headers = [
-            'Name',
-            'Email',
-            'Role',
-            'Phone',
-            'Birth Date',
-            'Gender',
-            'Address',
-            'Status',
-        ];
-
-        $sampleData = [
-            [
-                'John Doe',
-                'john@example.com',
-                'siswa',
-                '081234567890',
-                '2000-01-01',
-                'laki-laki',
-                'Jl. Contoh No. 123',
-                'active',
-            ],
-            [
-                'Jane Smith',
-                'jane@example.com',
-                'guru',
-                '081234567891',
-                '1990-05-15',
-                'perempuan',
-                'Jl. Contoh No. 456',
-                'active',
-            ],
-        ];
-
-        // Create simple spreadsheet
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Add headers
+        // === Header Row ===
+        $headers = [
+            'name',
+            'email',
+            'role',
+            'phone',
+            'birth_date',
+            'gender',
+            'address',
+            'status',
+        ];
+
         $sheet->fromArray($headers, null, 'A1');
 
-        // Add sample data
-        $sheet->fromArray($sampleData, null, 'A2');
+        // === Panduan Format di Baris 2 (sebagai referensi, akan dihapus setelah diisi) ===
+        $guideData = [
+            [
+                'Nama Lengkap',
+                'email@contoh.com',
+                'admin/guru/siswa/dosen/mahasiswa',
+                '081234567890',
+                'YYYY-MM-DD',
+                'laki-laki/perempuan',
+                'Alamat lengkap',
+                'active/inactive',
+            ],
+        ];
 
-        // Style headers
-        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
+        $sheet->fromArray($guideData, null, 'A2');
+
+        // === Styling ===
+        // Header style - bold dengan background biru
+        $headerStyle = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+                'size' => 11,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '4472C4'],
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+        ];
+        $sheet->getStyle('A1:H1')->applyFromArray($headerStyle);
+
+        // Guide row style - abu-abu muda, italic
+        $guideStyle = [
+            'font' => [
+                'italic' => true,
+                'color' => ['rgb' => '808080'],
+                'size' => 10,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => 'F2F2F2'],
+            ],
+        ];
+        $sheet->getStyle('A2:H2')->applyFromArray($guideStyle);
+
+        // Border untuk header dan guide
+        $borderStyle = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'D9D9D9'],
+                ],
+            ],
+        ];
+        $sheet->getStyle('A1:H2')->applyFromArray($borderStyle);
 
         // Auto size columns
         foreach (range('A', 'H') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
+        // Add notes di bawah guide
+        $sheet->setCellValue('A4', 'Catatan:');
+        $sheet->getStyle('A4')->getFont()->setBold(true)->setSize(11);
+        $sheet->setCellValue('A5', '1. Kolom wajib diisi: name, email, role');
+        $sheet->setCellValue('A6', '2. Kolom opsional: phone, birth_date, gender, address, status (boleh dikosongkan)');
+        $sheet->setCellValue('A7', '3. Role yang didukung: admin, guru, siswa, dosen, mahasiswa');
+        $sheet->setCellValue('A8', '4. Gender yang didukung: laki-laki, perempuan');
+        $sheet->setCellValue('A9', '5. Status yang didukung: active, inactive');
+        $sheet->setCellValue('A10', '6. Format tanggal: YYYY-MM-DD (contoh: 2000-01-01)');
+        $sheet->setCellValue('A11', '7. Semua user akan mendapat password default: LMS2024@Pass');
+        $sheet->setCellValue('A12', '8. Baris abu-abu (baris 2) adalah panduan format, silakan dihapus sebelum diisi');
+        $sheet->getStyle('A5:A12')->getFont()->setSize(10);
+
         // Save and download
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename = 'users_import_template.xlsx';
+        $filename = 'template_import_pengguna.xlsx';
         $temp_file = tempnam(sys_get_temp_dir(), $filename);
         $writer->save($temp_file);
 

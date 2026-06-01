@@ -19,6 +19,28 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
 {
     use Importable, SkipsErrors, SkipsFailures;
 
+    protected int $importedCount = 0;
+
+    /**
+     * Konversi empty string dari Excel menjadi null untuk field opsional.
+     * Dipanggil sebelum validasi oleh Maatwebsite Excel.
+     *
+     * @param array $row
+     * @return array
+     */
+    public function prepareForValidation(array $row): array
+    {
+        $optionalFields = ['phone', 'birth_date', 'gender', 'address', 'status'];
+
+        foreach ($optionalFields as $field) {
+            if (isset($row[$field]) && is_string($row[$field]) && trim($row[$field]) === '') {
+                $row[$field] = null;
+            }
+        }
+
+        return $row;
+    }
+
     /**
      * @param array $row
      *
@@ -27,7 +49,9 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
     public function model(array $row)
     {
         // Default password dari config
-        $defaultPassword = config('app.default_user_password');
+        $defaultPassword = config('app.default_user_password', 'LMS2024@Pass');
+
+        $this->importedCount++;
 
         return new User([
             'name' => $row['name'],
@@ -44,6 +68,10 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
     }
 
     /**
+     * Validasi harus menggunakan WithValidation concern atau custom handling.
+     * Karena kita sudah implement prepareForValidation, kita handle validasi manual
+     * untuk menghindari konflik empty string.
+     *
      * @return array
      */
     public function rules(): array
@@ -51,7 +79,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
-            'role' => 'nullable|string|in:admin,guru,siswa',
+            'role' => 'nullable|string|in:admin,guru,siswa,dosen,mahasiswa',
             'phone' => 'nullable|string|max:20',
             'birth_date' => 'nullable|date',
             'gender' => 'nullable|string|in:laki-laki,perempuan',
@@ -66,13 +94,13 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
     public function customValidationMessages()
     {
         return [
-            'name.required' => 'Name is required',
-            'email.required' => 'Email is required',
-            'email.email' => 'Email must be a valid email address',
-            'email.unique' => 'Email already exists',
-            'role.in' => 'Role must be one of: admin, guru, siswa',
-            'gender.in' => 'Gender must be one of: laki-laki, perempuan',
-            'status.in' => 'Status must be one of: active, inactive',
+            'name.required' => 'Nama wajib diisi',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Email harus valid',
+            'email.unique' => 'Email sudah terdaftar di sistem',
+            'role.in' => 'Role harus salah satu dari: admin, guru, siswa, dosen, mahasiswa',
+            'gender.in' => 'Jenis kelamin harus salah satu dari: laki-laki, perempuan',
+            'status.in' => 'Status harus salah satu dari: active, inactive',
         ];
     }
 
@@ -88,6 +116,8 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
             'teacher' => 'guru',
             'siswa' => 'siswa',
             'student' => 'siswa',
+            'dosen' => 'dosen',
+            'mahasiswa' => 'mahasiswa',
         ];
 
         return $roleMap[strtolower($role)] ?? 'siswa';
@@ -102,11 +132,14 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
 
         $genderMap = [
             'laki-laki' => 'laki-laki',
+            'laki laki' => 'laki-laki',
             'male' => 'laki-laki',
             'm' => 'laki-laki',
+            'pria' => 'laki-laki',
             'perempuan' => 'perempuan',
             'female' => 'perempuan',
             'f' => 'perempuan',
+            'wanita' => 'perempuan',
         ];
 
         return $genderMap[strtolower($gender)] ?? null;
@@ -143,6 +176,23 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    /**
+     * Get import statistics
+     */
+    public function getStats(): array
+    {
+        return [
+            'imported' => $this->importedCount,
+            'skipped' => $this->failures()->count() + $this->errors()->count(),
+            'failure_messages' => $this->failures()->map(function ($failure) {
+                return "Baris {$failure->row()}: " . implode(', ', $failure->errors());
+            })->toArray(),
+            'error_messages' => $this->errors()->map(function ($error) {
+                return $error->getMessage();
+            })->toArray(),
+        ];
     }
 
     /**
