@@ -315,6 +315,21 @@ class User extends Authenticatable
     }
 
     /**
+     * Get dashboard title based on role
+     */
+    public function getDashboardTitle(): string
+    {
+        return match ($this->role) {
+            'admin' => __('Dashboard Admin'),
+            'guru' => __('Dashboard Guru'),
+            'dosen' => __('Dashboard Dosen'),
+            'siswa' => __('Dashboard Siswa'),
+            'mahasiswa' => __('Dashboard Mahasiswa'),
+            default => __('Dashboard'),
+        };
+    }
+
+    /**
      * Get dashboard route based on role
      */
     public function getDashboardRouteAttribute(): ?string

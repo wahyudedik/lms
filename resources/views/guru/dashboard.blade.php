@@ -1,8 +1,7 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            <i
-                class="fas fa-chalkboard-teacher mr-2"></i>{{ auth()->user()->role === 'dosen' ? __('Dashboard Dosen') : __('Dashboard Guru') }}
+            <i class="fas fa-chalkboard-teacher mr-2"></i>{{ auth()->user()->getDashboardTitle() }}
         </h2>
     </x-slot>
 

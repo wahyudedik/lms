@@ -294,13 +294,15 @@
     </div>
 
     <!-- Hidden Form for Submission -->
-    <form id="submit-form" action="{{ route(auth()->user()->getRolePrefix() . '.exams.submit', $attempt) }}" method="POST" class="hidden">
+    <form id="submit-form" action="{{ route(auth()->user()->getRolePrefix() . '.exams.submit', $attempt) }}"
+        method="POST" class="hidden">
         @csrf
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Configuration
+        const rolePrefix = '{{ auth()->user()->getRolePrefix() }}';
         const attemptId = {{ $attempt->id }};
         const examDuration = {{ $exam->duration_minutes }};
         const requireFullscreen = {{ $exam->require_fullscreen ? 'true' : 'false' }};
@@ -316,7 +318,7 @@
 
         // Initialize timer
         function initTimer() {
-            fetch(`/siswa/attempts/${attemptId}/time-remaining`)
+            fetch(`/${rolePrefix}/attempts/${attemptId}/time-remaining`)
                 .then(res => {
                     if (!res.ok) {
                         throw new Error('Failed to fetch remaining time');
@@ -432,7 +434,7 @@
 
             const questionIndex = parseInt(container.dataset.questionIndex, 10);
 
-            fetch(`/siswa/attempts/${attemptId}/save-answer`, {
+            fetch(`/${rolePrefix}/attempts/${attemptId}/save-answer`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -559,7 +561,7 @@
                 }
 
                 showWarning('Mode layar penuh dimatikan! Harap aktifkan kembali.');
-                fetch(`/siswa/attempts/${attemptId}/track-fullscreen-exit`, {
+                fetch(`/${rolePrefix}/attempts/${attemptId}/track-fullscreen-exit`, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
@@ -580,7 +582,7 @@
                 if (document.hidden) {
                     tabSwitchCount++;
 
-                    fetch(`/siswa/attempts/${attemptId}/track-tab-switch`, {
+                    fetch(`/${rolePrefix}/attempts/${attemptId}/track-tab-switch`, {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content

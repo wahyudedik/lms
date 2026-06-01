@@ -21,7 +21,9 @@
                         <i class="fas fa-key text-indigo-600"></i>
                         {{ __('Enroll with Course Code') }}
                     </h3>
-                    <form method="POST" action="{{ route(auth()->user()->getRolePrefix() . '.courses.enroll-by-code') }}" class="flex gap-4">
+                    <form method="POST"
+                        action="{{ route(auth()->user()->getRolePrefix() . '.courses.enroll-by-code') }}"
+                        class="flex gap-4">
                         @csrf
                         <input type="text" name="code" placeholder="Masukkan kode kelas (contoh: MTK001)" required
                             class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150">
@@ -87,7 +89,7 @@
                             <div class="flex items-center justify-between mb-4">
                                 <span class="text-sm text-gray-500 flex items-center gap-1">
                                     <i class="fas fa-users text-purple-500"></i>
-                                    {{ $course->activeEnrollmentsCount() }} mahasiswa
+                                    {{ $course->activeEnrollmentsCount() }} {{ auth()->user()->getStudentLabel() }}
                                 </span>
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
