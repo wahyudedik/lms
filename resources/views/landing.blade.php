@@ -26,6 +26,24 @@
         html {
             scroll-behavior: smooth;
         }
+        /* Auto-resize logo image to fit header & footer cleanly */
+        .logo img {
+            max-height: 40px;
+            width: auto;
+            max-width: 120px;
+            object-fit: contain;
+            vertical-align: middle;
+        }
+        .footer_content .logo img {
+            max-height: 50px;
+            max-width: 150px;
+        }
+        /* Enforce uniform course card image dimensions */
+        .course_box .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
         .footer_copyright, .footer_copyright span {
             color: #a5a5a5 !important;
         }
