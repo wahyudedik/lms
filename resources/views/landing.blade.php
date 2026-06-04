@@ -332,7 +332,7 @@
                     <div class="row mb-4">
                         <div class="col-12 text-center">
                             <h5 class="text-muted">
-                                Hasil Pencarian: 
+                                Hasil Pencarian:
                                 @if(request('name')) nama "{{ request('name') }}" @endif
                                 @if(request('category')) kategori "{{ request('category') }}" @endif
                                 @if(request('degree')) jenjang "{{ request('degree') }}" @endif
@@ -387,7 +387,7 @@
 
         <!-- Register -->
 
-        <div class="register">
+        {{-- <div class="register">
 
             <div class="container-fluid">
 
@@ -437,7 +437,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Services -->
 
@@ -512,7 +512,7 @@
 
         <!-- Testimonials -->
 
-        <div id="testimonials" class="testimonials page_section">
+        {{-- <div id="testimonials" class="testimonials page_section">
             <!-- <div class="testimonials_background" style="background-image:url(images/testimonials_background.jpg)"></div> -->
             <div class="testimonials_background_container prlx_parent">
                 <div class="testimonials_background prlx"
@@ -603,11 +603,11 @@
                 </div>
 
             </div>
-        </div>
+        </div> --}}
 
         <!-- Events -->
 
-        <div class="events page_section">
+        {{-- <div class="events page_section">
             <div class="container">
 
                 <div class="row">
@@ -636,10 +636,10 @@
                                 <div class="col-lg-6 order-lg-2 order-3">
                                     <div class="event_content">
                                         <div class="event_name">
-                                            <a class="trans_200 event-detail-link" href="#" 
-                                               data-event-title="Student Festival" 
-                                               data-event-date="07 January" 
-                                               data-event-location="Grand Central Park" 
+                                            <a class="trans_200 event-detail-link" href="#"
+                                               data-event-title="Student Festival"
+                                               data-event-date="07 January"
+                                               data-event-location="Grand Central Park"
                                                data-event-desc="Mari bergabung bersama kami dalam perayaan festival pelajar tahunan. Nikmati berbagai pertunjukan seni, pameran inovasi proyek siswa, bazar kuliner, dan sesi networking interaktif antar siswa.">
                                                 Student Festival
                                             </a>
@@ -677,10 +677,10 @@
                                 <div class="col-lg-6 order-lg-2 order-3">
                                     <div class="event_content">
                                         <div class="event_name">
-                                            <a class="trans_200 event-detail-link" href="#" 
-                                               data-event-title="Open day in the University campus" 
-                                               data-event-date="07 January" 
-                                               data-event-location="Grand Central Park" 
+                                            <a class="trans_200 event-detail-link" href="#"
+                                               data-event-title="Open day in the University campus"
+                                               data-event-date="07 January"
+                                               data-event-location="Grand Central Park"
                                                data-event-desc="Kesempatan terbaik bagi para calon siswa/mahasiswa dan orang tua untuk melihat secara langsung fasilitas sekolah/kampus kami, berinteraksi dengan guru/dosen, serta berkonsultasi mengenai program studi dan beasiswa yang tersedia.">
                                                 Open day in the University campus
                                             </a>
@@ -718,10 +718,10 @@
                                 <div class="col-lg-6 order-lg-2 order-3">
                                     <div class="event_content">
                                         <div class="event_name">
-                                            <a class="trans_200 event-detail-link" href="#" 
-                                               data-event-title="Student Graduation Ceremony" 
-                                               data-event-date="07 January" 
-                                               data-event-location="Grand Central Park" 
+                                            <a class="trans_200 event-detail-link" href="#"
+                                               data-event-title="Student Graduation Ceremony"
+                                               data-event-date="07 January"
+                                               data-event-location="Grand Central Park"
                                                data-event-desc="Upacara kelulusan resmi siswa/mahasiswa berprestasi tahun akademik ini. Rayakan pencapaian akademik bersama keluarga, teman-teman, dan civitas akademika dalam suasana khidmat dan meriah.">
                                                 Student Graduation Ceremony
                                             </a>
@@ -746,7 +746,7 @@
                 </div>
 
             </div>
-        </div>
+        </div> --}}
 
         <!-- Footer -->
 
@@ -922,7 +922,7 @@
                 e.preventDefault();
                 var emailInput = $('#newsletter_email');
                 var email = emailInput.val().trim();
-                
+
                 if (email) {
                     Swal.fire({
                         title: 'Langganan Berhasil!',
@@ -968,7 +968,7 @@
             $('.placeholder-link').on('click', function(e) {
                 e.preventDefault();
                 var title = $(this).data('title');
-                
+
                 Swal.fire({
                     title: title,
                     html: `
