@@ -179,6 +179,11 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     Route::get('settings/backup/{filename}/download', [App\Http\Controllers\Admin\SettingsController::class, 'downloadBackup'])->name('settings.backup.download');
     Route::delete('settings/backup/{filename}', [App\Http\Controllers\Admin\SettingsController::class, 'deleteBackup'])->name('settings.backup.delete');
 
+    // Error Logs
+    Route::get('error-logs', [App\Http\Controllers\Admin\ErrorLogController::class, 'index'])->name('error-logs.index');
+    Route::get('error-logs/download', [App\Http\Controllers\Admin\ErrorLogController::class, 'download'])->name('error-logs.download');
+    Route::delete('error-logs/clear', [App\Http\Controllers\Admin\ErrorLogController::class, 'clear'])->name('error-logs.clear');
+
     // Analytics
     Route::get('analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
     Route::get('analytics/user-registration-trend', [App\Http\Controllers\Admin\AnalyticsController::class, 'userRegistrationTrend'])->name('analytics.user-registration-trend');

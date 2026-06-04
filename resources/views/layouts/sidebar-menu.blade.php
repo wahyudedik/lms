@@ -101,6 +101,7 @@
                             'admin.documentation.*',
                             'admin.certificate-settings.*',
                             'admin.ai-settings.*',
+                            'admin.error-logs.*',
                         );
                     @endphp
 
@@ -223,6 +224,13 @@
                                     <i class="fas fa-book-reader text-sm"></i>
                                 </div>
                                 <span class="truncate">{{ __('Dokumentasi') }}</span>
+                            </x-sidebar-link>
+
+                            <x-sidebar-link :href="route('admin.error-logs.index')" :active="request()->routeIs('admin.error-logs.*')">
+                                <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-terminal text-sm"></i>
+                                </div>
+                                <span class="truncate">{{ __('Log Error') }}</span>
                             </x-sidebar-link>
                         </x-sidebar-group>
                     </div>

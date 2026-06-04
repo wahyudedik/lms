@@ -196,3 +196,48 @@ test('bulk update class validation fails with invalid class or IDs', function ()
 
     $response->assertSessionHasErrors('school_class_id');
 });
+
+test('admin can update password of another user', function () {
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'email_verified_at' => now(),
+        'is_active' => true,
+    ]);
+
+    $user = User::factory()->create([
+        'is_active' => true,
+    ]);
+
+    $response = $this->actingAs($admin)
+        ->patch(route('admin.users.update-password', $user), [
+            'password' => 'newPassword123!',
+            'password_confirmation' => 'newPassword123!',
+        ]);
+
+    $response->assertRedirect(route('admin.users.edit', $user));
+    $response->assertSessionHas('success');
+
+    expect(\Illuminate\Support\Facades\Hash::check('newPassword123!', $user->refresh()->password))->toBeTrue();
+});
+
+test('admin can update their own password via admin panel', function () {
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'email_verified_at' => now(),
+        'is_active' => true,
+    ]);
+
+    $response = $this->actingAs($admin)
+        ->patch(route('admin.users.update-password', $admin), [
+            'password' => 'newPassword123!',
+            'password_confirmation' => 'newPassword123!',
+        ]);
+
+    $response->assertRedirect(route('admin.users.edit', $admin));
+    $response->assertSessionHas('success');
+    $this->assertAuthenticatedAs($admin);
+
+    expect(\Illuminate\Support\Facades\Hash::check('newPassword123!', $admin->refresh()->password))->toBeTrue();
+});
+
+

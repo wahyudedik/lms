@@ -246,6 +246,7 @@
 
             // Handle password update
             document.getElementById('updatePasswordBtn').addEventListener('click', function(e) {
+                e.preventDefault();
                 const form = this.closest('form');
                 const formData = new FormData(form);
                 const updatePasswordLocale = {
