@@ -42,7 +42,13 @@ class UserController extends Controller
 
         $users = $query->orderBy('created_at', 'desc')->paginate(15);
 
-        return view('admin.users.index', compact('users'));
+        $classes = SchoolClass::query()
+            ->orderByDesc('is_general')
+            ->orderBy('education_level')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.users.index', compact('users', 'classes'));
     }
 
     /**
@@ -227,6 +233,67 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User deleted successfully.');
+    }
+
+    /**
+     * Remove multiple users in bulk
+     */
+    public function destroyBulk(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        $ids = $validated['ids'];
+
+        // Prevent admin from deleting themselves
+        if (in_array(auth()->id(), $ids)) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        // Delete users and their photos
+        $users = User::whereIn('id', $ids)->get();
+        $count = $users->count();
+
+        /** @var \App\Models\User $user */
+        foreach ($users as $user) {
+            $user->deleteProfilePhoto();
+            $user->delete();
+        }
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "{$count} pengguna berhasil dihapus secara massal.");
+    }
+
+    /**
+     * Update multiple users' class in bulk
+     */
+    public function updateClassBulk(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'integer', 'exists:users,id'],
+            'school_class_id' => ['required', 'integer', 'exists:school_classes,id'],
+        ]);
+
+        $ids = $validated['ids'];
+        $classId = $validated['school_class_id'];
+
+        // Exclude the current admin from class update to prevent unintended issues
+        $ids = array_diff($ids, [auth()->id()]);
+
+        if (empty($ids)) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Tidak ada pengguna valid yang dipilih.');
+        }
+
+        // Update classes
+        $count = User::whereIn('id', $ids)->update(['school_class_id' => $classId]);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "Kelas untuk {$count} pengguna berhasil diperbarui.");
     }
 
     /**

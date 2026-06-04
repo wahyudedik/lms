@@ -80,6 +80,9 @@ Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admi
     Route::post('users/import', [App\Http\Controllers\Admin\UserController::class, 'import'])->name('users.import.store');
     Route::get('users/template', [App\Http\Controllers\Admin\UserController::class, 'downloadTemplate'])->name('users.template');
 
+    Route::post('users/bulk-destroy', [App\Http\Controllers\Admin\UserController::class, 'destroyBulk'])->name('users.bulk-destroy');
+    Route::post('users/bulk-update-class', [App\Http\Controllers\Admin\UserController::class, 'updateClassBulk'])->name('users.bulk-update-class');
+
     // Resource routes
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::post('users/{user}/toggle-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggle-status');

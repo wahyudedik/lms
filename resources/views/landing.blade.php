@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -22,6 +22,21 @@
             {!! $school->theme->generateCSS() !!}
         </style>
     @endif
+    <style>
+        .footer_copyright, .footer_copyright span {
+            color: #a5a5a5 !important;
+        }
+        .footer_copyright i {
+            color: #ef4444 !important;
+        }
+        .footer_copyright a {
+            color: #ffb606 !important;
+            transition: color 200ms ease;
+        }
+        .footer_copyright a:hover {
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -690,8 +705,7 @@
                 <div class="footer_bar d-flex flex-column flex-sm-row align-items-center">
                     <div class="footer_copyright">
                         <span>
-                            Copyright &copy;{{ date('Y') }} All rights reserved <i class="fa fa-heart"
-                                aria-hidden="true"></i> by <a href="#" target="_blank">Noteds Technology</a>
+                            Copyright &copy;{{ date('Y') }} All rights reserved, created by <a href="https://noteds.com" target="_blank">Noteds Technology</a>
                         </span>
                     </div>
                     <div class="footer_social ml-sm-auto">
