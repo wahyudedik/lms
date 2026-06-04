@@ -23,6 +23,9 @@
         </style>
     @endif
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         .footer_copyright, .footer_copyright span {
             color: #a5a5a5 !important;
         }
@@ -59,12 +62,11 @@
                 <nav class="main_nav_container">
                     <div class="main_nav">
                         <ul class="main_nav_list">
-                            <li class="main_nav_item"><a href="#">home</a></li>
-                            <li class="main_nav_item"><a href="#">about us</a></li>
-                            <li class="main_nav_item"><a href="{{ route('login') }}">courses</a></li>
-                            <li class="main_nav_item"><a href="#">elements</a></li>
-                            <li class="main_nav_item"><a href="#">news</a></li>
-                            <li class="main_nav_item"><a href="#contact">contact</a></li>
+                            <li class="main_nav_item"><a href="{{ route('landing') }}">home</a></li>
+                            <li class="main_nav_item"><a href="{{ route('landing') }}#about">about us</a></li>
+                            <li class="main_nav_item"><a href="{{ route('landing') }}#courses">courses</a></li>
+                            <li class="main_nav_item"><a href="{{ route('guest.exams.index') }}">ujian tamu</a></li>
+                            <li class="main_nav_item"><a href="{{ route('landing') }}#contact">contact</a></li>
                             @auth
                                 <li class="main_nav_item"><a href="{{ route('dashboard') }}">dashboard</a></li>
                             @else
@@ -76,7 +78,7 @@
             </div>
             <div class="header_side d-flex flex-row justify-content-center align-items-center">
                 <img src="{{ asset('course/images/phone-call.svg') }}" alt="">
-                <span>{{ $school->contact_phone ?? '+43 4566 7788 2457' }}</span>
+                <span>{{ $school->contact_whatsapp ?? $school->contact_phone ?? '+43 4566 7788 2457' }}</span>
             </div>
 
             <!-- Hamburger -->
@@ -98,12 +100,11 @@
             <div class="menu_inner menu_mm">
                 <div class="menu menu_mm">
                     <ul class="menu_list menu_mm">
-                        <li class="menu_item menu_mm"><a href="#">Home</a></li>
-                        <li class="menu_item menu_mm"><a href="#">About us</a></li>
-                        <li class="menu_item menu_mm"><a href="{{ route('login') }}">Courses</a></li>
-                        <li class="menu_item menu_mm"><a href="#">Elements</a></li>
-                        <li class="menu_item menu_mm"><a href="#">News</a></li>
-                        <li class="menu_item menu_mm"><a href="#contact">Contact</a></li>
+                        <li class="menu_item menu_mm"><a href="{{ route('landing') }}">Home</a></li>
+                        <li class="menu_item menu_mm"><a href="{{ route('landing') }}#about">About us</a></li>
+                        <li class="menu_item menu_mm"><a href="{{ route('landing') }}#courses">Courses</a></li>
+                        <li class="menu_item menu_mm"><a href="{{ route('guest.exams.index') }}">Ujian Tamu</a></li>
+                        <li class="menu_item menu_mm"><a href="{{ route('landing') }}#contact">Contact</a></li>
                         @auth
                             <li class="menu_item menu_mm"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         @else
@@ -115,10 +116,12 @@
 
                     <div class="menu_social_container menu_mm">
                         <ul class="menu_social menu_mm">
-                            <li class="menu_social_item menu_mm"><a href="#"><i class="fab fa-pinterest"></i></a>
-                            </li>
-                            <li class="menu_social_item menu_mm"><a href="#"><i
-                                        class="fab fa-linkedin-in"></i></a></li>
+                            @if($school->contact_whatsapp)
+                                <li class="menu_social_item menu_mm"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $school->contact_whatsapp) }}" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                            @endif
+                            @if($school->social_youtube)
+                                <li class="menu_social_item menu_mm"><a href="{{ $school->social_youtube }}" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                            @endif
                             <li class="menu_social_item menu_mm"><a href="{{ $school->social_instagram ?? '#' }}"><i
                                         class="fab fa-instagram"></i></a></li>
                             <li class="menu_social_item menu_mm"><a href="{{ $school->social_facebook ?? '#' }}"><i
@@ -151,6 +154,21 @@
                             <div class="hero_slide_content text-center">
                                 <h1 data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
                                     {!! $school->hero_title ?? 'Get your <span>Education</span> today!' !!}</h1>
+                                @if($school->hero_subtitle)
+                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                        {{ $school->hero_subtitle }}
+                                    </h2>
+                                @endif
+                                @if($school->hero_description)
+                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                        {{ $school->hero_description }}
+                                    </p>
+                                @endif
+                                @if($school->hero_cta_text)
+                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
+                                        <a href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -163,6 +181,21 @@
                             <div class="hero_slide_content text-center">
                                 <h1 data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
                                     {!! $school->hero_title ?? 'Get your <span>Education</span> today!' !!}</h1>
+                                @if($school->hero_subtitle)
+                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                        {{ $school->hero_subtitle }}
+                                    </h2>
+                                @endif
+                                @if($school->hero_description)
+                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                        {{ $school->hero_description }}
+                                    </p>
+                                @endif
+                                @if($school->hero_cta_text)
+                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
+                                        <a href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -175,6 +208,21 @@
                             <div class="hero_slide_content text-center">
                                 <h1 data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
                                     {!! $school->hero_title ?? 'Get your <span>Education</span> today!' !!}</h1>
+                                @if($school->hero_subtitle)
+                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                        {{ $school->hero_subtitle }}
+                                    </h2>
+                                @endif
+                                @if($school->hero_description)
+                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                        {{ $school->hero_description }}
+                                    </p>
+                                @endif
+                                @if($school->hero_cta_text)
+                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
+                                        <a href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -227,10 +275,32 @@
                 </div>
             </div>
         </div>
+        <!-- About Us -->
+        @if ($school->about_title || $school->about_content)
+        <div id="about" class="about_section page_section bg-light py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="section_title text-left mb-4">
+                            <h1>{{ $school->about_title ?? 'About Us' }}</h1>
+                        </div>
+                        <p class="about_text" style="font-size: 16px; line-height: 1.8; color: #555;">
+                            {!! nl2br(e($school->about_content)) !!}
+                        </p>
+                    </div>
+                    @if ($school->about_image_url)
+                    <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                        <img src="{{ $school->about_image_url }}" alt="{{ $school->about_title }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
 
         <!-- Popular -->
 
-        <div class="popular page_section">
+        <div id="courses" class="popular page_section">
             <div class="container">
                 <div class="row">
                     <div class="col">
@@ -239,6 +309,20 @@
                         </div>
                     </div>
                 </div>
+
+                @if(request()->filled('name') || request()->filled('category') || request()->filled('degree'))
+                    <div class="row mb-4">
+                        <div class="col-12 text-center">
+                            <h5 class="text-muted">
+                                Hasil Pencarian: 
+                                @if(request('name')) nama "{{ request('name') }}" @endif
+                                @if(request('category')) kategori "{{ request('category') }}" @endif
+                                @if(request('degree')) jenjang "{{ request('degree') }}" @endif
+                            </h5>
+                            <a href="{{ route('landing') }}#courses" class="badge badge-warning p-2 text-white mt-1">Reset Pencarian</a>
+                        </div>
+                    </div>
+                @endif
 
                 <div class="row course_boxes">
 
@@ -270,7 +354,12 @@
                         @endforeach
                     @else
                         <div class="col-12 text-center py-5">
-                            <p>Belum ada kursus tersedia.</p>
+                            @if(request()->filled('name') || request()->filled('category') || request()->filled('degree'))
+                                <p class="text-muted">Belum ada kursus yang sesuai dengan kriteria pencarian Anda.</p>
+                                <a href="{{ route('landing') }}#courses" class="btn btn-warning mt-2 text-white">Reset Pencarian</a>
+                            @else
+                                <p>Belum ada kursus tersedia.</p>
+                            @endif
                         </div>
                     @endif
 
@@ -314,14 +403,13 @@
                             </div>
                             <div class="search_content text-center">
                                 <h1 class="search_title">Search for your course</h1>
-                                <form id="search_form" class="search_form" action="post">
-                                    <input id="search_form_name" class="input_field search_form_name" type="text"
-                                        placeholder="Course Name" required="required"
-                                        data-error="Course name is required.">
-                                    <input id="search_form_category" class="input_field search_form_category"
-                                        type="text" placeholder="Category">
-                                    <input id="search_form_degree" class="input_field search_form_degree"
-                                        type="text" placeholder="Degree">
+                                <form id="search_form" class="search_form" action="{{ route('landing') }}#courses" method="GET">
+                                    <input id="search_form_name" name="name" class="input_field search_form_name" type="text"
+                                        placeholder="Course Name" value="{{ request('name') }}">
+                                    <input id="search_form_category" name="category" class="input_field search_form_category"
+                                        type="text" placeholder="Category" value="{{ request('category') }}">
+                                    <input id="search_form_degree" name="degree" class="input_field search_form_degree"
+                                        type="text" placeholder="Degree" value="{{ request('degree') }}">
                                     <button id="search_submit_button" type="submit"
                                         class="search_submit_button trans_200" value="Submit">search course</button>
                                 </form>
@@ -363,9 +451,50 @@
             </div>
         </div>
 
+        <!-- Milestones (Statistics) -->
+        @if ($school->statistics && count($school->statistics) > 0)
+        @php
+            $getIconForLabel = function($label) {
+                $label = strtolower($label);
+                if (str_contains($label, 'siswa') || str_contains($label, 'student') || str_contains($label, 'murid')) {
+                    return 'fa-user-graduate';
+                }
+                if (str_contains($label, 'guru') || str_contains($label, 'teacher') || str_contains($label, 'dosen') || str_contains($label, 'instructor')) {
+                    return 'fa-chalkboard-teacher';
+                }
+                if (str_contains($label, 'kursus') || str_contains($label, 'course') || str_contains($label, 'materi')) {
+                    return 'fa-book-open';
+                }
+                if (str_contains($label, 'kelas') || str_contains($label, 'class')) {
+                    return 'fa-school';
+                }
+                return 'fa-chart-line';
+            };
+        @endphp
+        <div class="milestones page_section bg-dark text-white py-5" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);">
+            <div class="container">
+                <div class="row">
+                    @foreach ($school->statistics as $stat)
+                        <div class="col-lg-3 col-md-6 milestone_col text-center my-3">
+                            <div class="milestone_icon mb-3">
+                                <i class="fas {{ $getIconForLabel($stat['label']) }} text-warning" style="font-size: 32px; color: #ffb606 !important;"></i>
+                            </div>
+                            <div class="milestone_counter font-weight-bold display-4 text-warning mb-2" style="font-size: 42px; color: #ffb606 !important;">
+                                {{ $stat['value'] }}
+                            </div>
+                            <div class="milestone_text text-uppercase tracking-wider text-muted font-weight-bold" style="font-size: 14px; color: #cbd5e0 !important;">
+                                {{ $stat['label'] }}
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Testimonials -->
 
-        <div class="testimonials page_section">
+        <div id="testimonials" class="testimonials page_section">
             <!-- <div class="testimonials_background" style="background-image:url(images/testimonials_background.jpg)"></div> -->
             <div class="testimonials_background_container prlx_parent">
                 <div class="testimonials_background prlx"
@@ -488,8 +617,15 @@
 
                                 <div class="col-lg-6 order-lg-2 order-3">
                                     <div class="event_content">
-                                        <div class="event_name"><a class="trans_200" href="#">Student
-                                                Festival</a></div>
+                                        <div class="event_name">
+                                            <a class="trans_200 event-detail-link" href="#" 
+                                               data-event-title="Student Festival" 
+                                               data-event-date="07 January" 
+                                               data-event-location="Grand Central Park" 
+                                               data-event-desc="Mari bergabung bersama kami dalam perayaan festival pelajar tahunan. Nikmati berbagai pertunjukan seni, pameran inovasi proyek siswa, bazar kuliner, dan sesi networking interaktif antar siswa.">
+                                                Student Festival
+                                            </a>
+                                        </div>
                                         <div class="event_location">Grand Central Park</div>
                                         <p>In aliquam, augue a gravida rutrum, ante nisl fermentum nulla, vitae tempor
                                             nisl ligula vel nunc. Proin quis mi malesuada, finibus tortor.</p>
@@ -522,8 +658,15 @@
 
                                 <div class="col-lg-6 order-lg-2 order-3">
                                     <div class="event_content">
-                                        <div class="event_name"><a class="trans_200" href="#">Open day in the
-                                                Univesrsity campus</a></div>
+                                        <div class="event_name">
+                                            <a class="trans_200 event-detail-link" href="#" 
+                                               data-event-title="Open day in the University campus" 
+                                               data-event-date="07 January" 
+                                               data-event-location="Grand Central Park" 
+                                               data-event-desc="Kesempatan terbaik bagi para calon siswa/mahasiswa dan orang tua untuk melihat secara langsung fasilitas sekolah/kampus kami, berinteraksi dengan guru/dosen, serta berkonsultasi mengenai program studi dan beasiswa yang tersedia.">
+                                                Open day in the University campus
+                                            </a>
+                                        </div>
                                         <div class="event_location">Grand Central Park</div>
                                         <p>In aliquam, augue a gravida rutrum, ante nisl fermentum nulla, vitae tempor
                                             nisl ligula vel nunc. Proin quis mi malesuada, finibus tortor.</p>
@@ -556,8 +699,15 @@
 
                                 <div class="col-lg-6 order-lg-2 order-3">
                                     <div class="event_content">
-                                        <div class="event_name"><a class="trans_200" href="#">Student
-                                                Graduation Ceremony</a></div>
+                                        <div class="event_name">
+                                            <a class="trans_200 event-detail-link" href="#" 
+                                               data-event-title="Student Graduation Ceremony" 
+                                               data-event-date="07 January" 
+                                               data-event-location="Grand Central Park" 
+                                               data-event-desc="Upacara kelulusan resmi siswa/mahasiswa berprestasi tahun akademik ini. Rayakan pencapaian akademik bersama keluarga, teman-teman, dan civitas akademika dalam suasana khidmat dan meriah.">
+                                                Student Graduation Ceremony
+                                            </a>
+                                        </div>
                                         <div class="event_location">Grand Central Park</div>
                                         <p>In aliquam, augue a gravida rutrum, ante nisl fermentum nulla, vitae tempor
                                             nisl ligula vel nunc. Proin quis mi malesuada, finibus tortor.</p>
@@ -643,11 +793,11 @@
                             <div class="footer_column_title">Menu</div>
                             <div class="footer_column_content">
                                 <ul>
-                                    <li class="footer_list_item"><a href="#">Home</a></li>
-                                    <li class="footer_list_item"><a href="#">About Us</a></li>
-                                    <li class="footer_list_item"><a href="{{ route('login') }}">Courses</a></li>
-                                    <li class="footer_list_item"><a href="#">News</a></li>
-                                    <li class="footer_list_item"><a href="#contact">Contact</a></li>
+                                    <li class="footer_list_item"><a href="{{ route('landing') }}">Home</a></li>
+                                    <li class="footer_list_item"><a href="{{ route('landing') }}#about">About Us</a></li>
+                                    <li class="footer_list_item"><a href="{{ route('landing') }}#courses">Courses</a></li>
+                                    <li class="footer_list_item"><a href="{{ route('guest.exams.index') }}">Ujian Tamu</a></li>
+                                    <li class="footer_list_item"><a href="{{ route('landing') }}#contact">Contact</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -658,11 +808,11 @@
                             <div class="footer_column_title">Usefull Links</div>
                             <div class="footer_column_content">
                                 <ul>
-                                    <li class="footer_list_item"><a href="#">Testimonials</a></li>
-                                    <li class="footer_list_item"><a href="#">FAQ</a></li>
-                                    <li class="footer_list_item"><a href="#">Community</a></li>
-                                    <li class="footer_list_item"><a href="#">Campus Pictures</a></li>
-                                    <li class="footer_list_item"><a href="#">Tuitions</a></li>
+                                    <li class="footer_list_item"><a href="{{ route('landing') }}#testimonials">Testimonials</a></li>
+                                    <li class="footer_list_item"><a href="#" class="placeholder-link" data-title="FAQ (Pertanyaan Umum)">FAQ</a></li>
+                                    <li class="footer_list_item"><a href="#" class="placeholder-link" data-title="Komunitas Siswa & Alumni">Community</a></li>
+                                    <li class="footer_list_item"><a href="#" class="placeholder-link" data-title="Galeri & Foto Kampus">Campus Pictures</a></li>
+                                    <li class="footer_list_item"><a href="#" class="placeholder-link" data-title="Informasi Biaya Pendidikan (Tuitions)">Tuitions</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -710,9 +860,12 @@
                     </div>
                     <div class="footer_social ml-sm-auto">
                         <ul class="menu_social">
-                            <li class="menu_social_item"><a href="#"><i class="fab fa-pinterest"></i></a></li>
-                            <li class="menu_social_item"><a href="#"><i class="fab fa-linkedin-in"></i></a>
-                            </li>
+                            @if($school->contact_whatsapp)
+                                <li class="menu_social_item"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $school->contact_whatsapp) }}" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                            @endif
+                            @if($school->social_youtube)
+                                <li class="menu_social_item"><a href="{{ $school->social_youtube }}" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                            @endif
                             <li class="menu_social_item"><a href="{{ $school->social_instagram ?? '#' }}"><i
                                         class="fab fa-instagram"></i></a></li>
                             <li class="menu_social_item"><a href="{{ $school->social_facebook ?? '#' }}"><i
@@ -740,6 +893,83 @@
     <script src="{{ asset('course/plugins/scrollTo/jquery.scrollTo.min.js') }}"></script>
     <script src="{{ asset('course/plugins/easing/easing.js') }}"></script>
     <script src="{{ asset('course/js/custom.js') }}"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Newsletter form submit handler
+            $('.newsletter_form_container form').on('submit', function(e) {
+                e.preventDefault();
+                var emailInput = $('#newsletter_email');
+                var email = emailInput.val().trim();
+                
+                if (email) {
+                    Swal.fire({
+                        title: 'Langganan Berhasil!',
+                        text: 'Terima kasih! Email Anda (' + email + ') telah terdaftar untuk menerima berita terbaru dari kami.',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#ffb606'
+                    });
+                    emailInput.val('');
+                }
+            });
+
+            // Event detail click handler
+            $('.event-detail-link').on('click', function(e) {
+                e.preventDefault();
+                var title = $(this).data('event-title');
+                var date = $(this).data('event-date');
+                var location = $(this).data('event-location');
+                var desc = $(this).data('event-desc');
+
+                Swal.fire({
+                    title: title,
+                    html: `
+                        <div class="text-left" style="font-size: 15px; line-height: 1.6;">
+                            <p class="mb-2"><strong><i class="far fa-calendar-alt text-warning mr-1"></i> Tanggal:</strong> ${date}</p>
+                            <p class="mb-3"><strong><i class="fas fa-map-marker-alt text-warning mr-1"></i> Lokasi:</strong> ${location}</p>
+                            <hr>
+                            <p class="text-muted">${desc}</p>
+                            <div class="mt-4 text-center">
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $school->contact_whatsapp ?? '') }}" target="_blank" class="btn btn-success text-white px-4 py-2" style="border-radius: 30px; font-weight: 500;">
+                                    <i class="fab fa-whatsapp mr-2"></i> Hubungi via WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    `,
+                    icon: 'info',
+                    showCloseButton: true,
+                    showConfirmButton: false
+                });
+            });
+
+            // Placeholder link click handler
+            $('.placeholder-link').on('click', function(e) {
+                e.preventDefault();
+                var title = $(this).data('title');
+                
+                Swal.fire({
+                    title: title,
+                    html: `
+                        <div class="text-center" style="font-size: 15px; line-height: 1.6;">
+                            <p class="mb-3 text-muted">Halaman/informasi ini sedang dipersiapkan dan akan segera tersedia. Silakan hubungi kami untuk informasi lebih lanjut.</p>
+                            <div class="mt-4">
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $school->contact_whatsapp ?? '') }}" target="_blank" class="btn btn-success text-white px-4 py-2" style="border-radius: 30px; font-weight: 500;">
+                                    <i class="fab fa-whatsapp mr-2"></i> Hubungi via WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    `,
+                    icon: 'info',
+                    showCloseButton: true,
+                    showConfirmButton: false
+                });
+            });
+        });
+    </script>
 
 </body>
 

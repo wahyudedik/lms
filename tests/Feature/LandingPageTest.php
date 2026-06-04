@@ -105,4 +105,35 @@ class LandingPageTest extends TestCase
         $response->assertSee('Education');
         $response->assertSee('today!');
     }
+
+    /** @test */
+    public function test_landing_page_filters_courses_by_name(): void
+    {
+        $school = School::factory()->create(['is_landing_active' => true]);
+        
+        // Create an instructor belonging to this school
+        $instructor = User::factory()->create([
+            'school_id' => $school->id,
+            'role' => 'guru',
+        ]);
+
+        // Create two courses
+        $matchingCourse = \App\Models\Course::factory()->create([
+            'title' => 'Kursus Laravel Premium',
+            'instructor_id' => $instructor->id,
+            'status' => 'published',
+        ]);
+
+        $nonMatchingCourse = \App\Models\Course::factory()->create([
+            'title' => 'Kursus VueJS Modern',
+            'instructor_id' => $instructor->id,
+            'status' => 'published',
+        ]);
+
+        $response = $this->get('/?name=Laravel');
+
+        $response->assertStatus(200);
+        $response->assertSee('Kursus Laravel Premium');
+        $response->assertDontSee('Kursus VueJS Modern');
+    }
 }

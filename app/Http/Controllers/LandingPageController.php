@@ -30,10 +30,29 @@ class LandingPageController extends Controller
 
         // Load published courses from instructors belonging to this school
         if ($school->exists) {
-            $school->setRelation('courses', \App\Models\Course::whereHas('instructor', function ($q) use ($school) {
+            $query = \App\Models\Course::whereHas('instructor', function ($q) use ($school) {
                 $q->where('school_id', $school->id);
-            })->where('status', 'published')
-                ->with('instructor')
+            })->where('status', 'published');
+
+            if ($request->filled('name')) {
+                $query->where('title', 'like', '%' . $request->input('name') . '%');
+            }
+
+            if ($request->filled('category')) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('title', 'like', '%' . $request->input('category') . '%')
+                      ->orWhere('description', 'like', '%' . $request->input('category') . '%');
+                });
+            }
+
+            if ($request->filled('degree')) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('title', 'like', '%' . $request->input('degree') . '%')
+                      ->orWhere('description', 'like', '%' . $request->input('degree') . '%');
+                });
+            }
+
+            $school->setRelation('courses', $query->with('instructor')
                 ->latest()
                 ->limit(6)
                 ->get());
