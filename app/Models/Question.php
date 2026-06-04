@@ -83,6 +83,7 @@ class Question extends Model
         'points',
         'order',
         'explanation',
+        'teacher_notes',
         // Essay grading fields
         'essay_grading_mode',
         'essay_keywords',

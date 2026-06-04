@@ -55,6 +55,7 @@ class QuestionController extends Controller
             'points' => 'required|numeric|min:0',
             'order' => 'nullable|integer',
             'explanation' => 'nullable|string',
+            'teacher_notes' => 'nullable|string',
         ];
 
         // Add type-specific validation
@@ -116,6 +117,7 @@ class QuestionController extends Controller
             'points' => $validated['points'],
             'order' => $validated['order'] ?? ($exam->questions()->max('order') + 1),
             'explanation' => $validated['explanation'] ?? null,
+            'teacher_notes' => $validated['teacher_notes'] ?? null,
         ];
 
         // Handle question image upload
@@ -184,6 +186,7 @@ class QuestionController extends Controller
             'points' => 'required|numeric|min:0',
             'order' => 'nullable|integer',
             'explanation' => 'nullable|string',
+            'teacher_notes' => 'nullable|string',
         ];
 
         // Add type-specific validation
@@ -244,6 +247,7 @@ class QuestionController extends Controller
             'points' => $validated['points'],
             'order' => $validated['order'] ?? $question->order,
             'explanation' => $validated['explanation'] ?? null,
+            'teacher_notes' => $validated['teacher_notes'] ?? null,
         ];
 
         // Handle question image upload

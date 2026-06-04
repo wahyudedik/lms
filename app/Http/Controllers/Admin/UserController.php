@@ -36,7 +36,7 @@ class UserController extends Controller
         }
 
         // Filter by status
-        if ($request->has('status') && $request->status !== '') {
+        if ($request->has('status') && $request->status !== null && $request->status !== '') {
             $query->where('is_active', $request->status);
         }
 

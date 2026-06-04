@@ -240,4 +240,33 @@ test('admin can update their own password via admin panel', function () {
     expect(\Illuminate\Support\Facades\Hash::check('newPassword123!', $admin->refresh()->password))->toBeTrue();
 });
 
+test('admin can search users with empty role and status filters', function () {
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'email_verified_at' => now(),
+        'is_active' => true,
+    ]);
+
+    $student = User::factory()->create([
+        'name' => 'Ahmad Harits',
+        'email' => 'ahmad@example.com',
+        'role' => 'mahasiswa',
+        'is_active' => true,
+    ]);
+
+    // Request with search term but empty role and status
+    $response = $this->actingAs($admin)
+        ->get(route('admin.users.index', [
+            'search' => 'Ahmad',
+            'role' => '',
+            'status' => '',
+        ]));
+
+    $response->assertStatus(200);
+    $response->assertViewHas('users');
+    
+    $users = $response->viewData('users');
+    expect($users->contains($student))->toBeTrue();
+});
+
 

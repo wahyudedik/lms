@@ -30,11 +30,64 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
      */
     public function prepareForValidation(array $row): array
     {
-        $optionalFields = ['phone', 'birth_date', 'gender', 'address', 'status'];
+        $optionalFields = ['id', 'password', 'phone', 'birth_date', 'gender', 'address', 'status'];
 
         foreach ($optionalFields as $field) {
             if (isset($row[$field]) && is_string($row[$field]) && trim($row[$field]) === '') {
                 $row[$field] = null;
+            }
+        }
+
+        // Normalisasi role agar lolos validasi rules
+        if (isset($row['role']) && is_string($row['role'])) {
+            $roleLower = strtolower(trim($row['role']));
+            $roleMap = [
+                'admin' => 'admin',
+                'administrator' => 'admin',
+                'guru' => 'guru',
+                'teacher' => 'guru',
+                'siswa' => 'siswa',
+                'student' => 'siswa',
+                'dosen' => 'dosen',
+                'mahasiswa' => 'mahasiswa',
+            ];
+            if (isset($roleMap[$roleLower])) {
+                $row['role'] = $roleMap[$roleLower];
+            }
+        }
+
+        // Normalisasi gender agar lolos validasi rules
+        if (isset($row['gender']) && is_string($row['gender'])) {
+            $genderLower = strtolower(trim($row['gender']));
+            $genderMap = [
+                'laki-laki' => 'laki-laki',
+                'laki laki' => 'laki-laki',
+                'male' => 'laki-laki',
+                'm' => 'laki-laki',
+                'pria' => 'laki-laki',
+                'perempuan' => 'perempuan',
+                'female' => 'perempuan',
+                'f' => 'perempuan',
+                'wanita' => 'perempuan',
+            ];
+            if (isset($genderMap[$genderLower])) {
+                $row['gender'] = $genderMap[$genderLower];
+            }
+        }
+
+        // Normalisasi status agar lolos validasi rules
+        if (isset($row['status']) && is_string($row['status'])) {
+            $statusLower = strtolower(trim($row['status']));
+            $statusMap = [
+                'active' => 'active',
+                'aktif' => 'active',
+                '1' => 'active',
+                'inactive' => 'inactive',
+                'tidak aktif' => 'inactive',
+                '0' => 'inactive',
+            ];
+            if (isset($statusMap[$statusLower])) {
+                $row['status'] = $statusMap[$statusLower];
             }
         }
 
@@ -53,10 +106,54 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
 
         $this->importedCount++;
 
+        // Cari user yang sudah ada berdasarkan ID atau Email
+        $user = null;
+        if (!empty($row['id'])) {
+            $user = User::find($row['id']);
+        }
+        if (!$user && !empty($row['email'])) {
+            $user = User::where('email', $row['email'])->first();
+        }
+
+        if ($user) {
+            // Validasi email unik jika email diubah
+            if (!empty($row['email']) && $row['email'] !== $user->email) {
+                $exists = User::where('email', $row['email'])->where('id', '!=', $user->id)->exists();
+                if ($exists) {
+                    throw new \Exception("Email '{$row['email']}' sudah digunakan oleh pengguna lain.");
+                }
+                $user->email = $row['email'];
+            }
+
+            $user->name = $row['name'];
+            
+            // Update password jika diisi
+            if (isset($row['password']) && $row['password'] !== '' && $row['password'] !== null) {
+                $user->password = Hash::make($row['password']);
+            }
+
+            $user->role = $this->mapRole($row['role'] ?? $user->role);
+            $user->phone = $row['phone'] ?? null;
+            $user->birth_date = $this->parseDate($row['birth_date'] ?? null);
+            $user->gender = $this->mapGender($row['gender'] ?? null);
+            $user->address = $row['address'] ?? null;
+            $user->is_active = $this->mapStatus($row['status'] ?? ($user->is_active ? 'active' : 'inactive'));
+            
+            $user->save();
+
+            return null; // Return null agar tidak dibuat record baru oleh Maatwebsite Excel
+        }
+
+        // Tentukan password untuk user baru
+        $password = $defaultPassword;
+        if (isset($row['password']) && $row['password'] !== '' && $row['password'] !== null) {
+            $password = $row['password'];
+        }
+
         return new User([
             'name' => $row['name'],
             'email' => $row['email'],
-            'password' => Hash::make($defaultPassword),
+            'password' => Hash::make($password),
             'role' => $this->mapRole($row['role'] ?? 'siswa'),
             'phone' => $row['phone'] ?? null,
             'birth_date' => $this->parseDate($row['birth_date'] ?? null),
@@ -78,7 +175,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnErr
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
+            'email' => 'required|email|max:255',
             'role' => 'nullable|string|in:admin,guru,siswa,dosen,mahasiswa',
             'phone' => 'nullable|string|max:20',
             'birth_date' => 'nullable|date',

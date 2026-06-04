@@ -39,7 +39,7 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyl
             $query->where('role', $this->filters['role']);
         }
 
-        if (isset($this->filters['status']) && $this->filters['status'] !== '') {
+        if (isset($this->filters['status']) && $this->filters['status'] !== null && $this->filters['status'] !== '') {
             $query->where('is_active', $this->filters['status']);
         }
 

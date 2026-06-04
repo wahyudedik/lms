@@ -605,27 +605,53 @@
                 // Populate MCQ options if exists
                 if ((questionType === 'mcq_single' || questionType === 'mcq_multiple') && questionData.options) {
                     setTimeout(function() {
-                        const options = JSON.parse(questionData.options);
+                        let options = questionData.options;
+                        if (typeof options === 'string') {
+                            try {
+                                options = JSON.parse(options);
+                            } catch (e) {
+                                console.error("Error parsing options:", e);
+                            }
+                        }
+                        
                         optionIndex = 0;
                         document.getElementById('options-container').innerHTML = '';
                         document.querySelector('select[name="correct_answer_single"]').innerHTML = '<option value="">Pilih Jawaban Benar</option>';
                         document.getElementById('correct-checkboxes').innerHTML = '';
                         
-                        options.forEach(function(option) {
-                            document.getElementById('add-option').click();
-                            const lastInput = document.querySelector(`input[name="options[${optionIndex-1}][text]"]`);
-                            if (lastInput) lastInput.value = option.text;
-                        });
+                        if (Array.isArray(options)) {
+                            options.forEach(function(option) {
+                                document.getElementById('add-option').click();
+                                const lastInput = document.querySelector(`input[name="options[${optionIndex-1}][text]"]`);
+                                if (lastInput) lastInput.value = option.text;
+                            });
+                        }
                         
                         // Set correct answer
                         if (questionType === 'mcq_single' && questionData.correct_answer) {
-                            document.querySelector('select[name="correct_answer_single"]').value = questionData.correct_answer;
+                            let correctAnswerSingle = questionData.correct_answer;
+                            if (typeof correctAnswerSingle === 'string') {
+                                try {
+                                    correctAnswerSingle = JSON.parse(correctAnswerSingle);
+                                } catch (e) {}
+                            }
+                            if (Array.isArray(correctAnswerSingle)) {
+                                correctAnswerSingle = correctAnswerSingle[0];
+                            }
+                            document.querySelector('select[name="correct_answer_single"]').value = correctAnswerSingle;
                         } else if (questionType === 'mcq_multiple' && questionData.correct_answer) {
-                            const correctAnswers = JSON.parse(questionData.correct_answer);
-                            correctAnswers.forEach(function(answer) {
-                                const checkbox = document.getElementById(`check_${answer}`);
-                                if (checkbox) checkbox.checked = true;
-                            });
+                            let correctAnswers = questionData.correct_answer;
+                            if (typeof correctAnswers === 'string') {
+                                try {
+                                    correctAnswers = JSON.parse(correctAnswers);
+                                } catch (e) {}
+                            }
+                            if (Array.isArray(correctAnswers)) {
+                                correctAnswers.forEach(function(answer) {
+                                    const checkbox = document.getElementById(`check_${answer}`);
+                                    if (checkbox) checkbox.checked = true;
+                                });
+                            }
                         }
                     }, 200);
                 }
@@ -633,46 +659,72 @@
                 // Populate matching pairs if exists
                 if (questionType === 'matching' && questionData.pairs) {
                     setTimeout(function() {
-                        const pairs = JSON.parse(questionData.pairs);
+                        let pairs = questionData.pairs;
+                        if (typeof pairs === 'string') {
+                            try {
+                                pairs = JSON.parse(pairs);
+                            } catch (e) {
+                                console.error("Error parsing pairs:", e);
+                            }
+                        }
+                        
                         pairIndex = 0;
                         document.getElementById('pairs-container').innerHTML = '';
                         
-                        pairs.forEach(function(pair) {
-                            document.getElementById('add-pair').click();
-                            const leftInput = document.querySelector(`input[name="pairs[${pairIndex-1}][left]"]`);
-                            const rightInput = document.querySelector(`input[name="pairs[${pairIndex-1}][right]"]`);
-                            if (leftInput) leftInput.value = pair.left;
-                            if (rightInput) rightInput.value = pair.right;
-                        });
+                        if (Array.isArray(pairs)) {
+                            pairs.forEach(function(pair) {
+                                document.getElementById('add-pair').click();
+                                const leftInput = document.querySelector(`input[name="pairs[${pairIndex-1}][left]"]`);
+                                const rightInput = document.querySelector(`input[name="pairs[${pairIndex-1}][right]"]`);
+                                if (leftInput) leftInput.value = pair.left;
+                                if (rightInput) rightInput.value = pair.right;
+                            });
+                        }
                     }, 200);
                 }
 
                 // Populate essay configuration if exists
-                if (questionType === 'essay' && questionData.essay_config) {
+                if (questionType === 'essay') {
                     setTimeout(function() {
-                        const config = JSON.parse(questionData.essay_config);
-                        document.getElementById('essay_grading_mode').value = config.grading_mode || 'manual';
+                        document.getElementById('essay_grading_mode').value = questionData.essay_grading_mode || 'manual';
                         document.getElementById('essay_grading_mode').dispatchEvent(new Event('change'));
                         
-                        if (config.case_sensitive) {
+                        if (questionData.essay_case_sensitive) {
                             document.getElementById('essay_case_sensitive').checked = true;
                         }
                         
-                        if (config.grading_mode === 'keyword' && config.keywords) {
+                        if (questionData.essay_grading_mode === 'keyword' && questionData.essay_keywords) {
+                            let keywords = questionData.essay_keywords;
+                            if (typeof keywords === 'string') {
+                                try {
+                                    keywords = JSON.parse(keywords);
+                                } catch (e) {}
+                            }
+                            let keywordPoints = questionData.essay_keyword_points;
+                            if (typeof keywordPoints === 'string') {
+                                try {
+                                    keywordPoints = JSON.parse(keywordPoints);
+                                } catch (e) {}
+                            }
+                            
                             keywordIndex = 0;
                             document.getElementById('keywords-container').innerHTML = '';
-                            config.keywords.forEach(function(kw) {
-                                document.getElementById('add-keyword').click();
-                                const inputs = document.querySelectorAll('#keywords-container input[name="essay_keywords[]"]');
-                                const pointInputs = document.querySelectorAll('#keywords-container input[name="essay_keyword_points[]"]');
-                                if (inputs[keywordIndex-1]) inputs[keywordIndex-1].value = kw.keyword;
-                                if (pointInputs[keywordIndex-1]) pointInputs[keywordIndex-1].value = kw.points;
-                            });
+                            if (Array.isArray(keywords)) {
+                                keywords.forEach(function(kw, index) {
+                                    document.getElementById('add-keyword').click();
+                                    const inputs = document.querySelectorAll('#keywords-container input[name="essay_keywords[]"]');
+                                    const pointInputs = document.querySelectorAll('#keywords-container input[name="essay_keyword_points[]"]');
+                                    if (inputs[keywordIndex-1]) inputs[keywordIndex-1].value = kw;
+                                    if (pointInputs[keywordIndex-1] && Array.isArray(keywordPoints) && keywordPoints[index] !== undefined) {
+                                        pointInputs[keywordIndex-1].value = keywordPoints[index];
+                                    }
+                                });
+                            }
                         }
                         
-                        if (config.grading_mode === 'similarity') {
-                            document.getElementById('essay_model_answer').value = config.model_answer || '';
-                            document.getElementById('essay_min_similarity').value = config.min_similarity || 70;
+                        if (questionData.essay_grading_mode === 'similarity') {
+                            document.getElementById('essay_model_answer').value = questionData.essay_model_answer || '';
+                            document.getElementById('essay_min_similarity').value = questionData.essay_min_similarity || 70;
                         }
                     }, 200);
                 }

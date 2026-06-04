@@ -81,10 +81,10 @@
                     <div class="main_nav">
                         <ul class="main_nav_list">
                             <li class="main_nav_item"><a href="{{ route('landing') }}">home</a></li>
-                            <li class="main_nav_item"><a href="{{ route('landing') }}#about">about us</a></li>
+                            {{-- <li class="main_nav_item"><a href="{{ route('landing') }}#about">about us</a></li> --}}
                             <li class="main_nav_item"><a href="{{ route('landing') }}#courses">courses</a></li>
                             <li class="main_nav_item"><a href="{{ route('guest.exams.index') }}">ujian tamu</a></li>
-                            <li class="main_nav_item"><a href="{{ route('landing') }}#contact">contact</a></li>
+                            {{-- <li class="main_nav_item"><a href="{{ route('landing') }}#contact">contact</a></li> --}}
                             @auth
                                 <li class="main_nav_item"><a href="{{ route('dashboard') }}">dashboard</a></li>
                             @else

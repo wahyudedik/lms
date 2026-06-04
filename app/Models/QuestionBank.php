@@ -250,6 +250,7 @@ class QuestionBank extends Model
             'essay_similarity_penalty' => $this->essay_similarity_penalty,
             'essay_case_sensitive' => $this->essay_case_sensitive,
             'explanation' => $this->explanation,
+            'teacher_notes' => $this->teacher_notes,
         ];
 
         $question = Question::create($questionData);
