@@ -7,6 +7,7 @@ use App\Models\InformationCard;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Mews\Purifier\Facades\Purifier;
 
 class InformationCardController extends Controller
 {
@@ -70,6 +71,11 @@ class InformationCardController extends Controller
         ]);
 
         $targetUserIds = !empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
+
+        // Sanitize content to prevent Stored XSS
+        if (isset($validated['content'])) {
+            $validated['content'] = Purifier::clean($validated['content']);
+        }
 
         $data = [
             'created_by' => auth()->id(),
@@ -144,6 +150,11 @@ class InformationCardController extends Controller
         ]);
 
         $targetUserIds = !empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
+
+        // Sanitize content to prevent Stored XSS
+        if (isset($validated['content'])) {
+            $validated['content'] = Purifier::clean($validated['content']);
+        }
 
         $data = [
             'title' => $validated['title'],

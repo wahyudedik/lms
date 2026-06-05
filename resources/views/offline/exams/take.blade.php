@@ -86,10 +86,12 @@
                                         {{ $index + 1 }}
                                     </span>
                                     <div>
-                                        <h3 class="text-lg font-medium text-gray-800">{{ $question->question_text }}
+                                        <h3 class="text-lg font-medium text-gray-800 rich-content">
+                                            {!! $question->question_text !!}
                                         </h3>
                                         @if ($question->points)
-                                            <p class="text-sm text-gray-500 mt-1">{{ $question->points }} {{ __('points') }}</p>
+                                            <p class="text-sm text-gray-500 mt-1">{{ $question->points }}
+                                                {{ __('points') }}</p>
                                         @endif
                                     </div>
                                 </div>
@@ -468,9 +470,9 @@
                     }
 
                     // Show loading
-                Swal.fire({
-                    title: offlineExamLocale.submittingTitle,
-                    text: offlineExamLocale.submittingText,
+                    Swal.fire({
+                        title: offlineExamLocale.submittingTitle,
+                        text: offlineExamLocale.submittingText,
                         allowOutsideClick: false,
                         didOpen: () => {
                             Swal.showLoading();
@@ -517,10 +519,10 @@
                 } catch (error) {
                     console.error('[Offline Exam] Submit failed:', error);
 
-                Swal.fire({
-                    title: offlineExamLocale.queuedTitle,
-                    text: offlineExamLocale.queuedText,
-                    icon: 'info'
+                    Swal.fire({
+                        title: offlineExamLocale.queuedTitle,
+                        text: offlineExamLocale.queuedText,
+                        icon: 'info'
                     });
                 }
             }

@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -108,7 +108,8 @@
                                             {{ $question->points }} poin
                                         </span>
                                     </div>
-                                    <p class="text-gray-800 mb-4 leading-relaxed">{{ $question->question_text }}</p>
+                                    <p class="text-gray-800 mb-4 leading-relaxed rich-content">{!! $question->question_text !!}
+                                    </p>
 
                                     <div class="flex items-center gap-4">
                                         <span

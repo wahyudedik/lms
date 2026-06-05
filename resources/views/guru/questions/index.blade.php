@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
@@ -101,7 +101,7 @@
 
                                             <!-- Question Text -->
                                             <div class="mb-3">
-                                                <p class="text-gray-900 font-semibold">{{ $question->question_text }}
+                                                <p class="text-gray-900 font-semibold">{!! Str::limit(strip_tags($question->question_text), 150) !!}
                                                 </p>
                                                 @if ($question->question_image)
                                                     <img src="{{ Storage::url($question->question_image) }}"

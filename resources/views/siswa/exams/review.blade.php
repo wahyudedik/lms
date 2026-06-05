@@ -143,8 +143,8 @@
                                             <i class="fas fa-star"></i>{{ $question->points }} points
                                         </span>
                                     </div>
-                                    <h4 class="text-base font-semibold text-gray-900">
-                                        {{ $question->question_text }}
+                                    <h4 class="text-base font-semibold text-gray-900 rich-content">
+                                        {!! $question->question_text !!}
                                     </h4>
                                 </div>
                                 <div class="ml-4">

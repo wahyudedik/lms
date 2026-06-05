@@ -76,6 +76,9 @@ class MaterialController extends Controller
                 // Validate max 20 groups per material
                 if (count($groupIds) > 20) {
                     $material->delete();
+                    if (isset($validated['file_path'])) {
+                        Storage::disk('public')->delete($validated['file_path']);
+                    }
                     return redirect()
                         ->back()
                         ->withInput()
@@ -89,6 +92,9 @@ class MaterialController extends Controller
 
                 if ($validCount !== count($groupIds)) {
                     $material->delete();
+                    if (isset($validated['file_path'])) {
+                        Storage::disk('public')->delete($validated['file_path']);
+                    }
                     return redirect()
                         ->back()
                         ->withInput()

@@ -93,6 +93,11 @@ class ForumCategoryController extends Controller
      */
     public function destroy(ForumCategory $forumCategory)
     {
+        // Bug #30: Check for existing threads before deleting
+        if ($forumCategory->threads()->count() > 0) {
+            return back()->with('error', __('Tidak dapat menghapus kategori yang masih memiliki thread.'));
+        }
+
         $forumCategory->delete();
 
         return redirect()->route('admin.forum-categories.index')

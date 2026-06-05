@@ -111,11 +111,9 @@ class Exam extends Model
         'is_published',
         'published_at',
         'allow_token_access',
-        'access_token',
         'require_guest_name',
         'require_guest_email',
         'max_token_uses',
-        'current_token_uses',
         'offline_enabled',
         'offline_cache_duration',
     ];

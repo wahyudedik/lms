@@ -107,6 +107,11 @@ class SchoolClassController extends Controller
             return back()->with('error', __('General class cannot be deleted.'));
         }
 
+        // Bug #29: Check for enrolled users before deleting
+        if ($class->users()->count() > 0) {
+            return back()->with('error', __('Tidak dapat menghapus kelas yang masih memiliki siswa.'));
+        }
+
         $class->delete();
 
         return redirect()->route('admin.classes.index')->with('success', __('Class deleted successfully.'));

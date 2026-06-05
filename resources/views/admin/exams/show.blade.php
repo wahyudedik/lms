@@ -83,12 +83,14 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-600">{{ __('Durasi') }}</label>
                             <p class="mt-1 text-sm font-semibold text-gray-900">
-                                <i class="fas fa-clock text-gray-400 mr-1"></i>{{ $exam->duration_minutes }} {{ trans_choice(__(':count menit'), $exam->duration_minutes, ['count' => $exam->duration_minutes]) }}
+                                <i class="fas fa-clock text-gray-400 mr-1"></i>{{ $exam->duration_minutes }}
+                                {{ trans_choice(__(':count menit'), $exam->duration_minutes, ['count' => $exam->duration_minutes]) }}
                             </p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600">{{ __('Maksimal Percobaan') }}</label>
+                            <label
+                                class="block text-sm font-semibold text-gray-600">{{ __('Maksimal Percobaan') }}</label>
                             <p class="mt-1 text-sm font-semibold text-gray-900">{{ $exam->max_attempts }}x</p>
                         </div>
 
@@ -99,7 +101,9 @@
 
                         <div>
                             <label class="block text-sm font-semibold text-gray-600">{{ __('Total Soal') }}</label>
-                            <p class="mt-1 text-sm font-semibold text-gray-900">{{ trans_choice(__(':count soal'), $exam->total_questions, ['count' => $exam->total_questions]) }}</p>
+                            <p class="mt-1 text-sm font-semibold text-gray-900">
+                                {{ trans_choice(__(':count soal'), $exam->total_questions, ['count' => $exam->total_questions]) }}
+                            </p>
                         </div>
                     </div>
 
@@ -157,13 +161,15 @@
                 <div class="bg-white overflow-hidden shadow-md rounded-lg border-2 border-indigo-200">
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">
-                            <i class="fas fa-ticket-alt text-indigo-600 mr-2"></i>{{ __('Akses via Token (Guest Access)') }}
+                            <i
+                                class="fas fa-ticket-alt text-indigo-600 mr-2"></i>{{ __('Akses via Token (Guest Access)') }}
                         </h3>
 
                         <div class="bg-indigo-50 rounded-lg p-6 mb-4 border border-indigo-200">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex-1">
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">{{ __('Token Akses') }}</label>
+                                    <label
+                                        class="block text-sm font-semibold text-gray-700 mb-2">{{ __('Token Akses') }}</label>
                                     <div class="flex items-center gap-3">
                                         <code id="access-token"
                                             class="text-3xl font-bold tracking-widest text-indigo-600 bg-white px-6 py-3 rounded-lg border-2 border-indigo-300 shadow-sm">
@@ -175,7 +181,8 @@
                                         </button>
                                     </div>
                                     <p class="text-xs text-gray-600 mt-2">
-                                        <i class="fas fa-info-circle"></i> {{ __('Bagikan token ini kepada peserta ujian') }}
+                                        <i class="fas fa-info-circle"></i>
+                                        {{ __('Bagikan token ini kepada peserta ujian') }}
                                     </p>
                                 </div>
                             </div>
@@ -183,7 +190,8 @@
                             <div class="border-t border-indigo-200 pt-4">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                        <label class="block text-xs font-semibold text-blue-700 mb-1">{{ __('URL Akses') }}</label>
+                                        <label
+                                            class="block text-xs font-semibold text-blue-700 mb-1">{{ __('URL Akses') }}</label>
                                         <div class="flex items-center gap-2">
                                             <input type="text" id="access-url" readonly
                                                 value="{{ route('guest.exams.index') }}"
@@ -195,20 +203,25 @@
                                     </div>
 
                                     <div class="p-3 bg-green-50 rounded-lg border border-green-200">
-                                        <label class="block text-xs font-semibold text-green-700 mb-1">{{ __('Penggunaan') }}</label>
+                                        <label
+                                            class="block text-xs font-semibold text-green-700 mb-1">{{ __('Penggunaan') }}</label>
                                         <p class="text-sm font-bold text-green-900">
-                                            {{ $exam->current_token_uses }} / {{ $exam->max_token_uses ?? '∞' }} {{ __('kali') }}
+                                            {{ $exam->current_token_uses }} / {{ $exam->max_token_uses ?? '∞' }}
+                                            {{ __('kali') }}
                                         </p>
                                     </div>
 
                                     <div class="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                                        <label class="block text-xs font-semibold text-purple-700 mb-1">{{ __('Persyaratan') }}</label>
+                                        <label
+                                            class="block text-xs font-semibold text-purple-700 mb-1">{{ __('Persyaratan') }}</label>
                                         <div class="text-xs text-purple-900 space-y-1">
                                             @if ($exam->require_guest_name)
-                                                <div><i class="fas fa-check text-green-500 mr-1"></i> {{ __('Wajib Nama') }}</div>
+                                                <div><i class="fas fa-check text-green-500 mr-1"></i>
+                                                    {{ __('Wajib Nama') }}</div>
                                             @endif
                                             @if ($exam->require_guest_email)
-                                                <div><i class="fas fa-check text-green-500 mr-1"></i> {{ __('Wajib Email') }}</div>
+                                                <div><i class="fas fa-check text-green-500 mr-1"></i>
+                                                    {{ __('Wajib Email') }}</div>
                                             @endif
                                             @if (!$exam->require_guest_name && !$exam->require_guest_email)
                                                 <div class="text-gray-500">{{ __('None') }}</div>
@@ -222,7 +235,8 @@
                         <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                             <p class="text-sm text-yellow-800">
                                 <i class="fas fa-exclamation-triangle mr-2"></i>
-                                <strong>{{ __('Penting:') }}</strong> {{ __('Siapa saja yang memiliki token ini dapat mengakses ujian tanpa perlu login. Pastikan hanya memberikan token kepada peserta yang berhak!') }}
+                                <strong>{{ __('Penting:') }}</strong>
+                                {{ __('Siapa saja yang memiliki token ini dapat mengakses ujian tanpa perlu login. Pastikan hanya memberikan token kepada peserta yang berhak!') }}
                             </p>
                         </div>
                     </div>
@@ -238,35 +252,45 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-{{ $exam->shuffle_questions ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
+                            <i
+                                class="fas fa-{{ $exam->shuffle_questions ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
                             <span class="text-sm font-semibold text-gray-900">{{ __('Acak Urutan Soal') }}</span>
                         </div>
 
                         <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-{{ $exam->shuffle_options ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
+                            <i
+                                class="fas fa-{{ $exam->shuffle_options ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
                             <span class="text-sm font-semibold text-gray-900">{{ __('Acak Opsi Jawaban') }}</span>
                         </div>
 
                         <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-{{ $exam->show_results_immediately ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
-                            <span class="text-sm font-semibold text-gray-900">{{ __('Tampilkan Hasil Langsung') }}</span>
+                            <i
+                                class="fas fa-{{ $exam->show_results_immediately ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
+                            <span
+                                class="text-sm font-semibold text-gray-900">{{ __('Tampilkan Hasil Langsung') }}</span>
                         </div>
 
                         <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                            <i class="fas fa-{{ $exam->show_correct_answers ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
-                            <span class="text-sm font-semibold text-gray-900">{{ __('Tampilkan Jawaban Benar') }}</span>
+                            <i
+                                class="fas fa-{{ $exam->show_correct_answers ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
+                            <span
+                                class="text-sm font-semibold text-gray-900">{{ __('Tampilkan Jawaban Benar') }}</span>
                         </div>
 
                         <div class="flex items-center p-3 bg-red-50 rounded-lg border border-red-200">
-                            <i class="fas fa-{{ $exam->require_fullscreen ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
+                            <i
+                                class="fas fa-{{ $exam->require_fullscreen ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
                             <span class="text-sm font-semibold text-gray-900">{{ __('Wajib Fullscreen') }}</span>
                         </div>
 
                         <div class="flex items-center p-3 bg-red-50 rounded-lg border border-red-200">
-                            <i class="fas fa-{{ $exam->detect_tab_switch ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
-                            <span class="text-sm font-semibold text-gray-900">{{ __('Deteksi Perpindahan Tab') }}</span>
+                            <i
+                                class="fas fa-{{ $exam->detect_tab_switch ? 'check-circle text-green-500' : 'times-circle text-gray-400' }} mr-2"></i>
+                            <span
+                                class="text-sm font-semibold text-gray-900">{{ __('Deteksi Perpindahan Tab') }}</span>
                             @if ($exam->detect_tab_switch)
-                                <span class="ml-2 text-xs text-gray-500">({{ __('Max: :countx', ['count' => $exam->max_tab_switches]) }})</span>
+                                <span
+                                    class="ml-2 text-xs text-gray-500">({{ __('Max: :countx', ['count' => $exam->max_tab_switches]) }})</span>
                             @endif
                         </div>
                     </div>
@@ -278,7 +302,8 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-gray-900">
-                            <i class="fas fa-question-circle text-orange-600 mr-2"></i>{{ trans_choice(':count Question|:count Questions', $exam->questions->count(), ['count' => $exam->questions->count()]) }}
+                            <i
+                                class="fas fa-question-circle text-orange-600 mr-2"></i>{{ trans_choice(':count Question|:count Questions', $exam->questions->count(), ['count' => $exam->questions->count()]) }}
                         </h3>
                         <a href="{{ route('admin.exams.questions.index', $exam) }}"
                             class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -293,18 +318,22 @@
                                     <div class="flex items-start justify-between">
                                         <div class="flex-1">
                                             <div class="flex items-center flex-wrap gap-2 mb-2">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
                                                     #{{ $question->order }}
                                                 </span>
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                                                    <i class="{{ $question->type_icon }} mr-1"></i>{{ $question->type_display }}
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                                    <i
+                                                        class="{{ $question->type_icon }} mr-1"></i>{{ $question->type_display }}
                                                 </span>
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                                                     {{ $question->points }} {{ __('poin') }}
                                                 </span>
                                             </div>
-                                            <p class="text-sm font-semibold text-gray-900">
-                                                {{ Str::limit($question->question_text, 150) }}</p>
+                                            <p class="text-sm font-semibold text-gray-900 rich-content">
+                                                {!! Str::limit($question->question_text, 150) !!}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -313,7 +342,9 @@
 
                         <div class="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
                             <p class="text-sm font-semibold text-gray-700">
-                                <i class="fas fa-calculator text-green-600 mr-2"></i><strong>{{ __('Total Poin:') }}</strong> {{ $exam->total_points }}
+                                <i
+                                    class="fas fa-calculator text-green-600 mr-2"></i><strong>{{ __('Total Poin:') }}</strong>
+                                {{ $exam->total_points }}
                             </p>
                         </div>
                     @else
@@ -334,7 +365,8 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-gray-900">
-                            <i class="fas fa-users text-purple-600 mr-2"></i>{{ trans_choice(':count Exam Attempt|:count Exam Attempts', $exam->attempts->count(), ['count' => $exam->attempts->count()]) }}
+                            <i
+                                class="fas fa-users text-purple-600 mr-2"></i>{{ trans_choice(':count Exam Attempt|:count Exam Attempts', $exam->attempts->count(), ['count' => $exam->attempts->count()]) }}
                         </h3>
                         @if ($exam->attempts->count() > 0)
                             <a href="{{ route('admin.exams.results', $exam) }}"
@@ -349,13 +381,17 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             {{ __('Siswa') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             {{ __('Waktu') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             {{ __('Nilai') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             {{ __('Status') }}</th>
                                     </tr>
                                 </thead>

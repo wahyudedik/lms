@@ -22,7 +22,7 @@ class Assignment extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'course_id',

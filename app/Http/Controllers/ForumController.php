@@ -211,8 +211,8 @@ class ForumController extends Controller
 
         // Check if thread is locked
         if ($thread->is_locked) {
-            // Admin and guru can still reply to locked threads
-            if (!Auth::user()->isAdmin() && !Auth::user()->isGuru()) {
+            // Admin, guru, and dosen can still reply to locked threads
+            if (!Auth::user()->isAdmin() && !Auth::user()->isGuru() && !Auth::user()->isDosen()) {
                 return back()->with('error', AuthorizationMessages::FORUM_THREAD_LOCKED);
             }
         }

@@ -12,8 +12,8 @@ class CoursePolicy
      */
     public function viewAny(User $user): bool
     {
-        // All authenticated users can view courses list
-        return true;
+        // Bug #25: Restrict to admin, guru, and dosen only
+        return in_array($user->role, ['admin', 'guru', 'dosen']);
     }
 
     /**

@@ -153,16 +153,12 @@
             // Show account deletion errors
             @if ($errors->userDeletion->any())
                 @php
-                    $deletionErrors = [];
-                    foreach ($errors->userDeletion->all() as $error) {
-                        $deletionErrors[] = $error;
-                    }
-                    $deletionErrorText = implode('<br>', $deletionErrors);
+                    $deletionErrors = $errors->userDeletion->all();
                 @endphp
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal Menghapus Akun!',
-                    html: '{!! $deletionErrorText !!}',
+                    html: @json(implode('<br>', $deletionErrors)),
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#EF4444'
                 });

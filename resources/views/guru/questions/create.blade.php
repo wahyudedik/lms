@@ -49,8 +49,7 @@
                                 <i class="fas fa-question-circle text-gray-400 mr-1"></i>Pertanyaan <span
                                     class="text-red-500">*</span>
                             </label>
-                            <textarea name="question_text" id="question_text" rows="3" required placeholder="Masukkan pertanyaan..."
-                                class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('question_text') }}</textarea>
+                            <x-quill-editor name="question_text" :value="old('question_text')" />
                         </div>
 
                         <!-- Question Image -->

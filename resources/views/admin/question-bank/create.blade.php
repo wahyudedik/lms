@@ -48,20 +48,26 @@
                                 <!-- Difficulty -->
                                 <div>
                                     <label for="difficulty" class="block text-sm font-semibold text-gray-700 mb-2">
-                                        <i class="fas fa-signal text-gray-400 mr-1"></i>{{ __('Difficulty') }} <span class="text-red-500">*</span>
+                                        <i class="fas fa-signal text-gray-400 mr-1"></i>{{ __('Difficulty') }} <span
+                                            class="text-red-500">*</span>
                                     </label>
                                     <select name="difficulty" id="difficulty" required
                                         class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
-                                        <option value="easy" {{ old('difficulty') == 'easy' ? 'selected' : '' }}>{{ __('Easy') }}</option>
-                                        <option value="medium" {{ old('difficulty', 'medium') == 'medium' ? 'selected' : '' }}>{{ __('Medium') }}</option>
-                                        <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>{{ __('Hard') }}</option>
+                                        <option value="easy" {{ old('difficulty') == 'easy' ? 'selected' : '' }}>
+                                            {{ __('Easy') }}</option>
+                                        <option value="medium"
+                                            {{ old('difficulty', 'medium') == 'medium' ? 'selected' : '' }}>
+                                            {{ __('Medium') }}</option>
+                                        <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>
+                                            {{ __('Hard') }}</option>
                                     </select>
                                 </div>
 
                                 <!-- Default Points -->
                                 <div>
                                     <label for="default_points" class="block text-sm font-semibold text-gray-700 mb-2">
-                                        <i class="fas fa-star text-gray-400 mr-1"></i>{{ __('Default Points') }} <span class="text-red-500">*</span>
+                                        <i class="fas fa-star text-gray-400 mr-1"></i>{{ __('Default Points') }} <span
+                                            class="text-red-500">*</span>
                                     </label>
                                     <input type="number" name="default_points" id="default_points"
                                         value="{{ old('default_points', 1) }}" step="0.01" min="0.01" required
@@ -74,7 +80,8 @@
                                         <input type="checkbox" name="is_active" value="1"
                                             {{ old('is_active', true) ? 'checked' : '' }}
                                             class="rounded border-gray-300 text-green-600 shadow-sm">
-                                        <span class="ml-2 text-sm font-semibold text-gray-700">{{ __('Active') }}</span>
+                                        <span
+                                            class="ml-2 text-sm font-semibold text-gray-700">{{ __('Active') }}</span>
                                     </label>
                                 </div>
                             </div>
@@ -87,7 +94,8 @@
                                 <input type="text" name="tags" id="tags" value="{{ old('tags') }}"
                                     placeholder="{{ __('algebra, equations, linear') }}"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
-                                <p class="text-sm text-gray-500 mt-1">{{ __('Separate tags with commas for better search') }}</p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    {{ __('Separate tags with commas for better search') }}</p>
                             </div>
                         </div>
 
@@ -100,7 +108,8 @@
                             <!-- Question Type -->
                             <div class="mb-6">
                                 <label for="type" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-list text-gray-400 mr-1"></i>Tipe Soal <span class="text-red-500">*</span>
+                                    <i class="fas fa-list text-gray-400 mr-1"></i>Tipe Soal <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <select name="type" id="type" required
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
@@ -122,10 +131,10 @@
                             <!-- Question Text -->
                             <div class="mb-6">
                                 <label for="question_text" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-align-left text-gray-400 mr-1"></i>Pertanyaan <span class="text-red-500">*</span>
+                                    <i class="fas fa-align-left text-gray-400 mr-1"></i>Pertanyaan <span
+                                        class="text-red-500">*</span>
                                 </label>
-                                <textarea name="question_text" id="question_text" rows="3" required
-                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('question_text') }}</textarea>
+                                <x-quill-editor name="question_text" :value="old('question_text')" />
                             </div>
 
                             <!-- Question Image -->
@@ -154,7 +163,8 @@
 
                             <div id="correct-answer-single" class="mt-6">
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-check-circle text-gray-400 mr-1"></i>Jawaban Benar <span class="text-red-500">*</span>
+                                    <i class="fas fa-check-circle text-gray-400 mr-1"></i>Jawaban Benar <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <select name="correct_answer_single"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
@@ -164,7 +174,8 @@
 
                             <div id="correct-answer-multiple" class="mt-6 hidden">
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-check-double text-gray-400 mr-1"></i>Jawaban Benar (Pilih Semua yang Benar) <span class="text-red-500">*</span>
+                                    <i class="fas fa-check-double text-gray-400 mr-1"></i>Jawaban Benar (Pilih Semua
+                                    yang Benar) <span class="text-red-500">*</span>
                                 </label>
                                 <div id="correct-checkboxes" class="space-y-2">
                                     <!-- Checkboxes will be added by JavaScript -->
@@ -204,8 +215,10 @@
 
                             <!-- Essay Grading Mode -->
                             <div class="mb-6">
-                                <label for="essay_grading_mode" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-cog text-gray-400 mr-1"></i>Mode Penilaian <span class="text-red-500">*</span>
+                                <label for="essay_grading_mode"
+                                    class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-cog text-gray-400 mr-1"></i>Mode Penilaian <span
+                                        class="text-red-500">*</span>
                                 </label>
                                 <select name="essay_grading_mode" id="essay_grading_mode"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
@@ -225,7 +238,8 @@
                                 <label class="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                                     <input type="checkbox" name="essay_case_sensitive" id="essay_case_sensitive"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-2 text-sm font-semibold text-gray-700">Case Sensitive (huruf besar/kecil
+                                    <span class="ml-2 text-sm font-semibold text-gray-700">Case Sensitive (huruf
+                                        besar/kecil
                                         berpengaruh)</span>
                                 </label>
                             </div>
@@ -299,7 +313,8 @@
                             <!-- Teacher Notes -->
                             <div class="mb-6">
                                 <label for="teacher_notes" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-sticky-note text-gray-400 mr-1"></i>Teacher Notes (Optional - Private)
+                                    <i class="fas fa-sticky-note text-gray-400 mr-1"></i>Teacher Notes (Optional -
+                                    Private)
                                 </label>
                                 <textarea name="teacher_notes" id="teacher_notes" rows="3"
                                     class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('teacher_notes') }}</textarea>
@@ -430,7 +445,7 @@
                 div.innerHTML = `
                     <span class="font-bold text-gray-700 w-8">${letter}.</span>
                     <input type="hidden" name="options[${optionIndex}][id]" value="${letter}">
-                    <input type="text" name="options[${optionIndex}][text]" required 
+                    <input type="text" name="options[${optionIndex}][text]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Teks opsi ${letter}">
                     <button type="button" class="text-red-600 hover:text-red-800 remove-option">
                         <i class="fas fa-times-circle text-xl"></i>
@@ -481,10 +496,10 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                    <input type="text" name="pairs[${pairIndex}][left]" required 
+                    <input type="text" name="pairs[${pairIndex}][left]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Item kiri">
                     <i class="fas fa-arrows-alt-h text-gray-400"></i>
-                    <input type="text" name="pairs[${pairIndex}][right]" required 
+                    <input type="text" name="pairs[${pairIndex}][right]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Item kanan">
                     <button type="button" class="text-red-600 hover:text-red-800 remove-pair">
                         <i class="fas fa-times-circle text-xl"></i>
@@ -527,7 +542,7 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                    <input type="text" name="essay_keywords[]" 
+                    <input type="text" name="essay_keywords[]"
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Kata kunci (contoh: fotosintesis)">
                     <input type="number" name="essay_keyword_points[]" min="0" step="0.1" value="2"
                         class="w-24 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Poin">

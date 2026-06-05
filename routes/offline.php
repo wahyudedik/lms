@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth'])->prefix('offline')->name('offline.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('offline')->name('offline.')->group(function () {
     // Offline exam list
     Route::get('/exams', [OfflineExamController::class, 'index'])->name('exams.index');
 

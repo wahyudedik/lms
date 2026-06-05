@@ -102,9 +102,12 @@
                                 <select name="difficulty"
                                     class="w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-150">
                                     <option value="">All Difficulties</option>
-                                    <option value="easy" {{ request('difficulty') == 'easy' ? 'selected' : '' }}>{{ __('Easy') }}</option>
-                                    <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>{{ __('Medium') }}</option>
-                                    <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>{{ __('Hard') }}</option>
+                                    <option value="easy" {{ request('difficulty') == 'easy' ? 'selected' : '' }}>
+                                        {{ __('Easy') }}</option>
+                                    <option value="medium" {{ request('difficulty') == 'medium' ? 'selected' : '' }}>
+                                        {{ __('Medium') }}</option>
+                                    <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>
+                                        {{ __('Hard') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -143,7 +146,7 @@
                                                 @endif
                                                 <div class="flex-1">
                                                     <h3 class="font-semibold text-lg text-gray-900 mb-2">
-                                                        {{ Str::limit($question->question_text, 100) }}
+                                                        {!! Str::limit(strip_tags($question->question_text), 100) !!}
                                                     </h3>
 
                                                     <!-- Badges -->
@@ -172,7 +175,8 @@
                                                     <div class="flex flex-wrap gap-4 text-sm text-gray-600">
                                                         <span>
                                                             <i class="fas fa-star text-yellow-500 mr-1"></i>
-                                                            <strong>{{ $question->default_points }}</strong> {{ __('points') }}
+                                                            <strong>{{ $question->default_points }}</strong>
+                                                            {{ __('points') }}
                                                         </span>
                                                         <span>
                                                             <i class="fas fa-recycle text-blue-500 mr-1"></i>
@@ -459,14 +463,14 @@
                                         <p class="text-xs text-green-600 mt-1">${successRate}% valid</p>
                                     </div>
                                     ${validation.errors.length > 0 ? `
-                                                <div class="mt-3">
-                                                    <p class="text-xs font-semibold text-red-700 mb-1">Errors:</p>
-                                                    <ul class="text-xs text-red-600 list-disc list-inside max-h-32 overflow-y-auto">
-                                                        ${validation.errors.slice(0, 5).map(err => `<li>${err}</li>`).join('')}
-                                                        ${validation.errors.length > 5 ? `<li>... and ${validation.errors.length - 5} more</li>` : ''}
-                                                    </ul>
-                                                </div>
-                                            ` : ''}
+                                                        <div class="mt-3">
+                                                            <p class="text-xs font-semibold text-red-700 mb-1">Errors:</p>
+                                                            <ul class="text-xs text-red-600 list-disc list-inside max-h-32 overflow-y-auto">
+                                                                ${validation.errors.slice(0, 5).map(err => `<li>${err}</li>`).join('')}
+                                                                ${validation.errors.length > 5 ? `<li>... and ${validation.errors.length - 5} more</li>` : ''}
+                                                            </ul>
+                                                        </div>
+                                                    ` : ''}
                                 </div>
                             `;
                         } else {

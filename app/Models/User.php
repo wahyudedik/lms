@@ -104,8 +104,6 @@ class User extends Authenticatable
         'address',
         'profile_photo',
         'is_active',
-        'login_blocked_at',
-        'login_blocked_reason',
         'username',
     ];
 

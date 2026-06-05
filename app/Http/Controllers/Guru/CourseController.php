@@ -69,7 +69,8 @@ class CourseController extends Controller
 
         // Handle cover image upload
         if ($request->hasFile('cover_image')) {
-            $fileName = time() . '_' . $request->file('cover_image')->getClientOriginalName();
+            // Bug #39: Sanitize filename to prevent path traversal
+            $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $request->file('cover_image')->getClientOriginalName());
             $validated['cover_image'] = $request->file('cover_image')->storeAs('course-covers', $fileName, 'public');
         }
 
@@ -135,7 +136,8 @@ class CourseController extends Controller
                 Storage::disk('public')->delete($course->cover_image);
             }
 
-            $fileName = time() . '_' . $request->file('cover_image')->getClientOriginalName();
+            // Bug #39: Sanitize filename to prevent path traversal
+            $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $request->file('cover_image')->getClientOriginalName());
             $validated['cover_image'] = $request->file('cover_image')->storeAs('course-covers', $fileName, 'public');
         }
 

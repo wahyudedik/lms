@@ -96,7 +96,7 @@
 
                                             <!-- Question Text -->
                                             <div class="mb-3">
-                                                <p class="text-gray-900 font-medium">{{ $question->question_text }}</p>
+                                                <p class="text-gray-900 font-medium">{!! Str::limit(strip_tags($question->question_text), 150) !!}</p>
                                                 @if ($question->question_image)
                                                     <img src="{{ Storage::url($question->question_image) }}"
                                                         alt="Question Image" class="mt-2 max-w-sm rounded">

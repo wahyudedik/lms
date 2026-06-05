@@ -873,7 +873,7 @@
                 <div class="footer_bar d-flex flex-column flex-sm-row align-items-center">
                     <div class="footer_copyright">
                         <span>
-                            Copyright &copy;{{ date('Y') }} All rights reserved, created by <a href="https://noteds.com" target="_blank">Noteds Technology</a>
+                            Copyright &copy;{{ date('Y') }} All rights reserved, Team skateldu Digital Solutions
                         </span>
                     </div>
                     <div class="footer_social ml-sm-auto">

@@ -98,8 +98,7 @@
                                 <label for="question_text" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fas fa-align-left text-gray-400 mr-1"></i>Pertanyaan <span class="text-red-500">*</span>
                                 </label>
-                                <textarea name="question_text" id="question_text" rows="3" required
-                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('question_text', $question->question_text) }}</textarea>
+                                <x-quill-editor name="question_text" :value="old('question_text', $question->question_text)" />
                             </div>
 
                             <!-- Question Image -->
@@ -413,7 +412,7 @@
                 div.innerHTML = `
                     <span class="font-bold text-gray-700 w-8">${letter}.</span>
                     <input type="hidden" name="options[${optionIndex}][id]" value="${letter}">
-                    <input type="text" name="options[${optionIndex}][text]" required 
+                    <input type="text" name="options[${optionIndex}][text]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Teks opsi ${letter}">
                     <button type="button" class="text-red-600 hover:text-red-800 remove-option">
                         <i class="fas fa-times-circle text-xl"></i>
@@ -464,10 +463,10 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                    <input type="text" name="pairs[${pairIndex}][left]" required 
+                    <input type="text" name="pairs[${pairIndex}][left]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Item kiri">
                     <i class="fas fa-arrows-alt-h text-gray-400"></i>
-                    <input type="text" name="pairs[${pairIndex}][right]" required 
+                    <input type="text" name="pairs[${pairIndex}][right]" required
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Item kanan">
                     <button type="button" class="text-red-600 hover:text-red-800 remove-pair">
                         <i class="fas fa-times-circle text-xl"></i>
@@ -510,7 +509,7 @@
                 const div = document.createElement('div');
                 div.className = 'flex items-center gap-2';
                 div.innerHTML = `
-                    <input type="text" name="essay_keywords[]" 
+                    <input type="text" name="essay_keywords[]"
                         class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Kata kunci (contoh: fotosintesis)">
                     <input type="number" name="essay_keyword_points[]" min="0" step="0.1" value="2"
                         class="w-24 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-all duration-150" placeholder="Poin">
@@ -613,12 +612,12 @@
                                 console.error("Error parsing options:", e);
                             }
                         }
-                        
+
                         optionIndex = 0;
                         document.getElementById('options-container').innerHTML = '';
                         document.querySelector('select[name="correct_answer_single"]').innerHTML = '<option value="">Pilih Jawaban Benar</option>';
                         document.getElementById('correct-checkboxes').innerHTML = '';
-                        
+
                         if (Array.isArray(options)) {
                             options.forEach(function(option) {
                                 document.getElementById('add-option').click();
@@ -626,7 +625,7 @@
                                 if (lastInput) lastInput.value = option.text;
                             });
                         }
-                        
+
                         // Set correct answer
                         if (questionType === 'mcq_single' && questionData.correct_answer) {
                             let correctAnswerSingle = questionData.correct_answer;
@@ -667,10 +666,10 @@
                                 console.error("Error parsing pairs:", e);
                             }
                         }
-                        
+
                         pairIndex = 0;
                         document.getElementById('pairs-container').innerHTML = '';
-                        
+
                         if (Array.isArray(pairs)) {
                             pairs.forEach(function(pair) {
                                 document.getElementById('add-pair').click();
@@ -688,11 +687,11 @@
                     setTimeout(function() {
                         document.getElementById('essay_grading_mode').value = questionData.essay_grading_mode || 'manual';
                         document.getElementById('essay_grading_mode').dispatchEvent(new Event('change'));
-                        
+
                         if (questionData.essay_case_sensitive) {
                             document.getElementById('essay_case_sensitive').checked = true;
                         }
-                        
+
                         if (questionData.essay_grading_mode === 'keyword' && questionData.essay_keywords) {
                             let keywords = questionData.essay_keywords;
                             if (typeof keywords === 'string') {
@@ -706,7 +705,7 @@
                                     keywordPoints = JSON.parse(keywordPoints);
                                 } catch (e) {}
                             }
-                            
+
                             keywordIndex = 0;
                             document.getElementById('keywords-container').innerHTML = '';
                             if (Array.isArray(keywords)) {
@@ -721,7 +720,7 @@
                                 });
                             }
                         }
-                        
+
                         if (questionData.essay_grading_mode === 'similarity') {
                             document.getElementById('essay_model_answer').value = questionData.essay_model_answer || '';
                             document.getElementById('essay_min_similarity').value = questionData.essay_min_similarity || 70;

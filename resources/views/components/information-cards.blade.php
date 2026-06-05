@@ -11,7 +11,7 @@
                     <div class="flex-1 min-w-0">
                         <h4 class="font-semibold text-sm mb-1">{{ $card->title }}</h4>
                         <div
-                            class="text-sm opacity-90 [&>p]:mb-1 [&>ul]:mb-1 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:mb-1 [&>ol]:list-decimal [&>ol]:pl-4 [&_a]:underline">
+                            class="text-sm opacity-90 rich-content [&>p]:mb-1 [&>ul]:mb-1 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:mb-1 [&>ol]:list-decimal [&>ol]:pl-4 [&_a]:underline">
                             {!! $card->content !!}</div>
 
                         {{-- Attachment --}}

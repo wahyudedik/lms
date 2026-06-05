@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $guest_token
  * @property \Illuminate\Support\Carbon|null $started_at
  * @property \Illuminate\Support\Carbon|null $submitted_at
- * @property int|null $time_spent
+ * @property float|int|null $time_spent
  * @property numeric|null $score
  * @property int|null $correct_answers
  * @property int|null $total_questions
@@ -105,6 +105,7 @@ class ExamAttempt extends Model
         'is_guest' => 'boolean',
         'violations' => 'array',
         'shuffled_question_ids' => 'array',
+        'time_spent' => 'float',
     ];
 
     /**

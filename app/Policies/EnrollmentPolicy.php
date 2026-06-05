@@ -12,8 +12,8 @@ class EnrollmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Admin, guru, and siswa can view enrollments
-        return true;
+        // Bug #25: Restrict to admin, guru, and dosen only
+        return in_array($user->role, ['admin', 'guru', 'dosen']);
     }
 
     /**

@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -227,8 +227,8 @@
                                                     {{ $question->points }} poin
                                                 </span>
                                             </div>
-                                            <p class="text-sm font-semibold text-gray-900">
-                                                {{ Str::limit($question->question_text, 150) }}</p>
+                                            <p class="text-sm font-semibold text-gray-900 rich-content">
+                                                {!! Str::limit($question->question_text, 150) !!}</p>
                                         </div>
                                     </div>
                                 </div>

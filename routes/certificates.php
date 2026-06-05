@@ -55,8 +55,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         ->name('admin.certificates.generate-missing');
 });
 
-// API routes
-Route::middleware(['auth:sanctum'])->prefix('api')->group(function () {
+// API routes (Bug #37: Use session-based auth for consistency with the app)
+Route::middleware(['auth'])->prefix('api')->group(function () {
     // Get user certificates
     Route::get('/certificates', [CertificateController::class, 'apiIndex'])
         ->name('api.certificates.index');

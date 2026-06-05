@@ -16,6 +16,7 @@ use App\Imports\QuestionBankImport;
 use App\Jobs\ProcessQuestionBankImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
+use Mews\Purifier\Facades\Purifier;
 
 class QuestionBankController extends Controller
 {
@@ -148,6 +149,10 @@ class QuestionBankController extends Controller
             'essay_keyword_points.*.required'  => 'Poin tidak boleh kosong.',
         ]);
 
+        if (isset($validated['question_text'])) {
+            $validated['question_text'] = Purifier::clean($validated['question_text']);
+        }
+
         // Handle image upload
         if ($request->hasFile('question_image')) {
             $validated['question_image'] = $request->file('question_image')->store('questions', 'public');
@@ -264,6 +269,10 @@ class QuestionBankController extends Controller
             'pairs.*.left.required' => 'Kolom kiri pasangan wajib diisi.',
             'pairs.*.right.required' => 'Kolom kanan pasangan wajib diisi.',
         ]);
+
+        if (isset($validated['question_text'])) {
+            $validated['question_text'] = Purifier::clean($validated['question_text']);
+        }
 
         // Handle image upload
         if ($request->hasFile('question_image')) {

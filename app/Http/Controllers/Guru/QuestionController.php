@@ -9,6 +9,7 @@ use App\Models\Exam;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Mews\Purifier\Facades\Purifier;
 
 class QuestionController extends Controller
 {
@@ -109,6 +110,10 @@ class QuestionController extends Controller
             'essay_keywords.required' => 'Minimal harus ada 1 kata kunci untuk mode keyword matching.',
             'essay_model_answer.required' => 'Jawaban model harus diisi untuk mode similarity matching.',
         ]);
+
+        if (isset($validated['question_text'])) {
+            $validated['question_text'] = Purifier::clean($validated['question_text']);
+        }
 
         $questionData = [
             'exam_id' => $exam->id,
@@ -240,6 +245,10 @@ class QuestionController extends Controller
             'essay_keywords.required' => 'Minimal harus ada 1 kata kunci untuk mode keyword matching.',
             'essay_model_answer.required' => 'Jawaban model harus diisi untuk mode similarity matching.',
         ]);
+
+        if (isset($validated['question_text'])) {
+            $validated['question_text'] = Purifier::clean($validated['question_text']);
+        }
 
         $questionData = [
             'type' => $validated['type'],

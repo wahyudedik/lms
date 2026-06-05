@@ -151,6 +151,8 @@ class CertificateController extends Controller
      */
     public function revoke(Request $request, Certificate $certificate)
     {
+        $this->authorize('update', $certificate);
+
         $request->validate([
             'reason' => 'required|string|max:500',
         ]);
@@ -165,6 +167,8 @@ class CertificateController extends Controller
      */
     public function restore(Certificate $certificate)
     {
+        $this->authorize('update', $certificate);
+
         $certificate->restore();
 
         return back()->with('success', 'Certificate restored successfully.');
@@ -175,6 +179,8 @@ class CertificateController extends Controller
      */
     public function generateMissing()
     {
+        $this->authorize('viewAny', Certificate::class);
+
         $count = $this->certificateService->generateMissing();
 
         return back()->with('success', "Generated {$count} missing certificates.");

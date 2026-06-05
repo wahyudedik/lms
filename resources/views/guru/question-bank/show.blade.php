@@ -95,7 +95,7 @@
                     </div>
 
                     <div class="prose max-w-none">
-                        <p class="text-lg text-gray-900 whitespace-pre-line">{{ $questionBank->question_text }}</p>
+                        <div class="text-lg text-gray-900 rich-content">{!! $questionBank->question_text !!}</div>
 
                         @if ($questionBank->question_image)
                             <div class="mt-4">

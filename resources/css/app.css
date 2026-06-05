@@ -186,3 +186,31 @@
         @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl;
     }
 }
+
+/* Restore list styles inside rich text content */
+.prose ol,
+.rich-content ol,
+.question-text ol,
+[x-html] ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.prose ul,
+.rich-content ul,
+.question-text ul,
+[x-html] ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.prose li,
+.rich-content li,
+.question-text li,
+[x-html] li {
+    margin: 0.25rem 0;
+}

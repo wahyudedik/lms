@@ -154,7 +154,7 @@
             </div>
 
             <div class="question-text">
-                {{ $question->question_text }}
+                {!! $question->question_text !!}
             </div>
 
             @if ($question->options && in_array($question->type, ['mcq_single', 'mcq_multiple']))

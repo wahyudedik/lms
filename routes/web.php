@@ -64,15 +64,14 @@ Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::
     ->middleware(['auth', 'verified', 'role:admin'])
     ->name('admin.dashboard');
 
-// ==================================================
-// BACKWARD COMPATIBILITY REDIRECTS (301 Permanent)
-// ==================================================
-Route::redirect('/admin/schools', '/admin/settings?tab=school', 301);
-Route::redirect('/admin/schools/{id}/theme', '/admin/settings?tab=theme', 301);
-Route::redirect('/admin/schools/{id}/landing-page', '/admin/settings?tab=landing', 301);
-
 // Admin User Management & Course Management
 Route::middleware(['auth', 'verified', 'role:admin', 'log.admin'])->prefix('admin')->name('admin.')->group(function () {
+    // ==================================================
+    // BACKWARD COMPATIBILITY REDIRECTS (301 Permanent)
+    // ==================================================
+    Route::redirect('/schools', '/settings?tab=school', 301);
+    Route::redirect('/schools/{id}/theme', '/settings?tab=theme', 301);
+    Route::redirect('/schools/{id}/landing-page', '/settings?tab=landing', 301);
     // User Management
     // Import/Export Routes (must be before resource routes)
     Route::get('users/export', [App\Http\Controllers\Admin\UserController::class, 'export'])->name('users.export');

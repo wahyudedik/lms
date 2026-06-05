@@ -6,6 +6,7 @@ use App\Models\Exam;
 use App\Models\ExamAttempt;
 use App\Models\Answer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 
@@ -27,6 +28,15 @@ class GuestExamController extends Controller
         $request->validate([
             'token' => 'required|string|size:8',
         ]);
+
+        // Bug #27: Rate limiting on token verification
+        $throttleKey = 'guest-token-' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            return back()->withErrors([
+                'token' => 'Terlalu banyak percobaan. Silakan tunggu beberapa menit.',
+            ]);
+        }
+        RateLimiter::hit($throttleKey, 60);
 
         $token = strtoupper(trim($request->token));
         $exam = Exam::where('access_token', $token)->first();

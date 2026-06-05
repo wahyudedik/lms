@@ -89,8 +89,8 @@
                                         <span
                                             class="text-sm text-gray-500">{{ __('Question :num of', ['num' => $index + 1]) }}
                                             {{ $questions->count() }}</span>
-                                        <h3 class="text-lg font-semibold text-gray-900 mt-1">
-                                            {{ $question->question_text }}
+                                        <h3 class="text-lg font-semibold text-gray-900 mt-1 rich-content">
+                                            {!! $question->question_text !!}
                                         </h3>
                                     </div>
                                     <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">

@@ -91,7 +91,7 @@
                                     <div class="flex items-start justify-between">
                                         <div class="flex-1 min-w-0">
                                             <p class="text-sm font-semibold text-gray-900 mb-2">
-                                                {{ Str::limit($question->question_text, 120) }}
+                                                {!! Str::limit(strip_tags($question->question_text), 120) !!}
                                             </p>
                                             <div class="flex flex-wrap gap-2">
                                                 @php

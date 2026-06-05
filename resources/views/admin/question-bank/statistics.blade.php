@@ -71,7 +71,8 @@
                         </div>
                         <div class="border rounded-lg p-4">
                             <div class="text-indigo-600 text-sm font-medium mb-1">{{ __('Matching') }}</div>
-                            <div class="text-3xl font-bold text-gray-900">{{ $stats['by_type']['matching'] ?? 0 }}</div>
+                            <div class="text-3xl font-bold text-gray-900">{{ $stats['by_type']['matching'] ?? 0 }}
+                            </div>
                         </div>
                         <div class="border rounded-lg p-4">
                             <div class="text-pink-600 text-sm font-medium mb-1">{{ __('Essay') }}</div>
@@ -163,7 +164,7 @@
                                     <div class="flex-1">
                                         <a href="{{ route('admin.question-bank.show', $question) }}"
                                             class="font-medium text-blue-600 hover:text-blue-800">
-                                            {{ Str::limit($question->question_text, 80) }}
+                                            {!! Str::limit(strip_tags($question->question_text), 80) !!}
                                         </a>
                                         <div class="text-sm text-gray-600 mt-1">
                                             {!! $question->type_badge !!}
@@ -198,7 +199,7 @@
                                         <div class="flex-1">
                                             <a href="{{ route('admin.question-bank.show', $question) }}"
                                                 class="text-sm font-medium text-blue-600 hover:text-blue-800">
-                                                {{ Str::limit($question->question_text, 60) }}
+                                                {!! Str::limit(strip_tags($question->question_text), 60) !!}
                                             </a>
                                         </div>
                                         <div class="text-right ml-2">
@@ -227,7 +228,7 @@
                                         <div class="flex-1">
                                             <a href="{{ route('admin.question-bank.show', $question) }}"
                                                 class="text-sm font-medium text-blue-600 hover:text-blue-800">
-                                                {{ Str::limit($question->question_text, 60) }}
+                                                {!! Str::limit(strip_tags($question->question_text), 60) !!}
                                             </a>
                                         </div>
                                         <div class="text-right ml-2">
@@ -249,7 +250,8 @@
                     <div class="p-12 text-center">
                         <i class="fas fa-chart-bar text-6xl text-gray-300 mb-4"></i>
                         <h3 class="text-xl font-semibold text-gray-700 mb-2">{{ __('No Statistics Yet') }}</h3>
-                        <p class="text-gray-500 mb-6">{{ __('Add questions to the bank to see statistics here.') }}</p>
+                        <p class="text-gray-500 mb-6">{{ __('Add questions to the bank to see statistics here.') }}
+                        </p>
                         <a href="{{ route('admin.question-bank.create') }}"
                             class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">
                             <i class="fas fa-plus mr-2"></i>{{ __('Add Your First Question') }}

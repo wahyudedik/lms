@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -49,8 +49,7 @@
                             <label for="question_text" class="block text-sm font-medium text-gray-700 mb-2">
                                 Pertanyaan <span class="text-red-500">*</span>
                             </label>
-                            <textarea name="question_text" id="question_text" rows="3" required
-                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('question_text', $question->question_text) }}</textarea>
+                            <x-quill-editor name="question_text" :value="old('question_text', $question->question_text)" />
                         </div>
 
                         <!-- Question Image -->

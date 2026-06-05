@@ -160,7 +160,7 @@ class DocumentationController extends Controller
     private function parseMarkdown($content)
     {
         $parsedown = new \Parsedown();
-        $parsedown->setSafeMode(false); // Allow HTML in markdown
+        $parsedown->setSafeMode(true); // Bug #35: Enable safe mode to prevent Stored XSS
         return $parsedown->text($content);
     }
 }

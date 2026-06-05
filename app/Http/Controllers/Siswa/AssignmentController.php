@@ -149,8 +149,8 @@ class AssignmentController extends Controller
             }
         }
 
-        // Store file at assignments/{assignment_id}/{user_id}/{original_filename}
-        $fileName = $file->getClientOriginalName();
+        // Store file at assignments/{assignment_id}/{user_id}/{sanitized_filename}
+        $fileName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $file->getClientOriginalName());
         $storagePath = "assignments/{$assignment->id}/{$user->id}";
         $filePath = $file->storeAs($storagePath, $fileName, 'public');
 

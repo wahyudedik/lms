@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enrollment;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
 use App\Models\Question;
@@ -51,6 +52,16 @@ class OfflineExamController extends Controller
 
         $user = Auth::user();
 
+        // Verify enrollment
+        $enrollment = Enrollment::where('user_id', $user->id)
+            ->where('course_id', $exam->course_id)
+            ->where('status', 'active')
+            ->first();
+
+        if (!$enrollment) {
+            abort(403, 'Anda tidak terdaftar di kursus ini.');
+        }
+
         // Check if user already has an active attempt
         $activeAttempt = ExamAttempt::where('exam_id', $exam->id)
             ->where('user_id', $user->id)
@@ -87,6 +98,16 @@ class OfflineExamController extends Controller
     {
         if (!$exam->offline_enabled) {
             abort(403, 'This exam is not available for offline mode');
+        }
+
+        // Verify enrollment
+        $enrollment = Enrollment::where('user_id', Auth::id())
+            ->where('course_id', $exam->course_id)
+            ->where('status', 'active')
+            ->first();
+
+        if (!$enrollment) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         $exam->load(['questions' => function ($query) {
@@ -154,6 +175,23 @@ class OfflineExamController extends Controller
             abort(403);
         }
 
+        // Check if time is up — log warning for overtime submissions
+        if ($attempt->started_at && $exam->duration_minutes) {
+            $endTime = $attempt->started_at->addMinutes($exam->duration_minutes);
+            if (now()->greaterThan($endTime)) {
+                \Illuminate\Support\Facades\Log::warning(
+                    "Exam overtime submission: Attempt #{$attempt->id} submitted after deadline.",
+                    [
+                        'user_id' => Auth::id(),
+                        'exam_id' => $exam->id,
+                        'started_at' => $attempt->started_at,
+                        'end_time' => $endTime,
+                        'submitted_at' => now(),
+                    ]
+                );
+            }
+        }
+
         DB::beginTransaction();
 
         try {
@@ -171,12 +209,26 @@ class OfflineExamController extends Controller
                 );
             }
 
-            // Mark attempt as finished
-            $attempt->update([
-                'submitted_at' => now(),
-                'status' => 'graded',
-                'is_offline' => $request->boolean('was_offline', false),
-            ]);
+            // Mark attempt as finished using atomic update to prevent race condition
+            $updated = ExamAttempt::where('id', $attempt->id)
+                ->where('status', 'in_progress')
+                ->update([
+                    'submitted_at' => now(),
+                    'status' => 'graded',
+                    'is_offline' => $request->boolean('was_offline', false),
+                ]);
+
+            if (!$updated) {
+                DB::rollBack();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Exam has already been submitted.',
+                ], 409);
+            }
+
+            // Reload attempt to get updated data
+            $attempt->refresh();
 
             // Calculate score
             $this->calculateScore($attempt);
@@ -204,34 +256,7 @@ class OfflineExamController extends Controller
      */
     private function calculateScore(ExamAttempt $attempt)
     {
-        $questions = Question::where('exam_id', $attempt->exam_id)->get();
-        $answers = Answer::where('attempt_id', $attempt->id)->get()->keyBy('question_id');
-
-        $totalQuestions = $questions->count();
-        $correctAnswers = 0;
-
-        foreach ($questions as $question) {
-            $userAnswer = $answers->get($question->id);
-
-            if (!$userAnswer) {
-                continue;
-            }
-
-            // Decode JSON answer to native PHP
-            $decodedAnswer = $userAnswer->answer;
-            // Check if answer is correct using Question model helper
-            if ($question->checkAnswer($decodedAnswer)) {
-                $correctAnswers++;
-            }
-        }
-
-        $score = $totalQuestions > 0 ? ($correctAnswers / $totalQuestions) * 100 : 0;
-
-        $attempt->update([
-            'score' => round($score, 2),
-            'correct_answers' => $correctAnswers,
-            'total_questions' => $totalQuestions,
-        ]);
+        $attempt->autoGrade();
     }
 
     /**

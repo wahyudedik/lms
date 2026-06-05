@@ -31,10 +31,8 @@ class CertificateController extends Controller
 
     public function show(Certificate $certificate)
     {
-        // Check if certificate belongs to current user
-        if ($certificate->user_id !== Auth::id()) {
-            abort(403, 'Anda tidak memiliki akses ke sertifikat ini.');
-        }
+        // Bug #26: Use policy instead of manual check
+        $this->authorize('view', $certificate);
 
         $certificate->load('course.instructor');
 
@@ -43,10 +41,8 @@ class CertificateController extends Controller
 
     public function download(Certificate $certificate)
     {
-        // Check if certificate belongs to current user
-        if ($certificate->user_id !== Auth::id()) {
-            abort(403, 'Anda tidak memiliki akses ke sertifikat ini.');
-        }
+        // Bug #26: Use policy instead of manual check
+        $this->authorize('view', $certificate);
 
         $certificate->load('course.instructor');
         $user = Auth::user();

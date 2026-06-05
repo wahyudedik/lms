@@ -12,6 +12,7 @@ use App\Support\AppPreferences as AppPreferencesSupport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Mews\Purifier\Facades\Purifier;
 
 class SettingsController extends Controller
 {
@@ -53,7 +54,19 @@ class SettingsController extends Controller
             'settings.app_favicon' => 'nullable|image|mimes:ico,png,svg|max:512',
         ]);
 
+        // Bug #31 fix: Use blacklist instead of overly-restrictive whitelist.
+        // Only block keys that could be dangerous if modified via this endpoint.
+        // All other settings keys (app_*, school_*, enable_*, notification_*, etc.)
+        // are allowed since the form view dynamically renders inputs for all groups
+        // (general, localization, appearance, system, notification).
+        $blockedPatterns = '/(password|secret|token|credential|database|db_|mail_|cache_|session_|queue_|app_key|app_debug|app_env)/i';
+
         foreach ($request->settings as $key => $value) {
+            // Block sensitive/dangerous keys
+            if (preg_match($blockedPatterns, $key)) {
+                continue;
+            }
+
             // Handle logo upload
             if ($key === 'app_logo' && $request->hasFile('settings.app_logo')) {
                 $file = $request->file('settings.app_logo');
@@ -82,9 +95,9 @@ class SettingsController extends Controller
                 $value = $path;
             }
 
-            // Convert checkbox values
+            // Convert checkbox values (unchecked checkboxes don't send values)
             if (is_null($value)) {
-                $value = '0'; // Unchecked checkboxes don't send values
+                $value = '0';
             }
 
             $setting = Setting::where('key', $key)->first();
@@ -204,7 +217,11 @@ class SettingsController extends Controller
             $rows = \DB::table($tableName)->get();
             foreach ($rows as $row) {
                 $values = array_map(function ($value) {
-                    return is_null($value) ? 'NULL' : "'" . addslashes($value) . "'";
+                    if (is_null($value)) {
+                        return 'NULL';
+                    }
+
+                    return \DB::connection()->getPdo()->quote($value);
                 }, (array) $row);
                 $sql .= "INSERT INTO `{$tableName}` VALUES (" . implode(', ', $values) . ");\n";
             }
@@ -219,7 +236,19 @@ class SettingsController extends Controller
      */
     public function downloadBackup($filename)
     {
+        // Sanitize filename to prevent path traversal
+        $filename = basename($filename);
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $filename)) {
+            return redirect()->back()->with('error', 'Nama file tidak valid');
+        }
+
         $filepath = storage_path('app/backups/' . $filename);
+        $realPath = realpath($filepath);
+        $allowedDir = realpath(storage_path('app/backups'));
+
+        if (!$realPath || !$allowedDir || !str_starts_with($realPath, $allowedDir)) {
+            return redirect()->back()->with('error', 'Akses ditolak');
+        }
 
         if (!file_exists($filepath)) {
             return redirect()->back()->with('error', 'File backup tidak ditemukan');
@@ -233,7 +262,19 @@ class SettingsController extends Controller
      */
     public function deleteBackup($filename)
     {
+        // Sanitize filename to prevent path traversal
+        $filename = basename($filename);
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $filename)) {
+            return redirect()->back()->with('error', 'Nama file tidak valid');
+        }
+
         $filepath = storage_path('app/backups/' . $filename);
+        $realPath = realpath($filepath);
+        $allowedDir = realpath(storage_path('app/backups'));
+
+        if (!$realPath || !$allowedDir || !str_starts_with($realPath, $allowedDir)) {
+            return redirect()->back()->with('error', 'Akses ditolak');
+        }
 
         if (file_exists($filepath)) {
             unlink($filepath);
@@ -407,6 +448,20 @@ class SettingsController extends Controller
             'dark_mode'          => 'boolean',
         ]);
 
+        // Sanitize hex color values to prevent CSS injection
+        $colorFields = [
+            'primary_color', 'secondary_color', 'accent_color',
+            'success_color', 'warning_color', 'danger_color',
+            'info_color', 'dark_color', 'text_primary',
+            'text_secondary', 'text_muted', 'background_color',
+            'card_background', 'navbar_background', 'sidebar_background',
+        ];
+        foreach ($colorFields as $field) {
+            if (isset($validated[$field])) {
+                $validated[$field] = '#' . preg_replace('/[^a-fA-F0-9]/', '', substr($request->input($field), 1));
+            }
+        }
+
         if ($request->hasFile('login_background')) {
             if ($theme->login_background) {
                 Storage::disk('public')->delete($theme->login_background);
@@ -513,6 +568,17 @@ class SettingsController extends Controller
             'meta_description'       => 'nullable|string',
             'meta_keywords'          => 'nullable|string',
         ]);
+
+        // Sanitize landing page text fields to prevent XSS
+        if (isset($validated['hero_title'])) {
+            $validated['hero_title'] = Purifier::clean($validated['hero_title']);
+        }
+        if (isset($validated['hero_subtitle'])) {
+            $validated['hero_subtitle'] = Purifier::clean($validated['hero_subtitle']);
+        }
+        if (isset($validated['hero_description'])) {
+            $validated['hero_description'] = Purifier::clean($validated['hero_description']);
+        }
 
         if ($request->hasFile('hero_image')) {
             if ($school->hero_image) {

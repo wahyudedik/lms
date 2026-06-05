@@ -151,8 +151,7 @@
                                     <i class="fas fa-align-left text-gray-400 mr-1"></i>Pertanyaan <span
                                         class="text-red-500">*</span>
                                 </label>
-                                <textarea name="question_text" id="question_text" rows="3" required
-                                    class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">{{ old('question_text', $questionBank->question_text) }}</textarea>
+                                <x-quill-editor name="question_text" :value="old('question_text', $questionBank->question_text)" />
                             </div>
 
                             <!-- Question Image -->
@@ -163,8 +162,7 @@
                                 @if ($questionBank->question_image)
                                     <div class="mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
                                         <p class="text-sm font-semibold text-green-900 mb-2">
-                                            <i
-                                                class="fas fa-image text-green-700 mr-1"></i>{{ __('Gambar Saat Ini') }}
+                                            <i class="fas fa-image text-green-700 mr-1"></i>{{ __('Gambar Saat Ini') }}
                                         </p>
                                         <img src="{{ Storage::url($questionBank->question_image) }}"
                                             alt="Question Image"

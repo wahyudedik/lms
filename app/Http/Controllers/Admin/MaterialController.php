@@ -59,6 +59,9 @@ class MaterialController extends Controller
             if (!empty($groupIds)) {
                 if (count($groupIds) > 20) {
                     $material->delete();
+                    if (isset($validated['file_path'])) {
+                        Storage::disk('public')->delete($validated['file_path']);
+                    }
                     return redirect()->back()->withInput()
                         ->withErrors(['group_ids' => 'Maksimal 20 kelompok per materi.']);
                 }
@@ -68,6 +71,9 @@ class MaterialController extends Controller
 
                 if ($validCount !== count($groupIds)) {
                     $material->delete();
+                    if (isset($validated['file_path'])) {
+                        Storage::disk('public')->delete($validated['file_path']);
+                    }
                     return redirect()->back()->withInput()
                         ->withErrors(['group_ids' => 'Kelompok harus berasal dari kursus yang sama.']);
                 }

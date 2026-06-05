@@ -22,7 +22,8 @@ class CheatingIncidentController extends Controller
         }
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            // Bug #32: Escape LIKE wildcard characters to prevent injection
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($userQuery) use ($search) {
                     $userQuery->where('name', 'like', "%{$search}%")
@@ -154,7 +155,8 @@ class CheatingIncidentController extends Controller
         }
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            // Bug #32: Escape LIKE wildcard characters to prevent injection
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
                     ->orWhereHas('exam', fn ($e) => $e->where('title', 'like', "%{$search}%"));

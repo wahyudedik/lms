@@ -31,13 +31,20 @@ class GradeController extends Controller
 
         $enrollments = $query->paginate(10);
 
+        // Eager load all attempts once to avoid N+1 query problem (Bug #23)
+        $allAttempts = ExamAttempt::where('user_id', Auth::id())
+            ->whereIn('status', ['submitted', 'graded'])
+            ->get()
+            ->groupBy('exam_id');
+
         // Calculate grades for each enrollment
-        $grades = $enrollments->map(function ($enrollment) {
+        $grades = $enrollments->map(function ($enrollment) use ($allAttempts) {
             $exams = $enrollment->course->exams;
-            $attempts = ExamAttempt::where('user_id', Auth::id())
-                ->whereIn('exam_id', $exams->pluck('id'))
-                ->where('status', 'completed')
-                ->get();
+            $examIds = $exams->pluck('id');
+
+            // Filter attempts for this course's exams from pre-loaded collection
+            $attempts = $allAttempts->filter(fn ($attempts, $examId) => $examIds->contains($examId))
+                ->flatten(1);
 
             // Get best attempt for each exam
             $bestAttempts = $attempts->groupBy('exam_id')->map(function ($examAttempts) {
@@ -70,10 +77,8 @@ class GradeController extends Controller
 
     public function show(Enrollment $enrollment)
     {
-        // Check if enrollment belongs to current user
-        if ($enrollment->user_id !== Auth::id()) {
-            abort(403, 'Anda tidak memiliki akses ke data ini.');
-        }
+        // Bug #26: Use policy instead of manual check
+        $this->authorize('view', $enrollment);
 
         $enrollment->load('course.instructor');
 
@@ -84,7 +89,7 @@ class GradeController extends Controller
         $examGrades = ExamAttempt::with('exam')
             ->where('user_id', Auth::id())
             ->whereIn('exam_id', $exams->pluck('id'))
-            ->where('status', 'completed')
+            ->whereIn('status', ['submitted', 'graded'])
             ->get()
             ->groupBy('exam_id')
             ->map(function ($attempts) {

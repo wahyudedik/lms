@@ -8,6 +8,7 @@ use App\Models\QuestionBank;
 use App\Models\QuestionBankCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Mews\Purifier\Facades\Purifier;
 
 class QuestionBankController extends Controller
 {
@@ -113,6 +114,10 @@ class QuestionBankController extends Controller
             'pairs.*.left.required' => 'Kolom kiri pasangan wajib diisi.',
             'pairs.*.right.required' => 'Kolom kanan pasangan wajib diisi.',
         ]);
+
+        if (isset($validated['question_text'])) {
+            $validated['question_text'] = Purifier::clean($validated['question_text']);
+        }
 
         if ($request->hasFile('question_image')) {
             $validated['question_image'] = $request->file('question_image')->store('questions', 'public');
@@ -232,6 +237,10 @@ class QuestionBankController extends Controller
             'pairs.*.left.required' => 'Kolom kiri pasangan wajib diisi.',
             'pairs.*.right.required' => 'Kolom kanan pasangan wajib diisi.',
         ]);
+
+        if (isset($validated['question_text'])) {
+            $validated['question_text'] = Purifier::clean($validated['question_text']);
+        }
 
         if ($request->hasFile('question_image')) {
             if ($questionBank->question_image) {

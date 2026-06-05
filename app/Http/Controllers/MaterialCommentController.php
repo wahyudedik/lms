@@ -10,6 +10,20 @@ class MaterialCommentController extends Controller
 {
     public function store(Request $request, Material $material)
     {
+        $user = $request->user();
+
+        // Pastikan user terdaftar di kursus yang memiliki material ini
+        if (!$user->isAdmin() && !$user->isGuru() && !$user->isDosen()) {
+            $enrollment = $user->enrollments()
+                ->where('course_id', $material->course_id)
+                ->where('status', 'active')
+                ->first();
+
+            if (!$enrollment) {
+                abort(403, 'Anda tidak memiliki akses ke material ini.');
+            }
+        }
+
         $validated = $request->validate([
             'comment' => 'required|string|max:1000',
             'parent_id' => 'nullable|exists:material_comments,id',
