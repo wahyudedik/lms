@@ -33,6 +33,7 @@ class GradesExport implements FromCollection, WithHeadings, WithMapping, WithSty
             'No',
             'Nama Siswa',
             'Email',
+            'Kelas',
             'Ujian',
             'Tanggal',
             'Waktu Pengerjaan (menit)',
@@ -57,10 +58,15 @@ class GradesExport implements FromCollection, WithHeadings, WithMapping, WithSty
             ? ($attempt->guest_email ?? '-')
             : optional($attempt->user)->email;
 
+        $className = $attempt->is_guest
+            ? '-'
+            : optional(optional($attempt->user)->schoolClass)->name ?? '-';
+
         return [
             $no,
             $studentName ?? 'Tidak diketahui',
             $studentEmail ?? '-',
+            $className,
             optional($attempt->exam)->title,
             $attempt->submitted_at ? $attempt->submitted_at->format('d/m/Y H:i') : '-',
             $attempt->time_spent ? round($attempt->time_spent / 60, 2) : '-',

@@ -38,7 +38,7 @@ class ReportController extends Controller
 
                     if ($selectedExam) {
                         $attempts = $selectedExam->attempts()
-                            ->with(['user', 'exam'])
+                            ->with(['user.schoolClass', 'exam'])
                             ->where('status', '!=', 'in_progress')
                             ->latest('submitted_at')
                             ->get();
@@ -62,7 +62,7 @@ class ReportController extends Controller
                     $attempts = ExamAttempt::whereHas('exam', function ($q) use ($selectedCourse) {
                         $q->where('course_id', $selectedCourse->id);
                     })
-                        ->with(['user', 'exam'])
+                        ->with(['user.schoolClass', 'exam'])
                         ->where('status', '!=', 'in_progress')
                         ->latest('submitted_at')
                         ->get();
@@ -111,7 +111,7 @@ class ReportController extends Controller
                 ->firstOrFail();
 
             $attempts = $exam->attempts()
-                ->with(['user', 'exam'])
+                ->with(['user.schoolClass', 'exam'])
                 ->where('status', '!=', 'in_progress')
                 ->orderBy('submitted_at', 'desc')
                 ->get();
@@ -121,7 +121,7 @@ class ReportController extends Controller
             $attempts = ExamAttempt::whereHas('exam', function ($q) use ($course) {
                 $q->where('course_id', $course->id);
             })
-                ->with(['user', 'exam'])
+                ->with(['user.schoolClass', 'exam'])
                 ->where('status', '!=', 'in_progress')
                 ->orderBy('submitted_at', 'desc')
                 ->get();
@@ -153,7 +153,7 @@ class ReportController extends Controller
                 ->firstOrFail();
 
             $attempts = $exam->attempts()
-                ->with(['user', 'exam'])
+                ->with(['user.schoolClass', 'exam'])
                 ->where('status', '!=', 'in_progress')
                 ->orderBy('submitted_at', 'desc')
                 ->get();
@@ -164,7 +164,7 @@ class ReportController extends Controller
             $attempts = ExamAttempt::whereHas('exam', function ($q) use ($course) {
                 $q->where('course_id', $course->id);
             })
-                ->with(['user', 'exam'])
+                ->with(['user.schoolClass', 'exam'])
                 ->where('status', '!=', 'in_progress')
                 ->orderBy('submitted_at', 'desc')
                 ->get();
@@ -211,7 +211,7 @@ class ReportController extends Controller
         );
 
         $attempts = $exam->attempts()
-            ->with(['user', 'exam'])
+            ->with(['user.schoolClass', 'exam'])
             ->where('status', '!=', 'in_progress')
             ->orderByDesc('submitted_at')
             ->get();
@@ -240,7 +240,7 @@ class ReportController extends Controller
         );
 
         $attempts = $exam->attempts()
-            ->with(['user', 'exam'])
+            ->with(['user.schoolClass', 'exam'])
             ->where('status', '!=', 'in_progress')
             ->orderByDesc('submitted_at')
             ->get();
