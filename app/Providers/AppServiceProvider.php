@@ -153,20 +153,24 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function applyRuntimePreferences(): void
     {
-        if (!Schema::hasTable('settings')) {
-            return;
-        }
+        try {
+            if (!Schema::hasTable('settings')) {
+                return;
+            }
 
-        $timezone = Setting::get('app_timezone');
-        $locale = Setting::get('app_locale');
+            $timezone = Setting::get('app_timezone');
+            $locale = Setting::get('app_locale');
 
-        if ($timezone) {
-            config(['app.timezone' => $timezone]);
-        }
+            if ($timezone) {
+                config(['app.timezone' => $timezone]);
+            }
 
-        if ($locale) {
-            config(['app.locale' => $locale]);
-            App::setLocale($locale);
+            if ($locale) {
+                config(['app.locale' => $locale]);
+                App::setLocale($locale);
+            }
+        } catch (\Throwable $e) {
+            // Database is not available or table does not exist (e.g., during migrations or deployment)
         }
     }
 

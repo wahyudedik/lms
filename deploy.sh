@@ -15,6 +15,20 @@
 
 set -e
 
+# =============================================================================
+# Self-healing: Jika script dijalankan tanpa permission execute, auto-fix
+# =============================================================================
+SCRIPT_PATH="$(realpath "$0")"
+if [ ! -x "$SCRIPT_PATH" ]; then
+    echo "[FIX] deploy.sh tidak memiliki permission execute. Memperbaiki..."
+    chmod +x "$SCRIPT_PATH"
+    echo "[FIX] Permission diperbaiki. Menjalankan ulang..."
+    exec bash "$SCRIPT_PATH" "$@"
+fi
+
+# Pastikan git selalu simpan permission execute
+git config core.fileMode true 2>/dev/null || true
+
 # Warna untuk output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
