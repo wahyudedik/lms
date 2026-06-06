@@ -204,7 +204,11 @@ class ReportController extends Controller
      */
     public function exportGradesExcel(Exam $exam)
     {
-        abort_if($exam->course->instructor_id !== auth()->id(), 403, 'Anda tidak memiliki akses ke ujian ini.');
+        abort_if(
+            auth()->user()->role !== 'admin' && $exam->course->instructor_id !== auth()->id(),
+            403,
+            'Anda tidak memiliki akses ke ujian ini.'
+        );
 
         $attempts = $exam->attempts()
             ->with(['user', 'exam'])
@@ -229,7 +233,11 @@ class ReportController extends Controller
      */
     public function exportGradesPdf(Exam $exam)
     {
-        abort_if($exam->course->instructor_id !== auth()->id(), 403, 'Anda tidak memiliki akses ke ujian ini.');
+        abort_if(
+            auth()->user()->role !== 'admin' && $exam->course->instructor_id !== auth()->id(),
+            403,
+            'Anda tidak memiliki akses ke ujian ini.'
+        );
 
         $attempts = $exam->attempts()
             ->with(['user', 'exam'])
@@ -311,7 +319,11 @@ class ReportController extends Controller
      */
     public function exportStudentTranscriptPdf(Course $course, User $student)
     {
-        abort_if($course->instructor_id !== auth()->id(), 403, 'Anda tidak memiliki akses ke kursus ini.');
+        abort_if(
+            auth()->user()->role !== 'admin' && $course->instructor_id !== auth()->id(),
+            403,
+            'Anda tidak memiliki akses ke kursus ini.'
+        );
         abort_unless($course->isEnrolledBy($student), 404, 'Siswa tidak terdaftar di kursus ini.');
 
         $course->load([
