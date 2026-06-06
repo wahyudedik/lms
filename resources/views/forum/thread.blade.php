@@ -58,10 +58,15 @@
                 <div class="p-6">
                     <!-- Author Info -->
                     <div class="flex gap-4 mb-6">
-                        <div
-                            class="w-16 h-16 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-2xl">
-                            {{ substr($thread->user->name, 0, 1) }}
-                        </div>
+                        @if ($thread->user->profile_photo)
+                            <img src="{{ $thread->user->profile_photo_url }}" class="w-16 h-16 rounded-lg object-cover"
+                                alt="{{ $thread->user->name }}">
+                        @else
+                            <div
+                                class="w-16 h-16 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-2xl">
+                                {{ substr($thread->user->name, 0, 1) }}
+                            </div>
+                        @endif
                         <div>
                             <div class="font-bold text-lg">{{ $thread->user->name }}</div>
                             <div class="text-sm text-gray-600">

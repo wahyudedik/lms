@@ -69,10 +69,16 @@
                                     <div class="flex gap-4">
                                         <!-- Avatar -->
                                         <div class="flex-shrink-0">
-                                            <div
-                                                class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-lg">
-                                                {{ substr($thread->user->name, 0, 1) }}
-                                            </div>
+                                            @if ($thread->user->profile_photo)
+                                                <img src="{{ $thread->user->profile_photo_url }}"
+                                                    class="w-12 h-12 rounded-lg object-cover"
+                                                    alt="{{ $thread->user->name }}">
+                                            @else
+                                                <div
+                                                    class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-lg">
+                                                    {{ substr($thread->user->name, 0, 1) }}
+                                                </div>
+                                            @endif
                                         </div>
 
                                         <!-- Content -->

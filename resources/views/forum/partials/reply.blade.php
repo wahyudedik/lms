@@ -2,10 +2,16 @@
     <div class="p-4 {{ $reply->is_solution ? 'bg-green-50' : '' }}">
         <!-- Reply Header -->
         <div class="flex items-start gap-4 mb-3">
-            <div
-                class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold">
-                {{ substr($reply->user->name, 0, 1) }}
-            </div>
+            @if ($reply->user->profile_photo)
+                <img src="{{ $reply->user->profile_photo_url }}"
+                    class="w-10 h-10 rounded-lg object-cover"
+                    alt="{{ $reply->user->name }}">
+            @else
+                <div
+                    class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold">
+                    {{ substr($reply->user->name, 0, 1) }}
+                </div>
+            @endif
             <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                     <span class="font-bold">{{ $reply->user->name }}</span>
