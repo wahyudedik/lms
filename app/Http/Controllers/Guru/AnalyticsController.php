@@ -147,15 +147,15 @@ class AnalyticsController extends Controller
             $q->where('instructor_id', $guru->id);
         })->findOrFail($examId);
 
-        $attempts = $exam->attempts()->where('status', 'graded')->get();
+        // Use SQL aggregates instead of loading all records into memory
+        $gradedQuery = $exam->attempts()->where('status', 'graded');
 
-        // Group by grade ranges
         $ranges = [
-            'A (90-100)' => $attempts->filter(fn($a) => $a->score >= 90)->count(),
-            'B (80-89)' => $attempts->filter(fn($a) => $a->score >= 80 && $a->score < 90)->count(),
-            'C (70-79)' => $attempts->filter(fn($a) => $a->score >= 70 && $a->score < 80)->count(),
-            'D (60-69)' => $attempts->filter(fn($a) => $a->score >= 60 && $a->score < 70)->count(),
-            'E (<60)' => $attempts->filter(fn($a) => $a->score < 60)->count(),
+            'A (90-100)' => (clone $gradedQuery)->where('score', '>=', 90)->count(),
+            'B (80-89)' => (clone $gradedQuery)->where('score', '>=', 80)->where('score', '<', 90)->count(),
+            'C (70-79)' => (clone $gradedQuery)->where('score', '>=', 70)->where('score', '<', 80)->count(),
+            'D (60-69)' => (clone $gradedQuery)->where('score', '>=', 60)->where('score', '<', 70)->count(),
+            'E (<60)' => (clone $gradedQuery)->where('score', '<', 60)->count(),
         ];
 
         $result = [

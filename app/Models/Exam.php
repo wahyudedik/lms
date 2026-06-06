@@ -411,7 +411,17 @@ class Exam extends Model
      */
     public function incrementTokenUses(): void
     {
-        $this->increment('current_token_uses');
+        // ✅ FIX: Use atomic increment and return affected rows for race condition detection
+        $updated = static::where('id', $this->id)
+            ->where(function ($q) {
+                $q->whereNull('max_token_uses')
+                    ->orWhereColumn('current_token_uses', '<', 'max_token_uses');
+            })
+            ->increment('current_token_uses');
+
+        if ($updated) {
+            $this->refresh();
+        }
     }
 
     /**

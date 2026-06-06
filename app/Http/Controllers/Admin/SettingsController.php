@@ -185,8 +185,8 @@ class SettingsController extends Controller
 
                 // Log error if backup failed
                 if (!file_exists($filepath) || filesize($filepath) === 0) {
+                    // Bug #20: Don't log the full command — it contains database password
                     \Log::error('Database backup failed', [
-                        'command' => $command,
                         'output' => $output,
                         'return_var' => $returnVar,
                     ]);
@@ -458,7 +458,9 @@ class SettingsController extends Controller
         ];
         foreach ($colorFields as $field) {
             if (isset($validated[$field])) {
-                $validated[$field] = '#' . preg_replace('/[^a-fA-F0-9]/', '', substr($request->input($field), 1));
+                $hex = preg_replace('/[^a-fA-F0-9]/', '', substr($request->input($field), 1));
+                // Ensure valid 6-digit hex color; fallback to null if invalid
+                $validated[$field] = (strlen($hex) === 6) ? '#' . $hex : null;
             }
         }
 

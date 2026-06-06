@@ -153,17 +153,31 @@ class ForumThread extends Model
      */
     public function toggleLike(User $user)
     {
-        $like = $this->likes()->where('user_id', $user->id)->first();
+        // Bug #18: Atomic like toggle to prevent race condition
+        // (concurrent requests could desync likes_count)
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+            // Lock the row to prevent concurrent like operations
+            $thread = static::lockForUpdate()->find($this->id);
 
-        if ($like) {
-            $like->delete();
-            $this->decrement('likes_count');
-            return false;
-        } else {
-            $this->likes()->create(['user_id' => $user->id]);
-            $this->increment('likes_count');
-            return true;
-        }
+            $like = $thread->likes()->where('user_id', $user->id)->first();
+
+            if ($like) {
+                $like->delete();
+                $thread->decrement('likes_count');
+                return false;
+            } else {
+                try {
+                    $thread->likes()->create(['user_id' => $user->id]);
+                    $thread->increment('likes_count');
+                    return true;
+                } catch (\Illuminate\Database\QueryException $e) {
+                    // Unique constraint violation — user already liked (race condition)
+                    // Re-read the current count from DB for accurate response
+                    $thread->refresh();
+                    return false;
+                }
+            }
+        });
     }
 
     /**
@@ -222,6 +236,7 @@ class ForumThread extends Model
      */
     public function scopeSearch($query, $search)
     {
+        $search = str_replace(['%', '_'], ['\\%', '\\_'], $search);
         return $query->where(function ($q) use ($search) {
             $q->where('title', 'like', "%{$search}%")
                 ->orWhere('content', 'like', "%{$search}%");

@@ -220,7 +220,7 @@
                         <div class="text-right mr-4">
                             <p class="text-sm font-bold {{ $attempt->passed ? 'text-green-600' : 'text-red-600' }}">
                                 {{ number_format($attempt->score, 1) }}%</p>
-                            <p class="text-xs text-gray-500">{{ $attempt->submitted_at->diffForHumans() }}</p>
+                            <p class="text-xs text-gray-500">{{ $attempt->submitted_at?->diffForHumans() ?? '-' }}</p>
                         </div>
                         <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $attempt->exam) }}"
                             class="text-blue-600 hover:text-blue-800">

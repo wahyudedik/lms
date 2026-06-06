@@ -128,17 +128,30 @@ class ForumReply extends Model
      */
     public function toggleLike(User $user)
     {
-        $like = $this->likes()->where('user_id', $user->id)->first();
+        // Bug #18: Atomic like toggle to prevent race condition
+        // (concurrent requests could desync likes_count)
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+            // Lock the row to prevent concurrent like operations
+            $reply = static::lockForUpdate()->find($this->id);
 
-        if ($like) {
-            $like->delete();
-            $this->decrement('likes_count');
-            return false;
-        } else {
-            $this->likes()->create(['user_id' => $user->id]);
-            $this->increment('likes_count');
-            return true;
-        }
+            $like = $reply->likes()->where('user_id', $user->id)->first();
+
+            if ($like) {
+                $like->delete();
+                $reply->decrement('likes_count');
+                return false;
+            } else {
+                try {
+                    $reply->likes()->create(['user_id' => $user->id]);
+                    $reply->increment('likes_count');
+                    return true;
+                } catch (\Illuminate\Database\QueryException $e) {
+                    // Unique constraint violation — user already liked (race condition)
+                    $reply->refresh();
+                    return false;
+                }
+            }
+        });
     }
 
     /**

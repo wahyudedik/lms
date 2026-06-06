@@ -32,7 +32,8 @@ class InformationCardController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
+            $query->where('title', 'like', '%' . $search . '%');
         }
 
         $cards = $query->orderByDesc('created_at')->paginate(15);

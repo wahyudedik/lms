@@ -44,7 +44,7 @@ class AuthorizationLogController extends Controller
 
         // Search
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('action', 'like', "%{$search}%")
                     ->orWhere('ability', 'like', "%{$search}%")
@@ -55,7 +55,7 @@ class AuthorizationLogController extends Controller
 
         $logs = $query->paginate(50);
         $users = User::orderBy('name')->get();
-        
+
         // Get statistics
         $stats = $this->getStatistics($request);
 
@@ -68,7 +68,7 @@ class AuthorizationLogController extends Controller
     public function show(AuthorizationLog $authorizationLog)
     {
         $authorizationLog->load('user');
-        
+
         return view('admin.authorization-logs.show', compact('authorizationLog'));
     }
 
@@ -167,8 +167,6 @@ class AuthorizationLogController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $logs = $query->get();
-
         $filename = 'authorization_logs_' . now()->format('Y-m-d_His') . '.csv';
 
         $headers = [
@@ -176,7 +174,8 @@ class AuthorizationLogController extends Controller
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ];
 
-        $callback = function () use ($logs) {
+        // Use cursor() to stream rows one at a time instead of loading all into memory
+        $callback = function () use ($query) {
             $file = fopen('php://output', 'w');
 
             // Headers
@@ -195,8 +194,8 @@ class AuthorizationLogController extends Controller
                 'Created At',
             ]);
 
-            // Data
-            foreach ($logs as $log) {
+            // Data — cursor() yields one model at a time to prevent OOM
+            foreach ($query->cursor() as $log) {
                 fputcsv($file, [
                     $log->id,
                     $log->user?->name ?? 'Guest',

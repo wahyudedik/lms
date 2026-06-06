@@ -209,6 +209,7 @@ class QuestionBank extends Model
      */
     public function scopeSearch($query, string $search)
     {
+        $search = str_replace(['%', '_'], ['\\%', '\\_'], $search);
         return $query->where(function ($q) use ($search) {
             $q->where('question_text', 'like', "%{$search}%")
                 ->orWhere('explanation', 'like', "%{$search}%")

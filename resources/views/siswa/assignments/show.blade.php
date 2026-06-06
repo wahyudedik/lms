@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -161,7 +161,7 @@
                             <div class="p-3 bg-green-50 rounded-lg border border-green-100">
                                 <dt class="text-xs font-semibold text-green-700 mb-1">Dikumpulkan Pada</dt>
                                 <dd class="text-sm font-semibold text-gray-900">
-                                    {{ $submission->submitted_at->format('d M Y, H:i') }}
+                                    {{ $submission->submitted_at?->format('d M Y, H:i') ?? '-' }}
                                 </dd>
                             </div>
 

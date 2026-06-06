@@ -97,7 +97,7 @@
                                 </h3>
 
                                 <div class="space-y-3">
-                                    @foreach ($course->materials()->published()->visibleToStudent(auth()->user())->ordered()->with('courseGroups')->get() as $material)
+                                    @foreach ($materials as $material)
                                         <div class="border rounded-lg overflow-hidden">
                                             <div class="flex items-center p-4 hover:bg-gray-50 cursor-pointer"
                                                 onclick="document.getElementById('material{{ $material->id }}').classList.toggle('hidden')">
@@ -211,17 +211,7 @@
                     @endif
 
                     <!-- Assignments (Only for enrolled students) -->
-                    @if ($isEnrolled)
-                        @php
-                            $assignments = $course
-                                ->assignments()
-                                ->published()
-                                ->visibleToStudent(auth()->user())
-                                ->with('courseGroups')
-                                ->orderBy('deadline', 'asc')
-                                ->get();
-                        @endphp
-                        @if ($assignments->count() > 0)
+                    @if ($isEnrolled && $assignments->count() > 0)
                             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                                 <div class="p-6">
                                     <h3 class="text-lg font-semibold text-gray-900 mb-4">
@@ -230,10 +220,13 @@
 
                                     <div class="space-y-3">
                                         @foreach ($assignments as $assignment)
+                                            @php
+                                                $userSubmission = $assignment->submissions->first();
+                                            @endphp
                                             <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.show', $assignment) }}"
                                                 class="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-all">
                                                 <div class="flex-shrink-0 mr-4">
-                                                    @if ($assignment->getSubmissionForUser(auth()->user()))
+                                                    @if ($userSubmission)
                                                         <div
                                                             class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                                                             <i class="fas fa-check text-green-600"></i>
@@ -258,7 +251,7 @@
                                                             <i
                                                                 class="fas fa-clock mr-1"></i>{{ $assignment->deadline->translatedFormat('d M Y, H:i') }}
                                                         </span>
-                                                        @if ($assignment->getSubmissionForUser(auth()->user()))
+                                                        @if ($userSubmission)
                                                             <span class="text-xs text-green-600 font-semibold">Sudah
                                                                 dikumpulkan</span>
                                                         @elseif($assignment->isDeadlinePassed())
@@ -288,7 +281,6 @@
                                     </div>
                                 </div>
                             </div>
-                        @endif
                     @endif
                 </div>
 
@@ -391,14 +383,16 @@
                                     </div>
                                 @endif
 
-                                <div class="flex items-start">
-                                    <i class="fas fa-calendar text-gray-400 mr-3 mt-1"></i>
-                                    <div>
-                                        <p class="text-sm text-gray-500">Dipublikasikan</p>
-                                        <p class="font-medium text-gray-900">
-                                            {{ $course->published_at->format('d M Y') }}</p>
+                                @if ($course->published_at)
+                                    <div class="flex items-start">
+                                        <i class="fas fa-calendar text-gray-400 mr-3 mt-1"></i>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Dipublikasikan</p>
+                                            <p class="font-medium text-gray-900">
+                                                {{ $course->published_at->format('d M Y') }}</p>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>

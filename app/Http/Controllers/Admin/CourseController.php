@@ -19,7 +19,7 @@ class CourseController extends Controller
 
         // Search
         if ($request->has('search')) {
-            $search = $request->search;
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                     ->orWhere('code', 'like', "%{$search}%")
@@ -99,7 +99,10 @@ class CourseController extends Controller
         $activeStudents = $course->enrollments()->where('status', 'active')->count();
         $completedStudents = $course->enrollments()->where('status', 'completed')->count();
 
-        return view('admin.courses.show', compact('course', 'activeStudents', 'completedStudents'));
+        // Eager load materials to avoid queries in Blade template
+        $materials = $course->materials()->published()->ordered()->with('courseGroups')->take(5)->get();
+
+        return view('admin.courses.show', compact('course', 'activeStudents', 'completedStudents', 'materials'));
     }
 
     /**

@@ -291,7 +291,8 @@
                         @if (!$exam->hasStarted())
                             <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg text-center">
                                 <div class="flex justify-center items-center mb-4">
-                                    <span class="bg-blue-100 text-blue-800 p-4 rounded-full shadow-inner animate-pulse">
+                                    <span
+                                        class="bg-blue-100 text-blue-800 p-4 rounded-full shadow-inner animate-pulse">
                                         <i class="fas fa-hourglass-start text-3xl"></i>
                                     </span>
                                 </div>
@@ -300,13 +301,20 @@
                                 </h4>
                                 <p class="text-sm text-gray-700 mb-6 max-w-md mx-auto text-center">
                                     Ujian ini dijadwalkan akan mulai pada: <br>
-                                    <span class="font-bold text-blue-700 text-base">{{ $exam->start_time->translatedFormat('d F Y, H:i') }} WIB</span>. <br>
+                                    <span
+                                        class="font-bold text-blue-700 text-base">{{ $exam->start_time->translatedFormat('d F Y, H:i') }}
+                                        WIB</span>. <br>
                                     Silakan tunggu hingga waktu mulai tiba.
                                 </p>
-                                
-                                <div class="inline-flex flex-col items-center justify-center bg-white border border-blue-200 shadow-sm rounded-xl p-4 min-w-[240px] mx-auto">
-                                    <span class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Mulai Dalam</span>
-                                    <div id="exam-countdown" data-start-time="{{ $exam->start_time->toIso8601String() }}" class="text-3xl font-extrabold text-blue-600 tracking-tight">
+
+                                <div
+                                    class="inline-flex flex-col items-center justify-center bg-white border border-blue-200 shadow-sm rounded-xl p-4 min-w-[240px] mx-auto">
+                                    <span
+                                        class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Mulai
+                                        Dalam</span>
+                                    <div id="exam-countdown"
+                                        data-start-time="{{ $exam->start_time->toIso8601String() }}"
+                                        class="text-3xl font-extrabold text-blue-600 tracking-tight">
                                         --:--:--
                                     </div>
                                 </div>
@@ -322,8 +330,13 @@
                                     Ujian Telah Berakhir
                                 </h4>
                                 <p class="text-sm text-gray-700 max-w-md mx-auto text-center">
-                                    Batas waktu pengerjaan ujian telah habis. Ujian ini berakhir pada: <br>
-                                    <span class="font-bold text-red-600 text-base">{{ $exam->end_time->translatedFormat('d F Y, H:i') }} WIB</span>.
+                                    Batas waktu pengerjaan ujian telah habis.
+                                    @if ($exam->end_time)
+                                        Ujian ini berakhir pada: <br>
+                                        <span
+                                            class="font-bold text-red-600 text-base">{{ $exam->end_time->translatedFormat('d F Y, H:i') }}
+                                            WIB</span>.
+                                    @endif
                                 </p>
                             </div>
                         @endif
@@ -332,7 +345,8 @@
             @elseif ($canTakeExam && !$hasInProgressAttempt)
                 <div class="bg-white overflow-hidden shadow-md rounded-lg border border-gray-200">
                     <div class="p-6">
-                        <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.start', $exam) }}" method="POST">
+                        <form action="{{ route(auth()->user()->getRolePrefix() . '.exams.start', $exam) }}"
+                            method="POST">
                             @csrf
                             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
                                 <h4 class="font-semibold text-gray-900 mb-2">
@@ -364,51 +378,52 @@
     </div>
 
     @if (!$exam->isActive() && !$exam->hasStarted())
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const countdownEl = document.getElementById('exam-countdown');
-            if (!countdownEl) return;
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const countdownEl = document.getElementById('exam-countdown');
+                if (!countdownEl) return;
 
-            const startTimeStr = countdownEl.getAttribute('data-start-time');
-            const startTime = new Date(startTimeStr).getTime();
+                const startTimeStr = countdownEl.getAttribute('data-start-time');
+                const startTime = new Date(startTimeStr).getTime();
 
-            const updateCountdown = () => {
-                const now = new Date().getTime();
-                const distance = startTime - now;
+                const updateCountdown = () => {
+                    const now = new Date().getTime();
+                    const distance = startTime - now;
 
-                if (distance < 0) {
-                    countdownEl.innerHTML = "Waktu ujian telah tiba! Silakan refresh halaman.";
-                    countdownEl.className = "text-lg font-bold text-green-600 animate-pulse cursor-pointer text-center";
-                    countdownEl.onclick = () => window.location.reload();
-                    
-                    // Auto reload page after 2 seconds to show start exam button
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                    
-                    clearInterval(interval);
-                    return;
-                }
+                    if (distance < 0) {
+                        countdownEl.innerHTML = "Waktu ujian telah tiba! Silakan refresh halaman.";
+                        countdownEl.className =
+                            "text-lg font-bold text-green-600 animate-pulse cursor-pointer text-center";
+                        countdownEl.onclick = () => window.location.reload();
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                        // Auto reload page after 2 seconds to show start exam button
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
 
-                let timerText = "";
-                if (days > 0) {
-                    timerText += days + "d ";
-                }
-                timerText += String(hours).padStart(2, '0') + ":" + 
-                            String(minutes).padStart(2, '0') + ":" + 
-                            String(seconds).padStart(2, '0');
+                        clearInterval(interval);
+                        return;
+                    }
 
-                countdownEl.innerHTML = timerText;
-            };
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            updateCountdown();
-            const interval = setInterval(updateCountdown, 1000);
-        });
-    </script>
+                    let timerText = "";
+                    if (days > 0) {
+                        timerText += days + "d ";
+                    }
+                    timerText += String(hours).padStart(2, '0') + ":" +
+                        String(minutes).padStart(2, '0') + ":" +
+                        String(seconds).padStart(2, '0');
+
+                    countdownEl.innerHTML = timerText;
+                };
+
+                updateCountdown();
+                const interval = setInterval(updateCountdown, 1000);
+            });
+        </script>
     @endif
 </x-app-layout>

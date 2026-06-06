@@ -184,7 +184,8 @@
                             class="text-sm text-blue-600 hover:text-blue-800 font-semibold">{{ __('View all →') }}</a>
                     </div>
                     @forelse($upcomingExams as $exam)
-                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}" class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}"
+                            class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
                             <div class="bg-green-100 rounded-full p-2 text-green-600 mr-3">
                                 <i class="fas fa-clipboard-list"></i>
                             </div>
@@ -229,7 +230,7 @@
                         <div class="text-right mr-4">
                             <p class="text-sm font-bold {{ $attempt->passed ? 'text-green-600' : 'text-red-600' }}">
                                 {{ number_format($attempt->score, 1) }}%</p>
-                            <p class="text-xs text-gray-500">{{ $attempt->submitted_at->diffForHumans() }}</p>
+                            <p class="text-xs text-gray-500">{{ $attempt->submitted_at?->diffForHumans() ?? '-' }}</p>
                         </div>
                         <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.review-attempt', $attempt) }}"
                             class="text-blue-600 hover:text-blue-800">

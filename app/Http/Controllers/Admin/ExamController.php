@@ -33,7 +33,8 @@ class ExamController extends Controller
 
         // Search
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
+            $query->where('title', 'like', '%' . $search . '%');
         }
 
         $exams = $query->latest()->paginate(15);
@@ -207,7 +208,16 @@ class ExamController extends Controller
             $validated['published_at'] = null;
         }
 
+        $oldPassScore = $exam->pass_score;
         $exam->update($validated);
+
+        if ($oldPassScore != $exam->pass_score) {
+            $exam->attempts()
+                ->whereNotNull('score')
+                ->update([
+                    'passed' => \Illuminate\Support\Facades\DB::raw("CASE WHEN score >= {$exam->pass_score} THEN 1 ELSE 0 END")
+                ]);
+        }
 
         return redirect()
             ->route('admin.exams.show', $exam)
@@ -302,22 +312,34 @@ class ExamController extends Controller
     {
         $exam->load(['attempts.user', 'questions']);
 
-        // Get graded attempts for statistics (single query)
-        $gradedAttempts = $exam->attempts()
-            ->where('status', 'graded')
-            ->select('score', 'passed')
-            ->get();
+        // Use SQL aggregates instead of loading all records into memory
+        $attemptsQuery = $exam->attempts()->where('status', 'graded');
 
-        $completedCount = $gradedAttempts->count();
+        $completedCount = (clone $attemptsQuery)->count();
 
-        $statistics = [
-            'total_attempts' => $exam->attempts()->count(),
-            'completed_attempts' => $completedCount,
-            'average_score' => $completedCount > 0 ? $gradedAttempts->avg('score') : 0,
-            'highest_score' => $completedCount > 0 ? $gradedAttempts->max('score') : 0,
-            'lowest_score' => $completedCount > 0 ? $gradedAttempts->min('score') : 0,
-            'pass_rate' => $completedCount > 0 ? ($gradedAttempts->where('passed', true)->count() / $completedCount * 100) : 0,
-        ];
+        if ($completedCount > 0) {
+            $aggregates = (clone $attemptsQuery)
+                ->selectRaw('AVG(score) as avg_score, MAX(score) as max_score, MIN(score) as min_score, SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count')
+                ->first();
+
+            $statistics = [
+                'total_attempts' => $exam->attempts()->count(),
+                'completed_attempts' => $completedCount,
+                'average_score' => round($aggregates->avg_score, 2),
+                'highest_score' => round($aggregates->max_score, 2),
+                'lowest_score' => round($aggregates->min_score, 2),
+                'pass_rate' => round($aggregates->passed_count / $completedCount * 100, 2),
+            ];
+        } else {
+            $statistics = [
+                'total_attempts' => $exam->attempts()->count(),
+                'completed_attempts' => 0,
+                'average_score' => 0,
+                'highest_score' => 0,
+                'lowest_score' => 0,
+                'pass_rate' => 0,
+            ];
+        }
 
         $attempts = $exam->attempts()
             ->with('user:id,name,email')

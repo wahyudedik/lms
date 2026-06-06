@@ -222,6 +222,17 @@ class ForumController extends Controller
             'parent_id' => 'nullable|exists:forum_replies,id',
         ]);
 
+        // Bug #19: Validate parent reply belongs to the same thread
+        if (!empty($validated['parent_id'])) {
+            $parentReply = ForumReply::where('id', $validated['parent_id'])
+                ->where('thread_id', $thread->id)
+                ->exists();
+
+            if (!$parentReply) {
+                return back()->withErrors(['parent_id' => 'Balasan induk tidak ditemukan dalam thread ini.']);
+            }
+        }
+
         $reply = ForumReply::create([
             'thread_id' => $thread->id,
             'parent_id' => $validated['parent_id'] ?? null,

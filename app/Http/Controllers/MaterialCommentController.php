@@ -29,6 +29,17 @@ class MaterialCommentController extends Controller
             'parent_id' => 'nullable|exists:material_comments,id',
         ]);
 
+        // Bug #19: Validate parent comment belongs to the same material
+        if (!empty($validated['parent_id'])) {
+            $parentComment = MaterialComment::where('id', $validated['parent_id'])
+                ->where('material_id', $material->id)
+                ->exists();
+
+            if (!$parentComment) {
+                return back()->withErrors(['parent_id' => 'Komentar induk tidak ditemukan di material ini.']);
+            }
+        }
+
         $validated['material_id'] = $material->id;
         $validated['user_id'] = auth()->id();
 

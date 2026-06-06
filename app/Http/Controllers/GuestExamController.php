@@ -349,18 +349,20 @@ class GuestExamController extends Controller
             'type' => 'required|in:tab_switch,fullscreen_exit',
         ]);
 
+        // Use atomic increment for tab_switches/fullscreen_exits to prevent race conditions
+        if ($request->type === 'tab_switch') {
+            $attempt->increment('tab_switches');
+        } elseif ($request->type === 'fullscreen_exit') {
+            $attempt->increment('fullscreen_exits');
+        }
+
+        // Append violation log (reload to get fresh data after atomic increment)
+        $attempt->refresh();
         $violations = $attempt->violations ?? [];
         $violations[] = [
             'type' => $request->type,
             'time' => now()->toISOString(),
         ];
-
-        if ($request->type === 'tab_switch') {
-            $attempt->tab_switches++;
-        } elseif ($request->type === 'fullscreen_exit') {
-            $attempt->fullscreen_exits++;
-        }
-
         $attempt->violations = $violations;
         $attempt->save();
 

@@ -184,17 +184,33 @@ class AnalyticsController extends Controller
             ->groupBy('role')
             ->get();
 
+        // Ensure all 5 roles are represented (even with 0 count)
+        $allRoles = ['admin', 'guru', 'dosen', 'siswa', 'mahasiswa'];
+        $colorMap = [
+            'admin'     => 'rgba(239, 68, 68, 0.8)',
+            'guru'      => 'rgba(59, 130, 246, 0.8)',
+            'dosen'     => 'rgba(59, 130, 246, 0.8)',
+            'siswa'     => 'rgba(34, 197, 94, 0.8)',
+            'mahasiswa' => 'rgba(34, 197, 94, 0.8)',
+        ];
+
+        $roleCountMap = $distribution->pluck('count', 'role')->toArray();
+        $labels = [];
+        $data = [];
+        $colors = [];
+        foreach ($allRoles as $role) {
+            $labels[] = ucfirst($role);
+            $data[] = $roleCountMap[$role] ?? 0;
+            $colors[] = $colorMap[$role] ?? 'rgba(168, 85, 247, 0.8)';
+        }
+
         $result = [
-            'labels' => $distribution->pluck('role')->map(fn($r) => ucfirst($r))->toArray(),
+            'labels' => $labels,
             'datasets' => [
                 [
                     'label' => 'Jumlah User',
-                    'data' => $distribution->pluck('count')->toArray(),
-                    'backgroundColor' => [
-                        'rgba(59, 130, 246, 0.8)',
-                        'rgba(34, 197, 94, 0.8)',
-                        'rgba(168, 85, 247, 0.8)',
-                    ],
+                    'data' => $data,
+                    'backgroundColor' => $colors,
                     'borderWidth' => 2,
                 ]
             ]
@@ -213,13 +229,19 @@ class AnalyticsController extends Controller
             $months[] = now()->subMonths($i)->format('Y-m');
         }
 
-        $enrollments = Enrollment::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-            ->whereIn(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), $months)
+        // Use driver-appropriate date formatting for MySQL/SQLite compatibility
+        $driver = DB::getDriverName();
+        $dateExpr = $driver === 'sqlite'
+            ? "strftime('%%Y-%%m', created_at)"
+            : 'DATE_FORMAT(created_at, "%Y-%m")';
+
+        $enrollments = Enrollment::selectRaw("{$dateExpr} as month, COUNT(*) as count")
+            ->whereIn(DB::raw($dateExpr), $months)
             ->groupBy('month')
             ->pluck('count', 'month');
 
-        $attempts = ExamAttempt::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-            ->whereIn(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'), $months)
+        $attempts = ExamAttempt::selectRaw("{$dateExpr} as month, COUNT(*) as count")
+            ->whereIn(DB::raw($dateExpr), $months)
             ->groupBy('month')
             ->pluck('count', 'month');
 

@@ -34,7 +34,8 @@ class ExamController extends Controller
 
         // Search
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
+            $query->where('title', 'like', '%' . $search . '%');
         }
 
         $exams = $query->latest()->paginate(12);

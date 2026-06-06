@@ -251,7 +251,8 @@
                                 <p
                                     class="text-sm font-bold {{ $attempt->passed ? 'text-green-600' : 'text-red-600' }}">
                                     {{ number_format($attempt->score, 1) }}%</p>
-                                <p class="text-xs text-gray-500">{{ $attempt->submitted_at->diffForHumans() }}</p>
+                                <p class="text-xs text-gray-500">{{ $attempt->submitted_at?->diffForHumans() ?? '-' }}
+                                </p>
                             </div>
                         </div>
                     @empty

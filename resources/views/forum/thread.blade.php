@@ -39,6 +39,13 @@
                         </button>
                     </form>
                 @endif
+                @if (auth()->id() === $thread->user_id || auth()->user()->isAdmin())
+                    <button type="button"
+                        onclick="deleteThread('{{ route('forum.destroy', [$thread->category->slug, $thread->slug]) }}')"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                @endif
             </div>
         </div>
     </x-slot>
@@ -110,7 +117,8 @@
                         </div>
                     @else
                         <div class="text-center py-12">
-                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                            <div
+                                class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
                                 <i class="fas fa-comment-slash text-gray-400 text-3xl"></i>
                             </div>
                             <p class="text-gray-900 font-semibold mb-2">No replies yet</p>
@@ -172,6 +180,42 @@
 
     @push('scripts')
         <script>
+            // Handle delete confirmation for thread
+            function deleteThread(deleteUrl) {
+                Swal.fire({
+                    title: 'Hapus Thread?',
+                    text: "Thread dan semua reply akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#EF4444',
+                    cancelButtonColor: '#3B82F6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Use form submission with DELETE method
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = deleteUrl;
+
+                        const methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfInput);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
+
             // Handle delete confirmation for replies v3.0 (AJAX)
             function deleteReply(replyId, deleteUrl) {
                 Swal.fire({

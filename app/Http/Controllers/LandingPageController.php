@@ -35,20 +35,23 @@ class LandingPageController extends Controller
             })->where('status', 'published');
 
             if ($request->filled('name')) {
-                $query->where('title', 'like', '%' . $request->input('name') . '%');
+                $nameSearch = str_replace(['%', '_'], ['\\%', '\\_'], $request->input('name'));
+                $query->where('title', 'like', '%' . $nameSearch . '%');
             }
 
             if ($request->filled('category')) {
-                $query->where(function ($q) use ($request) {
-                    $q->where('title', 'like', '%' . $request->input('category') . '%')
-                      ->orWhere('description', 'like', '%' . $request->input('category') . '%');
+                $categorySearch = str_replace(['%', '_'], ['\\%', '\\_'], $request->input('category'));
+                $query->where(function ($q) use ($categorySearch) {
+                    $q->where('title', 'like', '%' . $categorySearch . '%')
+                      ->orWhere('description', 'like', '%' . $categorySearch . '%');
                 });
             }
 
             if ($request->filled('degree')) {
-                $query->where(function ($q) use ($request) {
-                    $q->where('title', 'like', '%' . $request->input('degree') . '%')
-                      ->orWhere('description', 'like', '%' . $request->input('degree') . '%');
+                $degreeSearch = str_replace(['%', '_'], ['\\%', '\\_'], $request->input('degree'));
+                $query->where(function ($q) use ($degreeSearch) {
+                    $q->where('title', 'like', '%' . $degreeSearch . '%')
+                      ->orWhere('description', 'like', '%' . $degreeSearch . '%');
                 });
             }
 

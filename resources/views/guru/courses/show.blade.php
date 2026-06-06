@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -162,9 +162,9 @@
                                 </a>
                             </div>
 
-                            @if ($course->materials()->published()->count() > 0)
+                            @if ($materials->count() > 0)
                                 <div class="space-y-3">
-                                    @foreach ($course->materials()->published()->ordered()->with('courseGroups')->take(5)->get() as $material)
+                                    @foreach ($materials as $material)
                                         <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.show', [$course, $material]) }}"
                                             class="flex items-center p-3 hover:bg-gray-50 rounded-lg border border-gray-200 transition-all duration-150">
                                             <i

@@ -318,9 +318,13 @@ class ExamAttempt extends Model
         $this->total_points_earned = $totalPointsEarned;
         $this->total_points_possible = $totalPointsPossible;
 
+        // ✅ FIX: Handle division by zero when no questions or all 0 points
         if ($totalPointsPossible > 0) {
             $this->score = ($totalPointsEarned / $totalPointsPossible) * 100;
             $this->passed = $this->score >= $this->exam->pass_score;
+        } else {
+            $this->score = 0;
+            $this->passed = false;
         }
 
         $this->status = 'graded';
@@ -346,20 +350,19 @@ class ExamAttempt extends Model
             return false;
         }
 
-        // Increment tab switches atomically
+        // ✅ FIX: Use atomic increment for tab_switches to prevent race condition
         $this->increment('tab_switches');
+
+        // Refresh to get updated count, then append violation log
+        $this->refresh();
 
         $violations = $this->violations ?? [];
         $violations[] = [
             'type' => 'tab_switch',
             'timestamp' => now()->toIso8601String(),
         ];
-
         $this->violations = $violations;
         $this->save();
-
-        // Refresh to get updated tab_switches count
-        $this->refresh();
 
         $autoSubmitted = false;
 
@@ -549,17 +552,30 @@ class ExamAttempt extends Model
      */
     public function calculateScore(): void
     {
-        // This should call autoGrade() which already exists
+        // ✅ FIX: Use atomic update to prevent race condition (consistent with submit())
         if ($this->status === 'in_progress') {
-            $this->submitted_at = now();
-            $this->status = 'submitted';
+            $updated = static::where('id', $this->id)
+                ->where('status', 'in_progress')
+                ->update([
+                    'submitted_at' => now(),
+                    'status' => 'submitted',
+                ]);
 
-            // Calculate time spent in seconds
-            if ($this->started_at) {
-                $this->time_spent = $this->started_at->diffInSeconds($this->submitted_at);
+            if (!$updated) {
+                // Already submitted by another process
+                $this->refresh();
+                if ($this->status !== 'submitted' && $this->status !== 'graded') {
+                    return;
+                }
+            } else {
+                $this->refresh();
+
+                // Calculate time spent in seconds
+                if ($this->started_at && $this->submitted_at) {
+                    $this->time_spent = $this->started_at->diffInSeconds($this->submitted_at);
+                    $this->save();
+                }
             }
-
-            $this->save();
         }
 
         $this->autoGrade();

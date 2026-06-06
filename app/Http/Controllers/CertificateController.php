@@ -133,10 +133,11 @@ class CertificateController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('certificate_number', 'like', '%' . $request->search . '%')
-                    ->orWhere('student_name', 'like', '%' . $request->search . '%')
-                    ->orWhere('course_title', 'like', '%' . $request->search . '%');
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
+            $query->where(function ($q) use ($search) {
+                $q->where('certificate_number', 'like', '%' . $search . '%')
+                    ->orWhere('student_name', 'like', '%' . $search . '%')
+                    ->orWhere('course_title', 'like', '%' . $search . '%');
             });
         }
 

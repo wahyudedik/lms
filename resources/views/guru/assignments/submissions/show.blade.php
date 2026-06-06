@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
@@ -40,7 +40,7 @@
                         <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
                             <dt class="text-xs font-semibold text-purple-700 mb-1">Waktu Pengumpulan</dt>
                             <dd class="text-sm font-semibold text-gray-900">
-                                {{ $submission->submitted_at->format('d M Y, H:i:s') }}</dd>
+                                {{ $submission->submitted_at?->format('d M Y, H:i:s') ?? '-' }}</dd>
                         </div>
 
                         <div class="p-3 bg-orange-50 rounded-lg border border-orange-100">
@@ -100,11 +100,13 @@
                                 </div>
                             @endif
 
-                            <div class="p-3 bg-white rounded-lg border border-green-200">
-                                <dt class="text-xs font-semibold text-green-700 mb-1">Dinilai Pada</dt>
-                                <dd class="text-sm font-semibold text-gray-900">
-                                    {{ $submission->graded_at->format('d M Y, H:i') }}</dd>
-                            </div>
+                            @if ($submission->graded_at)
+                                <div class="p-3 bg-white rounded-lg border border-green-200">
+                                    <dt class="text-xs font-semibold text-green-700 mb-1">Dinilai Pada</dt>
+                                    <dd class="text-sm font-semibold text-gray-900">
+                                        {{ $submission->graded_at->format('d M Y, H:i') }}</dd>
+                                </div>
+                            @endif
                         </div>
 
                         @if ($submission->grader)

@@ -31,6 +31,7 @@ class AssignmentController extends Controller
 
         // Search by title
         if ($search = $request->input('search')) {
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $search);
             $query->where('title', 'like', "%{$search}%");
         }
 
