@@ -51,19 +51,20 @@ class DashboardController extends Controller
             ->get();
 
         // Upcoming exams
+        $now = now()->setTimezone('UTC');
         $upcomingExams = Exam::whereHas('course', function ($q) use ($student) {
             $q->whereHas('enrollments', function ($q2) use ($student) {
                 $q2->where('user_id', $student->id)->where('status', 'active');
             });
         })
             ->where('is_published', true)
-            ->where(function ($q) {
-                $q->where('start_time', '>', now())
-                    ->orWhere(function ($q2) {
-                        $q2->where('start_time', '<=', now())
-                            ->where(function ($q3) {
+            ->where(function ($q) use ($now) {
+                $q->where('start_time', '>', $now)
+                    ->orWhere(function ($q2) use ($now) {
+                        $q2->where('start_time', '<=', $now)
+                            ->where(function ($q3) use ($now) {
                                 $q3->whereNull('end_time')
-                                    ->orWhere('end_time', '>=', now());
+                                    ->orWhere('end_time', '>=', $now);
                             });
                     });
             })

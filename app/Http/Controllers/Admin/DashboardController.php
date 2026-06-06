@@ -40,14 +40,15 @@ class DashboardController extends Controller
             ->get();
 
         // Active exams (currently available)
+        $now = now()->setTimezone('UTC');
         $activeExams = Exam::where('is_published', true)
-            ->where(function ($q) {
+            ->where(function ($q) use ($now) {
                 $q->whereNull('start_time')
-                    ->orWhere('start_time', '<=', now());
+                    ->orWhere('start_time', '<=', $now);
             })
-            ->where(function ($q) {
+            ->where(function ($q) use ($now) {
                 $q->whereNull('end_time')
-                    ->orWhere('end_time', '>=', now());
+                    ->orWhere('end_time', '>=', $now);
             })
             ->withCount('questions')
             ->take(5)

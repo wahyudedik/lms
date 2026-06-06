@@ -41,7 +41,7 @@ class DashboardController extends Controller
         // Upcoming exams
         $upcomingExams = \App\Models\Exam::whereIn('course_id', $courses->pluck('id'))
             ->where('is_published', true)
-            ->where('start_time', '>', now())
+            ->where('start_time', '>', now()->setTimezone('UTC'))
             ->orderBy('start_time')
             ->take(5)
             ->get();

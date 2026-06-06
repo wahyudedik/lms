@@ -181,7 +181,7 @@ class Exam extends Model
      */
     public function scopeActive($query)
     {
-        $now = now();
+        $now = now()->setTimezone('UTC');
         return $query->where('is_published', true)
             ->where(function ($q) use ($now) {
                 $q->whereNull('start_time')

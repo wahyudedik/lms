@@ -62,8 +62,8 @@ class ExamController extends Controller
             abort(403, AuthorizationMessages::EXAM_ENROLLMENT_REQUIRED);
         }
 
-        // Check if exam is active
-        if (!$exam->isActive()) {
+        // Check if exam is published
+        if (!$exam->is_published) {
             abort(403, AuthorizationMessages::EXAM_NOT_AVAILABLE);
         }
 

@@ -184,7 +184,7 @@
                             class="text-sm text-blue-600 hover:text-blue-800 font-semibold">{{ __('View all →') }}</a>
                     </div>
                     @forelse($upcomingExams as $exam)
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
+                        <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.show', $exam) }}" class="flex items-center p-3 bg-gray-50 rounded-lg mb-2 hover:bg-gray-100 transition">
                             <div class="bg-green-100 rounded-full p-2 text-green-600 mr-3">
                                 <i class="fas fa-clipboard-list"></i>
                             </div>
@@ -200,7 +200,7 @@
                                     {{ trans_choice(__(':count minute|:count minutes'), $exam->duration, ['count' => $exam->duration]) }}
                                 </p>
                             </div>
-                        </div>
+                        </a>
                     @empty
                         <p class="text-center text-gray-500 py-4">{{ __('No upcoming exams') }}</p>
                     @endforelse
