@@ -6,7 +6,7 @@
             </h2>
             <div class="flex gap-2">
                 @if($attempts->count() > 0)
-                    <a href="{{ route('admin.exams.export-results', $exam) }}"
+                    <a href="{{ route('admin.reports.export-grades-excel', $exam) }}"
                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
                         <i class="fas fa-download"></i>
                         {{ __('Export Excel') }}
