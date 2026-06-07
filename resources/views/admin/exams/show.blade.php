@@ -83,8 +83,8 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-600">{{ __('Durasi') }}</label>
                             <p class="mt-1 text-sm font-semibold text-gray-900">
-                                <i class="fas fa-clock text-gray-400 mr-1"></i>{{ $exam->duration_minutes }}
-                                {{ trans_choice(__(':count menit'), $exam->duration_minutes, ['count' => $exam->duration_minutes]) }}
+                                <i
+                                    class="fas fa-clock text-gray-400 mr-1"></i>{{ trans_choice(__(':count menit'), $exam->duration_minutes, ['count' => $exam->duration_minutes]) }}
                             </p>
                         </div>
 

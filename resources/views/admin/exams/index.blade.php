@@ -80,22 +80,22 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                                        {{ __('Exam') }}
+                                            {{ __('Exam') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                                        {{ __('Kursus') }}
+                                            {{ __('Kursus') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                                        {{ __('Durasi') }}
+                                            {{ __('Durasi') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                                        {{ __('Soal') }}
+                                            {{ __('Soal') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                                        {{ __('Status') }}
+                                            {{ __('Status') }}
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                                        {{ __('Aksi') }}
+                                            {{ __('Aksi') }}
                                         </th>
                                     </tr>
                                 </thead>
@@ -103,7 +103,8 @@
                                     @foreach ($exams as $exam)
                                         <tr class="hover:bg-gray-50 transition-colors">
                                             <td class="px-6 py-4">
-                                                <div class="text-sm font-semibold text-gray-900">{{ $exam->title }}</div>
+                                                <div class="text-sm font-semibold text-gray-900">{{ $exam->title }}
+                                                </div>
                                                 <div class="text-sm text-gray-500">
                                                     <i class="fas fa-user text-xs mr-1"></i>{{ $exam->creator->name }}
                                                 </div>
@@ -113,13 +114,14 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">
-                                                    <i class="fas fa-clock mr-1 text-gray-400"></i>{{ $exam->duration_minutes }}
-                                                    {{ trans_choice(__(':count menit'), $exam->duration_minutes, ['count' => $exam->duration_minutes]) }}
+                                                    <i
+                                                        class="fas fa-clock mr-1 text-gray-400"></i>{{ trans_choice(__(':count menit'), $exam->duration_minutes, ['count' => $exam->duration_minutes]) }}
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">
-                                                    <i class="fas fa-question-circle mr-1 text-gray-400"></i>{{ trans_choice(__(':count soal'), $exam->questions->count(), ['count' => $exam->questions->count()]) }}
+                                                    <i
+                                                        class="fas fa-question-circle mr-1 text-gray-400"></i>{{ trans_choice(__(':count soal'), $exam->questions->count(), ['count' => $exam->questions->count()]) }}
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
@@ -128,23 +130,27 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
                                                 <div class="flex gap-2">
                                                     <a href="{{ route('admin.exams.show', $exam) }}"
-                                                        class="text-blue-600 hover:text-blue-800" title="{{ __('View') }}">
+                                                        class="text-blue-600 hover:text-blue-800"
+                                                        title="{{ __('View') }}">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     <a href="{{ route('admin.exams.edit', $exam) }}"
-                                                        class="text-green-600 hover:text-green-800" title="{{ __('Edit') }}">
+                                                        class="text-green-600 hover:text-green-800"
+                                                        title="{{ __('Edit') }}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <a href="{{ route('admin.exams.questions.index', $exam) }}"
-                                                        class="text-orange-600 hover:text-orange-800" title="{{ __('Manage Questions') }}">
+                                                        class="text-orange-600 hover:text-orange-800"
+                                                        title="{{ __('Manage Questions') }}">
                                                         <i class="fas fa-list"></i>
                                                     </a>
                                                     <a href="{{ route('admin.exams.results', $exam) }}"
-                                                        class="text-purple-600 hover:text-purple-800" title="{{ __('Results') }}">
+                                                        class="text-purple-600 hover:text-purple-800"
+                                                        title="{{ __('Results') }}">
                                                         <i class="fas fa-chart-bar"></i>
                                                     </a>
-                                                    <form action="{{ route('admin.exams.destroy', $exam) }}" method="POST"
-                                                        class="inline"
+                                                    <form action="{{ route('admin.exams.destroy', $exam) }}"
+                                                        method="POST" class="inline"
                                                         onsubmit="return confirmDelete('{{ __('Are you sure you want to delete this exam?') }}')">
                                                         @csrf
                                                         @method('DELETE')
@@ -168,7 +174,8 @@
                         <div class="text-center py-12">
                             <i class="fas fa-clipboard-list text-6xl text-gray-300 mb-4"></i>
                             <h3 class="text-xl font-semibold text-gray-700 mb-2">{{ __('No exams yet.') }}</h3>
-                            <p class="text-gray-500 mb-6">{{ __('Create your first exam to start testing students.') }}</p>
+                            <p class="text-gray-500 mb-6">{{ __('Create your first exam to start testing students.') }}
+                            </p>
                             <a href="{{ route('admin.exams.create') }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                 <i class="fas fa-plus"></i>

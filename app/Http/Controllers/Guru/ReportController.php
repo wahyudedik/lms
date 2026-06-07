@@ -216,6 +216,23 @@ class ReportController extends Controller
             ->orderByDesc('submitted_at')
             ->get();
 
+        $attemptedUserIds = $attempts->pluck('user_id')->unique()->filter()->toArray();
+
+        $unattemptedStudents = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
+            ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'))
+            ->whereNotIn('id', $attemptedUserIds)
+            ->with('schoolClass:id,name')
+            ->get();
+
+        foreach ($unattemptedStudents as $student) {
+            $unattemptedAttempt = new \App\Models\ExamAttempt([
+                'status' => 'unattempted',
+            ]);
+            $unattemptedAttempt->setRelation('user', $student);
+            $unattemptedAttempt->setRelation('exam', $exam);
+            $attempts->push($unattemptedAttempt);
+        }
+
         $filename = sprintf(
             'nilai_%s_%s.xlsx',
             \Str::slug($exam->title),
@@ -245,10 +262,28 @@ class ReportController extends Controller
             ->orderByDesc('submitted_at')
             ->get();
 
+        $attemptedUserIds = $attempts->pluck('user_id')->unique()->filter()->toArray();
+
+        $unattemptedStudents = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
+            ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'))
+            ->whereNotIn('id', $attemptedUserIds)
+            ->with('schoolClass:id,name')
+            ->get();
+
+        foreach ($unattemptedStudents as $student) {
+            $unattemptedAttempt = new \App\Models\ExamAttempt([
+                'status' => 'unattempted',
+            ]);
+            $unattemptedAttempt->setRelation('user', $student);
+            $unattemptedAttempt->setRelation('exam', $exam);
+            $attempts->push($unattemptedAttempt);
+        }
+
+        $actualAttempts = $attempts->where('status', '!=', 'unattempted');
         $gradedAttempts = $attempts->where('status', 'graded');
         $statistics = [
-            'total_students' => $attempts->pluck('user_id')->unique()->count(),
-            'total_attempts' => $attempts->count(),
+            'total_students' => $attempts->pluck('user_id')->unique()->filter()->count(),
+            'total_attempts' => $actualAttempts->count(),
             'completed' => $gradedAttempts->count(),
             'average_score' => $gradedAttempts->avg('score'),
             'highest_score' => $gradedAttempts->max('score'),

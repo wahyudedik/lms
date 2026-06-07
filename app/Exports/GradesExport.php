@@ -73,7 +73,7 @@ class GradesExport implements FromCollection, WithHeadings, WithMapping, WithSty
             $attempt->score ? number_format($attempt->score, 2) : '-',
             $attempt->total_points_earned ? number_format($attempt->total_points_earned, 2) : '-',
             $attempt->total_points_possible ? number_format($attempt->total_points_possible, 2) : '-',
-            $attempt->status === 'graded' ? 'Selesai' : 'Belum Dinilai',
+            $attempt->status === 'graded' ? 'Selesai' : ($attempt->status === 'unattempted' ? 'Belum Mengerjakan' : 'Belum Dinilai'),
             $attempt->passed === true ? 'LULUS' : ($attempt->passed === false ? 'TIDAK LULUS' : '-'),
         ];
     }

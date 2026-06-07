@@ -5,7 +5,7 @@
                 <i class="fas fa-chart-bar mr-2"></i>{{ __('Exam Results: :title', ['title' => $exam->title]) }}
             </h2>
             <div class="flex gap-2">
-                @if($attempts->count() > 0)
+                @if($statistics['total_attempts'] > 0)
                     <a href="{{ route('admin.reports.export-grades-excel', $exam) }}"
                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
                         <i class="fas fa-download"></i>
@@ -113,136 +113,218 @@
             <!-- Attempts Table -->
             <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">
-                        <i class="fas fa-list text-indigo-600 mr-2"></i>{{ __('Attempts List') }}
-                    </h3>
+                    <!-- Tabs Navigation -->
+                    <div class="mb-6 border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                            <a href="{{ request()->fullUrlWithQuery(['tab' => 'attempts']) }}"
+                                class="flex items-center gap-2 pb-4 px-1 border-b-2 text-sm font-semibold transition-all duration-200 {{ $activeTab === 'attempts' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                <i class="fas fa-list-ol"></i>
+                                {{ __('Sudah Mengerjakan') }}
+                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-1 text-xs font-bold leading-none rounded-full {{ $activeTab === 'attempts' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-600' }}">
+                                    {{ $statistics['total_attempts'] }}
+                                </span>
+                            </a>
+                            <a href="{{ request()->fullUrlWithQuery(['tab' => 'unattempted']) }}"
+                                class="flex items-center gap-2 pb-4 px-1 border-b-2 text-sm font-semibold transition-all duration-200 {{ $activeTab === 'unattempted' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                <i class="fas fa-user-slash"></i>
+                                {{ __('Belum Mengerjakan') }}
+                                <span class="inline-flex items-center justify-center px-2 py-0.5 ml-1 text-xs font-bold leading-none rounded-full {{ $activeTab === 'unattempted' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-600' }}">
+                                    {{ $unattemptedCount }}
+                                </span>
+                            </a>
+                        </nav>
+                    </div>
 
-                    @if ($attempts->count() > 0)
-                        <div class="overflow-x-auto border border-gray-200 rounded-lg">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            {{ __('Siswa') }}
-                                        </th>
-                                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            {{ __('Dimulai') }}
-                                        </th>
-                                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            {{ __('Dikumpulkan') }}
-                                        </th>
-                                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            {{ __('Waktu') }}
-                                        </th>
-                                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            {{ __('Score') }}
-                                        </th>
-                                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            {{ __('Status') }}
-                                        </th>
-                                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            {{ __('Pelanggaran') }}
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach ($attempts as $attempt)
-                                        <tr class="hover:bg-gray-50 transition-colors">
-                                            <td class="px-6 py-4">
-                                                @php
-                                                    $attemptUser = $attempt->user;
-                                                    $isGuest = $attempt->is_guest;
-                                                    $displayName = $isGuest
-                                                        ? ($attempt->guest_name ?? __('Guest'))
-                                                        : ($attemptUser->name ?? __('Tidak diketahui'));
-                                                    $displayEmail = $isGuest
-                                                        ? ($attempt->guest_email ?? __('-'))
-                                                        : ($attemptUser->email ?? __('-'));
-                                                    $avatarUrl = $attemptUser?->profile_photo_url ?? asset('images/avatars/default-avatar.png');
-                                                @endphp
-                                                <div class="flex items-center">
-                                                    <div class="flex-shrink-0 h-10 w-10">
-                                                        <img class="h-10 w-10 rounded-full object-cover"
-                                                            src="{{ $avatarUrl }}"
-                                                            alt="{{ $displayName }}">
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <div class="text-sm font-semibold text-gray-900">
-                                                            {{ $displayName }}
+                    @if ($activeTab === 'unattempted')
+                        @if ($unattemptedUsers->count() > 0)
+                            <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Siswa') }}
+                                            </th>
+                                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Kelas') }}
+                                            </th>
+                                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Status') }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach ($unattemptedUsers as $student)
+                                            <tr class="hover:bg-gray-50 transition-colors">
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-shrink-0 h-10 w-10">
+                                                            <img class="h-10 w-10 rounded-full object-cover"
+                                                                src="{{ $student->profile_photo_url }}"
+                                                                alt="{{ $student->name }}">
                                                         </div>
-                                                        <div class="text-sm text-gray-500">
-                                                            {{ $displayEmail }}
+                                                        <div class="ml-4">
+                                                            <div class="text-sm font-semibold text-gray-900">
+                                                                {{ $student->name }}
+                                                            </div>
+                                                            <div class="text-sm text-gray-500">
+                                                                {{ $student->email }}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <div class="text-sm text-gray-900">
-                                                    {{ $attempt->started_at ? $attempt->started_at->format('d M Y') : '-' }}
-                                                </div>
-                                                <div class="text-xs text-gray-500">
-                                                    {{ $attempt->started_at ? $attempt->started_at->format('H:i') : '' }}
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <div class="text-sm text-gray-900">
-                                                    {{ $attempt->submitted_at ? $attempt->submitted_at->format('d M Y') : '-' }}
-                                                </div>
-                                                <div class="text-xs text-gray-500">
-                                                    {{ $attempt->submitted_at ? $attempt->submitted_at->format('H:i') : '' }}
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                <div class="text-sm font-semibold text-gray-900">
-                                                    {{ $attempt->formatted_time_spent }}
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                @if ($attempt->score !== null)
-                                                    <div class="text-lg font-bold {{ $attempt->passed ? 'text-green-600' : 'text-red-600' }}">
-                                                        {{ number_format($attempt->score, 1) }}%
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div class="text-sm text-gray-900">
+                                                        {{ $student->schoolClass->name ?? __('Tidak ada kelas') }}
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                                                        <i class="fas fa-exclamation-circle mr-1"></i>{{ __('Belum Mengerjakan') }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mt-4">
+                                {{ $unattemptedUsers->links() }}
+                            </div>
+                        @else
+                            <div class="flex flex-col items-center justify-center text-gray-500 py-12">
+                                <i class="fas fa-check-double text-6xl text-gray-300 mb-4"></i>
+                                <p class="text-lg font-semibold">{{ __('Semua siswa sudah mengerjakan ujian ini.') }}</p>
+                            </div>
+                        @endif
+                    @else
+                        @if ($attempts->count() > 0)
+                            <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Siswa') }}
+                                            </th>
+                                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Dimulai') }}
+                                            </th>
+                                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Dikumpulkan') }}
+                                            </th>
+                                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Waktu') }}
+                                            </th>
+                                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Score') }}
+                                            </th>
+                                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Status') }}
+                                            </th>
+                                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                {{ __('Pelanggaran') }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach ($attempts as $attempt)
+                                            <tr class="hover:bg-gray-50 transition-colors">
+                                                <td class="px-6 py-4">
+                                                    @php
+                                                        $attemptUser = $attempt->user;
+                                                        $isGuest = $attempt->is_guest;
+                                                        $displayName = $isGuest
+                                                            ? ($attempt->guest_name ?? __('Guest'))
+                                                            : ($attemptUser->name ?? __('Tidak diketahui'));
+                                                        $displayEmail = $isGuest
+                                                            ? ($attempt->guest_email ?? __('-'))
+                                                            : ($attemptUser->email ?? __('-'));
+                                                        $avatarUrl = $attemptUser?->profile_photo_url ?? asset('images/avatars/default-avatar.png');
+                                                    @endphp
+                                                    <div class="flex items-center">
+                                                        <div class="flex-shrink-0 h-10 w-10">
+                                                            <img class="h-10 w-10 rounded-full object-cover"
+                                                                src="{{ $avatarUrl }}"
+                                                                alt="{{ $displayName }}">
+                                                        </div>
+                                                        <div class="ml-4">
+                                                            <div class="text-sm font-semibold text-gray-900">
+                                                                {{ $displayName }}
+                                                            </div>
+                                                            <div class="text-sm text-gray-500">
+                                                                {{ $displayEmail }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div class="text-sm text-gray-900">
+                                                        {{ $attempt->started_at ? $attempt->started_at->format('d M Y') : '-' }}
                                                     </div>
                                                     <div class="text-xs text-gray-500">
-                                                        {{ number_format($attempt->total_points_earned, 1) }}/{{ number_format($attempt->total_points_possible, 1) }} poin
+                                                        {{ $attempt->started_at ? $attempt->started_at->format('H:i') : '' }}
                                                     </div>
-                                                @else
-                                                    <span class="text-sm text-gray-400">-</span>
-                                                @endif
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                {!! $attempt->status_badge !!}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                @if ($attempt->tab_switches > 0 || $attempt->fullscreen_exits > 0)
-                                                    <div class="text-sm text-red-600">
-                                                        @if ($attempt->tab_switches > 0)
-                                                            <div><i class="fas fa-window-restore mr-1"></i>Tab: {{ $attempt->tab_switches }}x</div>
-                                                        @endif
-                                                        @if ($attempt->fullscreen_exits > 0)
-                                                            <div><i class="fas fa-expand mr-1"></i>FS: {{ $attempt->fullscreen_exits }}x</div>
-                                                        @endif
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div class="text-sm text-gray-900">
+                                                        {{ $attempt->submitted_at ? $attempt->submitted_at->format('d M Y') : '-' }}
                                                     </div>
-                                                @else
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                                                        <i class="fas fa-check mr-1"></i>{{ __('Bersih') }}
-                                                    </span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        {{ $attempt->submitted_at ? $attempt->submitted_at->format('H:i') : '' }}
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div class="text-sm font-semibold text-gray-900">
+                                                        {{ $attempt->formatted_time_spent }}
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    @if ($attempt->score !== null)
+                                                        <div class="text-lg font-bold {{ $attempt->passed ? 'text-green-600' : 'text-red-600' }}">
+                                                            {{ number_format($attempt->score, 1) }}%
+                                                        </div>
+                                                        <div class="text-xs text-gray-500">
+                                                            {{ number_format($attempt->total_points_earned, 1) }}/{{ number_format($attempt->total_points_possible, 1) }} poin
+                                                        </div>
+                                                    @else
+                                                        <span class="text-sm text-gray-400">-</span>
+                                                    @endif
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    {!! $attempt->status_badge !!}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    @if ($attempt->tab_switches > 0 || $attempt->fullscreen_exits > 0)
+                                                        <div class="text-sm text-red-600">
+                                                            @if ($attempt->tab_switches > 0)
+                                                                <div><i class="fas fa-window-restore mr-1"></i>Tab: {{ $attempt->tab_switches }}x</div>
+                                                            @endif
+                                                            @if ($attempt->fullscreen_exits > 0)
+                                                                <div><i class="fas fa-expand mr-1"></i>FS: {{ $attempt->fullscreen_exits }}x</div>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                            <i class="fas fa-check mr-1"></i>{{ __('Bersih') }}
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        <div class="mt-4">
-                            {{ $attempts->links() }}
-                        </div>
-                    @else
-                        <div class="flex flex-col items-center justify-center text-gray-500 py-12">
-                            <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-lg font-semibold">{{ __('No students have taken this exam yet.') }}</p>
-                            <p class="text-sm text-gray-400 mt-1">{{ __('Results will appear here once students complete the exam.') }}</p>
-                        </div>
+                            <div class="mt-4">
+                                {{ $attempts->links() }}
+                            </div>
+                        @else
+                            <div class="flex flex-col items-center justify-center text-gray-500 py-12">
+                                <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                                <p class="text-lg font-semibold">{{ __('No students have taken this exam yet.') }}</p>
+                                <p class="text-sm text-gray-400 mt-1">{{ __('Results will appear here once students complete the exam.') }}</p>
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>

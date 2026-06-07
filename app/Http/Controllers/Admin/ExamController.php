@@ -308,7 +308,7 @@ class ExamController extends Controller
     /**
      * View exam results/statistics
      */
-    public function results(Exam $exam)
+    public function results(Request $request, Exam $exam)
     {
         $exam->load(['attempts.user', 'questions']);
 
@@ -341,13 +341,41 @@ class ExamController extends Controller
             ];
         }
 
-        $attempts = $exam->attempts()
-            ->with('user:id,name,email')
-            ->where('status', '!=', 'in_progress')
-            ->latest()
-            ->paginate(20);
+        $activeTab = $request->query('tab', 'attempts');
 
-        return view('admin.exams.results', compact('exam', 'statistics', 'attempts'));
+        // Get IDs of students who have attempted this exam
+        $attemptedUserIds = $exam->attempts()
+            ->whereNotNull('user_id')
+            ->pluck('user_id')
+            ->unique();
+
+        // Count enrolled students who have NOT attempted
+        $unattemptedCount = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
+            ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'))
+            ->whereNotIn('id', $attemptedUserIds)
+            ->count();
+
+        $attempts = null;
+        $unattemptedUsers = null;
+
+        if ($activeTab === 'unattempted') {
+            $unattemptedUsers = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
+                ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'))
+                ->whereNotIn('id', $attemptedUserIds)
+                ->with('schoolClass:id,name')
+                ->select('id', 'name', 'email', 'gender', 'profile_photo', 'school_class_id')
+                ->paginate(20)
+                ->withQueryString();
+        } else {
+            $attempts = $exam->attempts()
+                ->with('user:id,name,email')
+                ->where('status', '!=', 'in_progress')
+                ->latest()
+                ->paginate(20)
+                ->withQueryString();
+        }
+
+        return view('admin.exams.results', compact('exam', 'statistics', 'attempts', 'unattemptedUsers', 'activeTab', 'unattemptedCount'));
     }
 
     /**

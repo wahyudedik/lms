@@ -124,6 +124,11 @@
             color: #991b1b;
         }
 
+        .badge-info {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
         .footer {
             margin-top: 30px;
             text-align: center;
@@ -273,9 +278,15 @@
                         @endif
                     </td>
                     <td class="text-center">
-                        <span class="badge {{ $attempt->passed ? 'badge-success' : 'badge-danger' }}">
-                            {{ $attempt->passed ? 'LULUS' : 'TIDAK LULUS' }}
-                        </span>
+                        @if ($attempt->status === 'unattempted')
+                            <span class="badge badge-info">
+                                BELUM MENGERJAKAN
+                            </span>
+                        @else
+                            <span class="badge {{ $attempt->passed ? 'badge-success' : 'badge-danger' }}">
+                                {{ $attempt->passed ? 'LULUS' : 'TIDAK LULUS' }}
+                            </span>
+                        @endif
                     </td>
                     <td class="text-center">{{ count($attempt->violations ?? []) }}</td>
                 </tr>
