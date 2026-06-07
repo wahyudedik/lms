@@ -241,6 +241,7 @@
                 <th class="text-center" style="width: 30px;">No</th>
                 <th>Nama {{ auth()->user()->getStudentLabel() }}</th>
                 <th>Email</th>
+                <th>Kelas</th>
                 <th class="text-center">Skor (%)</th>
                 <th class="text-center">Poin</th>
                 <th class="text-center">Waktu (detik)</th>
@@ -255,6 +256,7 @@
                     <td>{{ $attempt->is_guest ? $attempt->guest_name ?? 'Tamu' : $attempt->user->name ?? 'Tidak diketahui' }}
                     </td>
                     <td>{{ $attempt->is_guest ? $attempt->guest_email ?? '-' : $attempt->user->email ?? '-' }}</td>
+                    <td>{{ $attempt->is_guest ? '-' : ($attempt->user->schoolClass->name ?? '-') }}</td>
                     <td class="text-center">
                         @if (!is_null($attempt->score))
                             <strong>{{ number_format($attempt->score, 2) }}%</strong>

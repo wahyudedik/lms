@@ -202,7 +202,7 @@ class ReportController extends Controller
     /**
      * Export specific exam grades to Excel
      */
-    public function exportGradesExcel(Exam $exam)
+    public function exportGradesExcel(Request $request, Exam $exam)
     {
         abort_if(
             auth()->user()->role !== 'admin' && $exam->course->instructor_id !== auth()->id(),
@@ -210,17 +210,62 @@ class ReportController extends Controller
             'Anda tidak memiliki akses ke ujian ini.'
         );
 
-        $attempts = $exam->attempts()
+        $classId = $request->query('class_id');
+
+        $attemptsQuery = $exam->attempts()
             ->with(['user.schoolClass', 'exam'])
             ->where('status', '!=', 'in_progress')
-            ->orderByDesc('submitted_at')
-            ->get();
+            ->orderByDesc('submitted_at');
+
+        if ($classId) {
+            $attemptsQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+        }
+
+        $userBestQuery = \App\Models\ExamAttempt::where('exam_id', $exam->id)
+            ->where('status', '!=', 'in_progress')
+            ->whereNotNull('user_id');
+
+        if ($classId) {
+            $userBestQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+        }
+
+        $userBestIds = $userBestQuery
+            ->select('id', 'user_id', 'score')
+            ->get()
+            ->groupBy('user_id')
+            ->map(fn($group) => $group->sortByDesc('score')->first()->id)
+            ->values()
+            ->toArray();
+
+        $guestBestIds = [];
+        if (!$classId) {
+            $guestBestIds = \App\Models\ExamAttempt::where('exam_id', $exam->id)
+                ->where('status', '!=', 'in_progress')
+                ->whereNull('user_id')
+                ->select('id', 'guest_email', 'score')
+                ->get()
+                ->groupBy('guest_email')
+                ->map(fn($group) => $group->sortByDesc('score')->first()->id)
+                ->values()
+                ->toArray();
+        }
+
+        $bestAttemptIds = array_merge($userBestIds, $guestBestIds);
+        $attemptsQuery->whereIn('id', $bestAttemptIds);
+
+        $attempts = $attemptsQuery->get();
 
         $attemptedUserIds = $attempts->pluck('user_id')->unique()->filter()->toArray();
 
-        $unattemptedStudents = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
+        $unattemptedQuery = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
             ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'))
-            ->whereNotIn('id', $attemptedUserIds)
+            ->whereNotIn('id', $attemptedUserIds);
+
+        if ($classId) {
+            $unattemptedQuery->where('school_class_id', $classId);
+        }
+
+        $unattemptedStudents = $unattemptedQuery
             ->with('schoolClass:id,name')
             ->get();
 
@@ -248,7 +293,7 @@ class ReportController extends Controller
     /**
      * Export specific exam grades to PDF
      */
-    public function exportGradesPdf(Exam $exam)
+    public function exportGradesPdf(Request $request, Exam $exam)
     {
         abort_if(
             auth()->user()->role !== 'admin' && $exam->course->instructor_id !== auth()->id(),
@@ -256,17 +301,62 @@ class ReportController extends Controller
             'Anda tidak memiliki akses ke ujian ini.'
         );
 
-        $attempts = $exam->attempts()
+        $classId = $request->query('class_id');
+
+        $attemptsQuery = $exam->attempts()
             ->with(['user.schoolClass', 'exam'])
             ->where('status', '!=', 'in_progress')
-            ->orderByDesc('submitted_at')
-            ->get();
+            ->orderByDesc('submitted_at');
+
+        if ($classId) {
+            $attemptsQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+        }
+
+        $userBestQuery = \App\Models\ExamAttempt::where('exam_id', $exam->id)
+            ->where('status', '!=', 'in_progress')
+            ->whereNotNull('user_id');
+
+        if ($classId) {
+            $userBestQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+        }
+
+        $userBestIds = $userBestQuery
+            ->select('id', 'user_id', 'score')
+            ->get()
+            ->groupBy('user_id')
+            ->map(fn($group) => $group->sortByDesc('score')->first()->id)
+            ->values()
+            ->toArray();
+
+        $guestBestIds = [];
+        if (!$classId) {
+            $guestBestIds = \App\Models\ExamAttempt::where('exam_id', $exam->id)
+                ->where('status', '!=', 'in_progress')
+                ->whereNull('user_id')
+                ->select('id', 'guest_email', 'score')
+                ->get()
+                ->groupBy('guest_email')
+                ->map(fn($group) => $group->sortByDesc('score')->first()->id)
+                ->values()
+                ->toArray();
+        }
+
+        $bestAttemptIds = array_merge($userBestIds, $guestBestIds);
+        $attemptsQuery->whereIn('id', $bestAttemptIds);
+
+        $attempts = $attemptsQuery->get();
 
         $attemptedUserIds = $attempts->pluck('user_id')->unique()->filter()->toArray();
 
-        $unattemptedStudents = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
+        $unattemptedQuery = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
             ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'))
-            ->whereNotIn('id', $attemptedUserIds)
+            ->whereNotIn('id', $attemptedUserIds);
+
+        if ($classId) {
+            $unattemptedQuery->where('school_class_id', $classId);
+        }
+
+        $unattemptedStudents = $unattemptedQuery
             ->with('schoolClass:id,name')
             ->get();
 

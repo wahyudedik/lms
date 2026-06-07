@@ -4,16 +4,26 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 <i class="fas fa-chart-bar mr-2"></i>{{ __('Exam Results: :title', ['title' => $exam->title]) }}
             </h2>
-            <div class="flex gap-2">
-                @if($statistics['total_attempts'] > 0)
-                    <a href="{{ route('admin.reports.export-grades-excel', $exam) }}"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
-                        <i class="fas fa-download"></i>
-                        {{ __('Export Excel') }}
-                    </a>
+            <div class="flex flex-wrap items-center gap-3">
+                @if($statistics['total_attempts'] > 0 || count($classes) > 0)
+                    <form action="{{ route('admin.reports.export-grades-excel', $exam) }}" method="GET" class="flex items-center gap-2">
+                        <select name="class_id" class="rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 pl-3 pr-8">
+                            <option value="">{{ __('Semua Kelas') }}</option>
+                            @foreach($classes as $class)
+                                <option value="{{ $class->id }}" {{ request('class_id') == $class->id ? 'selected' : '' }}>
+                                    {{ $class->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap">
+                            <i class="fas fa-download"></i>
+                            {{ __('Export Excel') }}
+                        </button>
+                    </form>
                 @endif
                 <a href="{{ route('admin.exams.show', $exam) }}"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap">
                     <i class="fas fa-arrow-left"></i>
                     {{ __('Back') }}
                 </a>
@@ -114,7 +124,7 @@
             <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
                     <!-- Tabs Navigation -->
-                    <div class="mb-6 border-b border-gray-200">
+                    <div class="mb-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <nav class="-mb-px flex space-x-6" aria-label="Tabs">
                             <a href="{{ request()->fullUrlWithQuery(['tab' => 'attempts']) }}"
                                 class="flex items-center gap-2 pb-4 px-1 border-b-2 text-sm font-semibold transition-all duration-200 {{ $activeTab === 'attempts' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
@@ -133,6 +143,37 @@
                                 </span>
                             </a>
                         </nav>
+                        <div class="pb-4 sm:pb-3 flex flex-wrap items-center gap-4">
+                            <form action="{{ request()->url() }}" method="GET" class="flex flex-wrap items-center gap-4" id="filterForm">
+                                <input type="hidden" name="tab" value="{{ $activeTab }}">
+                                
+                                <!-- Class Filter -->
+                                <div class="flex items-center gap-2">
+                                    <label for="class_id" class="text-sm font-semibold text-gray-700">{{ __('Kelas:') }}</label>
+                                    <select name="class_id" id="class_id" onchange="document.getElementById('filterForm').submit()"
+                                        class="rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 py-1.5 pl-3 pr-8">
+                                        <option value="">{{ __('Semua Kelas') }}</option>
+                                        @foreach($classes as $class)
+                                            <option value="{{ $class->id }}" {{ request('class_id') == $class->id ? 'selected' : '' }}>
+                                                {{ $class->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                @if ($activeTab !== 'unattempted')
+                                    <!-- Score Filter -->
+                                    <div class="flex items-center gap-2">
+                                        <label for="filter" class="text-sm font-semibold text-gray-700">{{ __('Filter:') }}</label>
+                                        <select name="filter" id="filter" onchange="document.getElementById('filterForm').submit()"
+                                            class="rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 py-1.5 pl-3 pr-8">
+                                            <option value="all" {{ request('filter') !== 'best' ? 'selected' : '' }}>Semua Percobaan</option>
+                                            <option value="best" {{ request('filter') === 'best' ? 'selected' : '' }}>Nilai Terbaik</option>
+                                        </select>
+                                    </div>
+                                @endif
+                            </form>
+                        </div>
                     </div>
 
                     @if ($activeTab === 'unattempted')
@@ -254,6 +295,11 @@
                                                             <div class="text-sm text-gray-500">
                                                                 {{ $displayEmail }}
                                                             </div>
+                                                            @if(!$isGuest && $attemptUser?->schoolClass)
+                                                                <div class="text-xs text-indigo-600 font-semibold mt-0.5">
+                                                                    <i class="fas fa-school mr-1"></i>{{ $attemptUser->schoolClass->name }}
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </td>

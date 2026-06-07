@@ -9,23 +9,44 @@
                 </h2>
                 <p class="text-gray-600 text-sm mt-1">Kursus: {{ $exam->course->title }}</p>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-excel', $exam) }}"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
-                    <i class="fas fa-file-excel"></i>
-                    Export Excel
-                </a>
-                <a href="{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-pdf', $exam) }}"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md">
-                    <i class="fas fa-file-pdf"></i>
-                    Export PDF
-                </a>
+            <div class="flex flex-wrap items-center gap-3">
+                <form action="" method="GET" id="exportForm" class="flex items-center gap-2">
+                    <select name="class_id" id="export_class_id" class="rounded-lg border-gray-300 text-sm focus:border-purple-500 focus:ring-purple-500 py-2 pl-3 pr-8">
+                        <option value="">Semua Kelas</option>
+                        @foreach($classes as $class)
+                            <option value="{{ $class->id }}" {{ request('class_id') == $class->id ? 'selected' : '' }}>
+                                {{ $class->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <button type="button" onclick="submitExport('excel')"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap">
+                        <i class="fas fa-file-excel"></i>
+                        Export Excel
+                    </button>
+                    <button type="button" onclick="submitExport('pdf')"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap">
+                        <i class="fas fa-file-pdf"></i>
+                        Export PDF
+                    </button>
+                </form>
                 <a href="{{ route(auth()->user()->getRolePrefix() . '.exams.index') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm whitespace-nowrap">
                     <i class="fas fa-arrow-left"></i>
                     Kembali
                 </a>
             </div>
+
+            <script>
+                function submitExport(type) {
+                    const classId = document.getElementById('export_class_id').value;
+                    const baseUrl = type === 'excel' 
+                        ? "{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-excel', $exam) }}"
+                        : "{{ route(auth()->user()->getRolePrefix() . '.reports.export-grades-pdf', $exam) }}";
+                    
+                    window.location.href = baseUrl + '?class_id=' + classId;
+                }
+            </script>
         </div>
     </x-slot>
 
@@ -119,7 +140,7 @@
             <div class="bg-white overflow-hidden shadow-md rounded-lg">
                 <div class="p-6">
                     <!-- Tabs Navigation -->
-                    <div class="mb-6 border-b border-gray-200">
+                    <div class="mb-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <nav class="-mb-px flex space-x-6" aria-label="Tabs">
                             <a href="{{ request()->fullUrlWithQuery(['tab' => 'attempts']) }}"
                                 class="flex items-center gap-2 pb-4 px-1 border-b-2 text-sm font-semibold transition-all duration-200 {{ $activeTab === 'attempts' ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
@@ -138,6 +159,37 @@
                                 </span>
                             </a>
                         </nav>
+                        <div class="pb-4 sm:pb-3 flex flex-wrap items-center gap-4">
+                            <form action="{{ request()->url() }}" method="GET" class="flex flex-wrap items-center gap-4" id="filterForm">
+                                <input type="hidden" name="tab" value="{{ $activeTab }}">
+                                
+                                <!-- Class Filter -->
+                                <div class="flex items-center gap-2">
+                                    <label for="class_id" class="text-sm font-semibold text-gray-700">Kelas:</label>
+                                    <select name="class_id" id="class_id" onchange="document.getElementById('filterForm').submit()"
+                                        class="rounded-lg border-gray-300 text-sm focus:border-purple-500 focus:ring-purple-500 py-1.5 pl-3 pr-8">
+                                        <option value="">Semua Kelas</option>
+                                        @foreach($classes as $class)
+                                            <option value="{{ $class->id }}" {{ request('class_id') == $class->id ? 'selected' : '' }}>
+                                                {{ $class->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                @if ($activeTab !== 'unattempted')
+                                    <!-- Score Filter -->
+                                    <div class="flex items-center gap-2">
+                                        <label for="filter" class="text-sm font-semibold text-gray-700">Filter:</label>
+                                        <select name="filter" id="filter" onchange="document.getElementById('filterForm').submit()"
+                                            class="rounded-lg border-gray-300 text-sm focus:border-purple-500 focus:ring-purple-500 py-1.5 pl-3 pr-8">
+                                            <option value="all" {{ request('filter') !== 'best' ? 'selected' : '' }}>Semua Percobaan</option>
+                                            <option value="best" {{ request('filter') === 'best' ? 'selected' : '' }}>Nilai Terbaik</option>
+                                        </select>
+                                    </div>
+                                @endif
+                            </form>
+                        </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
@@ -273,6 +325,11 @@
                                                 <div class="text-sm text-gray-500">
                                                     {{ $attempt->is_guest ? $attempt->guest_email : $attempt->user->email ?? '-' }}
                                                 </div>
+                                                @if(!$attempt->is_guest && $attempt->user && $attempt->user->schoolClass)
+                                                    <div class="text-xs text-purple-600 font-semibold mt-0.5">
+                                                        <i class="fas fa-school mr-1"></i>{{ $attempt->user->schoolClass->name }}
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-900">
                                                 @if (!is_null($attempt->score))

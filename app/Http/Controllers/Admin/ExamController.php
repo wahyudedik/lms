@@ -312,8 +312,18 @@ class ExamController extends Controller
     {
         $exam->load(['attempts.user', 'questions']);
 
+        $classId = $request->query('class_id');
+
+        // Fetch classes relevant to the exam's course
+        $classes = \App\Models\SchoolClass::whereHas('users', function ($q) use ($exam) {
+            $q->whereHas('enrollments', fn($e) => $e->where('course_id', $exam->course_id)->where('status', 'active'));
+        })->orderBy('name')->get();
+
         // Use SQL aggregates instead of loading all records into memory
         $attemptsQuery = $exam->attempts()->where('status', 'graded');
+        if ($classId) {
+            $attemptsQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+        }
 
         $completedCount = (clone $attemptsQuery)->count();
 
@@ -322,8 +332,13 @@ class ExamController extends Controller
                 ->selectRaw('AVG(score) as avg_score, MAX(score) as max_score, MIN(score) as min_score, SUM(CASE WHEN passed = 1 THEN 1 ELSE 0 END) as passed_count')
                 ->first();
 
+            $totalAttemptsQuery = $exam->attempts();
+            if ($classId) {
+                $totalAttemptsQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+            }
+
             $statistics = [
-                'total_attempts' => $exam->attempts()->count(),
+                'total_attempts' => $totalAttemptsQuery->count(),
                 'completed_attempts' => $completedCount,
                 'average_score' => round($aggregates->avg_score, 2),
                 'highest_score' => round($aggregates->max_score, 2),
@@ -331,8 +346,13 @@ class ExamController extends Controller
                 'pass_rate' => round($aggregates->passed_count / $completedCount * 100, 2),
             ];
         } else {
+            $totalAttemptsQuery = $exam->attempts();
+            if ($classId) {
+                $totalAttemptsQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+            }
+
             $statistics = [
-                'total_attempts' => $exam->attempts()->count(),
+                'total_attempts' => $totalAttemptsQuery->count(),
                 'completed_attempts' => 0,
                 'average_score' => 0,
                 'highest_score' => 0,
@@ -343,39 +363,83 @@ class ExamController extends Controller
 
         $activeTab = $request->query('tab', 'attempts');
 
-        // Get IDs of students who have attempted this exam
-        $attemptedUserIds = $exam->attempts()
-            ->whereNotNull('user_id')
-            ->pluck('user_id')
-            ->unique();
+        // Get IDs of students who have attempted this exam, filtered by class if applicable
+        $attemptedUserIdsQuery = $exam->attempts()->whereNotNull('user_id');
+        if ($classId) {
+            $attemptedUserIdsQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+        }
+        $attemptedUserIds = $attemptedUserIdsQuery->pluck('user_id')->unique();
 
-        // Count enrolled students who have NOT attempted
-        $unattemptedCount = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
-            ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'))
-            ->whereNotIn('id', $attemptedUserIds)
-            ->count();
+        // Count enrolled students who have NOT attempted, filtered by class if applicable
+        $unattemptedQuery = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
+            ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'));
+
+        if ($classId) {
+            $unattemptedQuery->where('school_class_id', $classId);
+        }
+
+        $unattemptedCount = (clone $unattemptedQuery)->whereNotIn('id', $attemptedUserIds)->count();
 
         $attempts = null;
         $unattemptedUsers = null;
 
         if ($activeTab === 'unattempted') {
-            $unattemptedUsers = \App\Models\User::whereIn('role', ['siswa', 'mahasiswa'])
-                ->whereHas('enrollments', fn ($q) => $q->where('course_id', $exam->course_id)->where('status', 'active'))
+            $unattemptedUsers = $unattemptedQuery
                 ->whereNotIn('id', $attemptedUserIds)
                 ->with('schoolClass:id,name')
                 ->select('id', 'name', 'email', 'gender', 'profile_photo', 'school_class_id')
                 ->paginate(20)
                 ->withQueryString();
         } else {
-            $attempts = $exam->attempts()
-                ->with('user:id,name,email')
-                ->where('status', '!=', 'in_progress')
+            $attemptsQuery = $exam->attempts()
+                ->where('status', '!=', 'in_progress');
+
+            if ($classId) {
+                $attemptsQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+            }
+
+            if ($request->query('filter') === 'best') {
+                $userBestQuery = \App\Models\ExamAttempt::where('exam_id', $exam->id)
+                    ->where('status', '!=', 'in_progress')
+                    ->whereNotNull('user_id');
+
+                if ($classId) {
+                    $userBestQuery->whereHas('user', fn($q) => $q->where('school_class_id', $classId));
+                }
+
+                $userBestIds = $userBestQuery
+                    ->select('id', 'user_id', 'score')
+                    ->get()
+                    ->groupBy('user_id')
+                    ->map(fn($group) => $group->sortByDesc('score')->first()->id)
+                    ->values()
+                    ->toArray();
+
+                $guestBestIds = [];
+                if (!$classId) {
+                    $guestBestIds = \App\Models\ExamAttempt::where('exam_id', $exam->id)
+                        ->where('status', '!=', 'in_progress')
+                        ->whereNull('user_id')
+                        ->select('id', 'guest_email', 'score')
+                        ->get()
+                        ->groupBy('guest_email')
+                        ->map(fn($group) => $group->sortByDesc('score')->first()->id)
+                        ->values()
+                        ->toArray();
+                }
+
+                $bestAttemptIds = array_merge($userBestIds, $guestBestIds);
+                $attemptsQuery->whereIn('id', $bestAttemptIds);
+            }
+
+            $attempts = $attemptsQuery
+                ->with('user.schoolClass')
                 ->latest()
                 ->paginate(20)
                 ->withQueryString();
         }
 
-        return view('admin.exams.results', compact('exam', 'statistics', 'attempts', 'unattemptedUsers', 'activeTab', 'unattemptedCount'));
+        return view('admin.exams.results', compact('exam', 'statistics', 'attempts', 'unattemptedUsers', 'activeTab', 'unattemptedCount', 'classes'));
     }
 
     /**
