@@ -8,6 +8,10 @@
     <meta name="description" content="{{ $school->meta_description ?? '' }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @php
+        $faviconUrl = $school->favicon_url ?? asset('favicon.ico');
+    @endphp
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('course/styles/bootstrap4/bootstrap.min.css') }}">
     <link href="{{ asset('course/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css') }}" rel="stylesheet"
         type="text/css">
