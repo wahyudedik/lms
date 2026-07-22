@@ -284,6 +284,124 @@ class ExamAttemptController extends Controller
     }
 
     /**
+     * Track window blur focus loss violation
+     */
+    public function trackWindowBlur(Request $request, ExamAttempt $attempt)
+    {
+        // Check if attempt belongs to this user
+        if ($attempt->user_id !== auth()->id()) {
+            return response()->json(['success' => false], 403);
+        }
+
+        // Check if attempt is still in progress
+        if ($attempt->status !== 'in_progress') {
+            return response()->json(['success' => false], 400);
+        }
+
+        $autoSubmitted = $attempt->recordWindowBlur();
+
+        // Check if attempt was auto-submitted due to max violations
+        if ($autoSubmitted || $attempt->fresh()->status !== 'in_progress') {
+            return response()->json([
+                'success' => true,
+                'autoSubmitted' => true,
+                'message' => 'Maximum window focus losses exceeded. Exam auto-submitted.',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'windowBlurs' => $attempt->window_blurs,
+            'maxWindowBlurs' => $attempt->exam->max_window_blurs,
+        ]);
+    }
+
+    /**
+     * Track multiple screens detection violation
+     */
+    public function trackMultipleScreen(Request $request, ExamAttempt $attempt)
+    {
+        // Check if attempt belongs to this user
+        if ($attempt->user_id !== auth()->id()) {
+            return response()->json(['success' => false], 403);
+        }
+
+        // Check if attempt is still in progress
+        if ($attempt->status !== 'in_progress') {
+            return response()->json(['success' => false], 400);
+        }
+
+        $autoSubmitted = $attempt->recordMultipleScreenDetection();
+
+        if ($autoSubmitted || $attempt->fresh()->status !== 'in_progress') {
+            return response()->json([
+                'success' => true,
+                'autoSubmitted' => true,
+                'message' => 'Multiple screens detected. Exam auto-submitted.',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'multipleScreenDetections' => $attempt->multiple_screen_detections,
+        ]);
+    }
+
+    /**
+     * Track user inactivity violation
+     */
+    public function trackInactivity(Request $request, ExamAttempt $attempt)
+    {
+        // Check if attempt belongs to this user
+        if ($attempt->user_id !== auth()->id()) {
+            return response()->json(['success' => false], 403);
+        }
+
+        // Check if attempt is still in progress
+        if ($attempt->status !== 'in_progress') {
+            return response()->json(['success' => false], 400);
+        }
+
+        $autoSubmitted = $attempt->recordInactivity();
+
+        if ($autoSubmitted || $attempt->fresh()->status !== 'in_progress') {
+            return response()->json([
+                'success' => true,
+                'autoSubmitted' => true,
+                'message' => 'User inactivity duration exceeded. Exam auto-submitted.',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'inactivityTriggers' => $attempt->inactivity_triggers,
+        ]);
+    }
+
+    /**
+     * Track keyboard or inspect key blocks violation
+     */
+    public function trackKeyBlock(Request $request, ExamAttempt $attempt)
+    {
+        // Check if attempt belongs to this user
+        if ($attempt->user_id !== auth()->id()) {
+            return response()->json(['success' => false], 403);
+        }
+
+        // Check if attempt is still in progress
+        if ($attempt->status !== 'in_progress') {
+            return response()->json(['success' => false], 400);
+        }
+
+        $attempt->recordKeyBlock();
+
+        return response()->json([
+            'success' => true,
+            'keyBlocks' => $attempt->key_blocks,
+        ]);
+    }
+
+    /**
      * Get time remaining for an attempt
      */
     public function getTimeRemaining(ExamAttempt $attempt)

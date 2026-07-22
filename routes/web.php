@@ -470,6 +470,10 @@ Route::middleware(['auth', 'verified', 'role:siswa'])->prefix('siswa')->name('si
     // Anti-Cheat Tracking Routes
     Route::post('attempts/{attempt}/track-tab-switch', [App\Http\Controllers\ExamAttemptController::class, 'trackTabSwitch'])->middleware('throttle:30,1')->name('exams.track-tab-switch');
     Route::post('attempts/{attempt}/track-fullscreen-exit', [App\Http\Controllers\ExamAttemptController::class, 'trackFullscreenExit'])->middleware('throttle:30,1')->name('exams.track-fullscreen-exit');
+    Route::post('attempts/{attempt}/track-window-blur', [App\Http\Controllers\ExamAttemptController::class, 'trackWindowBlur'])->middleware('throttle:30,1')->name('exams.track-window-blur');
+    Route::post('attempts/{attempt}/track-multiple-screen', [App\Http\Controllers\ExamAttemptController::class, 'trackMultipleScreen'])->middleware('throttle:30,1')->name('exams.track-multiple-screen');
+    Route::post('attempts/{attempt}/track-inactivity', [App\Http\Controllers\ExamAttemptController::class, 'trackInactivity'])->middleware('throttle:30,1')->name('exams.track-inactivity');
+    Route::post('attempts/{attempt}/track-key-block', [App\Http\Controllers\ExamAttemptController::class, 'trackKeyBlock'])->middleware('throttle:30,1')->name('exams.track-key-block');
     Route::get('attempts/{attempt}/time-remaining', [App\Http\Controllers\ExamAttemptController::class, 'getTimeRemaining'])->name('exams.time-remaining');
 
     // Material Routes (Siswa)
@@ -540,6 +544,10 @@ Route::middleware(['auth', 'verified', 'role:mahasiswa'])->prefix('mahasiswa')->
     // Anti-Cheat Tracking Routes
     Route::post('attempts/{attempt}/track-tab-switch', [App\Http\Controllers\ExamAttemptController::class, 'trackTabSwitch'])->middleware('throttle:30,1')->name('exams.track-tab-switch');
     Route::post('attempts/{attempt}/track-fullscreen-exit', [App\Http\Controllers\ExamAttemptController::class, 'trackFullscreenExit'])->middleware('throttle:30,1')->name('exams.track-fullscreen-exit');
+    Route::post('attempts/{attempt}/track-window-blur', [App\Http\Controllers\ExamAttemptController::class, 'trackWindowBlur'])->middleware('throttle:30,1')->name('exams.track-window-blur');
+    Route::post('attempts/{attempt}/track-multiple-screen', [App\Http\Controllers\ExamAttemptController::class, 'trackMultipleScreen'])->middleware('throttle:30,1')->name('exams.track-multiple-screen');
+    Route::post('attempts/{attempt}/track-inactivity', [App\Http\Controllers\ExamAttemptController::class, 'trackInactivity'])->middleware('throttle:30,1')->name('exams.track-inactivity');
+    Route::post('attempts/{attempt}/track-key-block', [App\Http\Controllers\ExamAttemptController::class, 'trackKeyBlock'])->middleware('throttle:30,1')->name('exams.track-key-block');
     Route::get('attempts/{attempt}/time-remaining', [App\Http\Controllers\ExamAttemptController::class, 'getTimeRemaining'])->name('exams.time-remaining');
 
     // Material Routes (Mahasiswa)

@@ -60,20 +60,35 @@
                     </div>
 
                     <div class="mt-8">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Detail Pelanggaran</h3>
-                        <div class="bg-gray-50 rounded-lg p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <p class="text-sm text-gray-500">Tab Switches</p>
-                                <p class="text-xl font-bold text-gray-900">{{ $incident->details['tab_switches'] ?? '0' }}</p>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Detail Pelanggaran Komprehensif</h3>
+                        <div class="bg-gray-50 rounded-lg p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                            <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase font-semibold">Pindah Tab</p>
+                                <p class="text-2xl font-bold text-red-600 mt-1">{{ $incident->details['tab_switches'] ?? '0' }}x</p>
                             </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Fullscreen Exits</p>
-                                <p class="text-xl font-bold text-gray-900">{{ $incident->details['fullscreen_exits'] ?? '0' }}</p>
+                            <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase font-semibold">Keluar App</p>
+                                <p class="text-2xl font-bold text-red-600 mt-1">{{ $incident->details['window_blurs'] ?? '0' }}x</p>
                             </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Tipe Deteksi</p>
-                                <p class="text-xl font-bold text-gray-900">{{ $incident->details['type'] ?? $incident->type }}</p>
+                            <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase font-semibold">Keluar Fullscreen</p>
+                                <p class="text-2xl font-bold text-red-600 mt-1">{{ $incident->details['fullscreen_exits'] ?? '0' }}x</p>
                             </div>
+                            <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase font-semibold">Layar Ganda</p>
+                                <p class="text-2xl font-bold text-red-600 mt-1">{{ ($incident->details['multiple_screens'] ?? 0) > 0 ? 'Ya' : 'Tidak' }}</p>
+                            </div>
+                            <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase font-semibold">Inaktivitas</p>
+                                <p class="text-2xl font-bold text-red-600 mt-1">{{ $incident->details['inactivity_triggers'] ?? '0' }}x</p>
+                            </div>
+                            <div class="text-center p-3 bg-white rounded-lg shadow-sm">
+                                <p class="text-xs text-gray-500 uppercase font-semibold">Copy/Inspect</p>
+                                <p class="text-2xl font-bold text-red-600 mt-1">{{ $incident->details['key_blocks'] ?? '0' }}x</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-xs text-gray-500">
+                            <strong>Tipe Deteksi Pemicu:</strong> {{ $incident->details['type'] ?? $incident->type }}
                         </div>
                     </div>
 

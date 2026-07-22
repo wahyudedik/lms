@@ -92,6 +92,10 @@ class ExamAttempt extends Model
         'status',
         'tab_switches',
         'fullscreen_exits',
+        'window_blurs',
+        'multiple_screen_detections',
+        'inactivity_triggers',
+        'key_blocks',
         'violations',
         'shuffled_question_ids',
         'ip_address',
@@ -106,6 +110,10 @@ class ExamAttempt extends Model
         'violations' => 'array',
         'shuffled_question_ids' => 'array',
         'time_spent' => 'float',
+        'window_blurs' => 'integer',
+        'multiple_screen_detections' => 'integer',
+        'inactivity_triggers' => 'integer',
+        'key_blocks' => 'integer',
     ];
 
     /**
@@ -401,6 +409,150 @@ class ExamAttempt extends Model
     }
 
     /**
+     * Record window blur violation
+     */
+    public function recordWindowBlur(): bool
+    {
+        $this->refresh();
+
+        if ($this->status !== 'in_progress') {
+            return false;
+        }
+
+        $this->increment('window_blurs');
+        $this->refresh();
+
+        $violations = $this->violations ?? [];
+        $violations[] = [
+            'type' => 'window_blur',
+            'reason' => 'Siswa membuka aplikasi luar / notifikasi',
+            'timestamp' => now()->toIso8601String(),
+        ];
+        $this->violations = $violations;
+        $this->save();
+
+        $autoSubmitted = false;
+
+        if (
+            $this->exam->detect_window_blur
+            && $this->window_blurs >= $this->exam->max_window_blurs
+            && $this->status === 'in_progress'
+        ) {
+            $this->submit();
+            $this->blockUserForCheating('Terdeteksi kecurangan ujian (keluar aplikasi / window blur berlebih)', [
+                'type' => 'window_blur_threshold',
+                'max_window_blurs' => $this->exam->max_window_blurs,
+            ]);
+            $autoSubmitted = true;
+        }
+
+        return $autoSubmitted;
+    }
+
+    /**
+     * Record multiple screens detection violation
+     */
+    public function recordMultipleScreenDetection(): bool
+    {
+        $this->refresh();
+
+        if ($this->status !== 'in_progress') {
+            return false;
+        }
+
+        $this->increment('multiple_screen_detections');
+        $this->refresh();
+
+        $violations = $this->violations ?? [];
+        $violations[] = [
+            'type' => 'multiple_screens',
+            'reason' => 'Terdeteksi monitor tambahan aktif',
+            'timestamp' => now()->toIso8601String(),
+        ];
+        $this->violations = $violations;
+        $this->save();
+
+        $autoSubmitted = false;
+
+        if (
+            $this->exam->detect_multiple_screens
+            && $this->status === 'in_progress'
+        ) {
+            $this->submit();
+            $this->blockUserForCheating('Terdeteksi kecurangan ujian (menggunakan layar ganda / multiple monitors)', [
+                'type' => 'multiple_screens_detection',
+            ]);
+            $autoSubmitted = true;
+        }
+
+        return $autoSubmitted;
+    }
+
+    /**
+     * Record inactivity violation
+     */
+    public function recordInactivity(): bool
+    {
+        $this->refresh();
+
+        if ($this->status !== 'in_progress') {
+            return false;
+        }
+
+        $this->increment('inactivity_triggers');
+        $this->refresh();
+
+        $violations = $this->violations ?? [];
+        $violations[] = [
+            'type' => 'inactivity',
+            'reason' => 'Siswa diam / tidak melakukan aktivitas selama batas waktu',
+            'timestamp' => now()->toIso8601String(),
+        ];
+        $this->violations = $violations;
+        $this->save();
+
+        $autoSubmitted = false;
+
+        if (
+            $this->exam->detect_inactivity
+            && $this->status === 'in_progress'
+        ) {
+            $this->submit();
+            $this->blockUserForCheating('Terdeteksi kecurangan ujian (tidak merespon / inaktivitas berlebih)', [
+                'type' => 'inactivity_threshold',
+                'max_inactivity_minutes' => $this->exam->max_inactivity_minutes,
+            ]);
+            $autoSubmitted = true;
+        }
+
+        return $autoSubmitted;
+    }
+
+    /**
+     * Record keyboard/right-click block violation
+     */
+    public function recordKeyBlock(): void
+    {
+        $this->refresh();
+
+        if ($this->status !== 'in_progress') {
+            return;
+        }
+
+        $this->increment('key_blocks');
+        $this->refresh();
+
+        $violations = $this->violations ?? [];
+        $violations[] = [
+            'type' => 'key_block',
+            'reason' => 'Mencoba menekan shortcut keyboard yang dilarang, klik kanan, atau menyalin teks',
+            'timestamp' => now()->toIso8601String(),
+        ];
+        $this->violations = $violations;
+        $this->save();
+    }
+
+    /**
      * Block associated user login if cheating is detected.
      * Implements graduated response: warn first, block on repeat offenses.
      *
@@ -426,7 +578,12 @@ class ExamAttempt extends Model
             ->whereNull('resolved_at')
             ->count();
 
-        $isHardBlock = $details['type'] === 'tab_switch_threshold'
+        $isHardBlock = in_array($details['type'] ?? '', [
+                'tab_switch_threshold',
+                'window_blur_threshold',
+                'multiple_screens_detection',
+                'inactivity_threshold'
+            ])
             || $priorIncidents >= 1
             || ($user->cheat_warning_count ?? 0) >= 2;
 
@@ -442,6 +599,10 @@ class ExamAttempt extends Model
                 'details' => array_merge([
                     'tab_switches' => $this->tab_switches,
                     'fullscreen_exits' => $this->fullscreen_exits,
+                    'window_blurs' => $this->window_blurs,
+                    'multiple_screens' => $this->multiple_screen_detections,
+                    'inactivity_triggers' => $this->inactivity_triggers,
+                    'key_blocks' => $this->key_blocks,
                 ], $details),
                 'blocked_at' => now(),
                 'status' => 'blocked',
@@ -466,6 +627,10 @@ class ExamAttempt extends Model
                 'details' => array_merge([
                     'tab_switches' => $this->tab_switches,
                     'fullscreen_exits' => $this->fullscreen_exits,
+                    'window_blurs' => $this->window_blurs,
+                    'multiple_screens' => $this->multiple_screen_detections,
+                    'inactivity_triggers' => $this->inactivity_triggers,
+                    'key_blocks' => $this->key_blocks,
                     'graduated_response' => 'warning',
                 ], $details),
                 'blocked_at' => null,

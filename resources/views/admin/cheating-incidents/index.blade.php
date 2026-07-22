@@ -141,13 +141,17 @@
                                             <p class="text-xs text-gray-500">Attempt
                                                 #{{ $incident->examAttempt?->id ?? '-' }}</p>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <p class="text-sm text-gray-900">{{ $incident->reason ?? '—' }}</p>
+                                        <td class="px-6 py-4 text-xs">
+                                            <p class="text-sm font-semibold text-gray-900">{{ $incident->reason ?? '—' }}</p>
                                             @if ($incident->details)
-                                                <p class="text-xs text-gray-500">
-                                                    Tab Switch: {{ $incident->details['tab_switches'] ?? '-' }},
-                                                    Fullscreen: {{ $incident->details['fullscreen_exits'] ?? '-' }}
-                                                </p>
+                                                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-gray-500 max-w-sm mt-1 bg-gray-50 p-2 rounded">
+                                                    <div>Tab Switch: <span class="font-bold text-gray-800">{{ $incident->details['tab_switches'] ?? '0' }}x</span></div>
+                                                    <div>Keluar App: <span class="font-bold text-gray-800">{{ $incident->details['window_blurs'] ?? '0' }}x</span></div>
+                                                    <div>Fullscreen Exit: <span class="font-bold text-gray-800">{{ $incident->details['fullscreen_exits'] ?? '0' }}x</span></div>
+                                                    <div>Layar Ganda: <span class="font-bold text-gray-800">{{ ($incident->details['multiple_screens'] ?? 0) > 0 ? 'Ya' : 'Tidak' }}</span></div>
+                                                    <div>Inaktivitas: <span class="font-bold text-gray-800">{{ $incident->details['inactivity_triggers'] ?? '0' }}x</span></div>
+                                                    <div>Copy/Inspect: <span class="font-bold text-gray-800">{{ $incident->details['key_blocks'] ?? '0' }}x</span></div>
+                                                </div>
                                             @endif
                                             @if ($incident->warning_count > 0)
                                                 <span

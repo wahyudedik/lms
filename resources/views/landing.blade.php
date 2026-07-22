@@ -26,6 +26,7 @@
         html {
             scroll-behavior: smooth;
         }
+
         /* Auto-resize logo image to fit header & footer cleanly */
         .logo img {
             max-height: 40px;
@@ -34,26 +35,33 @@
             object-fit: contain;
             vertical-align: middle;
         }
+
         .footer_content .logo img {
             max-height: 50px;
             max-width: 150px;
         }
+
         /* Enforce uniform course card image dimensions */
         .course_box .card-img-top {
             height: 200px;
             object-fit: cover;
             width: 100%;
         }
-        .footer_copyright, .footer_copyright span {
+
+        .footer_copyright,
+        .footer_copyright span {
             color: #a5a5a5 !important;
         }
+
         .footer_copyright i {
             color: #ef4444 !important;
         }
+
         .footer_copyright a {
             color: #ffb606 !important;
             transition: color 200ms ease;
         }
+
         .footer_copyright a:hover {
             color: #ffffff !important;
         }
@@ -71,7 +79,8 @@
                 <!-- Logo -->
                 <div class="logo_container">
                     <div class="logo">
-                        <img src="{{ $school->logo_url }}" alt="">
+                        <img src="{{ $school->logo_url }}" alt=""
+                            style="max-height: 40px; width: auto; max-width: 120px; object-fit: contain;">
                         <span>{{ $school->name }}</span>
                     </div>
                 </div>
@@ -96,7 +105,7 @@
             </div>
             <div class="header_side d-flex flex-row justify-content-center align-items-center">
                 <img src="{{ asset('course/images/phone-call.svg') }}" alt="">
-                <span>{{ $school->contact_whatsapp ?? $school->contact_phone ?? '+43 4566 7788 2457' }}</span>
+                <span>{{ $school->contact_whatsapp ?? ($school->contact_phone ?? '+43 4566 7788 2457') }}</span>
             </div>
 
             <!-- Hamburger -->
@@ -134,11 +143,14 @@
 
                     <div class="menu_social_container menu_mm">
                         <ul class="menu_social menu_mm">
-                            @if($school->contact_whatsapp)
-                                <li class="menu_social_item menu_mm"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $school->contact_whatsapp) }}" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                            @if ($school->contact_whatsapp)
+                                <li class="menu_social_item menu_mm"><a
+                                        href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $school->contact_whatsapp) }}"
+                                        target="_blank"><i class="fab fa-whatsapp"></i></a></li>
                             @endif
-                            @if($school->social_youtube)
-                                <li class="menu_social_item menu_mm"><a href="{{ $school->social_youtube }}" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                            @if ($school->social_youtube)
+                                <li class="menu_social_item menu_mm"><a href="{{ $school->social_youtube }}"
+                                        target="_blank"><i class="fab fa-youtube"></i></a></li>
                             @endif
                             <li class="menu_social_item menu_mm"><a href="{{ $school->social_instagram ?? '#' }}"><i
                                         class="fab fa-instagram"></i></a></li>
@@ -172,19 +184,25 @@
                             <div class="hero_slide_content text-center">
                                 <h1 data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
                                     {!! $school->hero_title ?? 'Get your <span>Education</span> today!' !!}</h1>
-                                @if($school->hero_subtitle)
-                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                @if ($school->hero_subtitle)
+                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut"
+                                        style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                                         {{ $school->hero_subtitle }}
                                     </h2>
                                 @endif
-                                @if($school->hero_description)
-                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                @if ($school->hero_description)
+                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut"
+                                        style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                                         {{ $school->hero_description }}
                                     </p>
                                 @endif
-                                @if($school->hero_cta_text)
-                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
-                                        <a href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
+                                @if ($school->hero_cta_text)
+                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut">
+                                        <a
+                                            href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
                                     </div>
                                 @endif
                             </div>
@@ -199,19 +217,25 @@
                             <div class="hero_slide_content text-center">
                                 <h1 data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
                                     {!! $school->hero_title ?? 'Get your <span>Education</span> today!' !!}</h1>
-                                @if($school->hero_subtitle)
-                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                @if ($school->hero_subtitle)
+                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut"
+                                        style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                                         {{ $school->hero_subtitle }}
                                     </h2>
                                 @endif
-                                @if($school->hero_description)
-                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                @if ($school->hero_description)
+                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut"
+                                        style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                                         {{ $school->hero_description }}
                                     </p>
                                 @endif
-                                @if($school->hero_cta_text)
-                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
-                                        <a href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
+                                @if ($school->hero_cta_text)
+                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut">
+                                        <a
+                                            href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
                                     </div>
                                 @endif
                             </div>
@@ -226,19 +250,25 @@
                             <div class="hero_slide_content text-center">
                                 <h1 data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
                                     {!! $school->hero_title ?? 'Get your <span>Education</span> today!' !!}</h1>
-                                @if($school->hero_subtitle)
-                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                @if ($school->hero_subtitle)
+                                    <h2 class="text-white mt-3" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut"
+                                        style="font-size: 24px; font-weight: 300; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                                         {{ $school->hero_subtitle }}
                                     </h2>
                                 @endif
-                                @if($school->hero_description)
-                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut" style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                                @if ($school->hero_description)
+                                    <p class="text-white mt-3 mb-4 mx-auto" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut"
+                                        style="font-size: 16px; max-width: 700px; opacity: 0.9; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
                                         {{ $school->hero_description }}
                                     </p>
                                 @endif
-                                @if($school->hero_cta_text)
-                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp" data-animation-out="animate-out fadeOut">
-                                        <a href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
+                                @if ($school->hero_cta_text)
+                                    <div class="button button_1 mx-auto mt-4" data-animation-in="fadeInUp"
+                                        data-animation-out="animate-out fadeOut">
+                                        <a
+                                            href="{{ $school->hero_cta_link ?? route('login') }}">{{ $school->hero_cta_text }}</a>
                                     </div>
                                 @endif
                             </div>
@@ -295,25 +325,26 @@
         </div>
         <!-- About Us -->
         @if ($school->about_title || $school->about_content)
-        <div id="about" class="about_section page_section bg-light py-5">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <div class="section_title text-left mb-4">
-                            <h1>{{ $school->about_title ?? 'About Us' }}</h1>
+            <div id="about" class="about_section page_section bg-light py-5">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="section_title text-left mb-4">
+                                <h1>{{ $school->about_title ?? 'About Us' }}</h1>
+                            </div>
+                            <p class="about_text" style="font-size: 16px; line-height: 1.8; color: #555;">
+                                {!! nl2br(e($school->about_content)) !!}
+                            </p>
                         </div>
-                        <p class="about_text" style="font-size: 16px; line-height: 1.8; color: #555;">
-                            {!! nl2br(e($school->about_content)) !!}
-                        </p>
+                        @if ($school->about_image_url)
+                            <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                                <img src="{{ $school->about_image_url }}" alt="{{ $school->about_title }}"
+                                    class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
+                            </div>
+                        @endif
                     </div>
-                    @if ($school->about_image_url)
-                    <div class="col-lg-6 text-center mt-4 mt-lg-0">
-                        <img src="{{ $school->about_image_url }}" alt="{{ $school->about_title }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
-                    </div>
-                    @endif
                 </div>
             </div>
-        </div>
         @endif
 
         <!-- Popular -->
@@ -328,16 +359,23 @@
                     </div>
                 </div>
 
-                @if(request()->filled('name') || request()->filled('category') || request()->filled('degree'))
+                @if (request()->filled('name') || request()->filled('category') || request()->filled('degree'))
                     <div class="row mb-4">
                         <div class="col-12 text-center">
                             <h5 class="text-muted">
                                 Hasil Pencarian:
-                                @if(request('name')) nama "{{ request('name') }}" @endif
-                                @if(request('category')) kategori "{{ request('category') }}" @endif
-                                @if(request('degree')) jenjang "{{ request('degree') }}" @endif
+                                @if (request('name'))
+                                    nama "{{ request('name') }}"
+                                @endif
+                                @if (request('category'))
+                                    kategori "{{ request('category') }}"
+                                @endif
+                                @if (request('degree'))
+                                    jenjang "{{ request('degree') }}"
+                                @endif
                             </h5>
-                            <a href="{{ route('landing') }}#courses" class="badge badge-warning p-2 text-white mt-1">Reset Pencarian</a>
+                            <a href="{{ route('landing') }}#courses"
+                                class="badge badge-warning p-2 text-white mt-1">Reset Pencarian</a>
                         </div>
                     </div>
                 @endif
@@ -372,9 +410,10 @@
                         @endforeach
                     @else
                         <div class="col-12 text-center py-5">
-                            @if(request()->filled('name') || request()->filled('category') || request()->filled('degree'))
+                            @if (request()->filled('name') || request()->filled('category') || request()->filled('degree'))
                                 <p class="text-muted">Belum ada kursus yang sesuai dengan kriteria pencarian Anda.</p>
-                                <a href="{{ route('landing') }}#courses" class="btn btn-warning mt-2 text-white">Reset Pencarian</a>
+                                <a href="{{ route('landing') }}#courses"
+                                    class="btn btn-warning mt-2 text-white">Reset Pencarian</a>
                             @else
                                 <p>Belum ada kursus tersedia.</p>
                             @endif
@@ -471,43 +510,60 @@
 
         <!-- Milestones (Statistics) -->
         @if ($school->statistics && count($school->statistics) > 0)
-        @php
-            $getIconForLabel = function($label) {
-                $label = strtolower($label);
-                if (str_contains($label, 'siswa') || str_contains($label, 'student') || str_contains($label, 'murid')) {
-                    return 'fa-user-graduate';
-                }
-                if (str_contains($label, 'guru') || str_contains($label, 'teacher') || str_contains($label, 'dosen') || str_contains($label, 'instructor')) {
-                    return 'fa-chalkboard-teacher';
-                }
-                if (str_contains($label, 'kursus') || str_contains($label, 'course') || str_contains($label, 'materi')) {
-                    return 'fa-book-open';
-                }
-                if (str_contains($label, 'kelas') || str_contains($label, 'class')) {
-                    return 'fa-school';
-                }
-                return 'fa-chart-line';
-            };
-        @endphp
-        <div class="milestones page_section bg-dark text-white py-5" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);">
-            <div class="container">
-                <div class="row">
-                    @foreach ($school->statistics as $stat)
-                        <div class="col-lg-3 col-md-6 milestone_col text-center my-3">
-                            <div class="milestone_icon mb-3">
-                                <i class="fas {{ $getIconForLabel($stat['label']) }} text-warning" style="font-size: 32px; color: #ffb606 !important;"></i>
+            @php
+                $getIconForLabel = function ($label) {
+                    $label = strtolower($label);
+                    if (
+                        str_contains($label, 'siswa') ||
+                        str_contains($label, 'student') ||
+                        str_contains($label, 'murid')
+                    ) {
+                        return 'fa-user-graduate';
+                    }
+                    if (
+                        str_contains($label, 'guru') ||
+                        str_contains($label, 'teacher') ||
+                        str_contains($label, 'dosen') ||
+                        str_contains($label, 'instructor')
+                    ) {
+                        return 'fa-chalkboard-teacher';
+                    }
+                    if (
+                        str_contains($label, 'kursus') ||
+                        str_contains($label, 'course') ||
+                        str_contains($label, 'materi')
+                    ) {
+                        return 'fa-book-open';
+                    }
+                    if (str_contains($label, 'kelas') || str_contains($label, 'class')) {
+                        return 'fa-school';
+                    }
+                    return 'fa-chart-line';
+                };
+            @endphp
+            <div class="milestones page_section bg-dark text-white py-5"
+                style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);">
+                <div class="container">
+                    <div class="row">
+                        @foreach ($school->statistics as $stat)
+                            <div class="col-lg-3 col-md-6 milestone_col text-center my-3">
+                                <div class="milestone_icon mb-3">
+                                    <i class="fas {{ $getIconForLabel($stat['label']) }} text-warning"
+                                        style="font-size: 32px; color: #ffb606 !important;"></i>
+                                </div>
+                                <div class="milestone_counter font-weight-bold display-4 text-warning mb-2"
+                                    style="font-size: 42px; color: #ffb606 !important;">
+                                    {{ $stat['value'] }}
+                                </div>
+                                <div class="milestone_text text-uppercase tracking-wider text-muted font-weight-bold"
+                                    style="font-size: 14px; color: #cbd5e0 !important;">
+                                    {{ $stat['label'] }}
+                                </div>
                             </div>
-                            <div class="milestone_counter font-weight-bold display-4 text-warning mb-2" style="font-size: 42px; color: #ffb606 !important;">
-                                {{ $stat['value'] }}
-                            </div>
-                            <div class="milestone_text text-uppercase tracking-wider text-muted font-weight-bold" style="font-size: 14px; color: #cbd5e0 !important;">
-                                {{ $stat['label'] }}
-                            </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
         @endif
 
         <!-- Testimonials -->
@@ -794,7 +850,8 @@
                             <!-- Logo -->
                             <div class="logo_container">
                                 <div class="logo">
-                                    <img src="{{ $school->logo_url }}" alt="">
+                                    <img src="{{ $school->logo_url }}" alt=""
+                                        style="max-height: 50px; width: auto; max-width: 150px; object-fit: contain;">
                                     <span>{{ $school->name }}</span>
                                 </div>
                             </div>
@@ -812,10 +869,14 @@
                             <div class="footer_column_content">
                                 <ul>
                                     <li class="footer_list_item"><a href="{{ route('landing') }}">Home</a></li>
-                                    <li class="footer_list_item"><a href="{{ route('landing') }}#about">About Us</a></li>
-                                    <li class="footer_list_item"><a href="{{ route('landing') }}#courses">Courses</a></li>
-                                    <li class="footer_list_item"><a href="{{ route('guest.exams.index') }}">Ujian Tamu</a></li>
-                                    <li class="footer_list_item"><a href="{{ route('landing') }}#contact">Contact</a></li>
+                                    <li class="footer_list_item"><a href="{{ route('landing') }}#about">About Us</a>
+                                    </li>
+                                    <li class="footer_list_item"><a href="{{ route('landing') }}#courses">Courses</a>
+                                    </li>
+                                    <li class="footer_list_item"><a href="{{ route('guest.exams.index') }}">Ujian
+                                            Tamu</a></li>
+                                    <li class="footer_list_item"><a href="{{ route('landing') }}#contact">Contact</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -826,11 +887,16 @@
                             <div class="footer_column_title">Usefull Links</div>
                             <div class="footer_column_content">
                                 <ul>
-                                    <li class="footer_list_item"><a href="{{ route('landing') }}#testimonials">Testimonials</a></li>
-                                    <li class="footer_list_item"><a href="#" class="placeholder-link" data-title="FAQ (Pertanyaan Umum)">FAQ</a></li>
-                                    <li class="footer_list_item"><a href="#" class="placeholder-link" data-title="Komunitas Siswa & Alumni">Community</a></li>
-                                    <li class="footer_list_item"><a href="#" class="placeholder-link" data-title="Galeri & Foto Kampus">Campus Pictures</a></li>
-                                    <li class="footer_list_item"><a href="#" class="placeholder-link" data-title="Informasi Biaya Pendidikan (Tuitions)">Tuitions</a></li>
+                                    <li class="footer_list_item"><a
+                                            href="{{ route('landing') }}#testimonials">Testimonials</a></li>
+                                    <li class="footer_list_item"><a href="#" class="placeholder-link"
+                                            data-title="FAQ (Pertanyaan Umum)">FAQ</a></li>
+                                    <li class="footer_list_item"><a href="#" class="placeholder-link"
+                                            data-title="Komunitas Siswa & Alumni">Community</a></li>
+                                    <li class="footer_list_item"><a href="#" class="placeholder-link"
+                                            data-title="Galeri & Foto Kampus">Campus Pictures</a></li>
+                                    <li class="footer_list_item"><a href="#" class="placeholder-link"
+                                            data-title="Informasi Biaya Pendidikan (Tuitions)">Tuitions</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -878,11 +944,14 @@
                     </div>
                     <div class="footer_social ml-sm-auto">
                         <ul class="menu_social">
-                            @if($school->contact_whatsapp)
-                                <li class="menu_social_item"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $school->contact_whatsapp) }}" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                            @if ($school->contact_whatsapp)
+                                <li class="menu_social_item"><a
+                                        href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $school->contact_whatsapp) }}"
+                                        target="_blank"><i class="fab fa-whatsapp"></i></a></li>
                             @endif
-                            @if($school->social_youtube)
-                                <li class="menu_social_item"><a href="{{ $school->social_youtube }}" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                            @if ($school->social_youtube)
+                                <li class="menu_social_item"><a href="{{ $school->social_youtube }}"
+                                        target="_blank"><i class="fab fa-youtube"></i></a></li>
                             @endif
                             <li class="menu_social_item"><a href="{{ $school->social_instagram ?? '#' }}"><i
                                         class="fab fa-instagram"></i></a></li>
@@ -926,7 +995,8 @@
                 if (email) {
                     Swal.fire({
                         title: 'Langganan Berhasil!',
-                        text: 'Terima kasih! Email Anda (' + email + ') telah terdaftar untuk menerima berita terbaru dari kami.',
+                        text: 'Terima kasih! Email Anda (' + email +
+                            ') telah terdaftar untuk menerima berita terbaru dari kami.',
                         icon: 'success',
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#ffb606'

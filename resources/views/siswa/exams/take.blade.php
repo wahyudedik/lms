@@ -66,7 +66,7 @@
         </div>
 
         <!-- Warning Bar (if anti-cheat active) -->
-        @if ($exam->detect_tab_switch || $exam->require_fullscreen)
+        @if ($exam->detect_tab_switch || $exam->require_fullscreen || $exam->detect_window_blur || $exam->detect_multiple_screens || $exam->detect_inactivity || $exam->block_keys_and_copy)
             <div id="warning-bar" class="hidden bg-yellow-500 text-white py-2 px-6 text-center">
                 <i class="fas fa-exclamation-triangle mr-2"></i>
                 <span id="warning-message"></span>
@@ -308,10 +308,19 @@
         const requireFullscreen = {{ $exam->require_fullscreen ? 'true' : 'false' }};
         const detectTabSwitch = {{ $exam->detect_tab_switch ? 'true' : 'false' }};
         const maxTabSwitches = {{ $exam->max_tab_switches ?? 999 }};
+        const detectWindowBlur = {{ $exam->detect_window_blur ? 'true' : 'false' }};
+        const maxWindowBlurs = {{ $exam->max_window_blurs ?? 999 }};
+        const detectMultipleScreens = {{ $exam->detect_multiple_screens ? 'true' : 'false' }};
+        const detectInactivity = {{ $exam->detect_inactivity ? 'true' : 'false' }};
+        const maxInactivityMinutes = {{ $exam->max_inactivity_minutes ?? 999 }};
+        const blockKeysAndCopy = {{ $exam->block_keys_and_copy ? 'true' : 'false' }};
         const totalQuestions = {{ $questions->count() }};
         let answeredCount = {{ $initialAnsweredCount }};
         const answeredCountEl = document.getElementById('answered-count');
         let tabSwitchCount = {{ $attempt->tab_switches }};
+        let windowBlurCount = {{ $attempt->window_blurs }};
+        let multipleScreenCount = {{ $attempt->multiple_screen_detections }};
+        let inactivityCount = {{ $attempt->inactivity_triggers }};
         let currentQuestionIndex = 0;
         let timeRemaining = 0;
         let timerInterval;
@@ -526,7 +535,13 @@
         }
 
         // Anti-cheat: Fullscreen
-        if (requireFullscreen) {
+        const isFullscreenSupported = !!(
+            document.documentElement.requestFullscreen ||
+            document.documentElement.webkitRequestFullscreen ||
+            document.documentElement.msRequestFullscreen
+        );
+
+        if (requireFullscreen && isFullscreenSupported) {
             function requestFullscreen() {
                 const elem = document.documentElement;
                 if (elem.requestFullscreen) {
@@ -566,7 +581,7 @@
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
-                });
+                }).catch(err => console.error('Error tracking fullscreen exit:', err));
                 promptFullscreen('Aktifkan kembali mode layar penuh untuk melanjutkan ujian.');
             };
 
@@ -574,6 +589,8 @@
             document.addEventListener('fullscreenchange', handleFullscreenExit);
             document.addEventListener('webkitfullscreenchange', handleFullscreenExit);
             document.addEventListener('msfullscreenchange', handleFullscreenExit);
+        } else if (requireFullscreen && !isFullscreenSupported) {
+            showWarning('Mode layar penuh diwajibkan, namun tidak didukung oleh perangkat/browser Anda. Harap kerjakan dengan jujur.');
         }
 
         // Anti-cheat: Tab switching
@@ -585,19 +602,262 @@
                     fetch(`/${rolePrefix}/attempts/${attemptId}/track-tab-switch`, {
                         method: 'POST',
                         headers: {
+                            'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                         }
+                    })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('Failed to track tab switch');
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.autoSubmitted) {
+                            autoSubmit('Batas perpindahan tab tercapai!');
+                        } else {
+                            if (typeof data.tabSwitches !== 'undefined') {
+                                tabSwitchCount = data.tabSwitches;
+                            }
+                            showWarning(
+                                `Peringatan! Jangan keluar dari halaman ujian. (${tabSwitchCount}/${maxTabSwitches})`
+                            );
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error tracking tab switch:', err);
+                        // Fallback client-side behavior
+                        if (tabSwitchCount >= maxTabSwitches) {
+                            autoSubmit('Batas perpindahan tab tercapai!');
+                        } else {
+                            showWarning(
+                                `Peringatan! Jangan keluar dari halaman ujian. (${tabSwitchCount}/${maxTabSwitches})`
+                            );
+                        }
                     });
-
-                    if (tabSwitchCount >= maxTabSwitches) {
-                        autoSubmit('Batas perpindahan tab tercapai!');
-                    } else {
-                        showWarning(
-                            `Peringatan! Jangan keluar dari halaman ujian. (${tabSwitchCount}/${maxTabSwitches})`
-                        );
-                    }
                 }
             });
+        }
+
+        // Anti-cheat: Window focus loss (Window Blur)
+        if (detectWindowBlur) {
+            window.addEventListener('blur', () => {
+                windowBlurCount++;
+
+                fetch(`/${rolePrefix}/attempts/${attemptId}/track-window-blur`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Failed to track window blur');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.autoSubmitted) {
+                        autoSubmit('Batas keluar aplikasi tercapai!');
+                    } else {
+                        if (typeof data.windowBlurs !== 'undefined') {
+                            windowBlurCount = data.windowBlurs;
+                        }
+                        showWarning(
+                            `Peringatan! Jangan keluar dari jendela aplikasi ujian. (${windowBlurCount}/${maxWindowBlurs})`
+                        );
+                    }
+                })
+                .catch(err => {
+                    console.error('Error tracking window blur:', err);
+                    // Fallback client-side behavior
+                    if (windowBlurCount >= maxWindowBlurs) {
+                        autoSubmit('Batas keluar aplikasi tercapai!');
+                    } else {
+                        showWarning(
+                            `Peringatan! Jangan keluar dari jendela aplikasi ujian. (${windowBlurCount}/${maxWindowBlurs})`
+                        );
+                    }
+                });
+            });
+        }
+
+        // Anti-cheat: Multiple Screens / Dual Monitors
+        if (detectMultipleScreens) {
+            const checkMultipleScreens = () => {
+                if (window.screen && window.screen.isExtended) {
+                    reportMultipleScreens();
+                }
+            };
+
+            // Check using modern window.screen.isExtended (if supported)
+            if (window.screen && typeof window.screen.isExtended !== 'undefined') {
+                checkMultipleScreens();
+                window.screen.addEventListener('change', checkMultipleScreens);
+            }
+        }
+
+        function reportMultipleScreens() {
+            multipleScreenCount++;
+            fetch(`/${rolePrefix}/attempts/${attemptId}/track-multiple-screen`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Failed to track multiple screens');
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.autoSubmitted) {
+                    autoSubmit('Layar ganda terdeteksi!');
+                } else {
+                    if (typeof data.multipleScreenDetections !== 'undefined') {
+                        multipleScreenCount = data.multipleScreenDetections;
+                    }
+                    showWarning('Peringatan! Penggunaan layar ganda / monitor tambahan terdeteksi.');
+                }
+            })
+            .catch(err => {
+                console.error('Error tracking multiple screens:', err);
+                showWarning('Peringatan! Penggunaan layar ganda / monitor tambahan terdeteksi.');
+            });
+        }
+
+        // Anti-cheat: User Inactivity
+        if (detectInactivity) {
+            let inactivityTimeout;
+            const inactivityMs = maxInactivityMinutes * 60 * 1000;
+
+            const resetInactivityTimer = () => {
+                clearTimeout(inactivityTimeout);
+                inactivityTimeout = setTimeout(triggerInactivityViolation, inactivityMs);
+            };
+
+            // Support touch start and touch move for mobile compatibility
+            const activityEvents = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'touchmove', 'click'];
+            activityEvents.forEach(evt => {
+                document.addEventListener(evt, resetInactivityTimer, { passive: true });
+            });
+
+            resetInactivityTimer();
+        }
+
+        function triggerInactivityViolation() {
+            inactivityCount++;
+            fetch(`/${rolePrefix}/attempts/${attemptId}/track-inactivity`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Failed to track inactivity');
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.autoSubmitted) {
+                    autoSubmit('Anda tidak merespon ujian!');
+                } else {
+                    if (typeof data.inactivityTriggers !== 'undefined') {
+                        inactivityCount = data.inactivityTriggers;
+                    }
+                    showWarning('Peringatan! Tidak ada aktivitas terdeteksi dalam beberapa menit terakhir.');
+                }
+            })
+            .catch(err => {
+                console.error('Error tracking inactivity:', err);
+                showWarning('Peringatan! Tidak ada aktivitas terdeteksi dalam beberapa menit terakhir.');
+            });
+        }
+
+        // Anti-cheat: Inspect element, copy-paste, and click blocks
+        if (blockKeysAndCopy) {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                body {
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                }
+            `;
+            document.head.appendChild(style);
+
+            document.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                reportKeyBlock('Klik kanan diblokir');
+            });
+
+            document.addEventListener('copy', e => {
+                e.preventDefault();
+                reportKeyBlock('Menyalin teks diblokir');
+            });
+
+            document.addEventListener('cut', e => {
+                e.preventDefault();
+                reportKeyBlock('Memotong teks diblokir');
+            });
+
+            document.addEventListener('paste', e => {
+                e.preventDefault();
+                reportKeyBlock('Menempel teks diblokir');
+            });
+
+            document.addEventListener('selectstart', e => {
+                e.preventDefault();
+            });
+
+            document.addEventListener('keydown', e => {
+                const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+                const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey;
+                const shift = e.shiftKey;
+
+                if (e.keyCode === 123 || e.key === 'F12') {
+                    e.preventDefault();
+                    reportKeyBlock('Inspect Element (F12) diblokir');
+                } else if (cmdOrCtrl && shift && (e.key === 'i' || e.key === 'I' || e.keyCode === 73)) {
+                    e.preventDefault();
+                    reportKeyBlock('Inspect Element (Ctrl+Shift+I) diblokir');
+                } else if (cmdOrCtrl && shift && (e.key === 'j' || e.key === 'J' || e.keyCode === 74)) {
+                    e.preventDefault();
+                    reportKeyBlock('Console (Ctrl+Shift+J) diblokir');
+                } else if (cmdOrCtrl && shift && (e.key === 'c' || e.key === 'C' || e.keyCode === 67)) {
+                    e.preventDefault();
+                    reportKeyBlock('Inspect Element selector (Ctrl+Shift+C) diblokir');
+                } else if (cmdOrCtrl && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
+                    e.preventDefault();
+                    reportKeyBlock('View Source (Ctrl+U) diblokir');
+                } else if (cmdOrCtrl && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) {
+                    e.preventDefault();
+                    reportKeyBlock('Menyimpan halaman (Ctrl+S) diblokir');
+                } else if (cmdOrCtrl && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) {
+                    e.preventDefault();
+                    reportKeyBlock('Mencetak halaman (Ctrl+P) diblokir');
+                }
+            });
+        }
+
+        function reportKeyBlock(reason) {
+            fetch(`/${rolePrefix}/attempts/${attemptId}/track-key-block`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    reason: reason
+                })
+            });
+            showWarning(`Tindakan dilarang: ${reason}`);
         }
 
         function showWarning(message) {
@@ -611,10 +871,6 @@
                 }, 5000);
             }
         }
-
-        // Prevent right-click and copy
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('copy', e => e.preventDefault());
 
         // Initialize
         initTimer();

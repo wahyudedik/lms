@@ -143,7 +143,7 @@ class Material extends Model
      */
     public function getFileUrl(): ?string
     {
-        if ($this->type === 'file' && $this->file_path) {
+        if (in_array($this->type, ['file', 'video']) && $this->file_path) {
             return Storage::url($this->file_path);
         }
         return null;

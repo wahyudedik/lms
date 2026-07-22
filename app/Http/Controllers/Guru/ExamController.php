@@ -80,8 +80,33 @@ class ExamController extends Controller
             'require_fullscreen' => 'boolean',
             'detect_tab_switch' => 'boolean',
             'max_tab_switches' => 'required_if:detect_tab_switch,true|integer|min:1',
+            'detect_window_blur' => 'boolean',
+            'max_window_blurs' => 'required_if:detect_window_blur,true|integer|min:1',
+            'detect_multiple_screens' => 'boolean',
+            'detect_inactivity' => 'boolean',
+            'max_inactivity_minutes' => 'required_if:detect_inactivity,true|integer|min:1',
+            'block_keys_and_copy' => 'boolean',
             'is_published' => 'boolean',
         ]);
+
+        // Explicitly handle boolean checkboxes
+        $validated['shuffle_questions'] = $request->boolean('shuffle_questions');
+        $validated['shuffle_options'] = $request->boolean('shuffle_options');
+        $validated['show_results_immediately'] = $request->boolean('show_results_immediately');
+        $validated['show_correct_answers'] = $request->boolean('show_correct_answers');
+        $validated['require_fullscreen'] = $request->boolean('require_fullscreen');
+        $validated['detect_tab_switch'] = $request->boolean('detect_tab_switch');
+        $validated['detect_window_blur'] = $request->boolean('detect_window_blur');
+        $validated['detect_multiple_screens'] = $request->boolean('detect_multiple_screens');
+        $validated['detect_inactivity'] = $request->boolean('detect_inactivity');
+        $validated['block_keys_and_copy'] = $request->boolean('block_keys_and_copy');
+
+        if (!$validated['detect_window_blur']) {
+            $validated['max_window_blurs'] = 3;
+        }
+        if (!$validated['detect_inactivity']) {
+            $validated['max_inactivity_minutes'] = 3;
+        }
 
         // Check if course belongs to this guru
         $course = \App\Models\Course::findOrFail($validated['course_id']);
@@ -165,8 +190,33 @@ class ExamController extends Controller
             'require_fullscreen' => 'boolean',
             'detect_tab_switch' => 'boolean',
             'max_tab_switches' => 'required_if:detect_tab_switch,true|integer|min:1',
+            'detect_window_blur' => 'boolean',
+            'max_window_blurs' => 'required_if:detect_window_blur,true|integer|min:1',
+            'detect_multiple_screens' => 'boolean',
+            'detect_inactivity' => 'boolean',
+            'max_inactivity_minutes' => 'required_if:detect_inactivity,true|integer|min:1',
+            'block_keys_and_copy' => 'boolean',
             'is_published' => 'boolean',
         ]);
+
+        // Explicitly handle boolean checkboxes that might be missing from request when unchecked
+        $validated['shuffle_questions'] = $request->boolean('shuffle_questions');
+        $validated['shuffle_options'] = $request->boolean('shuffle_options');
+        $validated['show_results_immediately'] = $request->boolean('show_results_immediately');
+        $validated['show_correct_answers'] = $request->boolean('show_correct_answers');
+        $validated['require_fullscreen'] = $request->boolean('require_fullscreen');
+        $validated['detect_tab_switch'] = $request->boolean('detect_tab_switch');
+        $validated['detect_window_blur'] = $request->boolean('detect_window_blur');
+        $validated['detect_multiple_screens'] = $request->boolean('detect_multiple_screens');
+        $validated['detect_inactivity'] = $request->boolean('detect_inactivity');
+        $validated['block_keys_and_copy'] = $request->boolean('block_keys_and_copy');
+
+        if (!$validated['detect_window_blur']) {
+            $validated['max_window_blurs'] = 3;
+        }
+        if (!$validated['detect_inactivity']) {
+            $validated['max_inactivity_minutes'] = 3;
+        }
 
         // Check if new course belongs to this guru using policy
         $course = \App\Models\Course::findOrFail($validated['course_id']);

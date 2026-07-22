@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -221,20 +221,87 @@
                                         Deteksi Perpindahan Tab
                                     </span>
                                 </label>
+
+                                <label
+                                    class="flex items-center p-3 bg-red-50 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100 transition-colors">
+                                    <input type="checkbox" name="detect_window_blur" value="1"
+                                        id="detect_window_blur"
+                                        {{ old('detect_window_blur', $exam->detect_window_blur) ? 'checked' : '' }}
+                                        class="rounded border-gray-300 text-red-600 shadow-sm">
+                                    <span class="ml-2 text-sm font-semibold text-gray-700">
+                                        Deteksi Keluar Jendela Aplikasi (Focus Loss)
+                                    </span>
+                                </label>
+
+                                <label
+                                    class="flex items-center p-3 bg-red-50 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100 transition-colors">
+                                    <input type="checkbox" name="detect_multiple_screens" value="1"
+                                        id="detect_multiple_screens"
+                                        {{ old('detect_multiple_screens', $exam->detect_multiple_screens) ? 'checked' : '' }}
+                                        class="rounded border-gray-300 text-red-600 shadow-sm">
+                                    <span class="ml-2 text-sm font-semibold text-gray-700">
+                                        Deteksi Layar Ganda (Multiple Monitor)
+                                    </span>
+                                </label>
+
+                                <label
+                                    class="flex items-center p-3 bg-red-50 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100 transition-colors">
+                                    <input type="checkbox" name="detect_inactivity" value="1"
+                                        id="detect_inactivity"
+                                        {{ old('detect_inactivity', $exam->detect_inactivity) ? 'checked' : '' }}
+                                        class="rounded border-gray-300 text-red-600 shadow-sm">
+                                    <span class="ml-2 text-sm font-semibold text-gray-700">
+                                        Deteksi Tidak Merespon (User Inactivity)
+                                    </span>
+                                </label>
+
+                                <label
+                                    class="flex items-center p-3 bg-red-50 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100 transition-colors">
+                                    <input type="checkbox" name="block_keys_and_copy" value="1"
+                                        id="block_keys_and_copy"
+                                        {{ old('block_keys_and_copy', $exam->block_keys_and_copy) ? 'checked' : '' }}
+                                        class="rounded border-gray-300 text-red-600 shadow-sm">
+                                    <span class="ml-2 text-sm font-semibold text-gray-700">
+                                        Blokir Klik Kanan, Copy-Paste, & Inspect
+                                    </span>
+                                </label>
                             </div>
 
-                            <div id="tab_switch_settings"
-                                class="{{ old('detect_tab_switch', $exam->detect_tab_switch) ? '' : 'hidden' }}">
-                                <label for="max_tab_switches" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-exclamation-triangle text-gray-400 mr-1"></i>Maksimal Perpindahan
-                                    Tab
-                                </label>
-                                <input type="number" name="max_tab_switches" id="max_tab_switches"
-                                    value="{{ old('max_tab_switches', $exam->max_tab_switches) }}" min="1"
-                                    class="block w-full md:w-1/2 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
-                                <p class="text-sm text-gray-500 mt-1">
-                                    {{ __('The exam will be automatically submitted after reaching') }}
-                                    batas ini.</p>
+                            <div class="space-y-4">
+                                <div id="tab_switch_settings"
+                                    class="{{ old('detect_tab_switch', $exam->detect_tab_switch) ? '' : 'hidden' }}">
+                                    <label for="max_tab_switches" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-exclamation-triangle text-gray-400 mr-1"></i>Maksimal Perpindahan Tab
+                                    </label>
+                                    <input type="number" name="max_tab_switches" id="max_tab_switches"
+                                        value="{{ old('max_tab_switches', $exam->max_tab_switches) }}" min="1"
+                                        class="block w-full md:w-1/2 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        {{ __('The exam will be automatically submitted after reaching') }}
+                                        batas ini.</p>
+                                </div>
+
+                                <div id="window_blur_settings"
+                                    class="{{ old('detect_window_blur', $exam->detect_window_blur) ? '' : 'hidden' }}">
+                                    <label for="max_window_blurs" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-window-restore text-gray-400 mr-1"></i>Maksimal Keluar Aplikasi
+                                    </label>
+                                    <input type="number" name="max_window_blurs" id="max_window_blurs"
+                                        value="{{ old('max_window_blurs', $exam->max_window_blurs) }}" min="1"
+                                        class="block w-full md:w-1/2 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                    <p class="text-sm text-gray-500 mt-1">Ujian akan dikumpulkan otomatis jika keluar aplikasi melebihi batas ini.</p>
+                                </div>
+
+                                <div id="inactivity_settings"
+                                    class="{{ old('detect_inactivity', $exam->detect_inactivity) ? '' : 'hidden' }}">
+                                    <label for="max_inactivity_minutes" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-user-clock text-gray-400 mr-1"></i>Batas Waktu Inaktivitas (menit)
+                                    </label>
+                                    <input type="number" name="max_inactivity_minutes" id="max_inactivity_minutes"
+                                        value="{{ old('max_inactivity_minutes', $exam->max_inactivity_minutes) }}" min="1"
+                                        class="block w-full md:w-1/2 px-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-150">
+                                    <p class="text-sm text-gray-500 mt-1">Ujian akan dikumpulkan otomatis jika tidak ada aktivitas selama waktu ini.</p>
+                                </div>
                             </div>
                         </div>
 
@@ -274,6 +341,16 @@
         <script>
             document.getElementById('detect_tab_switch').addEventListener('change', function() {
                 const settings = document.getElementById('tab_switch_settings');
+                settings.classList.toggle('hidden', !this.checked);
+            });
+
+            document.getElementById('detect_window_blur').addEventListener('change', function() {
+                const settings = document.getElementById('window_blur_settings');
+                settings.classList.toggle('hidden', !this.checked);
+            });
+
+            document.getElementById('detect_inactivity').addEventListener('change', function() {
+                const settings = document.getElementById('inactivity_settings');
                 settings.classList.toggle('hidden', !this.checked);
             });
         </script>

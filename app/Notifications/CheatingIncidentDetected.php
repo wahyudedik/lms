@@ -35,17 +35,41 @@ class CheatingIncidentDetected extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $userName = $this->incident->user?->name ?? 'Guest';
+        $userEmail = $this->incident->user?->email ?? '—';
         $examTitle = $this->incident->exam?->title ?? 'Exam';
+        $courseTitle = $this->incident->exam?->course?->title ?? '—';
+        $detectedAt = optional($this->incident->blocked_at ?? $this->incident->created_at)->format('d M Y, H:i');
+        
+        $details = $this->incident->details ?? [];
+        $tabSwitches = $details['tab_switches'] ?? 0;
+        $maxTabSwitches = $this->incident->exam?->max_tab_switches ?? 0;
+        $windowBlurs = $details['window_blurs'] ?? 0;
+        $fullscreenExits = $details['fullscreen_exits'] ?? 0;
+        $multipleScreens = ($details['multiple_screens'] ?? 0) > 0 ? 'YA' : 'TIDAK';
+        $inactivityTriggers = $details['inactivity_triggers'] ?? 0;
+        $keyBlocks = $details['key_blocks'] ?? 0;
 
         $actionUrl = url("/admin/cheating-incidents/{$this->incident->id}");
 
+        $status = $this->incident->status === 'blocked' ? 'BLOCKED (Akses login ditangguhkan)' : 'REVIEWING (Dalam peninjauan)';
+
         return (new MailMessage)
-            ->subject('Cheating Incident Detected')
+            ->subject('[PERINGATAN KECURANGAN] Insiden Baru Terdeteksi - ' . $userName)
             ->greeting('Hello ' . $notifiable->name . ',')
-            ->line("A cheating incident was detected for {$userName} on exam {$examTitle}.")
-            ->line('Reason: ' . ($this->incident->reason ?? 'No details provided.'))
+            ->line("Siswa/Mahasiswa: {$userName} ({$userEmail})")
+            ->line("Ujian: {$examTitle} (Kursus: {$courseTitle})")
+            ->line("Waktu: {$detectedAt}")
+            ->line("Status Akun: {$status}")
+            ->line("Alasan: " . ($this->incident->reason ?? '—'))
+            ->line("Rincian Kecurangan:")
+            ->line("- Pindah Tab: {$tabSwitches}x (Maksimal: {$maxTabSwitches})")
+            ->line("- Keluar Aplikasi/Fokus: {$windowBlurs}x")
+            ->line("- Keluar Layar Penuh: {$fullscreenExits}x")
+            ->line("- Layar Ganda Terdeteksi: {$multipleScreens}")
+            ->line("- Diam/Inaktif: {$inactivityTriggers}x")
+            ->line("- Keyboard & Copy Block: {$keyBlocks}x")
             ->action('Review Incident', $actionUrl)
-            ->line('Please review and take appropriate action.');
+            ->line('Silakan tinjau insiden dan lakukan tindakan yang diperlukan.');
     }
 
     /**
