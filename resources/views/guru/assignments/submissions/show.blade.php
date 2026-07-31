@@ -7,7 +7,7 @@
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">{{ $assignment->title }} - {{ $submission->user->name }}</p>
             </div>
-            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', $assignment) }}"
+            <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.assignments.show', [$assignment->course_id, $assignment]) }}"
                 class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                 <i class="fas fa-arrow-left"></i>
                 Kembali
@@ -166,7 +166,7 @@
                         </div>
 
                         <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-                            <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', $assignment) }}"
+                            <a href="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', [$assignment, $submission]) }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
                                 <i class="fas fa-times"></i>
                                 Batal
