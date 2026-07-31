@@ -88,12 +88,14 @@ class SubmissionController extends Controller
     {
         $this->authorize('grade', $assignment);
 
-        if (!Storage::exists($submission->file_path)) {
+        // File disimpan di disk 'public' (storage/app/public/)
+        // oleh AssignmentController::submit(), jadi download harus pakai disk yang sama
+        if (!Storage::disk('public')->exists($submission->file_path)) {
             return redirect()
                 ->to($this->userRoute('assignments.submissions.show', [$assignment, $submission]))
                 ->with('error', 'File tidak ditemukan di server. Silakan hubungi siswa untuk mengunggah ulang.');
         }
 
-        return Storage::download($submission->file_path, $submission->file_name);
+        return Storage::disk('public')->download($submission->file_path, $submission->file_name);
     }
 }
