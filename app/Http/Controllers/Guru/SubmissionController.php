@@ -89,7 +89,9 @@ class SubmissionController extends Controller
         $this->authorize('grade', $assignment);
 
         if (!Storage::exists($submission->file_path)) {
-            abort(404, 'File tidak ditemukan.');
+            return redirect()
+                ->to($this->userRoute('assignments.submissions.show', [$assignment, $submission]))
+                ->with('error', 'File tidak ditemukan di server. Silakan hubungi siswa untuk mengunggah ulang.');
         }
 
         return Storage::download($submission->file_path, $submission->file_name);

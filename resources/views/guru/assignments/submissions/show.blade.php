@@ -134,7 +134,7 @@
                     </h3>
 
                     <form
-                        action="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.show', [$assignment, $submission]) }}"
+                        action="{{ route(auth()->user()->getRolePrefix() . '.assignments.submissions.grade', [$assignment, $submission]) }}"
                         method="POST">
                         @csrf
 
