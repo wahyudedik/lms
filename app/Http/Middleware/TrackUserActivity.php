@@ -2,8 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\UserActivityLog;
-use App\Models\UserSession;
+use App\Jobs\LogUserActivity;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,22 +47,22 @@ class TrackUserActivity
         $activityType = $this->getActivityType($request);
         $activityName = $this->getActivityName($request);
 
-        // Log the activity
-        UserActivityLog::create([
-            'user_id' => $user->id,
-            'activity_type' => $activityType,
-            'activity_name' => $activityName,
-            'description' => $this->getActivityDescription($request),
-            'metadata' => [
+        // Dispatch the DB write to a queued job (same payload as before)
+        LogUserActivity::dispatch(
+            $user->id,
+            $activityType,
+            $activityName,
+            $this->getActivityDescription($request),
+            [
                 'url' => $request->fullUrl(),
                 'method' => $request->method(),
                 'route_name' => $route?->getName(),
                 'params' => $route?->parameters() ?? [],
             ],
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'duration_seconds' => round($duration / 1000), // Convert back to seconds
-        ]);
+            $request->ip(),
+            $request->userAgent(),
+            round($duration / 1000), // Convert back to seconds
+        );
     }
 
     /**
@@ -103,7 +102,7 @@ class TrackUserActivity
     {
         $routeName = $request->route()?->getName();
 
-        if (!$routeName) {
+        if (! $routeName) {
             return 'page_view';
         }
 
@@ -142,7 +141,7 @@ class TrackUserActivity
     {
         $routeName = $request->route()?->getName();
 
-        if (!$routeName) {
+        if (! $routeName) {
             return 'Unknown Page';
         }
 

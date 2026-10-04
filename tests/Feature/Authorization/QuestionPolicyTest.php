@@ -7,13 +7,14 @@ use App\Models\Exam;
 use App\Models\Question;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class QuestionPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function admin_can_view_any_questions()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -21,7 +22,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($admin->can('viewAny', Question::class));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_view_any_questions()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -29,7 +30,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($guru->can('viewAny', Question::class));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_view_any_questions()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -37,7 +38,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertFalse($siswa->can('viewAny', Question::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_view_any_question()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -49,7 +50,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($admin->can('view', $question));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_view_own_question()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -60,7 +61,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($guru->can('view', $question));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_view_other_guru_question()
     {
         $guru1 = User::factory()->create(['role' => 'guru']);
@@ -72,7 +73,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertFalse($guru1->can('view', $question));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_can_view_question_from_enrolled_course()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -90,7 +91,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($siswa->can('view', $question));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_create_questions()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -98,7 +99,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($admin->can('create', Question::class));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_create_questions()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -106,7 +107,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($guru->can('create', Question::class));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_create_questions()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -114,7 +115,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertFalse($siswa->can('create', Question::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_update_any_question()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -126,7 +127,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($admin->can('update', $question));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_update_own_question()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -137,7 +138,7 @@ class QuestionPolicyTest extends TestCase
         $this->assertTrue($guru->can('update', $question));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_update_other_guru_question()
     {
         $guru1 = User::factory()->create(['role' => 'guru']);
@@ -149,4 +150,3 @@ class QuestionPolicyTest extends TestCase
         $this->assertFalse($guru1->can('update', $question));
     }
 }
-

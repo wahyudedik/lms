@@ -29,6 +29,11 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            // Mirror the DB default (users.is_active defaults to true): a freshly
+            // registered user is active. Explicitly setting it also keeps the
+            // in-memory Eloquent instance consistent, because attributes not
+            // present in the factory payload are NOT backfilled from DB defaults.
+            'is_active' => true,
         ];
     }
 

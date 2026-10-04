@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Certificate;
 use App\Models\Enrollment;
-use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class CertificateService
 {
@@ -15,7 +15,7 @@ class CertificateService
     public function generateForEnrollment(Enrollment $enrollment): Certificate
     {
         // Check if enrollment is completed
-        if (!$enrollment->isCompleted()) {
+        if (! $enrollment->isCompleted()) {
             throw new \Exception('Enrollment must be completed to generate certificate');
         }
 
@@ -91,7 +91,7 @@ class CertificateService
     {
         $pdf = $this->generatePDF($certificate);
 
-        $filename = 'certificate-' . $certificate->certificate_number . '.pdf';
+        $filename = 'certificate-'.$certificate->certificate_number.'.pdf';
 
         return $pdf->download($filename);
     }
@@ -113,7 +113,7 @@ class CertificateService
     {
         $pdf = $this->generatePDF($certificate);
 
-        $filename = 'certificates/' . $certificate->certificate_number . '.pdf';
+        $filename = 'certificates/'.$certificate->certificate_number.'.pdf';
 
         Storage::disk('public')->put($filename, $pdf->output());
 
@@ -131,13 +131,23 @@ class CertificateService
     }
 
     /**
-     * Calculate final score from enrollment
+     * Calculate final score from the student's actual course grades.
+     *
+     * Uses AssignmentGradingService::calculateCourseGrade (weighted
+     * assignment + exam average, 0-100 scale). Falls back to enrollment
+     * progress ONLY when the course grade is 0/null AND progress > 0
+     * (e.g. completion earned without graded assessments).
      */
     protected function calculateFinalScore(Enrollment $enrollment): int
     {
-        // You can implement your own scoring logic here
-        // For now, using progress as score
-        return $enrollment->progress;
+        $courseGrade = app(AssignmentGradingService::class)
+            ->calculateCourseGrade($enrollment->user, $enrollment->course);
+
+        if ($courseGrade <= 0 && $enrollment->progress > 0) {
+            return (int) $enrollment->progress;
+        }
+
+        return (int) round((float) $courseGrade);
     }
 
     /**
@@ -204,8 +214,8 @@ class CertificateService
                 $count++;
             } catch (\Exception $e) {
                 // Log error but continue
-                logger()->error('Failed to generate certificate for enrollment ' . $enrollment->id, [
-                    'error' => $e->getMessage()
+                logger()->error('Failed to generate certificate for enrollment '.$enrollment->id, [
+                    'error' => $e->getMessage(),
                 ]);
             }
         }

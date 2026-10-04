@@ -348,6 +348,13 @@
                             </div>
                             <span class="truncate">{{ __('Progres Belajar') }}</span>
                         </x-sidebar-link>
+
+                        <x-sidebar-link :href="route($rolePrefix . '.attendance.index')" :active="request()->routeIs($rolePrefix . '.attendance.*')">
+                            <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-clipboard-check text-sm"></i>
+                            </div>
+                            <span class="truncate">{{ __('Absensi') }}</span>
+                        </x-sidebar-link>
                     </div>
                 @endif
             </nav>

@@ -5,13 +5,14 @@ namespace Tests\Unit;
 use App\Models\School;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class SchoolLandingTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function test_activate_for_landing_sets_school_as_active(): void
     {
         $school = School::factory()->create(['is_landing_active' => false]);
@@ -21,7 +22,7 @@ class SchoolLandingTest extends TestCase
         $this->assertTrue($school->fresh()->is_landing_active);
     }
 
-    /** @test */
+    #[Test]
     public function test_activate_for_landing_deactivates_all_other_schools(): void
     {
         $school1 = School::factory()->create(['is_landing_active' => true]);
@@ -35,7 +36,7 @@ class SchoolLandingTest extends TestCase
         $this->assertFalse($school3->fresh()->is_landing_active);
     }
 
-    /** @test */
+    #[Test]
     public function test_deactivate_for_landing_sets_school_as_inactive(): void
     {
         $school = School::factory()->create(['is_landing_active' => true]);
@@ -45,7 +46,7 @@ class SchoolLandingTest extends TestCase
         $this->assertFalse($school->fresh()->is_landing_active);
     }
 
-    /** @test */
+    #[Test]
     public function test_get_active_landing_school_returns_active_school(): void
     {
         $activeSchool = School::factory()->create(['is_landing_active' => true]);
@@ -57,7 +58,7 @@ class SchoolLandingTest extends TestCase
         $this->assertEquals($activeSchool->id, $result->id);
     }
 
-    /** @test */
+    #[Test]
     public function test_get_active_landing_school_falls_back_to_first_school(): void
     {
         $firstSchool = School::factory()->create(['is_landing_active' => false]);
@@ -69,7 +70,7 @@ class SchoolLandingTest extends TestCase
         $this->assertEquals($firstSchool->id, $result->id);
     }
 
-    /** @test */
+    #[Test]
     public function test_get_active_landing_school_returns_null_when_no_schools(): void
     {
         $result = School::getActiveLandingSchool();
@@ -77,7 +78,7 @@ class SchoolLandingTest extends TestCase
         $this->assertNull($result);
     }
 
-    /** @test */
+    #[Test]
     public function test_activate_for_landing_clears_cache(): void
     {
         $school = School::factory()->create();
@@ -91,7 +92,7 @@ class SchoolLandingTest extends TestCase
         $this->assertFalse(Cache::has(School::CACHE_KEY_ACTIVE_LANDING));
     }
 
-    /** @test */
+    #[Test]
     public function test_deactivate_for_landing_clears_cache(): void
     {
         $school = School::factory()->create(['is_landing_active' => true]);
@@ -105,7 +106,7 @@ class SchoolLandingTest extends TestCase
         $this->assertFalse(Cache::has(School::CACHE_KEY_ACTIVE_LANDING));
     }
 
-    /** @test */
+    #[Test]
     public function test_get_active_landing_school_caches_result(): void
     {
         $school = School::factory()->create(['is_landing_active' => true]);
@@ -118,7 +119,7 @@ class SchoolLandingTest extends TestCase
         $this->assertTrue(Cache::has(School::CACHE_KEY_ACTIVE_LANDING));
     }
 
-    /** @test */
+    #[Test]
     public function test_scope_landing_active_filters_correctly(): void
     {
         School::factory()->create(['is_landing_active' => true]);
@@ -131,7 +132,7 @@ class SchoolLandingTest extends TestCase
         $this->assertTrue($activeSchools->first()->is_landing_active);
     }
 
-    /** @test */
+    #[Test]
     public function test_is_landing_active_is_cast_to_boolean(): void
     {
         $school = School::factory()->create(['is_landing_active' => false]);

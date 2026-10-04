@@ -24,6 +24,8 @@ class InformationCardController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', InformationCard::class);
+
         $query = InformationCard::with('creator')
             ->where('created_by', auth()->id());
 
@@ -33,7 +35,7 @@ class InformationCardController extends Controller
 
         if ($request->filled('search')) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
-            $query->where('title', 'like', '%' . $search . '%');
+            $query->where('title', 'like', '%'.$search.'%');
         }
 
         $cards = $query->orderByDesc('created_at')->paginate(15);
@@ -46,6 +48,8 @@ class InformationCardController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', InformationCard::class);
+
         $targetRole = $this->getTargetRole();
         $users = User::where('is_active', true)
             ->where('role', $targetRole)
@@ -60,6 +64,8 @@ class InformationCardController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', InformationCard::class);
+
         $targetRole = $this->getTargetRole();
 
         $validated = $request->validate([
@@ -80,7 +86,7 @@ class InformationCardController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        $targetUserIds = !empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
+        $targetUserIds = ! empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
 
         // Sanitize content to prevent Stored XSS
         if (isset($validated['content'])) {
@@ -116,7 +122,7 @@ class InformationCardController extends Controller
 
         InformationCard::create($data);
 
-        return redirect()->route(auth()->user()->getRolePrefix() . '.information-cards.index')
+        return redirect()->route(auth()->user()->getRolePrefix().'.information-cards.index')
             ->with('success', __('Information card created successfully.'));
     }
 
@@ -125,9 +131,7 @@ class InformationCardController extends Controller
      */
     public function edit(InformationCard $informationCard)
     {
-        if ($informationCard->created_by !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $informationCard);
 
         $targetRole = $this->getTargetRole();
         $users = User::where('is_active', true)
@@ -143,9 +147,7 @@ class InformationCardController extends Controller
      */
     public function update(Request $request, InformationCard $informationCard)
     {
-        if ($informationCard->created_by !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $informationCard);
 
         $targetRole = $this->getTargetRole();
 
@@ -168,7 +170,7 @@ class InformationCardController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        $targetUserIds = !empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
+        $targetUserIds = ! empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
 
         // Sanitize content to prevent Stored XSS
         if (isset($validated['content'])) {
@@ -214,7 +216,7 @@ class InformationCardController extends Controller
 
         $informationCard->update($data);
 
-        return redirect()->route(auth()->user()->getRolePrefix() . '.information-cards.index')
+        return redirect()->route(auth()->user()->getRolePrefix().'.information-cards.index')
             ->with('success', __('Information card updated successfully.'));
     }
 
@@ -223,9 +225,7 @@ class InformationCardController extends Controller
      */
     public function destroy(InformationCard $informationCard)
     {
-        if ($informationCard->created_by !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $informationCard);
 
         if ($informationCard->attachment_path) {
             Storage::disk('public')->delete($informationCard->attachment_path);
@@ -233,7 +233,7 @@ class InformationCardController extends Controller
 
         $informationCard->delete();
 
-        return redirect()->route(auth()->user()->getRolePrefix() . '.information-cards.index')
+        return redirect()->route(auth()->user()->getRolePrefix().'.information-cards.index')
             ->with('success', __('Information card deleted successfully.'));
     }
 
@@ -242,15 +242,13 @@ class InformationCardController extends Controller
      */
     public function toggleStatus(InformationCard $informationCard)
     {
-        if ($informationCard->created_by !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('update', $informationCard);
 
-        $informationCard->update(['is_active' => !$informationCard->is_active]);
+        $informationCard->update(['is_active' => ! $informationCard->is_active]);
 
         $status = $informationCard->is_active ? __('activated') : __('deactivated');
 
-        return redirect()->route(auth()->user()->getRolePrefix() . '.information-cards.index')
+        return redirect()->route(auth()->user()->getRolePrefix().'.information-cards.index')
             ->with('success', __('Information card :status successfully.', ['status' => $status]));
     }
 }

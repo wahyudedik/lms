@@ -2,16 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
 use App\Models\Question;
 use App\Models\User;
-use App\Models\Course;
-use App\Models\Enrollment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Illuminate\Support\Facades\DB;
 
 class ExamAttemptBugFixesTest extends TestCase
 {
@@ -20,12 +20,12 @@ class ExamAttemptBugFixesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create test data
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->guru = User::factory()->create(['role' => 'guru']);
         $this->siswa = User::factory()->create(['role' => 'siswa']);
-        
+
         $this->course = Course::factory()->create(['instructor_id' => $this->guru->id]);
         $this->exam = Exam::factory()->create([
             'course_id' => $this->course->id,
@@ -34,12 +34,12 @@ class ExamAttemptBugFixesTest extends TestCase
             'is_published' => true,
             'published_at' => now(),
         ]);
-        
+
         // Create questions
         $this->questions = Question::factory()->count(5)->create([
             'exam_id' => $this->exam->id,
         ]);
-        
+
         // Enroll siswa
         Enrollment::factory()->create([
             'user_id' => $this->siswa->id,
@@ -48,7 +48,7 @@ class ExamAttemptBugFixesTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_1_guest_exam_user_id_nullable()
     {
         // BUG #1: Verify guest exam can be created with user_id = null
@@ -66,7 +66,7 @@ class ExamAttemptBugFixesTest extends TestCase
         $this->assertTrue($guestAttempt->is_guest);
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_2_race_condition_prevention()
     {
         // BUG #2: Verify only one attempt is created even with rapid requests
@@ -86,7 +86,7 @@ class ExamAttemptBugFixesTest extends TestCase
         $this->assertEquals(1, $attempts, 'Only one attempt should be created');
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_3_question_validation()
     {
         // BUG #3: Verify question validation prevents cross-exam answer submission
@@ -119,7 +119,7 @@ class ExamAttemptBugFixesTest extends TestCase
         $response->assertJsonValidationErrors(['question_id']);
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_5_server_side_timer_validation()
     {
         // BUG #5: Verify server-side timer validation works
@@ -145,13 +145,13 @@ class ExamAttemptBugFixesTest extends TestCase
         // Should reject and auto-submit
         $response->assertStatus(400);
         $response->assertJson(['timeUp' => true]);
-        
+
         // Verify attempt was auto-submitted
         $attempt->refresh();
         $this->assertNotEquals('in_progress', $attempt->status);
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_7_atomic_submit_prevention()
     {
         // BUG #7: Verify atomic submit prevents duplicate submissions
@@ -180,7 +180,7 @@ class ExamAttemptBugFixesTest extends TestCase
         $this->assertNotNull($attempt->submitted_at);
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_8_double_submit_prevention()
     {
         // BUG #8: Verify double-submit prevention works
@@ -198,13 +198,13 @@ class ExamAttemptBugFixesTest extends TestCase
 
         // Try to submit again
         $response2 = $this->post(route('siswa.exams.submit', $attempt));
-        
+
         // Should redirect with info message (already submitted)
         $response2->assertRedirect();
         $response2->assertSessionHas('info');
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_10_missing_methods_exist()
     {
         // BUG #10: Verify missing methods exist in ExamAttempt model
@@ -239,7 +239,7 @@ class ExamAttemptBugFixesTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_11_guest_exam_column_name()
     {
         // BUG #11: Verify guest exam uses correct column name (attempt_id)
@@ -260,7 +260,7 @@ class ExamAttemptBugFixesTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_12_guest_exam_status_value()
     {
         // BUG #12: Verify guest exam uses correct status values
@@ -283,7 +283,7 @@ class ExamAttemptBugFixesTest extends TestCase
         $this->assertNotEquals('completed', $guestAttempt->status);
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_13_dashboard_route_error_handling()
     {
         // BUG #13: Verify dashboard route error handling works
@@ -302,7 +302,7 @@ class ExamAttemptBugFixesTest extends TestCase
         $response->assertSessionHas('error');
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_4_transaction_atomicity()
     {
         // BUG #4: Verify transaction ensures atomicity
@@ -330,7 +330,7 @@ class ExamAttemptBugFixesTest extends TestCase
         $this->assertEquals($this->questions->count(), $answersCount, 'All questions should have answers');
     }
 
-    /** @test */
+    #[Test]
     public function test_bug_6_guest_exam_question_validation()
     {
         // BUG #6: Verify guest exam question validation works
@@ -383,4 +383,3 @@ class ExamAttemptBugFixesTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 }
-

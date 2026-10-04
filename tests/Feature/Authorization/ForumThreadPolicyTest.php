@@ -5,13 +5,14 @@ namespace Tests\Feature\Authorization;
 use App\Models\ForumThread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ForumThreadPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function all_users_can_view_any_threads()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -23,7 +24,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($siswa->can('viewAny', ForumThread::class));
     }
 
-    /** @test */
+    #[Test]
     public function all_users_can_view_threads()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -36,7 +37,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($siswa->can('view', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function all_users_can_create_threads()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -48,7 +49,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($siswa->can('create', ForumThread::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_update_any_thread()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -58,7 +59,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($admin->can('update', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function owner_can_update_own_thread()
     {
         $user = User::factory()->create();
@@ -67,7 +68,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($user->can('update', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_update_other_user_thread()
     {
         $user1 = User::factory()->create();
@@ -77,7 +78,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertFalse($user1->can('update', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_delete_any_thread()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -87,7 +88,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($admin->can('delete', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function owner_can_delete_own_thread()
     {
         $user = User::factory()->create();
@@ -96,7 +97,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($user->can('delete', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_pin_thread()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -105,7 +106,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($admin->can('pin', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_pin_thread()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -114,7 +115,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($guru->can('pin', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_pin_thread()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -123,7 +124,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertFalse($siswa->can('pin', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_lock_thread()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -132,7 +133,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($admin->can('lock', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_lock_thread()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -141,7 +142,7 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertTrue($guru->can('lock', $thread));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_lock_thread()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -150,4 +151,3 @@ class ForumThreadPolicyTest extends TestCase
         $this->assertFalse($siswa->can('lock', $thread));
     }
 }
-

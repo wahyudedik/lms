@@ -25,5 +25,16 @@ class EnrollmentFactory extends Factory
             'completed_at' => null,
         ];
     }
-}
 
+    /**
+     * Indicate that the enrollment is completed (used by CertificateFactory).
+     */
+    public function completed(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'completed',
+            'progress' => 100,
+            'completed_at' => now()->subDays(rand(1, 30)),
+        ]);
+    }
+}

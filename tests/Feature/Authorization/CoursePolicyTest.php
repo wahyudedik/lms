@@ -5,13 +5,14 @@ namespace Tests\Feature\Authorization;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CoursePolicyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function all_users_can_view_any_courses()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -20,10 +21,13 @@ class CoursePolicyTest extends TestCase
 
         $this->assertTrue($admin->can('viewAny', Course::class));
         $this->assertTrue($guru->can('viewAny', Course::class));
-        $this->assertTrue($siswa->can('viewAny', Course::class));
+        // Bug #25: CoursePolicy::viewAny() intentionally restricts the course
+        // browse/index listing to staff roles (admin, guru, dosen). Siswa can
+        // still view individual courses they are enrolled in via view().
+        $this->assertFalse($siswa->can('viewAny', Course::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_view_any_course()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -33,7 +37,7 @@ class CoursePolicyTest extends TestCase
         $this->assertTrue($admin->can('view', $course));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_view_own_course()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -42,7 +46,7 @@ class CoursePolicyTest extends TestCase
         $this->assertTrue($guru->can('view', $course));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_view_other_guru_course()
     {
         $guru1 = User::factory()->create(['role' => 'guru']);
@@ -52,7 +56,7 @@ class CoursePolicyTest extends TestCase
         $this->assertFalse($guru1->can('view', $course));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_can_view_enrolled_course()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -68,7 +72,7 @@ class CoursePolicyTest extends TestCase
         $this->assertTrue($siswa->can('view', $course));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_view_non_enrolled_course()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -78,7 +82,7 @@ class CoursePolicyTest extends TestCase
         $this->assertFalse($siswa->can('view', $course));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_create_courses()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -86,7 +90,7 @@ class CoursePolicyTest extends TestCase
         $this->assertTrue($admin->can('create', Course::class));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_create_courses()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -94,7 +98,7 @@ class CoursePolicyTest extends TestCase
         $this->assertTrue($guru->can('create', Course::class));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_create_courses()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -102,7 +106,7 @@ class CoursePolicyTest extends TestCase
         $this->assertFalse($siswa->can('create', Course::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_update_any_course()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -112,7 +116,7 @@ class CoursePolicyTest extends TestCase
         $this->assertTrue($admin->can('update', $course));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_update_own_course()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -121,7 +125,7 @@ class CoursePolicyTest extends TestCase
         $this->assertTrue($guru->can('update', $course));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_update_other_guru_course()
     {
         $guru1 = User::factory()->create(['role' => 'guru']);
@@ -131,4 +135,3 @@ class CoursePolicyTest extends TestCase
         $this->assertFalse($guru1->can('update', $course));
     }
 }
-

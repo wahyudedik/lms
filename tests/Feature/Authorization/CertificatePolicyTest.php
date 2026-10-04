@@ -7,13 +7,14 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CertificatePolicyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function all_users_can_view_any_certificates()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -25,7 +26,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertTrue($siswa->can('viewAny', Certificate::class));
     }
 
-    /** @test */
+    #[Test]
     public function owner_can_view_certificate()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -44,7 +45,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertTrue($siswa->can('view', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_view_any_certificate()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -59,7 +60,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertTrue($admin->can('view', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_view_certificate_from_own_course()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -73,7 +74,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertTrue($guru->can('view', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_view_certificate_from_other_guru_course()
     {
         $guru1 = User::factory()->create(['role' => 'guru']);
@@ -88,7 +89,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertFalse($guru1->can('view', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_view_other_siswa_certificate()
     {
         $siswa1 = User::factory()->create(['role' => 'siswa']);
@@ -103,7 +104,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertFalse($siswa1->can('view', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_download_any_certificate()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -118,7 +119,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertTrue($admin->can('download', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function owner_can_download_certificate()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -132,7 +133,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertTrue($siswa->can('download', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_delete_any_certificate()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -147,7 +148,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertTrue($admin->can('delete', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_delete_certificate()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -161,7 +162,7 @@ class CertificatePolicyTest extends TestCase
         $this->assertFalse($guru->can('delete', $certificate));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_delete_certificate()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -174,5 +175,26 @@ class CertificatePolicyTest extends TestCase
 
         $this->assertFalse($siswa->can('delete', $certificate));
     }
-}
 
+    #[Test]
+    public function staff_roles_can_create_certificates()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $guru = User::factory()->create(['role' => 'guru']);
+        $dosen = User::factory()->create(['role' => 'dosen']);
+
+        $this->assertTrue($admin->can('create', Certificate::class));
+        $this->assertTrue($guru->can('create', Certificate::class));
+        $this->assertTrue($dosen->can('create', Certificate::class));
+    }
+
+    #[Test]
+    public function students_cannot_create_certificates()
+    {
+        $siswa = User::factory()->create(['role' => 'siswa']);
+        $mahasiswa = User::factory()->create(['role' => 'mahasiswa']);
+
+        $this->assertFalse($siswa->can('create', Certificate::class));
+        $this->assertFalse($mahasiswa->can('create', Certificate::class));
+    }
+}

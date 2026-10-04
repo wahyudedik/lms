@@ -6,6 +6,7 @@ use App\Models\School;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class SchoolToggleLandingTest extends TestCase
@@ -13,6 +14,7 @@ class SchoolToggleLandingTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private User $siswa;
 
     protected function setUp(): void
@@ -32,7 +34,7 @@ class SchoolToggleLandingTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_admin_can_activate_landing_page(): void
     {
         $school = School::factory()->create(['show_landing_page' => false]);
@@ -48,7 +50,7 @@ class SchoolToggleLandingTest extends TestCase
         $this->assertTrue($school->fresh()->show_landing_page);
     }
 
-    /** @test */
+    #[Test]
     public function test_admin_can_deactivate_landing_page(): void
     {
         $school = School::factory()->create(['show_landing_page' => true]);
@@ -64,7 +66,7 @@ class SchoolToggleLandingTest extends TestCase
         $this->assertFalse($school->fresh()->show_landing_page);
     }
 
-    /** @test */
+    #[Test]
     public function test_updating_landing_page_with_content(): void
     {
         $school = School::factory()->create(['show_landing_page' => false]);
@@ -85,7 +87,7 @@ class SchoolToggleLandingTest extends TestCase
         $this->assertEquals('Platform Belajar Terbaik', $school->hero_subtitle);
     }
 
-    /** @test */
+    #[Test]
     public function test_unauthenticated_user_cannot_update_landing(): void
     {
         School::factory()->create();
@@ -97,7 +99,7 @@ class SchoolToggleLandingTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    /** @test */
+    #[Test]
     public function test_non_admin_cannot_update_landing(): void
     {
         School::factory()->create();
@@ -110,7 +112,7 @@ class SchoolToggleLandingTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function test_update_redirects_to_landing_tab(): void
     {
         $school = School::factory()->create(['show_landing_page' => false]);
@@ -123,7 +125,7 @@ class SchoolToggleLandingTest extends TestCase
         $response->assertRedirect(route('admin.settings.index', ['tab' => 'landing']));
     }
 
-    /** @test */
+    #[Test]
     public function test_update_clears_cache(): void
     {
         $school = School::factory()->create(['show_landing_page' => false]);
@@ -139,7 +141,7 @@ class SchoolToggleLandingTest extends TestCase
         $this->assertFalse(Cache::has(School::CACHE_KEY_ACTIVE_LANDING));
     }
 
-    /** @test */
+    #[Test]
     public function test_update_validates_hero_image(): void
     {
         School::factory()->create();
@@ -152,7 +154,7 @@ class SchoolToggleLandingTest extends TestCase
         $response->assertSessionHasErrors('hero_image');
     }
 
-    /** @test */
+    #[Test]
     public function test_update_returns_success_message(): void
     {
         School::factory()->create([

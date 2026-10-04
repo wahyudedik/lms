@@ -60,7 +60,7 @@ Setiap sertifikat menampilkan:
 
 ## Grading
 
-Nilai otomatis dihitung berdasarkan progress enrollment:
+Nilai otomatis dihitung dari grade asli mata kuliah: rerata tugas (assignment) dan ujian (exam) yang sudah dinilai, dengan bobot dari `CourseGradeWeight` (default 30% tugas / 70% ujian). Jika tidak ada nilai tugas/ujian yang dinilai, fallback ke progress enrollment.
 
 | Skor | Grade | Label |
 |------|-------|-------|

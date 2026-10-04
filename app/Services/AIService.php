@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\Log;
 class AIService
 {
     protected $provider;
+
     protected $apiKey;
+
     protected $model;
+
     protected $maxTokens;
+
     protected $temperature;
 
     /**
@@ -84,10 +88,16 @@ class AIService
 
     /**
      * Get models for a specific provider.
+     *
+     * Falls back to the settings key "ai_model_options" (e.g.
+     * {"openai": {"gpt-4o": "GPT-4o"}}) when configured; otherwise
+     * returns the hardcoded provider list.
      */
     public function getModelsForProvider(string $provider): array
     {
-        return $this->providers[$provider]['models'] ?? [];
+        $custom = $this->customModelOptions($provider);
+
+        return $custom ?: ($this->providers[$provider]['models'] ?? []);
     }
 
     /**
@@ -96,8 +106,8 @@ class AIService
     public function getAllModels(): array
     {
         $models = [];
-        foreach ($this->providers as $provider => $config) {
-            foreach ($config['models'] as $value => $label) {
+        foreach (array_keys($this->providers) as $provider) {
+            foreach ($this->getModelsForProvider($provider) as $value => $label) {
                 $models[$value] = $label;
             }
         }
@@ -106,11 +116,26 @@ class AIService
     }
 
     /**
+     * Resolve custom model options from settings (key: ai_model_options).
+     * Returns [] when the setting is absent or malformed.
+     */
+    protected function customModelOptions(string $provider): array
+    {
+        $raw = Setting::get('ai_model_options');
+
+        if (! is_array($raw) || ! isset($raw[$provider]) || ! is_array($raw[$provider]) || $raw[$provider] === []) {
+            return [];
+        }
+
+        return $raw[$provider];
+    }
+
+    /**
      * Check if AI is enabled and configured.
      */
     public function isEnabled(): bool
     {
-        return Setting::get('ai_enabled', false) && !empty($this->apiKey);
+        return Setting::get('ai_enabled', false) && ! empty($this->apiKey);
     }
 
     /**
@@ -122,7 +147,7 @@ class AIService
             'enabled' => $this->isEnabled(),
             'provider' => $this->provider,
             'model' => $this->model,
-            'has_api_key' => !empty($this->apiKey),
+            'has_api_key' => ! empty($this->apiKey),
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
         ];
@@ -133,7 +158,7 @@ class AIService
      */
     public function sendMessage(AiConversation $conversation, string $userMessage, array $context = []): AiMessage
     {
-        if (!$this->isEnabled()) {
+        if (! $this->isEnabled()) {
             throw new \Exception('AI Assistant is not enabled or configured.');
         }
 
@@ -190,7 +215,7 @@ class AIService
     protected function callOpenAI(array $messages): array
     {
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
+            'Authorization' => 'Bearer '.$this->apiKey,
             'Content-Type' => 'application/json',
         ])->timeout(30)->post('https://api.openai.com/v1/chat/completions', [
             'model' => $this->model,
@@ -201,7 +226,7 @@ class AIService
 
         if ($response->failed()) {
             Log::error('OpenAI API Error', ['status' => $response->status(), 'body' => $response->body()]);
-            throw new \Exception('OpenAI API error: ' . $response->body());
+            throw new \Exception('OpenAI API error: '.$response->body());
         }
 
         $data = $response->json();
@@ -228,7 +253,7 @@ class AIService
 
         foreach ($messages as $msg) {
             if ($msg['role'] === 'system') {
-                $systemMessage .= $msg['content'] . "\n";
+                $systemMessage .= $msg['content']."\n";
             } else {
                 $conversationMessages[] = $msg;
             }
@@ -241,7 +266,7 @@ class AIService
             'messages' => $conversationMessages,
         ];
 
-        if (!empty($systemMessage)) {
+        if (! empty($systemMessage)) {
             $payload['system'] = trim($systemMessage);
         }
 
@@ -253,7 +278,7 @@ class AIService
 
         if ($response->failed()) {
             Log::error('Anthropic API Error', ['status' => $response->status(), 'body' => $response->body()]);
-            throw new \Exception('Anthropic API error: ' . $response->body());
+            throw new \Exception('Anthropic API error: '.$response->body());
         }
 
         $data = $response->json();
@@ -287,7 +312,7 @@ class AIService
 
         foreach ($messages as $msg) {
             if ($msg['role'] === 'system') {
-                $systemInstruction .= $msg['content'] . "\n";
+                $systemInstruction .= $msg['content']."\n";
             } else {
                 $contents[] = [
                     'role' => $msg['role'] === 'assistant' ? 'model' : 'user',
@@ -304,21 +329,24 @@ class AIService
             ],
         ];
 
-        if (!empty($systemInstruction)) {
+        if (! empty($systemInstruction)) {
             $payload['systemInstruction'] = [
                 'parts' => [['text' => trim($systemInstruction)]],
             ];
         }
 
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent?key={$this->apiKey}";
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent";
 
+        // API key must travel in a header, not the URL query string,
+        // so it never leaks into server/access logs.
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
+            'x-goog-api-key' => $this->apiKey,
         ])->timeout(30)->post($url, $payload);
 
         if ($response->failed()) {
             Log::error('Gemini API Error', ['status' => $response->status(), 'body' => $response->body()]);
-            throw new \Exception('Gemini API error: ' . $response->body());
+            throw new \Exception('Gemini API error: '.$response->body());
         }
 
         $data = $response->json();
@@ -375,12 +403,12 @@ class AIService
 
         // Custom system prompt from settings
         $customPrompt = Setting::get('ai_system_prompt', '');
-        if (!empty($customPrompt)) {
+        if (! empty($customPrompt)) {
             $systemMessages[] = $customPrompt;
         } else {
-            $systemMessages[] = "You are a helpful AI teaching assistant for an online Learning Management System.";
-            $systemMessages[] = "Your goal is to help students learn and understand course materials.";
-            $systemMessages[] = "Be encouraging, patient, and provide clear explanations.";
+            $systemMessages[] = 'You are a helpful AI teaching assistant for an online Learning Management System.';
+            $systemMessages[] = 'Your goal is to help students learn and understand course materials.';
+            $systemMessages[] = 'Be encouraging, patient, and provide clear explanations.';
             $systemMessages[] = "Respond in the same language as the student's message.";
         }
 
@@ -393,20 +421,20 @@ class AIService
         }
 
         // Add additional context
-        if (!empty($context['material'])) {
+        if (! empty($context['material'])) {
             $systemMessages[] = "\n**Current Material:**";
             $systemMessages[] = $context['material'];
         }
 
-        if (!empty($context['exam'])) {
+        if (! empty($context['exam'])) {
             $systemMessages[] = "\n**Note:** Student is asking about an exam. Do not provide direct answers. Guide them to understand the concepts.";
         }
 
         // Guidelines
         $systemMessages[] = "\n**Guidelines:**";
-        $systemMessages[] = "- Keep responses concise but informative";
-        $systemMessages[] = "- Use examples when explaining concepts";
-        $systemMessages[] = "- Encourage critical thinking";
+        $systemMessages[] = '- Keep responses concise but informative';
+        $systemMessages[] = '- Use examples when explaining concepts';
+        $systemMessages[] = '- Encourage critical thinking';
         $systemMessages[] = "- Don't provide direct answers to assignments/exams";
 
         return implode("\n", $systemMessages);
@@ -469,7 +497,7 @@ class AIService
         if (empty($this->apiKey)) {
             return [
                 'success' => false,
-                'message' => 'API key belum dikonfigurasi untuk provider ' . $this->provider,
+                'message' => 'API key belum dikonfigurasi untuk provider '.$this->provider,
             ];
         }
 
@@ -482,7 +510,7 @@ class AIService
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
+                'message' => 'Connection error: '.$e->getMessage(),
             ];
         }
     }
@@ -490,7 +518,7 @@ class AIService
     protected function testOpenAIConnection(): array
     {
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
+            'Authorization' => 'Bearer '.$this->apiKey,
         ])->timeout(10)->get('https://api.openai.com/v1/models');
 
         if ($response->successful()) {
@@ -501,7 +529,7 @@ class AIService
             ];
         }
 
-        return ['success' => false, 'message' => 'Gagal koneksi: ' . $response->body()];
+        return ['success' => false, 'message' => 'Gagal koneksi: '.$response->body()];
     }
 
     protected function testAnthropicConnection(): array
@@ -524,7 +552,7 @@ class AIService
             ];
         }
 
-        return ['success' => false, 'message' => 'Gagal koneksi: ' . $response->body()];
+        return ['success' => false, 'message' => 'Gagal koneksi: '.$response->body()];
     }
 
     protected function testGeminiConnection(): array
@@ -543,6 +571,6 @@ class AIService
             ];
         }
 
-        return ['success' => false, 'message' => 'Gagal koneksi: ' . $response->body()];
+        return ['success' => false, 'message' => 'Gagal koneksi: '.$response->body()];
     }
 }

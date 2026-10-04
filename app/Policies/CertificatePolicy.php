@@ -32,7 +32,7 @@ class CertificatePolicy
         }
 
         // Ensure course relationship is loaded to avoid N+1 queries
-        if (!$certificate->relationLoaded('course')) {
+        if (! $certificate->relationLoaded('course')) {
             $certificate->load('course');
         }
 
@@ -49,9 +49,9 @@ class CertificatePolicy
      */
     public function create(User $user): bool
     {
-        // Admin, guru, dosen, and siswa can create certificates
-        // Usually generated automatically, but can be manually created
-        return $user->isAdmin() || $user->isGuru() || $user->isDosen() || $user->isSiswa() || $user->isMahasiswa();
+        // Only staff roles may create certificates (usually generated
+        // automatically, but can be created manually). Students cannot.
+        return $user->isAdmin() || $user->isGuru() || $user->isDosen();
     }
 
     /**
@@ -65,7 +65,7 @@ class CertificatePolicy
         }
 
         // Ensure course relationship is loaded to avoid N+1 queries
-        if (!$certificate->relationLoaded('course')) {
+        if (! $certificate->relationLoaded('course')) {
             $certificate->load('course');
         }
 
@@ -95,6 +95,4 @@ class CertificatePolicy
         // Same as view
         return $this->view($user, $certificate);
     }
-
 }
-

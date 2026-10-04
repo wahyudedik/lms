@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Answer;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
-use App\Models\Answer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class GuestExamController extends Controller
 {
@@ -30,7 +30,7 @@ class GuestExamController extends Controller
         ]);
 
         // Bug #27: Rate limiting on token verification
-        $throttleKey = 'guest-token-' . $request->ip();
+        $throttleKey = 'guest-token-'.$request->ip();
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             return back()->withErrors([
                 'token' => 'Terlalu banyak percobaan. Silakan tunggu beberapa menit.',
@@ -41,14 +41,15 @@ class GuestExamController extends Controller
         $token = strtoupper(trim($request->token));
         $exam = Exam::where('access_token', $token)->first();
 
-        if (!$exam) {
+        if (! $exam) {
             return back()->with('error', 'Token ujian tidak valid!');
         }
 
-        if (!$exam->isTokenAccessAvailable()) {
+        if (! $exam->isTokenAccessAvailable()) {
             if ($exam->max_token_uses && $exam->current_token_uses >= $exam->max_token_uses) {
                 return back()->with('error', 'Token ujian sudah mencapai batas penggunaan maksimal!');
             }
+
             return back()->with('error', 'Ujian tidak tersedia saat ini!');
         }
 
@@ -65,13 +66,13 @@ class GuestExamController extends Controller
     public function showInfo($examId)
     {
         // Verify session token
-        if (!Session::has('guest_exam_token') || Session::get('guest_exam_id') != $examId) {
+        if (! Session::has('guest_exam_token') || Session::get('guest_exam_id') != $examId) {
             return redirect()->route('guest.exams.index')->with('error', 'Sesi tidak valid!');
         }
 
         $exam = Exam::findOrFail($examId);
 
-        if (!$exam->isTokenAccessAvailable()) {
+        if (! $exam->isTokenAccessAvailable()) {
             return redirect()->route('guest.exams.index')->with('error', 'Ujian tidak tersedia!');
         }
 
@@ -84,13 +85,13 @@ class GuestExamController extends Controller
     public function start(Request $request, $examId)
     {
         // Verify session token
-        if (!Session::has('guest_exam_token') || Session::get('guest_exam_id') != $examId) {
+        if (! Session::has('guest_exam_token') || Session::get('guest_exam_id') != $examId) {
             return redirect()->route('guest.exams.index')->with('error', 'Sesi tidak valid!');
         }
 
         $exam = Exam::with('questions')->findOrFail($examId);
 
-        if (!$exam->isTokenAccessAvailable()) {
+        if (! $exam->isTokenAccessAvailable()) {
             return redirect()->route('guest.exams.index')->with('error', 'Ujian tidak tersedia!');
         }
 
@@ -103,7 +104,7 @@ class GuestExamController extends Controller
             $rules['guest_email'] = 'required|email|max:255';
         }
 
-        if (!empty($rules)) {
+        if (! empty($rules)) {
             $request->validate($rules);
         }
 
@@ -146,14 +147,14 @@ class GuestExamController extends Controller
 
         // Verify session
         if (
-            !Session::has('guest_attempt_token') ||
+            ! Session::has('guest_attempt_token') ||
             Session::get('guest_attempt_token') != $attempt->guest_token ||
             Session::get('guest_attempt_id') != $attemptId
         ) {
             abort(403, 'Akses tidak sah!');
         }
 
-        if (!$attempt->is_guest) {
+        if (! $attempt->is_guest) {
             abort(403, 'Attempt ini bukan untuk guest!');
         }
 
@@ -165,6 +166,7 @@ class GuestExamController extends Controller
         // Check if time limit exceeded
         if ($attempt->hasTimeExpired()) {
             $attempt->autoSubmit();
+
             return redirect()->route('guest.exams.review', $attempt->id)
                 ->with('warning', 'Waktu ujian telah habis! Jawaban Anda telah disimpan secara otomatis.');
         }
@@ -173,7 +175,7 @@ class GuestExamController extends Controller
         $questions = $exam->questions;
 
         // Shuffle if needed
-        if ($exam->shuffle_questions && !empty($attempt->shuffled_question_ids)) {
+        if ($exam->shuffle_questions && ! empty($attempt->shuffled_question_ids)) {
             $questions = $questions->sortBy(function ($question) use ($attempt) {
                 return array_search($question->id, $attempt->shuffled_question_ids);
             });
@@ -193,13 +195,13 @@ class GuestExamController extends Controller
 
         // Verify session
         if (
-            !Session::has('guest_attempt_token') ||
+            ! Session::has('guest_attempt_token') ||
             Session::get('guest_attempt_token') != $attempt->guest_token
         ) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
-        if (!$attempt->is_guest || $attempt->status !== 'in_progress') {
+        if (! $attempt->is_guest || $attempt->status !== 'in_progress') {
             return response()->json(['success' => false, 'message' => 'Invalid attempt'], 400);
         }
 
@@ -215,6 +217,7 @@ class GuestExamController extends Controller
         // Check if time is up (server-side validation)
         if ($attempt->hasTimeExpired()) {
             $attempt->autoSubmit();
+
             return response()->json([
                 'success' => false,
                 'message' => 'Waktu ujian telah habis!',
@@ -247,13 +250,13 @@ class GuestExamController extends Controller
 
         // Verify session
         if (
-            !Session::has('guest_attempt_token') ||
+            ! Session::has('guest_attempt_token') ||
             Session::get('guest_attempt_token') != $attempt->guest_token
         ) {
             abort(403, 'Akses tidak sah!');
         }
 
-        if (!$attempt->is_guest || $attempt->status !== 'in_progress') {
+        if (! $attempt->is_guest || $attempt->status !== 'in_progress') {
             return redirect()->route('guest.exams.review', $attempt->id)
                 ->with('info', 'Ujian sudah selesai!');
         }
@@ -275,13 +278,13 @@ class GuestExamController extends Controller
 
         // Verify session
         if (
-            !Session::has('guest_attempt_token') ||
+            ! Session::has('guest_attempt_token') ||
             Session::get('guest_attempt_token') != $attempt->guest_token
         ) {
             abort(403, 'Akses tidak sah!');
         }
 
-        if (!$attempt->is_guest) {
+        if (! $attempt->is_guest) {
             abort(403, 'Attempt ini bukan untuk guest!');
         }
 
@@ -289,7 +292,7 @@ class GuestExamController extends Controller
 
         // Get questions in order
         $questions = $exam->questions;
-        if ($exam->shuffle_questions && !empty($attempt->shuffled_question_ids)) {
+        if ($exam->shuffle_questions && ! empty($attempt->shuffled_question_ids)) {
             $questions = $questions->sortBy(function ($question) use ($attempt) {
                 return array_search($question->id, $attempt->shuffled_question_ids);
             });
@@ -300,8 +303,17 @@ class GuestExamController extends Controller
         return view('guest.exams.review', compact('attempt', 'exam', 'questions'));
     }
 
-    public function reviewByToken($token)
+    public function reviewByToken(Request $request, $token)
     {
+        // Tech debt fix: rate limit review endpoint (10 attempts / 60s per IP)
+        $throttleKey = 'guest-review-'.$request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 10)) {
+            return back()->withErrors([
+                'token' => 'Terlalu banyak percobaan. Silakan tunggu beberapa menit.',
+            ]);
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $attempt = ExamAttempt::with(['exam.questions', 'answers.question'])
             ->where('guest_token', $token)
             ->where('is_guest', true)
@@ -315,7 +327,7 @@ class GuestExamController extends Controller
         $exam = $attempt->exam;
 
         $questions = $exam->questions;
-        if ($exam->shuffle_questions && !empty($attempt->shuffled_question_ids)) {
+        if ($exam->shuffle_questions && ! empty($attempt->shuffled_question_ids)) {
             $questions = $questions->sortBy(function ($question) use ($attempt) {
                 return array_search($question->id, $attempt->shuffled_question_ids);
             });
@@ -335,13 +347,13 @@ class GuestExamController extends Controller
 
         // Verify session
         if (
-            !Session::has('guest_attempt_token') ||
+            ! Session::has('guest_attempt_token') ||
             Session::get('guest_attempt_token') != $attempt->guest_token
         ) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
-        if (!$attempt->is_guest || $attempt->status !== 'in_progress') {
+        if (! $attempt->is_guest || $attempt->status !== 'in_progress') {
             return response()->json(['success' => false, 'message' => 'Invalid attempt'], 400);
         }
 
@@ -370,6 +382,7 @@ class GuestExamController extends Controller
         $exam = $attempt->exam;
         if ($exam->detect_tab_switch && $attempt->tab_switches >= $exam->max_tab_switches) {
             $attempt->autoSubmit();
+
             return response()->json([
                 'success' => true,
                 'auto_submit' => true,

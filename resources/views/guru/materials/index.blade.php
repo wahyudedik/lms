@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
             <div>
@@ -8,6 +8,11 @@
                 <p class="text-sm text-gray-600 mt-1">Kode: {{ $course->code }}</p>
             </div>
             <div class="flex gap-2">
+                <a href="{{ route(auth()->user()->getRolePrefix() . '.attendance.report', $course) }}"
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-teal-50 border border-teal-200 text-teal-700 font-semibold rounded-lg hover:bg-teal-100 hover:border-teal-300 transition-all duration-200 shadow-sm">
+                    <i class="fas fa-chart-bar"></i>
+                    <span class="hidden sm:inline">{{ __('Report Absensi') }}</span>
+                </a>
                 <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.create', $course) }}"
                     class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-plus"></i>
@@ -101,6 +106,11 @@
                                             </td>
                                             <td class="px-4 py-3 whitespace-nowrap text-right">
                                                 <div class="flex justify-end gap-2">
+                                                    <a href="{{ route(auth()->user()->getRolePrefix() . '.attendance.index', [$course, $material]) }}"
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-teal-50 text-teal-600 hover:bg-teal-100"
+                                                        title="{{ __('Absensi') }}">
+                                                        <i class="fas fa-calendar-check text-sm"></i>
+                                                    </a>
                                                     <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.show', [$course, $material]) }}"
                                                         class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100"
                                                         title="Lihat">
@@ -175,6 +185,11 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-gray-100">
+                                        <a href="{{ route(auth()->user()->getRolePrefix() . '.attendance.index', [$course, $material]) }}"
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-teal-50 text-teal-600 hover:bg-teal-100"
+                                            title="{{ __('Absensi') }}">
+                                            <i class="fas fa-calendar-check text-sm"></i>
+                                        </a>
                                         <a href="{{ route(auth()->user()->getRolePrefix() . '.courses.materials.show', [$course, $material]) }}"
                                             class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100"
                                             title="Lihat">

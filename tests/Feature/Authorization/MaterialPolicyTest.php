@@ -6,13 +6,14 @@ use App\Models\Course;
 use App\Models\Material;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MaterialPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function all_users_can_view_any_materials()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -24,7 +25,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertTrue($siswa->can('viewAny', Material::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_view_any_material()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -35,7 +36,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertTrue($admin->can('view', $material));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_view_own_material()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -45,7 +46,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertTrue($guru->can('view', $material));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_view_other_guru_material()
     {
         $guru1 = User::factory()->create(['role' => 'guru']);
@@ -56,7 +57,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertFalse($guru1->can('view', $material));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_can_view_material_from_enrolled_course()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -73,7 +74,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertTrue($siswa->can('view', $material));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_view_material_from_non_enrolled_course()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -84,7 +85,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertFalse($siswa->can('view', $material));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_create_materials()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -92,7 +93,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertTrue($admin->can('create', Material::class));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_create_materials()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -100,7 +101,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertTrue($guru->can('create', Material::class));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_create_materials()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -108,7 +109,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertFalse($siswa->can('create', Material::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_update_any_material()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -119,7 +120,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertTrue($admin->can('update', $material));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_update_own_material()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -129,7 +130,7 @@ class MaterialPolicyTest extends TestCase
         $this->assertTrue($guru->can('update', $material));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_update_other_guru_material()
     {
         $guru1 = User::factory()->create(['role' => 'guru']);
@@ -140,4 +141,3 @@ class MaterialPolicyTest extends TestCase
         $this->assertFalse($guru1->can('update', $material));
     }
 }
-

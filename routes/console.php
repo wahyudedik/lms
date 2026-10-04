@@ -44,3 +44,11 @@ Schedule::command('assignments:send-deadline-reminders')
     ->name('assignments:send-deadline-reminders')
     ->onOneServer()
     ->withoutOverlapping();
+
+// Generate missing certificates for completed enrollments (daily at 02:00)
+Schedule::command('certificates:generate')
+    ->daily()
+    ->at('02:00')
+    ->name('certificates:generate')
+    ->onOneServer()
+    ->withoutOverlapping();

@@ -6,13 +6,14 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class EnrollmentPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function all_users_can_view_any_enrollments()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -21,10 +22,13 @@ class EnrollmentPolicyTest extends TestCase
 
         $this->assertTrue($admin->can('viewAny', Enrollment::class));
         $this->assertTrue($guru->can('viewAny', Enrollment::class));
-        $this->assertTrue($siswa->can('viewAny', Enrollment::class));
+        // Bug #25: EnrollmentPolicy::viewAny() intentionally restricts the
+        // enrollment listing to staff roles (admin, guru, dosen). Siswa can
+        // still view their own enrollment records via view().
+        $this->assertFalse($siswa->can('viewAny', Enrollment::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_view_any_enrollment()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -39,7 +43,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertTrue($admin->can('view', $enrollment));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_view_enrollment_from_own_course()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -53,7 +57,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertTrue($guru->can('view', $enrollment));
     }
 
-    /** @test */
+    #[Test]
     public function guru_cannot_view_enrollment_from_other_guru_course()
     {
         $guru1 = User::factory()->create(['role' => 'guru']);
@@ -68,7 +72,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertFalse($guru1->can('view', $enrollment));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_can_view_own_enrollment()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -82,7 +86,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertTrue($siswa->can('view', $enrollment));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_view_other_siswa_enrollment()
     {
         $siswa1 = User::factory()->create(['role' => 'siswa']);
@@ -97,7 +101,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertFalse($siswa1->can('view', $enrollment));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_create_enrollments()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -105,7 +109,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertTrue($admin->can('create', Enrollment::class));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_create_enrollments()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -113,7 +117,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertTrue($guru->can('create', Enrollment::class));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_can_create_enrollments()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -121,7 +125,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertTrue($siswa->can('create', Enrollment::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_update_any_enrollment()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -136,7 +140,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertTrue($admin->can('update', $enrollment));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_update_enrollment_from_own_course()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -150,7 +154,7 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertTrue($guru->can('update', $enrollment));
     }
 
-    /** @test */
+    #[Test]
     public function siswa_cannot_update_enrollment()
     {
         $siswa = User::factory()->create(['role' => 'siswa']);
@@ -164,4 +168,3 @@ class EnrollmentPolicyTest extends TestCase
         $this->assertFalse($siswa->can('update', $enrollment));
     }
 }
-

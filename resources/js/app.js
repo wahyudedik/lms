@@ -8,11 +8,5 @@ Alpine.start();
 
 import './push-notifications';
 
-// Register service worker for push notifications
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch((err) => {
-            console.warn('ServiceWorker registration skipped:', err.message);
-        });
-    });
-}
+// Service worker (/service-worker.js) is registered in layouts/app.blade.php
+// and public/js/offline.js — do not register a second worker here.

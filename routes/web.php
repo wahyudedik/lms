@@ -49,9 +49,10 @@ Route::get('/dashboard', function () {
     // ✅ FIX BUG #13: Add safety check for dashboard route
     try {
         $dashboardRoute = $user->dashboard_route;
-        if (!$dashboardRoute) {
+        if (! $dashboardRoute) {
             throw new \Exception('Dashboard route not configured');
         }
+
         return redirect()->route($dashboardRoute);
     } catch (\Exception $e) {
         // Fallback to login if dashboard route is not available
@@ -672,7 +673,8 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
-require __DIR__ . '/certificates.php';
-require __DIR__ . '/offline.php';
-require __DIR__ . '/ai.php';
+require __DIR__.'/auth.php';
+require __DIR__.'/certificates.php';
+require __DIR__.'/offline.php';
+require __DIR__.'/ai.php';
+require __DIR__.'/attendance.php';

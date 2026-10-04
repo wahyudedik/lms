@@ -6,13 +6,14 @@ use App\Models\School;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class LandingPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function test_landing_page_returns_200(): void
     {
         School::factory()->create(['is_landing_active' => true]);
@@ -22,7 +23,7 @@ class LandingPageTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function test_landing_page_displays_active_school_name(): void
     {
         $school = School::factory()->create([
@@ -36,7 +37,7 @@ class LandingPageTest extends TestCase
         $response->assertSee('Sekolah Aktif Test');
     }
 
-    /** @test */
+    #[Test]
     public function test_landing_page_falls_back_to_first_school_when_none_active(): void
     {
         $firstSchool = School::factory()->create([
@@ -54,7 +55,7 @@ class LandingPageTest extends TestCase
         $response->assertSee('Sekolah Pertama');
     }
 
-    /** @test */
+    #[Test]
     public function test_landing_page_shows_no_courses_message_when_empty(): void
     {
         School::factory()->create(['is_landing_active' => true]);
@@ -65,7 +66,7 @@ class LandingPageTest extends TestCase
         $response->assertSee('Belum ada kursus tersedia');
     }
 
-    /** @test */
+    #[Test]
     public function test_landing_page_uses_cache(): void
     {
         $school = School::factory()->create(['is_landing_active' => true]);
@@ -78,7 +79,7 @@ class LandingPageTest extends TestCase
         $this->assertTrue(Cache::has(School::CACHE_KEY_ACTIVE_LANDING));
     }
 
-    /** @test */
+    #[Test]
     public function test_landing_page_shows_hero_title(): void
     {
         School::factory()->create([
@@ -91,7 +92,7 @@ class LandingPageTest extends TestCase
         $response->assertSee('Judul Hero Kustom');
     }
 
-    /** @test */
+    #[Test]
     public function test_landing_page_shows_default_hero_title_when_null(): void
     {
         School::factory()->create([
@@ -106,11 +107,11 @@ class LandingPageTest extends TestCase
         $response->assertSee('today!');
     }
 
-    /** @test */
+    #[Test]
     public function test_landing_page_filters_courses_by_name(): void
     {
         $school = School::factory()->create(['is_landing_active' => true]);
-        
+
         // Create an instructor belonging to this school
         $instructor = User::factory()->create([
             'school_id' => $school->id,

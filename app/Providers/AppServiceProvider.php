@@ -2,18 +2,23 @@
 
 namespace App\Providers;
 
+use App\Channels\WebPushChannel;
 use App\Models\Assignment;
+use App\Models\AuthorizationLog;
 use App\Models\Certificate;
 use App\Models\Course;
+use App\Models\CourseGroup;
 use App\Models\Enrollment;
 use App\Models\Exam;
 use App\Models\ForumReply;
 use App\Models\ForumThread;
+use App\Models\InformationCard;
 use App\Models\Material;
-use App\Models\CourseGroup;
+use App\Models\MaterialAttendance;
 use App\Models\Question;
+use App\Models\QuestionBank;
 use App\Models\Setting;
-use App\Models\AuthorizationLog;
+use App\Observers\EnrollmentObserver;
 use App\Policies\AssignmentPolicy;
 use App\Policies\CertificatePolicy;
 use App\Policies\CourseGroupPolicy;
@@ -22,10 +27,11 @@ use App\Policies\EnrollmentPolicy;
 use App\Policies\ExamPolicy;
 use App\Policies\ForumReplyPolicy;
 use App\Policies\ForumThreadPolicy;
+use App\Policies\InformationCardPolicy;
+use App\Policies\MaterialAttendancePolicy;
 use App\Policies\MaterialPolicy;
+use App\Policies\QuestionBankPolicy;
 use App\Policies\QuestionPolicy;
-use App\Channels\WebPushChannel;
-use App\Observers\EnrollmentObserver;
 use App\Services\MentionParser;
 use DateTimeZone;
 use Illuminate\Support\Facades\App;
@@ -66,9 +72,12 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Course::class, CoursePolicy::class);
         Gate::policy(CourseGroup::class, CourseGroupPolicy::class);
         Gate::policy(Material::class, MaterialPolicy::class);
+        Gate::policy(MaterialAttendance::class, MaterialAttendancePolicy::class);
         Gate::policy(Question::class, QuestionPolicy::class);
         Gate::policy(Enrollment::class, EnrollmentPolicy::class);
         Gate::policy(Certificate::class, CertificatePolicy::class);
+        Gate::policy(QuestionBank::class, QuestionBankPolicy::class);
+        Gate::policy(InformationCard::class, InformationCardPolicy::class);
         Gate::policy(ForumThread::class, ForumThreadPolicy::class);
         Gate::policy(ForumReply::class, ForumReplyPolicy::class);
 
@@ -111,13 +120,14 @@ class AppServiceProvider extends ServiceProvider
     {
         $timezone = config('app.timezone');
 
-        if (!$timezone) {
+        if (! $timezone) {
             return;
         }
 
         try {
             new DateTimeZone($timezone);
             date_default_timezone_set($timezone);
+
             return;
         } catch (\Exception $e) {
             $normalized = $this->normalizeTimezone($timezone);
@@ -142,6 +152,7 @@ class AppServiceProvider extends ServiceProvider
 
         $segments = array_map(function ($segment) {
             $segment = str_replace(['-', '_'], ' ', strtolower($segment));
+
             return str_replace(' ', '_', ucwords($segment));
         }, $segments);
 
@@ -154,7 +165,7 @@ class AppServiceProvider extends ServiceProvider
     protected function applyRuntimePreferences(): void
     {
         try {
-            if (!Schema::hasTable('settings')) {
+            if (! Schema::hasTable('settings')) {
                 return;
             }
 

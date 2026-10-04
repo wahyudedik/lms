@@ -16,6 +16,8 @@ class InformationCardController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', InformationCard::class);
+
         $query = InformationCard::with('creator')
             ->where('created_by', auth()->id());
 
@@ -25,7 +27,7 @@ class InformationCardController extends Controller
 
         if ($request->filled('search')) {
             $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
-            $query->where('title', 'like', '%' . $search . '%');
+            $query->where('title', 'like', '%'.$search.'%');
         }
 
         $cards = $query->orderByDesc('created_at')->paginate(15);
@@ -38,6 +40,8 @@ class InformationCardController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', InformationCard::class);
+
         $roles = ['admin', 'guru', 'dosen', 'siswa', 'mahasiswa'];
         $users = User::where('is_active', true)
             ->orderBy('name')
@@ -51,6 +55,8 @@ class InformationCardController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', InformationCard::class);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string', 'max:10000'],
@@ -71,7 +77,7 @@ class InformationCardController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        $targetUserIds = !empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
+        $targetUserIds = ! empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
 
         // Sanitize content to prevent Stored XSS
         if (isset($validated['content'])) {
@@ -116,6 +122,8 @@ class InformationCardController extends Controller
      */
     public function edit(InformationCard $informationCard)
     {
+        $this->authorize('update', $informationCard);
+
         $roles = ['admin', 'guru', 'dosen', 'siswa', 'mahasiswa'];
         $users = User::where('is_active', true)
             ->orderBy('name')
@@ -129,6 +137,8 @@ class InformationCardController extends Controller
      */
     public function update(Request $request, InformationCard $informationCard)
     {
+        $this->authorize('update', $informationCard);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string', 'max:10000'],
@@ -150,7 +160,7 @@ class InformationCardController extends Controller
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        $targetUserIds = !empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
+        $targetUserIds = ! empty($validated['target_user_ids']) ? $validated['target_user_ids'] : null;
 
         // Sanitize content to prevent Stored XSS
         if (isset($validated['content'])) {
@@ -206,6 +216,8 @@ class InformationCardController extends Controller
      */
     public function destroy(InformationCard $informationCard)
     {
+        $this->authorize('delete', $informationCard);
+
         // Delete attachment file
         if ($informationCard->attachment_path) {
             Storage::disk('public')->delete($informationCard->attachment_path);
@@ -222,7 +234,9 @@ class InformationCardController extends Controller
      */
     public function toggleStatus(InformationCard $informationCard)
     {
-        $informationCard->update(['is_active' => !$informationCard->is_active]);
+        $this->authorize('update', $informationCard);
+
+        $informationCard->update(['is_active' => ! $informationCard->is_active]);
 
         $status = $informationCard->is_active ? __('activated') : __('deactivated');
 

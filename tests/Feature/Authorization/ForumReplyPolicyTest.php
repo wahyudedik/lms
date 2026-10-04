@@ -6,13 +6,14 @@ use App\Models\ForumReply;
 use App\Models\ForumThread;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ForumReplyPolicyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function all_users_can_view_any_replies()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -24,7 +25,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($siswa->can('viewAny', ForumReply::class));
     }
 
-    /** @test */
+    #[Test]
     public function all_users_can_view_replies()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -37,7 +38,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($siswa->can('view', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function all_users_can_create_replies()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -49,7 +50,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($siswa->can('create', ForumReply::class));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_update_any_reply()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -59,7 +60,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($admin->can('update', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function owner_can_update_own_reply()
     {
         $user = User::factory()->create();
@@ -68,7 +69,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($user->can('update', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_update_other_user_reply()
     {
         $user1 = User::factory()->create();
@@ -78,7 +79,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertFalse($user1->can('update', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_delete_any_reply()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -88,7 +89,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($admin->can('delete', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function owner_can_delete_own_reply()
     {
         $user = User::factory()->create();
@@ -97,7 +98,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($user->can('delete', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_mark_reply_as_solution()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -107,7 +108,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($admin->can('markAsSolution', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function guru_can_mark_reply_as_solution()
     {
         $guru = User::factory()->create(['role' => 'guru']);
@@ -117,7 +118,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($guru->can('markAsSolution', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function thread_owner_can_mark_reply_as_solution()
     {
         $user = User::factory()->create();
@@ -127,7 +128,7 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertTrue($user->can('markAsSolution', $reply));
     }
 
-    /** @test */
+    #[Test]
     public function other_user_cannot_mark_reply_as_solution()
     {
         $user1 = User::factory()->create();
@@ -138,4 +139,3 @@ class ForumReplyPolicyTest extends TestCase
         $this->assertFalse($user1->can('markAsSolution', $reply));
     }
 }
-
