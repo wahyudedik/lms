@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Idempotency guard: tabel ini sudah ada di DB production (migration lama
+        // 2025_01_01_000003_create_course_grade_weights_table yang sudah pernah dijalankan).
+        if (Schema::hasTable('course_grade_weights')) {
+            return;
+        }
+
         Schema::create('course_grade_weights', function (Blueprint $table) {
             $table->id();
             $table->foreignId('course_id')->constrained()->onDelete('cascade');

@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Idempotency guard: tabel ini sudah ada di DB production (migration lama
+        // 2025_01_01_000002_create_assignment_submissions_table yang sudah pernah dijalankan).
+        if (Schema::hasTable('assignment_submissions')) {
+            return;
+        }
+
         Schema::create('assignment_submissions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assignment_id')->constrained()->onDelete('cascade');

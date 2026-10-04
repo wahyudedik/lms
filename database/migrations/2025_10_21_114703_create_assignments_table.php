@@ -11,6 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Idempotency guard: tabel ini sudah ada di DB production (migration lama
+        // 2025_01_01_000001_create_assignments_table yang sudah pernah dijalankan).
+        // Nama file pernah di-rename (commit 6431dba) sehingga Laravel menganggapnya
+        // migration baru — guard ini mencegah "Base table already exists".
+        if (Schema::hasTable('assignments')) {
+            return;
+        }
+
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('course_id')->constrained()->onDelete('cascade');

@@ -102,6 +102,33 @@ GIT_BRANCH="main"
 export COMPOSER_ALLOW_SUPERUSER=1
 
 # =============================================================================
+# Trap error: pastikan aplikasi TIDAK tertinggal di maintenance mode
+# =============================================================================
+# Jika salah satu step gagal (set -e akan exit), trap ini berjalan:
+# menjalankan `artisan up` + memberi pesan instruksi perbaikan.
+DEPLOY_ERROR_LINE=0
+
+on_deploy_error() {
+    DEPLOY_ERROR_LINE=$1
+    echo ""
+    echo -e "${RED}[ERROR]${NC} Deploy GAGAL di baris ${DEPLOY_ERROR_LINE}."
+    echo -e "${RED}[ERROR]${NC} Aplikasi mungkin masih dalam MAINTENANCE MODE."
+    echo ""
+    if [ -f "$APP_DIR/artisan" ]; then
+        echo "[FIX] Mencoba melepas maintenance mode (artisan up)..."
+        (cd "$APP_DIR" && $PHP_BIN artisan up) 2>/dev/null \
+            || echo -e "${YELLOW}[FIX]${NC} Gagal menjalankan artisan up otomatis. Jalankan manual:"
+        echo -e "${YELLOW}[FIX]${NC}   cd $APP_DIR && $PHP_BIN artisan up"
+    fi
+    echo ""
+    echo -e "${YELLOW}[FIX]${NC} Setelah memperbaiki penyebab error, jalankan ulang:"
+    echo -e "${YELLOW}[FIX]${NC}   bash deploy.sh"
+    exit 1
+}
+
+trap 'on_deploy_error $LINENO' ERR
+
+# =============================================================================
 # Mulai Deploy
 # =============================================================================
 echo ""
