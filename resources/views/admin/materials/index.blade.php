@@ -114,7 +114,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold">
                                             <div class="flex justify-end gap-2">
                                                 <a href="{{ route('admin.attendance.index', [$course, $material]) }}"
-                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-teal-50 text-teal-600 hover:bg-teal-100"
+                                                    class="text-teal-600 hover:bg-teal-100"
                                                     title="{{ __('Absensi') }}">
                                                     <i class="fas fa-calendar-check text-sm"></i>
                                                 </a>
