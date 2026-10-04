@@ -71,8 +71,10 @@
                 <select id="role" name="role" required
                     class="block w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-colors">
                     <option value="">Pilih peran Anda</option>
-                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Mahasiswa</option>
-                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Dosen</option>
+                    <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                    <option value="mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                    <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Guru</option>
+                    <option value="dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
                 </select>
             </div>
             @error('role')

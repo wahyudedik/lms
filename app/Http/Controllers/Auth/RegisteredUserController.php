@@ -32,15 +32,21 @@ class RegisteredUserController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['nullable', Rule::in(['siswa'])],
+            'role' => ['nullable', Rule::in(['siswa', 'mahasiswa', 'guru', 'dosen'])],
             'phone' => ['nullable', 'string', 'max:20'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'gender' => ['nullable', 'in:laki-laki,perempuan'],
             'address' => ['nullable', 'string', 'max:500'],
+        ], [
+            'role.in' => 'Role yang dipilih tidak valid. Silakan pilih Mahasiswa (siswa/mahasiswa) atau Dosen (guru/dosen).',
         ]);
 
+        // Public registration only allows non-admin roles. 'admin' is never
+        // accepted here: admin accounts are created via seeder/admin panel.
+        // Alias values (guru≡dosen, siswa≡mahasiswa) are stored as-is;
+        // CheckRole middleware handles the equivalence.
         $role = $validated['role'] ?? 'siswa';
 
         $user = User::create([
