@@ -160,7 +160,7 @@ tail -n 20 /var/www/koneksi/storage/logs/worker.log
 ❌ **BACKOFF / FATAL / tidak muncul**: baca `worker.log` — penyebab umum: path salah, `php` tidak terbaca user web, atau `storage/` tidak bisa ditulis. Perbaiki lalu `supervisorctl restart lms-worker:*`. Bila permission:
 ```bash
 chown -R www:www /var/www/koneksi/storage    # sesuaikan user (www/www-data)
-chmod -R 775 /var/www/kkoneksi/storage
+chmod -R 775 /var/www/koneksi/storage
 supervisorctl restart lms-worker:*
 ```
 
@@ -174,7 +174,7 @@ supervisorctl restart lms-worker:*
 
 ```bash
 ( crontab -l 2>/dev/null | grep -vF "artisan schedule:run"; \
-  echo '* * * * * cd /var/www/kkoneksi && php artisan schedule:run >> /dev/null 2>&1' ) | crontab -
+  echo '* * * * * cd /var/www/koneksi && php artisan schedule:run >> /dev/null 2>&1' ) | crontab -
 ```
 
 Perintah ini **menghapus entri `schedule:run` lama** (termasuk yang path-nya salah) lalu memasang yang benar — idempoten, aman dijalankan berulang.
@@ -242,5 +242,5 @@ tail -n 50 /var/www/koneksi/storage/logs/laravel.log       # cek error aplikasi
 | Notifikasi tidak terkirim | Worker mati ATAU `QUEUE_CONNECTION=sync` | Step 8–10 + ganti `.env` ke `database` |
 | Sertifikat tak dibuat otomatis | Cron tak ada / path salah | Step 11–12, lalu `php artisan schedule:run` manual |
 | `schedule:run` jalan tapi task tak dieksekusi | Error scheduler — cek log | `php artisan schedule:list` + `storage/logs/laravel.log` |
-| Permission ditolak saat worker menulis | User worker ≠ owner storage | `chown -R www:www /var/www/kkoneksi/storage` |
+| Permission ditolak saat worker menulis | User worker ≠ owner storage | `chown -R www:www /var/www/koneksi/storage` |
 | `supervisorctl status` tak kenal `lms-worker` | Config belum di-reload | `supervisorctl reread && supervisorctl update` |
