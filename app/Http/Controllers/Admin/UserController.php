@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
+use App\Imports\UsersImport;
 use App\Models\SchoolClass;
 use App\Models\User;
-use App\Exports\UsersExport;
-use App\Imports\UsersImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -84,7 +85,7 @@ class UserController extends Controller
         ]);
 
         $schoolClassId = $validated['school_class_id'] ?? null;
-        if (in_array($validated['role'], ['siswa', 'mahasiswa']) && !$schoolClassId) {
+        if (in_array($validated['role'], ['siswa', 'mahasiswa']) && ! $schoolClassId) {
             $schoolClassId = SchoolClass::general()->id;
         }
 
@@ -138,7 +139,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'role' => ['required', 'in:admin,guru,siswa,dosen,mahasiswa'],
             'phone' => ['nullable', 'string', 'max:20'],
             'birth_date' => ['nullable', 'date', 'before:today'],
@@ -149,7 +150,7 @@ class UserController extends Controller
         ]);
 
         $schoolClassId = $validated['school_class_id'] ?? null;
-        if (in_array($validated['role'], ['siswa', 'mahasiswa']) && !$schoolClassId) {
+        if (in_array($validated['role'], ['siswa', 'mahasiswa']) && ! $schoolClassId) {
             $schoolClassId = SchoolClass::general()->id;
         }
 
@@ -192,7 +193,7 @@ class UserController extends Controller
     public function toggleStatus(User $user)
     {
         $user->update([
-            'is_active' => !$user->is_active,
+            'is_active' => ! $user->is_active,
         ]);
 
         $status = $user->is_active ? 'activated' : 'deactivated';
@@ -206,7 +207,7 @@ class UserController extends Controller
      */
     public function resetLogin(Request $request, User $user)
     {
-        if (!$user->is_login_blocked) {
+        if (! $user->is_login_blocked) {
             return back()->with('info', 'User login is not blocked.');
         }
 
@@ -303,7 +304,7 @@ class UserController extends Controller
     {
         $filters = $request->only(['search', 'role', 'status']);
 
-        $filename = 'users_' . date('Y-m-d_H-i-s') . '.xlsx';
+        $filename = 'users_'.date('Y-m-d_H-i-s').'.xlsx';
 
         return Excel::download(new UsersExport($filters), $filename);
     }
@@ -317,7 +318,7 @@ class UserController extends Controller
     }
 
     /**
-     * Import users from Excel
+     * Import users from Excel (UPSERT idempoten: baru X, diperbarui Y, gagal Z).
      */
     public function import(Request $request)
     {
@@ -326,41 +327,50 @@ class UserController extends Controller
         ]);
 
         try {
-            $import = new UsersImport();
+            $import = new UsersImport;
             Excel::import($import, $request->file('file'));
 
             $stats = $import->getStats();
 
+            $detailMessages = array_merge(
+                $stats['failure_messages'] ?? [],
+                $stats['error_messages'] ?? []
+            );
+
+            if ($stats['skipped'] > 0) {
+                // Simpan detail per baris untuk ditampilkan di halaman user index
+                // dan ditulis ke log produksi (storage/logs/laravel.log)
+                session(['import_errors' => $detailMessages]);
+                Log::warning('User import: sebagian baris gagal diimpor', [
+                    'created' => $stats['created'],
+                    'updated' => $stats['updated'],
+                    'failed' => $stats['skipped'],
+                    'details' => $detailMessages,
+                ]);
+            }
+
             if ($stats['imported'] > 0) {
-                $message = "{$stats['imported']} pengguna berhasil diimport.";
+                $message = "Data user berhasil diimpor! ({$stats['created']} baru, {$stats['updated']} diperbarui, {$stats['skipped']} gagal)";
 
                 if ($stats['skipped'] > 0) {
-                    $message .= " {$stats['skipped']} baris dilewati.";
-                    // Store skipped details in session for potential flash display
-                    session(['import_errors' => array_merge(
-                        $stats['failure_messages'] ?? [],
-                        $stats['error_messages'] ?? []
-                    )]);
+                    $message .= ' (cek log untuk detail)';
                 }
 
                 return redirect()->route('admin.users.index')
                     ->with('success', $message);
-            } else {
-                $errorMessages = array_merge(
-                    $stats['failure_messages'] ?? [],
-                    $stats['error_messages'] ?? []
-                );
-
-                $errorMsg = 'Tidak ada pengguna yang diimport.';
-                if (!empty($errorMessages)) {
-                    $errorMsg .= ' Error: ' . implode(' | ', array_slice($errorMessages, 0, 5));
-                }
-
-                return redirect()->back()->with('error', $errorMsg);
             }
+
+            $errorMsg = 'Tidak ada pengguna yang diimport.';
+            if (! empty($detailMessages)) {
+                $errorMsg .= ' Error: '.implode(' | ', array_slice($detailMessages, 0, 5));
+            }
+
+            return redirect()->back()->with('error', $errorMsg);
         } catch (\Exception $e) {
+            Log::error('User import gagal', ['error' => $e->getMessage()]);
+
             return redirect()->back()
-                ->with('error', 'Import gagal: ' . $e->getMessage());
+                ->with('error', 'Import gagal: '.$e->getMessage());
         }
     }
 
@@ -369,7 +379,7 @@ class UserController extends Controller
      */
     public function downloadTemplate()
     {
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
 
         // === Header Row ===

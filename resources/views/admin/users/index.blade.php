@@ -26,6 +26,25 @@
         </div>
     </x-slot>
 
+    @if (session('import_errors') && count(session('import_errors')) > 0)
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 shadow-sm">
+                <p class="text-sm font-semibold text-amber-800 mb-2">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    {{ __('Detail baris yang gagal diimpor:') }}
+                </p>
+                <ul class="list-disc list-inside text-sm text-amber-700 space-y-0.5 max-h-48 overflow-y-auto">
+                    @foreach (session('import_errors') as $detail)
+                        <li>{{ $detail }}</li>
+                    @endforeach
+                </ul>
+                <p class="text-xs text-amber-600 mt-2">
+                    {{ __('Detail lengkap juga tersedia di storage/logs/laravel.log') }}
+                </p>
+            </div>
+        </div>
+    @endif
+
     <div class="py-12" x-data="{
         selectedIds: [],
         selectedClassId: '',
@@ -57,7 +76,7 @@
                     const form = document.getElementById('bulk-delete-form');
                     const inputsContainer = document.getElementById('bulk-delete-inputs');
                     inputsContainer.innerHTML = '';
-                    
+
                     this.selectedIds.forEach(id => {
                         const input = document.createElement('input');
                         input.type = 'hidden';
@@ -65,7 +84,7 @@
                         input.value = id;
                         inputsContainer.appendChild(input);
                     });
-                    
+
                     form.submit();
                 }
             });
@@ -99,7 +118,7 @@
                     const form = document.getElementById('bulk-class-form');
                     const inputsContainer = document.getElementById('bulk-class-inputs');
                     inputsContainer.innerHTML = '';
-                    
+
                     this.selectedIds.forEach(id => {
                         const input = document.createElement('input');
                         input.type = 'hidden';
@@ -107,13 +126,13 @@
                         input.value = id;
                         inputsContainer.appendChild(input);
                     });
-                    
+
                     const classInput = document.createElement('input');
                     classInput.type = 'hidden';
                     classInput.name = 'school_class_id';
                     classInput.value = this.selectedClassId;
                     inputsContainer.appendChild(classInput);
-                    
+
                     form.submit();
                 }
             });
@@ -200,8 +219,8 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left w-12">
-                                        <input type="checkbox" 
-                                            @change="toggleAll()" 
+                                        <input type="checkbox"
+                                            @change="toggleAll()"
                                             :checked="isAllSelected()"
                                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
                                     </th>
@@ -230,8 +249,8 @@
                                     <tr class="hover:bg-gray-50 transition-colors">
                                         <td class="px-6 py-4 whitespace-nowrap w-12">
                                             @if ($user->id !== auth()->id())
-                                                <input type="checkbox" 
-                                                    value="{{ $user->id }}" 
+                                                <input type="checkbox"
+                                                    value="{{ $user->id }}"
                                                     x-model="selectedIds"
                                                     class="user-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
                                             @endif
@@ -396,7 +415,7 @@
                             <span class="text-sm font-semibold whitespace-nowrap">{{ __('pengguna terpilih') }}</span>
                         </div>
                         <div class="h-6 w-px bg-gray-800"></div>
-                        
+
                         <!-- Bulk Class Action -->
                         <div class="flex items-center gap-2">
                             <select x-model="selectedClassId" class="bg-gray-800 border border-gray-700 text-white rounded-lg text-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer min-w-44">
@@ -411,9 +430,9 @@
                                 {{ __('Ubah Kelas') }}
                             </button>
                         </div>
-                        
+
                         <div class="h-6 w-px bg-gray-800"></div>
-                        
+
                         <!-- Bulk Delete Action -->
                         <div class="flex gap-2">
                             <button @click="submitBulkDelete()"
@@ -433,7 +452,7 @@
                         @csrf
                         <div id="bulk-delete-inputs"></div>
                     </form>
-                    
+
                     <form id="bulk-class-form" action="{{ route('admin.users.bulk-update-class') }}" method="POST" class="hidden">
                         @csrf
                         <div id="bulk-class-inputs"></div>
