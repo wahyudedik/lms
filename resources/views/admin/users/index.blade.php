@@ -26,7 +26,85 @@
         </div>
     </x-slot>
 
-    @if (session('import_errors') && count(session('import_errors')) > 0)
+    {{-- Kartu status import terkini (sumber data: tabel user_imports via queue) --}}
+    @if (!empty($latestUserImport))
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6"
+            @if (in_array($latestUserImport->status, ['pending', 'processing'], true)) x-data x-init="setTimeout(() => location.reload(), 5000)" @endif>
+            @if (in_array($latestUserImport->status, ['pending', 'processing'], true))
+                {{-- Masih berjalan: indikator progres + auto-refresh tiap 5 detik --}}
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-circle-notch fa-spin text-blue-600 text-lg"></i>
+                        <div>
+                            <p class="text-sm font-semibold text-blue-800">
+                                {{ $latestUserImport->status === 'pending'
+                                    ? __('Import user menunggu diproses...')
+                                    : __('Import user sedang diproses di background...') }}
+                            </p>
+                            <p class="text-xs text-blue-600 mt-0.5">
+                                {{ $latestUserImport->file_name }} —
+                                {{ __('halaman ini diperbarui otomatis setiap 5 detik') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @elseif ($latestUserImport->status === 'completed')
+                {{-- Selesai: ringkasan + detail baris gagal dari kolom errors --}}
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <p class="text-sm font-semibold text-gray-800 mb-1">
+                        <i class="fas fa-check-circle text-green-600 mr-1"></i>
+                        {{ __('Import user selesai') }}
+                        <span class="font-normal text-gray-500">({{ $latestUserImport->file_name }})</span>
+                    </p>
+                    <p class="text-sm text-gray-700">
+                        {{ $latestUserImport->created_count ?? 0 }} {{ __('baru') }},
+                        {{ $latestUserImport->updated_count ?? 0 }} {{ __('diperbarui') }},
+                        {{ $latestUserImport->failed_count ?? 0 }} {{ __('gagal') }}
+                        @if ($latestUserImport->finished_at)
+                            <span class="text-xs text-gray-400">—
+                                {{ $latestUserImport->finished_at->format('d/m/Y H:i') }}</span>
+                        @endif
+                    </p>
+                    @if (($latestUserImport->failed_count ?? 0) > 0 && !empty($latestUserImport->errors))
+                        <div class="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                            <p class="text-sm font-semibold text-amber-800 mb-1">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                {{ __('Detail baris yang gagal diimpor:') }}
+                            </p>
+                            <ul
+                                class="list-disc list-inside text-sm text-amber-700 space-y-0.5 max-h-48 overflow-y-auto">
+                                @foreach ($latestUserImport->errors as $detail)
+                                    <li>{{ $detail }}</li>
+                                @endforeach
+                            </ul>
+                            <p class="text-xs text-amber-600 mt-2">
+                                {{ __('Detail lengkap juga tersedia di storage/logs/laravel.log') }}
+                            </p>
+                        </div>
+                    @endif
+                </div>
+            @elseif ($latestUserImport->status === 'failed')
+                {{-- Gagal: pesan error --}}
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 shadow-sm">
+                    <p class="text-sm font-semibold text-red-800 mb-1">
+                        <i class="fas fa-times-circle mr-1"></i>
+                        {{ __('Import user gagal') }}
+                        <span class="font-normal text-red-600">({{ $latestUserImport->file_name }})</span>
+                    </p>
+                    @if (!empty($latestUserImport->errors))
+                        <ul class="list-disc list-inside text-sm text-red-700 space-y-0.5 max-h-32 overflow-y-auto">
+                            @foreach ($latestUserImport->errors as $detail)
+                                <li>{{ $detail }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            @endif
+        </div>
+    @endif
+
+    {{-- Fallback kompatibilitas: detail dari session (jalur sync / tanpa record) --}}
+    @if (empty($latestUserImport) && session('import_errors') && count(session('import_errors')) > 0)
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
             <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 shadow-sm">
                 <p class="text-sm font-semibold text-amber-800 mb-2">
@@ -76,7 +154,7 @@
                     const form = document.getElementById('bulk-delete-form');
                     const inputsContainer = document.getElementById('bulk-delete-inputs');
                     inputsContainer.innerHTML = '';
-
+    
                     this.selectedIds.forEach(id => {
                         const input = document.createElement('input');
                         input.type = 'hidden';
@@ -84,7 +162,7 @@
                         input.value = id;
                         inputsContainer.appendChild(input);
                     });
-
+    
                     form.submit();
                 }
             });
@@ -100,10 +178,10 @@
                 });
                 return;
             }
-
+    
             const selectEl = document.querySelector('select[x-model=selectedClassId]');
             const className = selectEl && selectEl.selectedIndex >= 0 ? selectEl.options[selectEl.selectedIndex].text : '';
-
+    
             Swal.fire({
                 title: '{{ __('Perbarui Kelas Massal?') }}',
                 text: `Apakah Anda yakin ingin memindahkan ${this.selectedIds.length} pengguna terpilih ke kelas '${className}'?`,
@@ -118,7 +196,7 @@
                     const form = document.getElementById('bulk-class-form');
                     const inputsContainer = document.getElementById('bulk-class-inputs');
                     inputsContainer.innerHTML = '';
-
+    
                     this.selectedIds.forEach(id => {
                         const input = document.createElement('input');
                         input.type = 'hidden';
@@ -126,13 +204,13 @@
                         input.value = id;
                         inputsContainer.appendChild(input);
                     });
-
+    
                     const classInput = document.createElement('input');
                     classInput.type = 'hidden';
                     classInput.name = 'school_class_id';
                     classInput.value = this.selectedClassId;
                     inputsContainer.appendChild(classInput);
-
+    
                     form.submit();
                 }
             });
@@ -219,9 +297,7 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left w-12">
-                                        <input type="checkbox"
-                                            @change="toggleAll()"
-                                            :checked="isAllSelected()"
+                                        <input type="checkbox" @change="toggleAll()" :checked="isAllSelected()"
                                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
                                     </th>
                                     <th
@@ -249,8 +325,7 @@
                                     <tr class="hover:bg-gray-50 transition-colors">
                                         <td class="px-6 py-4 whitespace-nowrap w-12">
                                             @if ($user->id !== auth()->id())
-                                                <input type="checkbox"
-                                                    value="{{ $user->id }}"
+                                                <input type="checkbox" value="{{ $user->id }}"
                                                     x-model="selectedIds"
                                                     class="user-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
                                             @endif
@@ -401,8 +476,7 @@
                     </div>
 
                     <!-- Floating Bulk Actions Bar -->
-                    <div x-show="selectedIds.length > 0"
-                        x-transition:enter="transition ease-out duration-300"
+                    <div x-show="selectedIds.length > 0" x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0 translate-y-10"
                         x-transition:enter-end="opacity-100 translate-y-0"
                         x-transition:leave="transition ease-in duration-200"
@@ -411,16 +485,19 @@
                         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900/95 backdrop-blur text-white px-6 py-4 rounded-xl flex items-center gap-6 shadow-2xl border border-gray-800"
                         style="display: none;">
                         <div class="flex items-center gap-2">
-                            <span class="bg-blue-500 text-white font-bold px-2.5 py-1 rounded-full text-xs" x-text="selectedIds.length"></span>
-                            <span class="text-sm font-semibold whitespace-nowrap">{{ __('pengguna terpilih') }}</span>
+                            <span class="bg-blue-500 text-white font-bold px-2.5 py-1 rounded-full text-xs"
+                                x-text="selectedIds.length"></span>
+                            <span
+                                class="text-sm font-semibold whitespace-nowrap">{{ __('pengguna terpilih') }}</span>
                         </div>
                         <div class="h-6 w-px bg-gray-800"></div>
 
                         <!-- Bulk Class Action -->
                         <div class="flex items-center gap-2">
-                            <select x-model="selectedClassId" class="bg-gray-800 border border-gray-700 text-white rounded-lg text-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer min-w-44">
+                            <select x-model="selectedClassId"
+                                class="bg-gray-800 border border-gray-700 text-white rounded-lg text-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer min-w-44">
                                 <option value="">-- {{ __('Pilih Kelas') }} --</option>
-                                @foreach($classes as $class)
+                                @foreach ($classes as $class)
                                     <option value="{{ $class->id }}">{{ $class->name }}</option>
                                 @endforeach
                             </select>
@@ -448,12 +525,14 @@
                     </div>
 
                     <!-- Hidden Bulk Action Forms -->
-                    <form id="bulk-delete-form" action="{{ route('admin.users.bulk-destroy') }}" method="POST" class="hidden">
+                    <form id="bulk-delete-form" action="{{ route('admin.users.bulk-destroy') }}" method="POST"
+                        class="hidden">
                         @csrf
                         <div id="bulk-delete-inputs"></div>
                     </form>
 
-                    <form id="bulk-class-form" action="{{ route('admin.users.bulk-update-class') }}" method="POST" class="hidden">
+                    <form id="bulk-class-form" action="{{ route('admin.users.bulk-update-class') }}" method="POST"
+                        class="hidden">
                         @csrf
                         <div id="bulk-class-inputs"></div>
                     </form>

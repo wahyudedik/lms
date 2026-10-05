@@ -3,13 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\CustomResetPassword;
+use App\Notifications\CustomVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
-use App\Notifications\CustomVerifyEmail;
-use App\Notifications\CustomResetPassword;
 
 /**
  * @property int $id
@@ -57,6 +57,7 @@ use App\Notifications\CustomResetPassword;
  * @property-read \App\Models\School|null $school
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Course> $teachingCourses
  * @property-read int|null $teaching_courses_count
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -79,6 +80,7 @@ use App\Notifications\CustomResetPassword;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereSchoolId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -175,7 +177,7 @@ class User extends Authenticatable
         $counter = 2;
 
         while (static::where('username', $username)->exists()) {
-            $username = $base . '_' . $counter;
+            $username = $base.'_'.$counter;
             $counter++;
         }
 
@@ -188,6 +190,14 @@ class User extends Authenticatable
     public function pushSubscriptions(): HasMany
     {
         return $this->hasMany(PushSubscription::class);
+    }
+
+    /**
+     * Import user yang dilakukan oleh user ini (via queue background).
+     */
+    public function userImports(): HasMany
+    {
+        return $this->hasMany(UserImport::class);
     }
 
     /**
@@ -286,6 +296,7 @@ class User extends Authenticatable
 
         // For guru/dosen/siswa/mahasiswa, use their role prefix
         $prefix = $this->getRolePrefix();
+
         return match ($resourceType) {
             'course' => route("{$prefix}.courses.show", $resourceId),
             'material' => route("{$prefix}.materials.show", $resourceId),
@@ -352,7 +363,7 @@ class User extends Authenticatable
     public function getProfilePhotoUrlAttribute(): string
     {
         if ($this->profile_photo) {
-            return Storage::url('profile-photos/' . $this->profile_photo);
+            return Storage::url('profile-photos/'.$this->profile_photo);
         }
 
         // Return default avatar based on gender
@@ -362,7 +373,7 @@ class User extends Authenticatable
             default => 'default-avatar.png'
         };
 
-        return asset('images/avatars/' . $defaultAvatar);
+        return asset('images/avatars/'.$defaultAvatar);
     }
 
     /**
@@ -370,7 +381,7 @@ class User extends Authenticatable
      */
     public function getProfilePhotoPathAttribute(): string
     {
-        return $this->profile_photo ? 'profile-photos/' . $this->profile_photo : null;
+        return $this->profile_photo ? 'profile-photos/'.$this->profile_photo : null;
     }
 
     /**
@@ -378,11 +389,13 @@ class User extends Authenticatable
      */
     public function deleteProfilePhoto(): bool
     {
-        if ($this->profile_photo && Storage::exists('profile-photos/' . $this->profile_photo)) {
-            Storage::delete('profile-photos/' . $this->profile_photo);
+        if ($this->profile_photo && Storage::exists('profile-photos/'.$this->profile_photo)) {
+            Storage::delete('profile-photos/'.$this->profile_photo);
             $this->update(['profile_photo' => null]);
+
             return true;
         }
+
         return false;
     }
 
@@ -550,7 +563,7 @@ class User extends Authenticatable
      */
     public function getIsLoginBlockedAttribute(): bool
     {
-        return !is_null($this->login_blocked_at);
+        return ! is_null($this->login_blocked_at);
     }
 
     /**
@@ -587,7 +600,7 @@ class User extends Authenticatable
      */
     public function resetLoginBlock(?User $resolver = null, ?string $resolutionNotes = null): bool
     {
-        if (!$this->is_login_blocked) {
+        if (! $this->is_login_blocked) {
             return false;
         }
 

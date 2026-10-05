@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
-use App\Imports\UsersImport;
+use App\Jobs\ImportUsersJob;
 use App\Models\SchoolClass;
 use App\Models\User;
+use App\Models\UserImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -49,7 +52,9 @@ class UserController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.users.index', compact('users', 'classes'));
+        $latestUserImport = UserImport::where('user_id', auth()->id())->latest()->first();
+
+        return view('admin.users.index', compact('users', 'classes', 'latestUserImport'));
     }
 
     /**
@@ -318,7 +323,12 @@ class UserController extends Controller
     }
 
     /**
-     * Import users from Excel (UPSERT idempoten: baru X, diperbarui Y, gagal Z).
+     * Import users from Excel via QUEUE background (UPSERT idempoten di UsersImport).
+     *
+     * Alur: upload disimpan ke disk local non-public -> record user_imports
+     * (pending) -> ImportUsersJob di-dispatch -> browser langsung kembali.
+     * Saat QUEUE_CONNECTION=sync (dev tanpa worker) job dieksekusi inline,
+     * sehingga record langsung completed/failed dan flash ringkasan tetap tampil.
      */
     public function import(Request $request)
     {
@@ -327,37 +337,65 @@ class UserController extends Controller
         ]);
 
         try {
-            $import = new UsersImport;
-            Excel::import($import, $request->file('file'));
+            $file = $request->file('file');
 
-            $stats = $import->getStats();
+            $fileName = now()->format('Ymd_His').'_'.Str::random(8).'.'.$file->getClientOriginalExtension();
 
-            $detailMessages = array_merge(
-                $stats['failure_messages'] ?? [],
-                $stats['error_messages'] ?? []
-            );
+            $filePath = Storage::disk('local')->putFileAs('imports', $file, $fileName);
 
-            if ($stats['skipped'] > 0) {
-                // Simpan detail per baris untuk ditampilkan di halaman user index
-                // dan ditulis ke log produksi (storage/logs/laravel.log)
-                session(['import_errors' => $detailMessages]);
-                Log::warning('User import: sebagian baris gagal diimpor', [
-                    'created' => $stats['created'],
-                    'updated' => $stats['updated'],
-                    'failed' => $stats['skipped'],
-                    'details' => $detailMessages,
-                ]);
+            if ($filePath === false) {
+                throw new \RuntimeException('Gagal menyimpan file import ke storage.');
             }
 
-            if ($stats['imported'] > 0) {
-                $message = "Data user berhasil diimpor! ({$stats['created']} baru, {$stats['updated']} diperbarui, {$stats['skipped']} gagal)";
+            $record = UserImport::create([
+                'user_id' => (int) auth()->id(),
+                'file_name' => $file->getClientOriginalName(),
+                'file_path' => $filePath,
+                'status' => UserImport::STATUS_PENDING,
+            ]);
 
-                if ($stats['skipped'] > 0) {
+            ImportUsersJob::dispatch($record);
+
+            // Queue sync: job dieksekusi inline sehingga record sudah final.
+            // Queue async (database): record masih pending, pekerjaan berjalan
+            // di background worker — UI menampilkan progres via reload otomatis.
+            $record->refresh();
+
+            if (in_array($record->status, [UserImport::STATUS_PENDING, UserImport::STATUS_PROCESSING], true)) {
+                return redirect()->route('admin.users.index')
+                    ->with('success', 'File diterima, sedang diproses di background. Muat ulang halaman untuk melihat progres.');
+            }
+
+            if ($record->status === UserImport::STATUS_FAILED) {
+                $errorMsg = 'Import gagal.';
+                if (! empty($record->errors)) {
+                    $errorMsg .= ' '.implode(' | ', array_slice($record->errors, 0, 5));
+                }
+
+                return redirect()->back()->with('error', $errorMsg);
+            }
+
+            // completed — ringkasan dari record user_imports (sumber data utama)
+            $detailMessages = $record->errors ?? [];
+
+            if ((int) $record->failed_count > 0 && ! empty($detailMessages)) {
+                // Kompatibilitas: detail per baris juga tetap tersedia di session
+                // (dipertahankan untuk jalur sync / tampilan fallback).
+                session(['import_errors' => $detailMessages]);
+            }
+
+            $created = (int) $record->created_count;
+            $updated = (int) $record->updated_count;
+            $failed = (int) $record->failed_count;
+
+            if (($created + $updated) > 0) {
+                $message = "Data user berhasil diimpor! ({$created} baru, {$updated} diperbarui, {$failed} gagal)";
+
+                if ($failed > 0) {
                     $message .= ' (cek log untuk detail)';
                 }
 
-                return redirect()->route('admin.users.index')
-                    ->with('success', $message);
+                return redirect()->route('admin.users.index')->with('success', $message);
             }
 
             $errorMsg = 'Tidak ada pengguna yang diimport.';
